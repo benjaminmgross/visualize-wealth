@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+"""
+fetch_y_prices.py
+
+Created by Benjamin Gross on <insert date here>.
+
+INPUTS:
+--------
+
+RETURNS:
+--------
+TESTING:
+--------
+
+"""
+
+import argparse
+import collections
+import pandas
+import numpy
+import sys
+import pandas.io.data
+
+
+PIVOT_COL = 'Adj Close'
+
+def get_and_save_tickers(ticker_list, start_date):
+	"""
+	Run the analysis given a blotter file	
+	"""
+	
+	d = collections.OrderedDict().fromkeys(ticker_list, [])
+
+	for i, ticker in enumerate(ticker_list):
+		temp = pandas.io.data.DataReader(name = ticker, data_source = 'yahoo', start = start_date)
+		d[ticker] = temp[PIVOT_COL]
+	
+	frame = pandas.DataFrame(d, columns = ticker_list)
+	frame.to_csv('ticker_file.csv', float_format = '%.3f')
+	
+	
+if __name__ == '__main__':
+
+	usage = sys.argv[0] + "<ticker_1> <ticker_2> ... <ticker_n> <mm/dd/yyyy>"
+	description = "Creates a .csv file with tickers in columns starting at start date provided"
+	parser = argparse.ArgumentParser(description = description, usage = usage)
+	parser.add_argument('ticker', nargs = '+', type = str, help = 'tickers separated by spaces')
+	parser.add_argument('start_date', nargs = 1, type = str, help = "startdate as 'mm/dd/yyy'")
+
+	args = parser.parse_args()
+
+	get_and_save_tickers(args.ticker, args.start_date[0])

@@ -102,6 +102,10 @@ def calculate_splits(price_df, tol = .1):
 
 def blotter_to_split_adjusted_shares(blotter_series, price_df):
     """
+    Given a series of dates and purchases (+) and sales (-) and a DataFrame with Close
+    Adj Close, Dividends, & Splits, calculate the cumulative share balance for the
+    position
+    
     INPUTS:
     -------
     blotter_series: Series where index is buy/sell dates
@@ -150,6 +154,8 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
         
 def construct_random_trades(split_df, num_trades):
     """
+    Create random trades on random trade dates, but never allow shares to go negative
+    
     INPUTS:
     -------
     split_df: DataFrame that has 'Close', 'Dividends', 'Splits'
@@ -162,8 +168,7 @@ def construct_random_trades(split_df, num_trades):
     dates = split_df.index[ind]
     trades = numpy.random.randint(-100, 100, size = num_trades)
     trades = numpy.round(trades, -1)
-    #import pdb
-    #pdb.set_trace()
+
     while numpy.any(trades.cumsum() < 0):
         trades[numpy.argmin(trades)] *= -1.
     return pandas.Series( trades, index = dates, name = 'Buy/Sell')

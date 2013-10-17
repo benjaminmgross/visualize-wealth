@@ -17,6 +17,10 @@ PIVOT_COL = 'Close'
 
 def format_blotter(blotter_file):
     """
+    A blotter file could have positive values for both the buy and sell, this function
+    transforms Sell values that are positive to negative values (to be used in the 
+    portfolio constructors)
+    
     INPUTS:
     ------
     blotter_file: assumes the columns of the blotter file are 'Buy/Sell'

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-analyze.py
+construct_portfolio.py
 Created by Benjamin Gross in 2013
 """
 import argparse
@@ -106,7 +106,7 @@ def calculate_splits(price_df, tol = .1):
 
 def blotter_to_split_adjusted_shares(blotter_series, price_df):
     """
-    Given a series of dates and purchases (+) and sales (-) and a DataFrame with Close
+    Given a series of dates and purchases (+) / sales (-) and a DataFrame with Close
     Adj Close, Dividends, & Splits, calculate the cumulative share balance for the
     position
     

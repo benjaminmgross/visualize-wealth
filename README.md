@@ -78,6 +78,26 @@ with ['Close', 'Adj Close', 'Dividends', 'Splits'], as output from
 * `pandas.DataFrame` with columns 'Open', 'High', 'Low', 'Close', 'Adj
   Close', 'Volume', 'Dividends', 'Splits', 'cum_shares'
 
+###`construct_random_trades(split_df, num_trades):`
+
+Generate num_trades random trades in random amounts between -100 and 100 (rounded to
+nearest 10) while making sure the shares never go below 0 (i.e. a
+semi-realistic trade sequence is created), making sure those trades
+occur on actual trading days
+
+###INPUTS:
+
+* **split_df:** a `pandas.DataFrame` of the asset's prices: used only
+  to determine actual trading days
+
+* **num_trades:** The number of random trades the user would like to
+  generate
+
+###RETURNS:
+
+`pandas.Series` of random trades and trade dates that can be input
+into functions requiring a `blotter_series`
+
 
 
 

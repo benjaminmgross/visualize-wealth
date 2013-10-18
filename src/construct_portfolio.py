@@ -119,21 +119,18 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
     -------
     DataFrame containing contributions, withdrawals, price values
     """
+    if isinstance(blotter_series, pandas.DataFrame):
+        blotter_series = blotter_series['Buy/Sell']
+        
     blotter_series = blotter_series.sort_index()
     #make sure all dates in the blotter file are also in the price file
     #consider, if those dates aren't in price frame, assign the "closest date" value
     assert numpy.all(map(lambda x: numpy.any(price_df.index == x), 
                          blotter_series.index)), "Buy/Sell Dates not in Price File"
 
-    #first date
-    d_0 = numpy.where(price_df.index == blotter_series.index[0])[0][0]
-    ind = price_df.index[d_0:]
-    
-    cols = ['cum_shares', 'adj_qty', 'contr_with', 'cum_inv', 'asset_value']
-
     #now cumsum the buy/sell chunks and multiply by splits to get total shares
     
-    bs_series = pandas.Series(name = 'cum_shares')
+    bs_series = pandas.Series()
     start_dts = blotter_series.index
     end_dts = pandas.to_datetime(numpy.append(blotter_series.index[1:], 
                                               price_df.index[-1]))
@@ -143,9 +140,10 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
     #import pdb
     #pdb.set_trace()
     for chunk in dt_chunks:
-        tmp = price_df[chunk[0]:chunk[1]]
+        tmp = price_df[chunk[0]:chunk[1]][:-1]
+        if chunk[1] == price_df.index[-1]:
+            tmp = price_df[chunk[0]:chunk[1]]
         splits = tmp[pandas.notnull(tmp['Splits'])]
-        
         vals = numpy.append(blotter_series[chunk[0]] + end, splits['Splits'].values)
         dts = pandas.to_datetime(numpy.append(chunk[0], splits['Splits'].index))
         tmp_series = pandas.Series(vals, index = dts)
@@ -154,6 +152,9 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
         bs_series = bs_series.append(tmp_series)
         end = bs_series[-1]
 
+    #import pdb
+    #pdb.set_trace()
+    bs_series.name = 'cum_shares'
     return price_df.join(bs_series)
         
 def construct_random_trades(split_df, num_trades):
@@ -174,16 +175,29 @@ def construct_random_trades(split_df, num_trades):
     trades = numpy.round(trades, -1)
 
     while numpy.any(trades.cumsum() < 0):
-        trades[numpy.argmin(trades)] *= -1.
+        trades[numpy.argmin(trades)] *= -1.    
+
     return pandas.Series( trades, index = dates, name = 'Buy/Sell')
-        
+
+def test_funs():
+    """
+    >>> import pandas.util.testing as put
+    >>> xl_file = pandas.ExcelFile('../tests/test_splits.xlsx')
+    >>> blotter = xl_file.parse('blotter_series', index_col = 0)
+    >>> cols = ['Close', 'Adj Close', 'Dividends']
+    >>> price_df = xl_file.parse('calc_sheet', index_col = 0)
+    >>> price_df = price_df[cols]
+    >>> split_frame = calculate_splits(price_df)
+    >>> shares_owned = blotter_to_split_adjusted_shares(blotter, split_frame)
+    >>> test_vals = xl_file.parse('share_balance', index_col = 0)['cum_shares']
+    >>> put.assert_series_equal(shares_owned['cum_shares'].dropna(), test_vals)
+    """
+
 if __name__ == '__main__':
-	
-	usage = sys.argv[0] + "file_loc"
-	description = "description"
-	parser = argparse.ArgumentParser(description = description, usage = usage)
-	parser.add_argument('arg_1', nargs = 1, type = str, help = 'help_1')
-    parser.add_argument('arg_2', nargs = '+', type = int, help = 'help_2')
-	args = parser.parse_args()
-	
-	run_function(input_1 = args.arg_1, input_2 = args.arg_2)
+
+    usage = sys.argv[0] + "file_loc"
+    description = "description"
+    parser = argparse.ArgumentParser(description = description, usage = usage)
+    parser.add_argument('arg_1', nargs = 1, type = str, help = 'help_1')
+    parser.add_argument('arg_2', nargs = 1, type = int, help = 'help_2')
+    args = parser.parse_args()

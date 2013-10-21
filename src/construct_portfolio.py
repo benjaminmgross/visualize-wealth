@@ -10,7 +10,6 @@ import numpy
 import pandas.io.data
 import datetime
 import collections
-import scipy.optimize as sopt
 import urllib2
 
 def format_blotter(blotter_file):
@@ -129,9 +128,7 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
     -------
     DataFrame containing contributions, withdrawals, price values
     """
-    if isinstance(blotter_series, pandas.DataFrame):
-        blotter_series = blotter_series['Buy/Sell']
-        
+
     blotter_series = blotter_series.sort_index()
     #make sure all dates in the blotter file are also in the price file
     #consider, if those dates aren't in price frame, assign the "closest date" value
@@ -153,7 +150,8 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
         if chunk[1] == price_df.index[-1]:
             tmp = price_df[chunk[0]:chunk[1]]
         splits = tmp[pandas.notnull(tmp['Splits'])]
-        vals = numpy.append(blotter_series[chunk[0]] + end, splits['Splits'].values)
+        vals = numpy.append(blotter_series['Buy/Sell'][chunk[0]] + end,
+                            splits['Splits'].values)
         dts = pandas.to_datetime(numpy.append(chunk[0], splits['Splits'].index))
         tmp_series = pandas.Series(vals, index = dts)
         tmp_series = tmp_series.cumprod()
@@ -162,7 +160,22 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
         end = bs_series[-1]
 
     bs_series.name = 'cum_shares'
-    return price_df.join(bs_series)
+
+    #construct the contributions, withdrawals, & cumulative investment
+
+    #if a trade is missing a price, it gets assigned the closing price of that day
+
+    no_price = blotter_series['Price'][pandas.isnull(blotter_series['Price'])]
+    blotter_series.ix[no_price.index, 'Price'] = price_df.ix[no_price.index, 'Close']
+
+    contr = blotter_series['Buy/Sell'].mul(blotter_series['Price'])
+    cum_inv = contr.cumsum()
+    contr = contr[price_df.index].fillna(0.0)
+    cum_inv = cum_inv[price_df.index].ffill()
+    res = pandas.DataFrame({'cum_shares':bs_series, 'contr_withdrawal':contr, 
+                            'cum_investment':cum_inv})
+    
+    return price_df.join(res)
         
 def construct_random_trades(split_df, num_trades):
     """
@@ -203,11 +216,45 @@ def generate_random_asset_path(ticker, start_date, num_trades):
                                  start_date = start_date, end_date = end_date, 
                                  tol = .1)
 
+def aggregate_blotter_to_portfolio(agg_blotter):
+    #import pdb
+    #pdb.set_trace()
+    tickers = pandas.unique(agg_blotter['Ticker'])
+    start_date = agg_blotter.sort_index().index[0]
+    end_date = datetime.datetime.today()
+    val_d = {}
+    for ticker in tickers:
+        blotter_series = agg_blotter[agg_blotter['Ticker'] == ticker].sort_index()
+        val_d[ticker] = blotter_to_cum_shares(blotter_series, ticker,
+                                              start_date, end_date, tol = .1)
+
+    return pandas.Panel(val_d)
+
+def generate_random_portfolio_blotter(tickers, num_trades):
+    blot_d = {}
+    price_d = {}
+    for ticker in tickers:
+        tmp = append_price_frame_with_dividends(ticker, start_date =
+                                                datetime.datetime(1990, 1, 1))
+        price_d[ticker] = calculate_splits(tmp)
+        blot_d[ticker] = construct_random_trades(price_d[ticker], num_trades)
+    ind = []
+    agg_d = {'Ticker':[],  'Buy/Sell':[], 'Price':[]}
+    for ticker in tickers:
+        for i, trade in enumerate(blot_d[ticker]):
+            ind.append(blot_d[ticker].index[i])
+            agg_d['Ticker'].append(ticker)
+            agg_d['Buy/Sell'].append(trade)
+            price = price_d[ticker].ix[blot_d[ticker].index[i], 'Close']
+            agg_d['Price'].append(price)
+
+    return pandas.DataFrame(agg_d, index = ind)
+
 def test_funs():
     """
     >>> import pandas.util.testing as put
     >>> xl_file = pandas.ExcelFile('../tests/test_splits.xlsx')
-    >>> blotter = xl_file.parse('blotter_series', index_col = 0)
+    >>> blotter = xl_file.parse('blotter', index_col = 0)
     >>> cols = ['Close', 'Adj Close', 'Dividends']
     >>> price_df = xl_file.parse('calc_sheet', index_col = 0)
     >>> price_df = price_df[cols]

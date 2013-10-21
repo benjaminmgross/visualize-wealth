@@ -13,28 +13,38 @@ import collections
 import scipy.optimize as sopt
 import urllib2
 
-PIVOT_COL = 'Close'
-
 def format_blotter(blotter_file):
     """
-    A blotter file could have positive values for both the buy and sell, this function
-    transforms Sell values that are positive to negative values (to be used in the 
-    portfolio constructors)
+    A blotter file could have positive values for both the buy and sell, 
+    this function transforms Sell values that are positive to negative values
+    (to be used in the portfolio constructors)
     
     INPUTS:
     ------
-    blotter_file: assumes the columns of the blotter file are 'Buy/Sell'
+    blotter_file: pandas.DataFrame with at least index (dates of Buy / Sell) columns 
+    = ['Buy/Sell', 'Shares'] or a string of the file location to such a formatted 
+    file
+
+    RETURNS:
+    --------
+    pandas.DataFrame
     """
-    blot = pandas.DataFrame.from_csv(blotter_file)
+    if isinstance(blotter_file, str):
+        blot = pandas.DataFrame.from_csv(blotter_file)
+    else:
+        blot = blotter_file.copy()
+
     blot['Buy/Sell'] = map(str.strip, blot['Buy/Sell'])
-    blot.loc[blot['Buy/Sell'] == 'Sell', 'Shares'] = -blot.loc[blot['Buy/Sell'] == 'Sell', 'Shares']
+    blot.loc[blot['Buy/Sell'] == 'Sell', 'Shares'] = (-blot.loc[blot['Buy/Sell'] 
+                                                       == 'Sell', 'Shares'])
     
     return blot
 
 def append_price_frame_with_dividends(ticker, start_date, end_date=None):
     """
-    Given a ticker, start_date, & end_date, return a pandas.DataFrame with a Dividend 
-    Columns
+    Given a ticker, start_date, & end_date, return a pandas.DataFrame with 
+    a Dividend Columns
+
     INPUTS:
     -------
     ticker: string of ticker
@@ -129,7 +139,6 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
                          blotter_series.index)), "Buy/Sell Dates not in Price File"
 
     #now cumsum the buy/sell chunks and multiply by splits to get total shares
-    
     bs_series = pandas.Series()
     start_dts = blotter_series.index
     end_dts = pandas.to_datetime(numpy.append(blotter_series.index[1:], 
@@ -137,9 +146,9 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
 
     dt_chunks = zip(start_dts, end_dts)
     end = 0.
-    #import pdb
-    #pdb.set_trace()
-    for chunk in dt_chunks:
+
+    for i, chunk in enumerate(dt_chunks):
+        #print str(i) + ' of ' + str(len(dt_chunks)) + ' total'
         tmp = price_df[chunk[0]:chunk[1]][:-1]
         if chunk[1] == price_df.index[-1]:
             tmp = price_df[chunk[0]:chunk[1]]
@@ -152,8 +161,6 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
         bs_series = bs_series.append(tmp_series)
         end = bs_series[-1]
 
-    #import pdb
-    #pdb.set_trace()
     bs_series.name = 'cum_shares'
     return price_df.join(bs_series)
         
@@ -170,14 +177,31 @@ def construct_random_trades(split_df, num_trades):
     blotter_series: a blotter with random trades, num_trades
     """
     ind = numpy.sort(numpy.random.randint(0, len(split_df), size = num_trades))
+    #This unique makes sure there aren't double trade day entries which breaks 
+    #the blotter_to_split_adjusted_shares
+    ind = numpy.unique(ind)
     dates = split_df.index[ind]
-    trades = numpy.random.randint(-100, 100, size = num_trades)
+    trades = numpy.random.randint(-100, 100, size = len(ind))
     trades = numpy.round(trades, -1)
 
     while numpy.any(trades.cumsum() < 0):
         trades[numpy.argmin(trades)] *= -1.    
 
     return pandas.Series( trades, index = dates, name = 'Buy/Sell')
+
+def blotter_to_cum_shares(blotter_series, ticker, start_date, end_date, tol):
+    price_df = append_price_frame_with_dividends(ticker, start_date, end_date)
+    split_df = calculate_splits(price_df)
+    return blotter_to_split_adjusted_shares(blotter_series, split_df)
+
+def generate_random_asset_path(ticker, start_date, num_trades):
+    end_date = datetime.datetime.today()
+    prices = append_price_frame_with_dividends(ticker, start_date)
+    blotter = construct_random_trades(prices, num_trades)
+    blotter.to_csv('../tests/' + ticker + '.csv')
+    return blotter_to_cum_shares(blotter_series = blotter, ticker = ticker,
+                                 start_date = start_date, end_date = end_date, 
+                                 tol = .1)
 
 def test_funs():
     """

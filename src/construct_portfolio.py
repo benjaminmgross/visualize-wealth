@@ -189,7 +189,7 @@ def construct_random_trades(split_df, num_trades):
     """
     ind = numpy.sort(numpy.random.randint(0, len(split_df), size = num_trades))
     #This unique makes sure there aren't double trade day entries which breaks 
-    #the blotter_to_split_adjusted_shares
+    #the function blotter_to_split_adjusted_shares
     ind = numpy.unique(ind)
     dates = split_df.index[ind]
     trades = numpy.random.randint(-100, 100, size = len(ind))
@@ -250,10 +250,19 @@ def generate_random_portfolio_blotter(tickers, num_trades):
 
     return pandas.DataFrame(agg_d, index = ind)
 
-def portfolio_panel_from_blotter(agg_blotter):
+def portfolio_panel_from_blotter(agg_blotter_df):
     """
-    Return a pandas.Panel with dimensions (tickers, dates, price data) when provided 
-    a trade blotter with columns ['Ticker', 'Buy/Sell', 'Price'].
+    The aggregation function to construct a portfolio given a blotter of tickers,
+    trades, and number of shares.  
+
+    INPUTS:
+    -------
+    agg_blotter_df: pandas.DataFrame with columns ['Ticker', 'Buy/Sell', 'Price'], 
+    where the 'Buy/Sell' column is the quantity of shares, (+) for buy, (-) for sell
+
+    RETURNS:
+    --------
+    pandas.Panel with dimensions [tickers, dates, price data]
     """
     tickers = pandas.unique(agg_blotter['Ticker'])
     start_date = agg_blotter.sort_index().index[0]
@@ -369,6 +378,7 @@ def test_funs():
     >>> price_df = xl_file.parse('calc_sheet', index_col = 0)
     >>> price_df = price_df[cols]
     >>> split_frame = calculate_splits(price_df)
+
     >>> shares_owned = blotter_to_split_adjusted_shares(blotter, split_frame)
     >>> test_vals = xl_file.parse('share_balance', index_col = 0)['cum_shares']
     >>> put.assert_series_equal(shares_owned['cum_shares'].dropna(), test_vals)

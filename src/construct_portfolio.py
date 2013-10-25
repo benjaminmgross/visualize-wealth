@@ -382,24 +382,46 @@ def portfolio_from_weight_file(weight_df, price_panel, start_value):
     #The portfolio should start at the first trade, a[0]
     return port_df[a[0]:]
 
-def portfolio_from_initial_weights(weight_series, price_panel, rebal_frequency):
+def portfolio_from_initial_weights(weight_series, price_panel, start_value,
+                                   rebal_frequency):
     """
     Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
     a pandas.Series of intial weight allocations, the date of those weight 
-    allocations, and a starting  value of the index (this is the classical "static" 
-    construction" methodology, rebalancing at some specified interval)
+    allocations, and a starting value of the index, and a rebalance frequency 
+    (this is the classical "static" construction" methodology, rebalancing at some
+    specified interval)
 
     INPUTS:
     -------
-    weight_series: pandas.DataFrame of a weight allocation with tickers for columns, 
-    index of dates and weight allocations to each of the tickers
+    weight_series: pandas.Series of a weight allocation with an index of tickers, 
+    and a name of the initial allocation
     price_panel: pandas.Panel with dimensions [tickers, index, price data]
+    start_value: the value to start the index
+    rebal_frequency: 'weekly', 'monthly', 'quarterly', 'yearly'
 
     RETURNS:
     --------
-    pandas.Panel with dimensions (tickers, dates, price date) 
+    pandas.DataFrame with portfolio 'Close' and 'Open'
     """
-    return None
+    
+    d_0 = numpy.max(price_panel.loc[:, :, 'Close'].apply(
+        pandas.Series.first_valid_index))
+    index = price_panel.loc[:, d_0:, :].major_axis
+    
+    assert numpy.any(index == weight_series.name), (
+        "The first trade date is not part of the prices panel")
+    
+    interval_dict = {'weekly':lambda x: x[:-1].week != x[1:].week, 
+                     'monthly': lambda x: x[:-1].month != x[1:].month,
+                     'quarterly':lambda x: x[:-1].quarter != x[1:].quarter,
+                     'yearly':lambda x: x[:-1].year != x[1:].year}
+
+    #create a boolean array of rebalancing dates
+    ind = numpy.append(True, interval_dict[rebal_frequency](index))
+    weight_df = pandas.DataFrame(numpy.tile(weight_series.values, 
+        [len(index[ind]), 1]), index = index[ind], columns = weight_series.index)
+                    
+    return portfolio_from_weight_file(weight_df, price_panel, start_value)
 
 
 def test_funs():

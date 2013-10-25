@@ -250,7 +250,7 @@ def generate_random_portfolio_blotter(tickers, num_trades):
 
     return pandas.DataFrame(agg_d, index = ind)
 
-def portfolio_panel_from_blotter(agg_blotter_df):
+def portfolio_from_blotter(agg_blotter_df):
     """
     The aggregation function to construct a portfolio given a blotter of tickers,
     trades, and number of shares.  
@@ -275,22 +275,8 @@ def portfolio_panel_from_blotter(agg_blotter_df):
 
     return pandas.Panel(val_d)
 
-def portfolio_panel_from_weight_file(weight_df, start_value):
-    """
-    Returns a pandas.Panel with dimensions (tickers, dates, price data) when provided
-    a pandas.DataFrame of weight allocations
-
-    INPUTS:
-    -------
-    pandas.DataFrame of a weight allocation with tickers for columns, index of dates 
-    (the function will check to ensure rebal dates are trade days), and values of
-    weight allocations to each of the tickers
-
-    RETURNS:
-    --------
-    pandas.Panel with dimensions (tickers, dates, price date)
+def fetch_data_for_portfolio_construction(weight_df):
     
-    """
     reader = pandas.io.data.DataReader
     d_0 = weight_df.index.min()
     tickers = weight_df.columns
@@ -317,41 +303,71 @@ def portfolio_panel_from_weight_file(weight_df, start_value):
     #determine the dates chunks
     import pdb
     #pdb.set_trace()
-    a = weight_df.index
-    b = pandas.to_datetime(numpy.append(weight_df.index[1:], close_df.index[-1]))
-    dt_chunks = zip(a, b)
     
     #the columns correspond to the calculation sheet for interpretability
     columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 
                'Close', 'Adj Close']
 
     #preallocate for the calculation
-    panel = pandas.Panel(numpy.zeros([len(tickers), len(close_df.index),
-                                          len(columns)]), major_axis = index, 
-                                          items = tickers, minor_axis = columns)
-
-    port_cols = ['Close', 'Open']
-    port_df = pandas.DataFrame(numpy.zeros([len(close_df), len(port_cols)]), 
-                               index = close_df.index, columns = port_cols)
+    panel = pandas.Panel(numpy.zeros([len(tickers), len(index), len(columns)]),
+                         major_axis = index, items = tickers, minor_axis = columns)
     
     #insert the Close into the panel
     panel.loc[:, :, 'Close'] = close_df
     panel.loc[:, :, 'Open'] = open_df
     panel.loc[:, :, 'Adj Close'] = adj_df
+
+    return panel
+
+def portfolio_from_weight_file(weight_df, price_panel, start_value):
+    """
+    Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
+    a pandas.DataFrame of weight allocations and a starting  value of the index
+
+    INPUTS:
+    -------
+    weight_df: pandas.DataFrame of a weight allocation with tickers for columns, 
+    index of dates and weight allocations to each of the tickers
+    price_panel: pandas.Panel with dimensions [tickers, index, price data]
+
+    RETURNS:
+    --------
+    pandas.Panel with dimensions (tickers, dates, price date)
+    
+    """
+
+    #these columns correspond to the columns in sheet 'value_calcs!' in "panel from
+    #weight file test.xlsx"
+    
+    columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 
+               'Close', 'Adj Close']
+    panel = price_panel.reindex(minor_axis = columns)
+    port_cols = ['Close', 'Open']
+    index = panel.major_axis
+    port_df = pandas.DataFrame(numpy.zeros([ len(index), len(port_cols)]), 
+                               index = index, columns = port_cols)
+
+    a = weight_df.index
+    b = pandas.to_datetime(numpy.append(weight_df.index[1:], index[-1]))
+    dt_chunks = zip(a, b)
+    
     #fill in the Adjusted Quantity values and the aggregate position values
     p_val = start_value
     for chunk in dt_chunks:
-        #pdb.set_trace()
-        c0_ac0 = close_df.loc[chunk[0], :].div(adj_df.loc[chunk[0], :])
-        n0 = p_val*weight_df.loc[chunk[0], :].div(close_df.loc[chunk[0], :])
+        n = len(panel.loc[:, chunk[0]:chunk[1], 'Close'])
+        c0_ac0 = panel.loc[:, chunk[0], 'Close'].div(
+            panel.loc[:, chunk[0], 'Adj Close'])
+        n0 = p_val*weight_df.loc[chunk[0], :].div(panel.loc[:, chunk[0], 'Close'])
         panel.loc[:, chunk[0]:chunk[1], 'ac_c']  = (
-            adj_df.loc[chunk[0]:chunk[1],:].div(close_df.loc[chunk[0]:chunk[1], :]))
-        panel.loc[:, chunk[0]:chunk[1], 'c0_ac0'] = numpy.tile(c0_ac0.values, [len(
-            close_df[chunk[0]:chunk[1]]), 1]).transpose()
-        panel.loc[:, chunk[0]:chunk[1], 'n0'] = numpy.tile(n0.values, [len(
-            close_df[chunk[0]:chunk[1]]), 1]).transpose()
-        panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = (panel.loc[:, chunk[0]:chunk[1],
-            ['c0_ac0', 'ac_c', 'n0']].apply(numpy.product, axis = 2))
+            panel.loc[:, chunk[0]:chunk[1],'Adj Close'].div(
+            panel.loc[:, chunk[0]:chunk[1], 'Close']))
+        panel.loc[:, chunk[0]:chunk[1], 'c0_ac0'] = (
+            numpy.tile(c0_ac0.values, [n, 1]).transpose())
+        panel.loc[:, chunk[0]:chunk[1], 'n0'] = numpy.tile(
+            n0.values, [n, 1]).transpose()
+        panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = (panel.loc[:,
+            chunk[0]:chunk[1], ['c0_ac0', 'ac_c', 'n0']].apply(numpy.product, 
+            axis = 2))
 
         #assign the portfolio values
         port_df.loc[chunk[0]:chunk[1], 'Close'] = (
@@ -363,9 +379,26 @@ def portfolio_panel_from_weight_file(weight_df, start_value):
 
         p_val = port_df.loc[chunk[1], 'Close']
 
-    return port_df
+    #The portfolio should start at the first trade, a[0]
+    return port_df[a[0]:]
 
-def portfolio_panel_from_initial_weights(intial_weights, rebal_frequency):
+def portfolio_from_initial_weights(weight_series, price_panel, rebal_frequency):
+    """
+    Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
+    a pandas.Series of intial weight allocations, the date of those weight 
+    allocations, and a starting  value of the index (this is the classical "static" 
+    construction" methodology, rebalancing at some specified interval)
+
+    INPUTS:
+    -------
+    weight_series: pandas.DataFrame of a weight allocation with tickers for columns, 
+    index of dates and weight allocations to each of the tickers
+    price_panel: pandas.Panel with dimensions [tickers, index, price data]
+
+    RETURNS:
+    --------
+    pandas.Panel with dimensions (tickers, dates, price date) 
+    """
     return None
 
 
@@ -382,6 +415,16 @@ def test_funs():
     >>> shares_owned = blotter_to_split_adjusted_shares(blotter, split_frame)
     >>> test_vals = xl_file.parse('share_balance', index_col = 0)['cum_shares']
     >>> put.assert_series_equal(shares_owned['cum_shares'].dropna(), test_vals)
+
+    >>> xl_file = pandas.ExcelFile('../tests/panel from weight file test.xlsx')
+    >>> weight_df = xl_file.parse('rebal_weights', index_col = 0)
+    >>> tickers = ['EEM', 'EFA', 'IYR', 'IWV', 'IEF', 'IYR', 'SHY']
+    >>> d = {}
+    >>> for ticker in tickers:
+    ...     d[ticker] = xl_file.parse(ticker, index_col = 0)
+    >>> portfolio = portfolio_from_weight_file(weight_df, pandas.Panel(d), 1000)
+    >>> manual_calcs = xl_file.parse('index_result', index_col = 0)
+    >>> put.assert_series_equal(manual_calcs['Close'], portfolio['Close'])
     """
     return None
 

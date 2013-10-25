@@ -134,3 +134,16 @@ occur on actual trading days
 into functions requiring a `blotter_series`
 
 ##ToDo List:
+
+* `tempfile` might be the more appropriate way to deal with price
+  handling in aggregation functions, especially because at some point
+  different methods of data calling will be used for price information.
+
+* Check out small error differences between the panel from weight
+  program and the calculation sheet in '../bin/Adjustment Factor
+  Test.xlsx' in `portfolio_panel_from_initial_weights`
+
+* After fixing the error calc, add testing of the
+  `portfolio_panel_from_initial_weights` into `test_funs()`
+
+

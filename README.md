@@ -16,6 +16,10 @@ GPL v3"), which allow for four freedoms that every user should have:
 
 ##Dependencies
 
+`pandas`: extensively used
+`urllib2`: for Yahoo! API calls to append price `DataFrame`s with
+Dividends
+
 ##Installation
 
 ##Function Documentation
@@ -138,6 +142,8 @@ into functions requiring a `blotter_series`
 * Update the `README.md` file to include added portfolio construction
   functionaly completed today
 
+* Currently the `generate_random_asset_path` is broken because of
+  incorrect type passing (`Series` vs. `DataFrame`)
 
 * ~~`tempfile` might be the more appropriate way to deal with price
   handling in aggregation functions, especially because at some point

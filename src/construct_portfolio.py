@@ -29,10 +29,11 @@ def format_blotter(blotter_file):
     """
     if isinstance(blotter_file, str):
         blot = pandas.DataFrame.from_csv(blotter_file)
-    else:
-        blot = blotter_file.copy()
 
+    #remove whitespaces
     blot['Buy/Sell'] = map(str.strip, blot['Buy/Sell'])
+
+    #if the Sell values are not negative, make them negative
     blot.loc[blot['Buy/Sell'] == 'Sell', 'Shares'] = (-blot.loc[blot['Buy/Sell'] 
                                                        == 'Sell', 'Shares'])
     
@@ -206,10 +207,14 @@ def blotter_to_cum_shares(blotter_series, ticker, start_date, end_date, tol):
     return blotter_to_split_adjusted_shares(blotter_series, split_df)
 
 def generate_random_asset_path(ticker, start_date, num_trades):
+    import pdb
+    pdb.set_trace()
+    if isinstance(start_date, str):
+        start_date = datetime.datetime.strptime(start_date, "%m/%d/%Y")
     end_date = datetime.datetime.today()
     prices = append_price_frame_with_dividends(ticker, start_date)
     blotter = construct_random_trades(prices, num_trades)
-    blotter.to_csv('../tests/' + ticker + '.csv')
+    #blotter.to_csv('../tests/' + ticker + '.csv')
     return blotter_to_cum_shares(blotter_series = blotter, ticker = ticker,
                                  start_date = start_date, end_date = end_date, 
                                  tol = .1)
@@ -250,7 +255,7 @@ def generate_random_portfolio_blotter(tickers, num_trades):
 
     return pandas.DataFrame(agg_d, index = ind)
 
-def portfolio_from_blotter(agg_blotter_df):
+def portfolio_from_blotter(blotter_df):
     """
     The aggregation function to construct a portfolio given a blotter of tickers,
     trades, and number of shares.  
@@ -264,12 +269,12 @@ def portfolio_from_blotter(agg_blotter_df):
     --------
     pandas.Panel with dimensions [tickers, dates, price data]
     """
-    tickers = pandas.unique(agg_blotter['Ticker'])
-    start_date = agg_blotter.sort_index().index[0]
+    tickers = pandas.unique(blotter_df['Ticker'])
+    start_date = blotter_df.sort_index().index[0]
     end_date = datetime.datetime.today()
     val_d = {}
     for ticker in tickers:
-        blotter_series = agg_blotter[agg_blotter['Ticker'] == ticker].sort_index()
+        blotter_series = blotter_df[blotter_df['Ticker'] == ticker].sort_index()
         val_d[ticker] = blotter_to_cum_shares(blotter_series, ticker,
                                               start_date, end_date, tol = .1)
 
@@ -386,10 +391,10 @@ def portfolio_from_initial_weights(weight_series, price_panel, start_value,
                                    rebal_frequency):
     """
     Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
-    a pandas.Series of intial weight allocations, the date of those weight 
-    allocations, and a starting value of the index, and a rebalance frequency 
-    (this is the classical "static" construction" methodology, rebalancing at some
-    specified interval)
+    a pandas.Series of intial weight allocations, the date of those initial weight 
+    allocations (series.name), a starting value of the index, and a rebalance  
+    frequency (this is the classical "static" construction" methodology, rebalancing
+    at somspecified interval)
 
     INPUTS:
     -------

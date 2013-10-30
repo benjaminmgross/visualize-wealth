@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-construct_portfolio.py
-Created by Benjamin M. Gross in 2013
+.. module:: construct_portfolio.py
+   :synopsis: Engine to construct portfolios using three general methodologies:
+   1. By providing purchase quantities and tickers at given dates
+   2. By providing a weight file allocation 
+   3. By providing an initial allocation and a rebalancing frequency
+
+.. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 """
 import argparse
 import pandas
@@ -12,20 +17,22 @@ import datetime
 import urllib2
 
 def format_blotter(blotter_file):
-    """
+    """  
     A blotter file could have positive values for both the buy and sell, 
     this function transforms Sell values that are positive to negative values
     (to be used in the portfolio constructors)
     
-    INPUTS:
-    ------
-    blotter_file: pandas.DataFrame with at least index (dates of Buy / Sell) columns 
-    = ['Buy/Sell', 'Shares'] or a string of the file location to such a formatted 
-    file
+    **ARGS:**
+    
+        **blotter_file:** ``pandas.DataFrame`` with at least index (dates of 
+        Buy / Sell) columns = ['Buy/Sell', 'Shares'] or a string of the file
+        location to such a formatted file
 
-    RETURNS:
-    --------
-    pandas.DataFrame
+    **RETURNS:**
+
+        **blotter:** of type ``pandas.DataFrame`` where sell values have been made 
+        negative
+        
     """
     if isinstance(blotter_file, str):
         blot = pandas.DataFrame.from_csv(blotter_file)
@@ -44,15 +51,18 @@ def append_price_frame_with_dividends(ticker, start_date, end_date=None):
     Given a ticker, start_date, & end_date, return a pandas.DataFrame with 
     a Dividend Columns
 
-    INPUTS:
-    -------
-    ticker: string of ticker
-    start_date: a datetime.datetime object to begin the price series
-    end_date: a datetime.datetime object to end the price series
+    **ARGS:**
 
-    RETURNS:
-    -------
-    price_df: DataFrame with columns ['Close', 'Adj Close', 'Dividends']
+        **ticker:** ``str`` of ticker
+
+        **start_date:** ``datetime.datetime`` object to begin the price series
+
+        **end_date:** a ``dtetime.datetime`` object to end the price series
+
+    **RETURNS:**
+    
+        **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
+         'Dividends']
     """
     reader = pandas.io.data.DataReader
 
@@ -88,14 +98,17 @@ def calculate_splits(price_df, tol = .1):
     Given a price_df of the format append_price_frame_with_dividends, return a 
     DataFrame with a split factor columns named 'Splits'
     
-    INPUTS:
-    -------
-    price_df: DataFrame with columns ['Close', 'Adj Close', 'Dividends']
-    tol: float tolerance to determine whether a split has occurred
+    **ARGS:**
+    
+        **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
+         'Dividends']
 
-    RETURNS:
-    --------
-    DataFrame: columns ['Close', 'Adj Close', 'Dividends', Splits']
+         **tol:** ``flt`` of the tolerance to determine whether a split has occurred
+
+    **RETURNS:**
+    
+         **price:** ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
+          'Dividends', Splits']
     """
     div_mul = 1 - price_df['Dividends'].shift(-1).div(price_df['Close'])
     rev_cp = div_mul[::-1].cumprod()[::-1]
@@ -119,14 +132,15 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
     Adj Close, Dividends, & Splits, calculate the cumulative share balance for the
     position
     
-    INPUTS:
-    -------
-    blotter_series: Series where index is buy/sell dates
-    price_df: DataFrame with columns ['Close', 'Adj Close', 'Dividends', 'Splits']
+    **ARGS:**
+    
+        **blotter_series:** a  ``pandas.Series`` where index is buy/sell dates
 
-    RETURNS:
-    -------
-    DataFrame containing contributions, withdrawals, price values
+        **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close', 'Dividends', 'Splits']
+
+    **RETURNS:**
+
+         ``pandas.DataFrame`` containing contributions, withdrawals, price values
     """
 
     blotter_series = blotter_series.sort_index()
@@ -180,13 +194,14 @@ def construct_random_trades(split_df, num_trades):
     """
     Create random trades on random trade dates, but never allow shares to go negative
     
-    INPUTS:
-    -------
-    split_df: DataFrame that has 'Close', 'Dividends', 'Splits'
+    **ARGS:**
+    
+        **split_df:** ``pandas.DataFrame`` that has 'Close', 'Dividends', 'Splits'
 
-    RETURNS:
-    --------
-    blotter_series: a blotter with random trades, num_trades
+    **RETURNS:**
+
+         **blotter_series:** ``pandas.Series`` a blotter with random trades,
+          num_trades
     """
     ind = numpy.sort(numpy.random.randint(0, len(split_df), size = num_trades))
     #This unique makes sure there aren't double trade day entries which breaks 
@@ -202,6 +217,28 @@ def construct_random_trades(split_df, num_trades):
     return pandas.Series( trades, index = dates, name = 'Buy/Sell')
 
 def blotter_to_cum_shares(blotter_series, ticker, start_date, end_date, tol):
+    """
+    Aggregation function transforming a blotter series for a given ticker into a 
+    DataFrame with cumulative investment, price, dividends, etc.
+
+    **ARGS:**
+
+        **blotter_series:** a  ``pandas.Series`` with index of dates and values of
+         quantity
+
+         **ticker:** ``str`` the ticker for which the buys and sells occurs
+
+         **start_date:** type ``str`` or ``datetime.datetime``
+
+         **end_date:** ``str`` or ``datetime.datetime``
+
+         **tol:** ``flt``  the tolerance to find the split dates (.1 recommended)
+    
+    **RETURNS:**
+
+         ``pandas.DataFrame`` containing contributions, withdrawals, price values
+    """
+
     price_df = append_price_frame_with_dividends(ticker, start_date, end_date)
     split_df = calculate_splits(price_df)
     return blotter_to_split_adjusted_shares(blotter_series, split_df)
@@ -225,15 +262,17 @@ def generate_random_portfolio_blotter(tickers, num_trades):
     (to be used for all tickers), prices will be  the 'Close' of that ticker in the 
     price DataFrame that is collected
 
-    INPUTS:
-    -------
-    tickers: a list with the tickers to be used
-    num_trades: int, the number of trades to randomly generate for each ticker
+    **INPUTS:**
+    
+        **tickers:** a ``list`` with the tickers to be used
 
-    RETURNS:
-    --------
-    pandas.DataFrame with columns 'Ticker', 'Buy/Sell' (+ for buys, - for sells) and
-    'Price' of len = num_trades x len(tickers)
+        **num_trades:** ``int``, the number of trades to randomly generate for each
+         ticker
+
+    **RETURNS:**
+
+        ``pandas.DataFrame`` with columns 'Ticker', 'Buy/Sell' (+ for buys, - for
+         sells) and 'Price' of len = num_trades x len(tickers)
     
     """
     blot_d = {}
@@ -260,14 +299,15 @@ def portfolio_from_blotter(blotter_df):
     The aggregation function to construct a portfolio given a blotter of tickers,
     trades, and number of shares.  
 
-    INPUTS:
-    -------
-    agg_blotter_df: pandas.DataFrame with columns ['Ticker', 'Buy/Sell', 'Price'], 
-    where the 'Buy/Sell' column is the quantity of shares, (+) for buy, (-) for sell
+    **ARGS:**
 
-    RETURNS:
-    --------
-    pandas.Panel with dimensions [tickers, dates, price data]
+        **agg_blotter_df:** a ``pandas.DataFrame`` with columns ['Ticker',
+         'Buy/Sell', 'Price'],  where the 'Buy/Sell' column is the quantity of
+          shares, (+) for buy, (-) for sell
+
+    **RETURNS:**
+    
+        ** ``pandas.Panel``** with dimensions [tickers, dates, price data]
     """
     tickers = pandas.unique(blotter_df['Ticker'])
     start_date = blotter_df.sort_index().index[0]
@@ -281,7 +321,25 @@ def portfolio_from_blotter(blotter_df):
     return pandas.Panel(val_d)
 
 def fetch_data_for_portfolio_construction(weight_df):
+    """
+    Given a weight frame with index of allocation dates and columns of percentage 
+    allocations, fetch the data using Yahoo!'s API and return a panel of [tickers, 
+    dates, price data
+
+    **ARGS:**
     
+        **weight_df:** a ``pandas.DataFrame`` with dates as index and tickers as
+         columns
+
+    **RETURNS:**
+    
+        ``pandas.Panel`` where:
+        * ``panel.items:`` are tickers
+        * ``panel.major_axis:`` dates
+        * ``panel.minor_axis:`` price information, specifically: 
+        ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 'Close', 
+        'Adj Close']
+    """
     reader = pandas.io.data.DataReader
     d_0 = weight_df.index.min()
     tickers = weight_df.columns
@@ -329,15 +387,17 @@ def portfolio_from_weight_file(weight_df, price_panel, start_value):
     Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
     a pandas.DataFrame of weight allocations and a starting  value of the index
 
-    INPUTS:
-    -------
-    weight_df: pandas.DataFrame of a weight allocation with tickers for columns, 
-    index of dates and weight allocations to each of the tickers
-    price_panel: pandas.Panel with dimensions [tickers, index, price data]
+    **ARGS:**
+    
+        **weight_df:** ``pandas.DataFrame`` of a weight allocation with tickers for
+        columns, index of dates and weight allocations to each of the tickers
 
-    RETURNS:
-    --------
-    pandas.Panel with dimensions (tickers, dates, price date)
+        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
+         data]
+
+    **RETURNS:**
+    
+        ``pandas.Panel`` with dimensions (tickers, dates, price date)
     
     """
 
@@ -396,17 +456,21 @@ def portfolio_from_initial_weights(weight_series, price_panel, start_value,
     frequency (this is the classical "static" construction" methodology, rebalancing
     at somspecified interval)
 
-    INPUTS:
-    -------
-    weight_series: pandas.Series of a weight allocation with an index of tickers, 
-    and a name of the initial allocation
-    price_panel: pandas.Panel with dimensions [tickers, index, price data]
-    start_value: the value to start the index
-    rebal_frequency: 'weekly', 'monthly', 'quarterly', 'yearly'
+    **ARGS:**
+    
+        **weight_series:** ``pandas.Series`` of a weight allocation with an index of
+         tickers, and a name of the initial allocation
 
-    RETURNS:
-    --------
-    pandas.DataFrame with portfolio 'Close' and 'Open'
+        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
+          data]
+
+        **start_value:** ``flt`` of the value to start the index
+
+        **rebal_frequency:** ``str`` of 'weekly', 'monthly', 'quarterly', 'yearly'
+
+    **RETURNS:**
+    
+         **price:** of type ``pandas.DataFrame`` with portfolio 'Close' and 'Open'
     """
     
     d_0 = numpy.max(price_panel.loc[:, :, 'Close'].apply(

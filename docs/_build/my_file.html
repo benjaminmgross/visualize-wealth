@@ -1,0 +1,822 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Visualize Wealth &mdash; Visualize Wealth 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to Visualize Wealth’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Visualize Wealth&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/my_file.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="visualize-wealth">
+<h1>Visualize Wealth<a class="headerlink" href="#visualize-wealth" title="Permalink to this headline">¶</a></h1>
+<p>The goal of these modules is to be able to construct
+portfolio performance and perform comprehensive
+analytics</p>
+<span class="target" id="module-visualize_wealth.analyze"></span><dl class="function">
+<dt id="visualize_wealth.analyze.annualized_return">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">annualized_return</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#annualized_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.annualized_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the annualized linear return of a series, i.e. the linear compounding
+rate that would have been necessary, given the initial investment, to arrive at
+the final value</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
+indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float</strong>: of the annualized linear return</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
+
+<span class="n">linear_return</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">annualized_return</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.annualized_vol">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">annualized_vol</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#annualized_vol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.annualized_vol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the annlualized volatility of the log changes of the price series, by
+calculating the volatility of the series, and then applying the square root of 
+time rule</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
+indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float</strong>: of the annualized volatility</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
+
+<span class="n">ann_vol</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">annualized_vol</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.beta">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">beta</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#beta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sensitivity of one price series to a chosen benchmark</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of a benchmark to calculate the sensitivity</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> the sensitivity of the series to the benchmark</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.downcapture">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">downcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#downcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.downcapture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the proportion of <tt class="docutils literal"><span class="pre">series</span></tt>&#8216;s cumulative negative returns to
+<tt class="docutils literal"><span class="pre">benchmark</span></tt>&#8216;s cumulative  returns, given benchmark&#8217;s returns were negative in
+that period</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the downcapture of cumulative positive ret</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.downside_deviation">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">downside_deviation</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#downside_deviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.downside_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the volatility of the returns that are less than zero</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the downside standard deviation</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.generate_all_metrics">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">generate_all_metrics</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#generate_all_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.generate_all_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>cumulative values of relevant statistics is calculated for the <tt class="docutils literal"><span class="pre">series</span></tt> and </dt>
+<dd><p class="first"><tt class="docutils literal"><span class="pre">benchmark</span></tt> for a given <tt class="docutils literal"><span class="pre">frequency</span></tt> and risk free rate</p>
+<p><strong>ARGS:</strong></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="docutils literal"><span class="pre">Pandas.DataFrame</span></tt> of prices to compare</dt>
+<dd><p class="first">against benchmark</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare series against</p>
+<dl class="last docutils">
+<dt><strong>freq:</strong>  <tt class="docutils literal"><span class="pre">str</span></tt> of the frequency of prices.  &#8216;daily&#8217;, &#8216;weekly&#8217;,</dt>
+<dd>&#8216;monthly&#8217;, &#8216;quarterly&#8217;,&#8217;yearly&#8217;</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+</dl>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>``pandas.DataFrame``</strong> of columns [&#8216;series&#8217;,&#8217;benchmark&#8217;] with statistics 
+(index) of [&#8216;annualized_return&#8217;, annualized_vol&#8217;,&#8217;sharpe&#8217;,&#8217;max DD&#8217;,&#8217;ulcer
+index&#8217;,&#8217;beta&#8217;,&#8217;alpha&#8217;, &#8216;upcapture&#8217;,&#8217;downcapture&#8217;,&#8217;tracking error&#8217;]</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.idiosyncratic_as_proportion">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">idiosyncratic_as_proportion</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#idiosyncratic_as_proportion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.idiosyncratic_as_proportion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the idiosyncratic risk as proportion of total volatility</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> (0, 1) representing the proportion of  volatility represented
+by idiosycratic risk</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.idiosyncratic_risk">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">idiosyncratic_risk</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#idiosyncratic_risk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.idiosyncratic_risk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the idiosyncratic risk, or (total variance - syst variance) ^ (1/2)</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> the idiosyncratic volatility (not variance)</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.jensens_alpha">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">jensens_alpha</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#jensens_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.jensens_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Jensen's_alpha">Jensen&#8217;s Alpha</a> or 
+the excess return based on the systematic risk of the <tt class="docutils literal"><span class="pre">series</span></tt> relative to
+the <tt class="docutils literal"><span class="pre">benchmark</span></tt></p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of the prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p><strong>rfr:</strong> <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <a href="#id1"><span class="problematic" id="id2">``</span></a>daily, monthly, quarterly, or</p>
+</div></blockquote>
+<p>yearly``</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> representing the Jensen&#8217;s Alpha</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.max_drawdown">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">max_drawdown</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#max_drawdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.max_drawdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the maximum drawdown, or the maximum peak to trough linear distance, as 
+a positive value</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float</strong>: the maximum drawdown of the period, expressed as a positive number</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
+
+<span class="n">max_dd</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">max_drawdown</span><span class="p">(</span><span class="n">price_series</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.median_downcapture">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">median_downcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#median_downcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.median_downcapture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the median downcapture of a <tt class="docutils literal"><span class="pre">series</span></tt> of prices against a <tt class="docutils literal"><span class="pre">benchmark</span></tt> 
+prices, given that the <tt class="docutils literal"><span class="pre">benchmark</span></tt> achieved negative returns in a given period</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the median downcapture</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.median_upcapture">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">median_upcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#median_upcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.median_upcapture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the median upcapture of a <tt class="docutils literal"><span class="pre">series</span></tt> of prices against a <tt class="docutils literal"><span class="pre">benchmark</span></tt> 
+prices, given that the <tt class="docutils literal"><span class="pre">benchmark</span></tt> achieved positive returns in a given period</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the median upcapture</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.r_squared">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r_squared</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r_squared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r_squared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the R-Squared of <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Variation</a></p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span> <span class="pre">of</span> <span class="pre">prices</span> <span class="pre">to</span> <span class="pre">regress</span> <span class="pre">``series</span></tt> against</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the coefficient of variation</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.return_by_year">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">return_by_year</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#return_by_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.return_by_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>the annualized returns for each of the years</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">**pandas.Series**</span></tt> where <tt class="docutils literal"><span class="pre">index</span> <span class="pre">is</span> <span class="pre">years</span> <span class="pre">and</span> <span class="pre">``values</span></tt> are linear 
+annual returns for that year</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.risk_adjusted_excess_returns">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_adjusted_excess_returns</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#risk_adjusted_excess_returns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.risk_adjusted_excess_returns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the MMRAP or the <a class="reference external" href="http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance">Modigliani Risk Adjusted Performance</a> that
+calculates the excess returns for a given amount of risk along the <a class="reference external" href="http://en.wikipedia.org/wiki/Capital_allocation_line">Capital
+Allocation Line</a></p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> from which to compare <tt class="docutils literal"><span class="pre">series</span></tt></p>
+<p><strong>rfr:</strong> <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the risk adjusted excess performance</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.rolling_ui">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">rolling_ui</tt><big>(</big><em>series</em>, <em>window=21</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#rolling_ui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.rolling_ui" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the rolling ulcer index over a series for a given <tt class="docutils literal"><span class="pre">window</span></tt>
+(instead of the squared deviations from the mean).</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>window:</strong> <tt class="docutils literal"><span class="pre">int</span></tt> of the size of the rolling window</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>pandas.Series</strong>: of the rolling ulcer index</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
+
+<span class="n">ui</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">rolling_ui</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="mi">252</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.sharpe_ratio">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">sharpe_ratio</tt><big>(</big><em>series</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#sharpe_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.sharpe_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <a href="#id5"><span class="problematic" id="id6">`Sharpe Ratio&lt;http://en.wikipedia.org/wiki/Sharpe_ratio&gt;`_</span></a> of an 
+asset, given a price series, risk free rate of <tt class="docutils literal"><span class="pre">rfr</span></tt>, and <tt class="docutils literal"><span class="pre">frequency</span></tt> of the 
+time series</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>rfr:</strong> <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURN:</strong></p>
+<blockquote>
+<div><strong>flaot:</strong> of the Sharpe Ratio</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.sortino_ratio">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">sortino_ratio</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#sortino_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.sortino_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Sortino Ratio which is (R-rf)/downside_vol</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
+indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float</strong> of the Sortino Ratio</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
+
+<span class="n">sortino_ratio</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">sortino_ratio</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.systematic_as_proportion">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">systematic_as_proportion</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#systematic_as_proportion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.systematic_as_proportion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the idiosyncratic risk as proportion of total volatility</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> (0, 1) representing the proportion of  volatility represented
+by systematic risk</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.systematic_risk">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">systematic_risk</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#systematic_risk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.systematic_risk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the systematic risk, or <span class="math">\(eta^2 x \sigma^2\)</span></p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> the systematic volatility (not variance)</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.tracking_error">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">tracking_error</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#tracking_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.tracking_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <tt class="docutils literal"><span class="pre">float</span></tt> of the <a class="reference external" href="http://en.wikipedia.org/wiki/Tracking_error">Tracking Error</a> or standard deviation of the 
+differences of returns</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the tracking error</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.ulcer_index">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">ulcer_index</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#ulcer_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.ulcer_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ulcer index of  the series, which is defined as the squared drawdowns
+(instead of the squared deviations from the mean).  Further explanation can be 
+found at <a class="reference external" href="http://www.tangotools.com/ui/ui.htm">Tanger Tools</a></p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float</strong>: the maximum drawdown of the period, expressed as a positive number</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
+
+<span class="n">ui</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">ulcer_index</span><span class="p">(</span><span class="n">price_series</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.upcapture">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">upcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#upcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.upcapture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the proportion of <tt class="docutils literal"><span class="pre">series</span></tt>&#8216;s cumulative positive returns to
+<tt class="docutils literal"><span class="pre">benchmark</span></tt>&#8216;s cumulative  returns, given benchmark&#8217;s returns were positive 
+in that period</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the upcapture of cumulative positive returns</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.upside_deviation">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">upside_deviation</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#upside_deviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.upside_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the volatility of the returns that are greater than zero</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float:</strong> of the upside standard deviation</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.value_at_risk">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">value_at_risk</tt><big>(</big><em>series</em>, <em>freq='weekly'</em>, <em>percentile=5.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#value_at_risk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.value_at_risk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the non-parametric VaR (non-parametric estimate) for a given percentile</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
+indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
+<p><strong>percentile:</strong> <tt class="docutils literal"><span class="pre">float</span></tt> of the percentile at which to calculate VaR</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>float</strong> of the Value at Risk given a <tt class="docutils literal"><span class="pre">percentile</span></tt></div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
+
+<span class="n">var</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">value_at_risk</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">,</span> <span class="n">percentile</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<span class="target" id="module-visualize_wealth.construct_portfolio"></span><dl class="function">
+<dt id="visualize_wealth.construct_portfolio.append_price_frame_with_dividends">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">append_price_frame_with_dividends</tt><big>(</big><em>ticker</em>, <em>start_date</em>, <em>end_date=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#append_price_frame_with_dividends"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.append_price_frame_with_dividends" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a ticker, start_date, &amp; end_date, return a pandas.DataFrame with 
+a Dividend Columns</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>ticker:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of ticker</p>
+<p><strong>start_date:</strong> <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt> object to begin the price series</p>
+<p><strong>end_date:</strong> a <tt class="docutils literal"><span class="pre">dtetime.datetime</span></tt> object to end the price series</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
+<dd>&#8216;Dividends&#8217;]</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.blotter_to_cum_shares">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">blotter_to_cum_shares</tt><big>(</big><em>blotter_series</em>, <em>ticker</em>, <em>start_date</em>, <em>end_date</em>, <em>tol</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#blotter_to_cum_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.blotter_to_cum_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aggregation function transforming a blotter series for a given ticker into a 
+DataFrame with cumulative investment, price, dividends, etc.</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>blotter_series:</strong> a  <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> with index of dates and values of</dt>
+<dd><p class="first">quantity</p>
+<p><strong>ticker:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> the ticker for which the buys and sells occurs</p>
+<p><strong>start_date:</strong> type <tt class="docutils literal"><span class="pre">str</span></tt> or <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt></p>
+<p><strong>end_date:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> or <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt></p>
+<p class="last"><strong>tol:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt>  the tolerance to find the split dates (.1 recommended)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price values</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.blotter_to_split_adjusted_shares">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">blotter_to_split_adjusted_shares</tt><big>(</big><em>blotter_series</em>, <em>price_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#blotter_to_split_adjusted_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.blotter_to_split_adjusted_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a series of dates and purchases (+) / sales (-) and a DataFrame with Close
+Adj Close, Dividends, &amp; Splits, calculate the cumulative share balance for the
+position</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>blotter_series:</strong> a  <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> where index is buy/sell dates</p>
+<p><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;]</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price values</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.calculate_splits">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">calculate_splits</tt><big>(</big><em>price_df</em>, <em>tol=0.1</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#calculate_splits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.calculate_splits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a price_df of the format append_price_frame_with_dividends, return a 
+DataFrame with a split factor columns named &#8216;Splits&#8217;</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
+<dd><p class="first">&#8216;Dividends&#8217;]</p>
+<p class="last"><strong>tol:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt> of the tolerance to determine whether a split has occurred</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>price:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
+<dd>&#8216;Dividends&#8217;, Splits&#8217;]</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.construct_random_trades">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">construct_random_trades</tt><big>(</big><em>split_df</em>, <em>num_trades</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#construct_random_trades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.construct_random_trades" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create random trades on random trade dates, but never allow shares to go negative</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>split_df:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> that has &#8216;Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>blotter_series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> a blotter with random trades,</dt>
+<dd>num_trades</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_portfolio_construction</tt><big>(</big><em>weight_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_for_portfolio_construction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a weight frame with index of allocation dates and columns of percentage 
+allocations, fetch the data using Yahoo!&#8217;s API and return a panel of [tickers, 
+dates, price data</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>weight_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and tickers as</dt>
+<dd>columns</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
+* <tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers
+* <tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates
+* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically: 
+[&#8216;ac_c&#8217;, &#8216;c0_ac0&#8217;, &#8216;n0&#8217;, &#8216;Adj_Q&#8217;, &#8216;Asset Value&#8217;, &#8216;Open&#8217;, &#8216;Close&#8217;, 
+&#8216;Adj Close&#8217;]</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.format_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">format_blotter</tt><big>(</big><em>blotter_file</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#format_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.format_blotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>A blotter file could have positive values for both the buy and sell, 
+this function transforms Sell values that are positive to negative values
+(to be used in the portfolio constructors)</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>blotter_file:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with at least index (dates of 
+Buy / Sell) columns = [&#8216;Buy/Sell&#8217;, &#8216;Shares&#8217;] or a string of the file
+location to such a formatted file</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>blotter:</strong> of type <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> where sell values have been made 
+negative</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">generate_random_portfolio_blotter</tt><big>(</big><em>tickers</em>, <em>num_trades</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#generate_random_portfolio_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a random trade blotter, given a list of tickers and a number of trades 
+(to be used for all tickers), prices will be  the &#8216;Close&#8217; of that ticker in the 
+price DataFrame that is collected</p>
+<p><strong>INPUTS:</strong></p>
+<blockquote>
+<div><p><strong>tickers:</strong> a <tt class="docutils literal"><span class="pre">list</span></tt> with the tickers to be used</p>
+<dl class="docutils">
+<dt><strong>num_trades:</strong> <tt class="docutils literal"><span class="pre">int</span></tt>, the number of trades to randomly generate for each</dt>
+<dd>ticker</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns &#8216;Ticker&#8217;, &#8216;Buy/Sell&#8217; (+ for buys, - for</dt>
+<dd>sells) and &#8216;Price&#8217; of len = num_trades x len(tickers)</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.portfolio_from_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_blotter</tt><big>(</big><em>blotter_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_blotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The aggregation function to construct a portfolio given a blotter of tickers,
+trades, and number of shares.</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>agg_blotter_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Ticker&#8217;,</dt>
+<dd><dl class="first last docutils">
+<dt>&#8216;Buy/Sell&#8217;, &#8216;Price&#8217;],  where the &#8216;Buy/Sell&#8217; column is the quantity of</dt>
+<dd>shares, (+) for buy, (-) for sell</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div>** <a href="#id3"><span class="problematic" id="id4">``</span></a>pandas.Panel``** with dimensions [tickers, dates, price data]</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.portfolio_from_initial_weights">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>start_value</em>, <em>rebal_frequency</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_initial_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_initial_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
+a pandas.Series of intial weight allocations, the date of those initial weight 
+allocations (series.name), a starting value of the index, and a rebalance  
+frequency (this is the classical &#8220;static&#8221; construction&#8221; methodology, rebalancing
+at somspecified interval)</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>weight_series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of a weight allocation with an index of</dt>
+<dd>tickers, and a name of the initial allocation</dd>
+<dt><strong>price_panel:</strong> <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index, price</dt>
+<dd>data]</dd>
+</dl>
+<p><strong>start_value:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt> of the value to start the index</p>
+<p><strong>rebal_frequency:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of &#8216;weekly&#8217;, &#8216;monthly&#8217;, &#8216;quarterly&#8217;, &#8216;yearly&#8217;</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>price:</strong> of type <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with portfolio &#8216;Close&#8217; and &#8216;Open&#8217;</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.portfolio_from_weight_file">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_weight_file</tt><big>(</big><em>weight_df</em>, <em>price_panel</em>, <em>start_value</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_weight_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_weight_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
+a pandas.DataFrame of weight allocations and a starting  value of the index</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>weight_df:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> of a weight allocation with tickers for
+columns, index of dates and weight allocations to each of the tickers</p>
+<dl class="docutils">
+<dt><strong>price_panel:</strong> <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index, price</dt>
+<dd>data]</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions (tickers, dates, price date)</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.test_funs">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">test_funs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#test_funs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.test_funs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas.util.testing</span> <span class="kn">as</span> <span class="nn">put</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xl_file</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/test_splits.xlsx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">blotter</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;blotter&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">,</span> <span class="s">&#39;Dividends&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_df</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;calc_sheet&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_df</span> <span class="o">=</span> <span class="n">price_df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">split_frame</span> <span class="o">=</span> <span class="n">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">shares_owned</span> <span class="o">=</span> <span class="n">blotter_to_split_adjusted_shares</span><span class="p">(</span><span class="n">blotter</span><span class="p">,</span> <span class="n">split_frame</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_vals</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;share_balance&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">shares_owned</span><span class="p">[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">test_vals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xl_file</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/panel from weight file test.xlsx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weight_df</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;rebal_weights&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tickers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;EEM&#39;</span><span class="p">,</span> <span class="s">&#39;EFA&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;IWV&#39;</span><span class="p">,</span> <span class="s">&#39;IEF&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;SHY&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">portfolio_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">manual_calcs</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;index_result&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">manual_calcs</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">],</span> <span class="n">portfolio</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Add this to your <tt class="docutils literal"><span class="pre">conf.py</span></tt> file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s">&#39;../&#39;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Benjamin M. Gross.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

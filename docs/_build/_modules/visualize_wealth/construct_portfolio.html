@@ -1,0 +1,624 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>visualize_wealth.construct_portfolio &mdash; Visualize Wealth 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for visualize_wealth.construct_portfolio</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: construct_portfolio.py</span>
+<span class="sd">   :synopsis: Engine to construct portfolios using three general methodologies:</span>
+<span class="sd">   1. By providing purchase quantities and tickers at given dates</span>
+<span class="sd">   2. By providing a weight file allocation </span>
+<span class="sd">   3. By providing an initial allocation and a rebalancing frequency</span>
+
+<span class="sd">.. moduleauthor:: Benjamin M. Gross &lt;benjaminMgross@gmail.com&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">pandas.io.data</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+<div class="viewcode-block" id="format_blotter"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.format_blotter">[docs]</a><span class="k">def</span> <span class="nf">format_blotter</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;  </span>
+<span class="sd">    A blotter file could have positive values for both the buy and sell, </span>
+<span class="sd">    this function transforms Sell values that are positive to negative values</span>
+<span class="sd">    (to be used in the portfolio constructors)</span>
+<span class="sd">    </span>
+<span class="sd">    **ARGS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **blotter_file:** ``pandas.DataFrame`` with at least index (dates of </span>
+<span class="sd">        Buy / Sell) columns = [&#39;Buy/Sell&#39;, &#39;Shares&#39;] or a string of the file</span>
+<span class="sd">        location to such a formatted file</span>
+
+<span class="sd">    **RETURNS:**</span>
+
+<span class="sd">        **blotter:** of type ``pandas.DataFrame`` where sell values have been made </span>
+<span class="sd">        negative</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">blot</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">)</span>
+
+    <span class="c">#remove whitespaces</span>
+    <span class="n">blot</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">blot</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">])</span>
+
+    <span class="c">#if the Sell values are not negative, make them negative</span>
+    <span class="n">blot</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">blot</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;Sell&#39;</span><span class="p">,</span> <span class="s">&#39;Shares&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">blot</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">blot</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">]</span> 
+                                                       <span class="o">==</span> <span class="s">&#39;Sell&#39;</span><span class="p">,</span> <span class="s">&#39;Shares&#39;</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">blot</span>
+</div>
+<div class="viewcode-block" id="append_price_frame_with_dividends"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.append_price_frame_with_dividends">[docs]</a><span class="k">def</span> <span class="nf">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a ticker, start_date, &amp; end_date, return a pandas.DataFrame with </span>
+<span class="sd">    a Dividend Columns</span>
+
+<span class="sd">    **ARGS:**</span>
+
+<span class="sd">        **ticker:** ``str`` of ticker</span>
+
+<span class="sd">        **start_date:** ``datetime.datetime`` object to begin the price series</span>
+
+<span class="sd">        **end_date:** a ``dtetime.datetime`` object to end the price series</span>
+
+<span class="sd">    **RETURNS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **price_df:** a ``pandas.DataFrame`` with columns [&#39;Close&#39;, &#39;Adj Close&#39;,</span>
+<span class="sd">         &#39;Dividends&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataReader</span>
+
+    <span class="k">if</span> <span class="n">end_date</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">end_date</span>
+
+    <span class="c">#construct the dividend data series</span>
+    <span class="n">b_str</span> <span class="o">=</span> <span class="s">&#39;http://ichart.finance.yahoo.com/table.csv?s=&#39;</span>
+
+    <span class="k">if</span> <span class="n">end_date</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="s">&#39;&amp;a=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_date</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="s">&#39;&amp;b=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_date</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="s">&#39;&amp;c=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="s">&#39;&amp;d=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="s">&#39;&amp;e=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="s">&#39;&amp;f=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="s">&#39;&amp;g=v&amp;ignore=.csv&#39;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">b_str</span> <span class="o">+</span> <span class="n">ticker</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span> <span class="o">+</span> <span class="n">d</span> <span class="o">+</span> <span class="n">e</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="n">socket</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">div_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+    
+    <span class="n">price_df</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">data_source</span> <span class="o">=</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> 
+                      <span class="n">start</span> <span class="o">=</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">end_date</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">div_df</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="calculate_splits"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.calculate_splits">[docs]</a><span class="k">def</span> <span class="nf">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a price_df of the format append_price_frame_with_dividends, return a </span>
+<span class="sd">    DataFrame with a split factor columns named &#39;Splits&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    **ARGS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **price_df:** a ``pandas.DataFrame`` with columns [&#39;Close&#39;, &#39;Adj Close&#39;,</span>
+<span class="sd">         &#39;Dividends&#39;]</span>
+
+<span class="sd">         **tol:** ``flt`` of the tolerance to determine whether a split has occurred</span>
+
+<span class="sd">    **RETURNS:**</span>
+<span class="sd">    </span>
+<span class="sd">         **price:** ``pandas.DataFrame`` with columns [&#39;Close&#39;, &#39;Adj Close&#39;,</span>
+<span class="sd">          &#39;Dividends&#39;, Splits&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">div_mul</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">price_df</span><span class="p">[</span><span class="s">&#39;Dividends&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">price_df</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">])</span>
+    <span class="n">rev_cp</span> <span class="o">=</span> <span class="n">div_mul</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cumprod</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rev_cp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">est_adj</span> <span class="o">=</span> <span class="n">price_df</span><span class="p">[</span><span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">rev_cp</span><span class="p">)</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">est_adj</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">price_df</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">])</span>
+    <span class="n">spl_mul</span> <span class="o">=</span> <span class="n">eps</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">eps</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">did_split</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">spl_mul</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span>
+    <span class="n">splits</span> <span class="o">=</span> <span class="n">spl_mul</span><span class="p">[</span><span class="n">did_split</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">splits</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">splits</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">splits</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="n">date</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">splits</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">splits</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">splits</span><span class="p">[</span><span class="n">date</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">splits</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Splits&#39;</span>
+    <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="blotter_to_split_adjusted_shares"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.blotter_to_split_adjusted_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_to_split_adjusted_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">price_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a series of dates and purchases (+) / sales (-) and a DataFrame with Close</span>
+<span class="sd">    Adj Close, Dividends, &amp; Splits, calculate the cumulative share balance for the</span>
+<span class="sd">    position</span>
+<span class="sd">    </span>
+<span class="sd">    **ARGS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **blotter_series:** a  ``pandas.Series`` where index is buy/sell dates</span>
+
+<span class="sd">        **price_df:** a ``pandas.DataFrame`` with columns [&#39;Close&#39;, &#39;Adj Close&#39;, &#39;Dividends&#39;, &#39;Splits&#39;]</span>
+
+<span class="sd">    **RETURNS:**</span>
+
+<span class="sd">         ``pandas.DataFrame`` containing contributions, withdrawals, price values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">blotter_series</span> <span class="o">=</span> <span class="n">blotter_series</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="c">#make sure all dates in the blotter file are also in the price file</span>
+    <span class="c">#consider, if those dates aren&#39;t in price frame, assign the &quot;closest date&quot; value</span>
+    <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">price_df</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">x</span><span class="p">),</span> 
+                         <span class="n">blotter_series</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="s">&quot;Buy/Sell Dates not in Price File&quot;</span>
+
+    <span class="c">#now cumsum the buy/sell chunks and multiply by splits to get total shares</span>
+    <span class="n">bs_series</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">()</span>
+    <span class="n">start_dts</span> <span class="o">=</span> <span class="n">blotter_series</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">end_dts</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blotter_series</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> 
+                                              <span class="n">price_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="n">dt_chunks</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start_dts</span><span class="p">,</span> <span class="n">end_dts</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dt_chunks</span><span class="p">):</span>
+        <span class="c">#print str(i) + &#39; of &#39; + str(len(dt_chunks)) + &#39; total&#39;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">price_df</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">]][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">price_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">price_df</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">splits</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">pandas</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s">&#39;Splits&#39;</span><span class="p">])]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">][</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">end</span><span class="p">,</span>
+                            <span class="n">splits</span><span class="p">[</span><span class="s">&#39;Splits&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">dts</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">splits</span><span class="p">[</span><span class="s">&#39;Splits&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">tmp_series</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">dts</span><span class="p">)</span>
+        <span class="n">tmp_series</span> <span class="o">=</span> <span class="n">tmp_series</span><span class="o">.</span><span class="n">cumprod</span><span class="p">()</span>
+        <span class="n">tmp_series</span> <span class="o">=</span> <span class="n">tmp_series</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+        <span class="n">bs_series</span> <span class="o">=</span> <span class="n">bs_series</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_series</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">bs_series</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">bs_series</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;cum_shares&#39;</span>
+
+    <span class="c">#construct the contributions, withdrawals, &amp; cumulative investment</span>
+
+    <span class="c">#if a trade is missing a price, it gets assigned the closing price of that day</span>
+    <span class="n">no_price</span> <span class="o">=</span> <span class="n">blotter_series</span><span class="p">[</span><span class="s">&#39;Price&#39;</span><span class="p">][</span><span class="n">pandas</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">[</span><span class="s">&#39;Price&#39;</span><span class="p">])]</span>
+    <span class="n">blotter_series</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">no_price</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s">&#39;Price&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">price_df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">no_price</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span>
+
+    <span class="n">contr</span> <span class="o">=</span> <span class="n">blotter_series</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">[</span><span class="s">&#39;Price&#39;</span><span class="p">])</span>
+    <span class="n">cum_inv</span> <span class="o">=</span> <span class="n">contr</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+    <span class="n">contr</span> <span class="o">=</span> <span class="n">contr</span><span class="p">[</span><span class="n">price_df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">cum_inv</span> <span class="o">=</span> <span class="n">cum_inv</span><span class="p">[</span><span class="n">price_df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;cum_shares&#39;</span><span class="p">:</span><span class="n">bs_series</span><span class="p">,</span> <span class="s">&#39;contr_withdrawal&#39;</span><span class="p">:</span><span class="n">contr</span><span class="p">,</span> 
+                            <span class="s">&#39;cum_investment&#39;</span><span class="p">:</span><span class="n">cum_inv</span><span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="construct_random_trades"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.construct_random_trades">[docs]</a><span class="k">def</span> <span class="nf">construct_random_trades</span><span class="p">(</span><span class="n">split_df</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create random trades on random trade dates, but never allow shares to go negative</span>
+<span class="sd">    </span>
+<span class="sd">    **ARGS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **split_df:** ``pandas.DataFrame`` that has &#39;Close&#39;, &#39;Dividends&#39;, &#39;Splits&#39;</span>
+
+<span class="sd">    **RETURNS:**</span>
+
+<span class="sd">         **blotter_series:** ``pandas.Series`` a blotter with random trades,</span>
+<span class="sd">          num_trades</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_df</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="n">num_trades</span><span class="p">))</span>
+    <span class="c">#This unique makes sure there aren&#39;t double trade day entries which breaks </span>
+    <span class="c">#the function blotter_to_split_adjusted_shares</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">split_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+    <span class="n">trades</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span>
+    <span class="n">trades</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">trades</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">trades</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">trades</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">trades</span><span class="p">)]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.</span>    
+
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span> <span class="n">trades</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">dates</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Buy/Sell&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="blotter_to_cum_shares"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.blotter_to_cum_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aggregation function transforming a blotter series for a given ticker into a </span>
+<span class="sd">    DataFrame with cumulative investment, price, dividends, etc.</span>
+
+<span class="sd">    **ARGS:**</span>
+
+<span class="sd">        **blotter_series:** a  ``pandas.Series`` with index of dates and values of</span>
+<span class="sd">         quantity</span>
+
+<span class="sd">         **ticker:** ``str`` the ticker for which the buys and sells occurs</span>
+
+<span class="sd">         **start_date:** type ``str`` or ``datetime.datetime``</span>
+
+<span class="sd">         **end_date:** ``str`` or ``datetime.datetime``</span>
+
+<span class="sd">         **tol:** ``flt``  the tolerance to find the split dates (.1 recommended)</span>
+<span class="sd">    </span>
+<span class="sd">    **RETURNS:**</span>
+
+<span class="sd">         ``pandas.DataFrame`` containing contributions, withdrawals, price values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">price_df</span> <span class="o">=</span> <span class="n">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+    <span class="n">split_df</span> <span class="o">=</span> <span class="n">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">blotter_to_split_adjusted_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">split_df</span><span class="p">)</span>
+</div>
+<span class="k">def</span> <span class="nf">generate_random_asset_path</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">pdb</span>
+    <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="s">&quot;%m/</span><span class="si">%d</span><span class="s">/%Y&quot;</span><span class="p">)</span>
+    <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="n">prices</span> <span class="o">=</span> <span class="n">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">)</span>
+    <span class="n">blotter</span> <span class="o">=</span> <span class="n">construct_random_trades</span><span class="p">(</span><span class="n">prices</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">)</span>
+    <span class="c">#blotter.to_csv(&#39;../tests/&#39; + ticker + &#39;.csv&#39;)</span>
+    <span class="k">return</span> <span class="n">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span> <span class="o">=</span> <span class="n">blotter</span><span class="p">,</span> <span class="n">ticker</span> <span class="o">=</span> <span class="n">ticker</span><span class="p">,</span>
+                                 <span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">end_date</span><span class="p">,</span> 
+                                 <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="generate_random_portfolio_blotter"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">[docs]</a><span class="k">def</span> <span class="nf">generate_random_portfolio_blotter</span><span class="p">(</span><span class="n">tickers</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a random trade blotter, given a list of tickers and a number of trades </span>
+<span class="sd">    (to be used for all tickers), prices will be  the &#39;Close&#39; of that ticker in the </span>
+<span class="sd">    price DataFrame that is collected</span>
+
+<span class="sd">    **INPUTS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **tickers:** a ``list`` with the tickers to be used</span>
+
+<span class="sd">        **num_trades:** ``int``, the number of trades to randomly generate for each</span>
+<span class="sd">         ticker</span>
+
+<span class="sd">    **RETURNS:**</span>
+
+<span class="sd">        ``pandas.DataFrame`` with columns &#39;Ticker&#39;, &#39;Buy/Sell&#39; (+ for buys, - for</span>
+<span class="sd">         sells) and &#39;Price&#39; of len = num_trades x len(tickers)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">blot_d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">price_d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span> <span class="o">=</span>
+                                                <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">price_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_splits</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="n">blot_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">construct_random_trades</span><span class="p">(</span><span class="n">price_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">],</span> <span class="n">num_trades</span><span class="p">)</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">agg_d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Ticker&#39;</span><span class="p">:[],</span>  <span class="s">&#39;Buy/Sell&#39;</span><span class="p">:[],</span> <span class="s">&#39;Price&#39;</span><span class="p">:[]}</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trade</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">blot_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]):</span>
+            <span class="n">ind</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blot_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">agg_d</span><span class="p">[</span><span class="s">&#39;Ticker&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+            <span class="n">agg_d</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">blot_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span>
+            <span class="n">agg_d</span><span class="p">[</span><span class="s">&#39;Price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">price</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">agg_d</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">ind</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="portfolio_from_blotter"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.portfolio_from_blotter">[docs]</a><span class="k">def</span> <span class="nf">portfolio_from_blotter</span><span class="p">(</span><span class="n">blotter_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The aggregation function to construct a portfolio given a blotter of tickers,</span>
+<span class="sd">    trades, and number of shares.  </span>
+
+<span class="sd">    **ARGS:**</span>
+
+<span class="sd">        **agg_blotter_df:** a ``pandas.DataFrame`` with columns [&#39;Ticker&#39;,</span>
+<span class="sd">         &#39;Buy/Sell&#39;, &#39;Price&#39;],  where the &#39;Buy/Sell&#39; column is the quantity of</span>
+<span class="sd">          shares, (+) for buy, (-) for sell</span>
+
+<span class="sd">    **RETURNS:**</span>
+<span class="sd">    </span>
+<span class="sd">        ** ``pandas.Panel``** with dimensions [tickers, dates, price data]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tickers</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">blotter_df</span><span class="p">[</span><span class="s">&#39;Ticker&#39;</span><span class="p">])</span>
+    <span class="n">start_date</span> <span class="o">=</span> <span class="n">blotter_df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="n">val_d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+        <span class="n">blotter_series</span> <span class="o">=</span> <span class="n">blotter_df</span><span class="p">[</span><span class="n">blotter_df</span><span class="p">[</span><span class="s">&#39;Ticker&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ticker</span><span class="p">]</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="n">val_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span>
+                                              <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">val_d</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="fetch_data_for_portfolio_construction"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_portfolio_construction</span><span class="p">(</span><span class="n">weight_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a weight frame with index of allocation dates and columns of percentage </span>
+<span class="sd">    allocations, fetch the data using Yahoo!&#39;s API and return a panel of [tickers, </span>
+<span class="sd">    dates, price data</span>
+
+<span class="sd">    **ARGS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **weight_df:** a ``pandas.DataFrame`` with dates as index and tickers as</span>
+<span class="sd">         columns</span>
+
+<span class="sd">    **RETURNS:**</span>
+<span class="sd">    </span>
+<span class="sd">        ``pandas.Panel`` where:</span>
+<span class="sd">        * ``panel.items:`` are tickers</span>
+<span class="sd">        * ``panel.major_axis:`` dates</span>
+<span class="sd">        * ``panel.minor_axis:`` price information, specifically: </span>
+<span class="sd">        [&#39;ac_c&#39;, &#39;c0_ac0&#39;, &#39;n0&#39;, &#39;Adj_Q&#39;, &#39;Asset Value&#39;, &#39;Open&#39;, &#39;Close&#39;, </span>
+<span class="sd">        &#39;Adj Close&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataReader</span>
+    <span class="n">d_0</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">tickers</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">opens</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">closes</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">acs</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">d_0</span><span class="p">)</span>
+        <span class="n">opens</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span>  <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s">&#39;Open&#39;</span><span class="p">]</span>
+        <span class="n">closes</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">]</span>
+        <span class="n">acs</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>
+        
+    
+    <span class="n">close_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">closes</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">adj_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">acs</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">open_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">opens</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    
+    <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">close_df</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">adj_df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="p">(</span>
+        <span class="s">&quot;Close and Adj Close Indexes are not the same&quot;</span><span class="p">)</span>
+
+    <span class="n">index</span> <span class="o">=</span> <span class="n">close_df</span><span class="o">.</span><span class="n">index</span>
+    
+    <span class="c">#determine the dates chunks</span>
+    <span class="kn">import</span> <span class="nn">pdb</span>
+    <span class="c">#pdb.set_trace()</span>
+    
+    <span class="c">#the columns correspond to the calculation sheet for interpretability</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">,</span> <span class="s">&#39;Asset Value&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">,</span> 
+               <span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>
+
+    <span class="c">#preallocate for the calculation</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">tickers</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)]),</span>
+                         <span class="n">major_axis</span> <span class="o">=</span> <span class="n">index</span><span class="p">,</span> <span class="n">items</span> <span class="o">=</span> <span class="n">tickers</span><span class="p">,</span> <span class="n">minor_axis</span> <span class="o">=</span> <span class="n">columns</span><span class="p">)</span>
+    
+    <span class="c">#insert the Close into the panel</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">close_df</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">open_df</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adj_df</span>
+
+    <span class="k">return</span> <span class="n">panel</span>
+</div>
+<div class="viewcode-block" id="portfolio_from_weight_file"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.portfolio_from_weight_file">[docs]</a><span class="k">def</span> <span class="nf">portfolio_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a pandas.DataFrame with columns [&#39;Close&#39;, &#39;Open&#39;] when provided</span>
+<span class="sd">    a pandas.DataFrame of weight allocations and a starting  value of the index</span>
+
+<span class="sd">    **ARGS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **weight_df:** ``pandas.DataFrame`` of a weight allocation with tickers for</span>
+<span class="sd">        columns, index of dates and weight allocations to each of the tickers</span>
+
+<span class="sd">        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price</span>
+<span class="sd">         data]</span>
+
+<span class="sd">    **RETURNS:**</span>
+<span class="sd">    </span>
+<span class="sd">        ``pandas.Panel`` with dimensions (tickers, dates, price date)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c">#these columns correspond to the columns in sheet &#39;value_calcs!&#39; in &quot;panel from</span>
+    <span class="c">#weight file test.xlsx&quot;</span>
+    
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">,</span> <span class="s">&#39;Asset Value&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">,</span> 
+               <span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">price_panel</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">minor_axis</span> <span class="o">=</span> <span class="n">columns</span><span class="p">)</span>
+    <span class="n">port_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">]</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">major_axis</span>
+    <span class="n">port_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">port_cols</span><span class="p">)]),</span> 
+                               <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">port_cols</span><span class="p">)</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">dt_chunks</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    
+    <span class="c">#fill in the Adjusted Quantity values and the aggregate position values</span>
+    <span class="n">p_val</span> <span class="o">=</span> <span class="n">start_value</span>
+    <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">dt_chunks</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">])</span>
+        <span class="n">c0_ac0</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">])</span>
+        <span class="n">n0</span> <span class="o">=</span> <span class="n">p_val</span><span class="o">*</span><span class="n">weight_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">])</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;ac_c&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">div</span><span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">]))</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">c0_ac0</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;n0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span>
+            <span class="n">n0</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span>
+            <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">product</span><span class="p">,</span> 
+            <span class="n">axis</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="c">#assign the portfolio values</span>
+        <span class="n">port_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s">&#39;Adj_Q&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">port_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s">&#39;Adj_Q&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Open&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">p_val</span> <span class="o">=</span> <span class="n">port_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span>
+
+    <span class="c">#The portfolio should start at the first trade, a[0]</span>
+    <span class="k">return</span> <span class="n">port_df</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]:]</span>
+</div>
+<div class="viewcode-block" id="portfolio_from_initial_weights"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.portfolio_from_initial_weights">[docs]</a><span class="k">def</span> <span class="nf">portfolio_from_initial_weights</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">,</span>
+                                   <span class="n">rebal_frequency</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a pandas.DataFrame with columns [&#39;Close&#39;, &#39;Open&#39;] when provided</span>
+<span class="sd">    a pandas.Series of intial weight allocations, the date of those initial weight </span>
+<span class="sd">    allocations (series.name), a starting value of the index, and a rebalance  </span>
+<span class="sd">    frequency (this is the classical &quot;static&quot; construction&quot; methodology, rebalancing</span>
+<span class="sd">    at somspecified interval)</span>
+
+<span class="sd">    **ARGS:**</span>
+<span class="sd">    </span>
+<span class="sd">        **weight_series:** ``pandas.Series`` of a weight allocation with an index of</span>
+<span class="sd">         tickers, and a name of the initial allocation</span>
+
+<span class="sd">        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price</span>
+<span class="sd">          data]</span>
+
+<span class="sd">        **start_value:** ``flt`` of the value to start the index</span>
+
+<span class="sd">        **rebal_frequency:** ``str`` of &#39;weekly&#39;, &#39;monthly&#39;, &#39;quarterly&#39;, &#39;yearly&#39;</span>
+
+<span class="sd">    **RETURNS:**</span>
+<span class="sd">    </span>
+<span class="sd">         **price:** of type ``pandas.DataFrame`` with portfolio &#39;Close&#39; and &#39;Open&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">d_0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">price_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">first_valid_index</span><span class="p">))</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">price_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">d_0</span><span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">major_axis</span>
+    
+    <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">index</span> <span class="o">==</span> <span class="n">weight_series</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="p">(</span>
+        <span class="s">&quot;The first trade date is not part of the prices panel&quot;</span><span class="p">)</span>
+    
+    <span class="n">interval_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;weekly&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">week</span> <span class="o">!=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">week</span><span class="p">,</span> 
+                     <span class="s">&#39;monthly&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">month</span> <span class="o">!=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                     <span class="s">&#39;quarterly&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">quarter</span> <span class="o">!=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">quarter</span><span class="p">,</span>
+                     <span class="s">&#39;yearly&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">year</span> <span class="o">!=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">year</span><span class="p">}</span>
+
+    <span class="c">#create a boolean array of rebalancing dates</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="n">interval_dict</span><span class="p">[</span><span class="n">rebal_frequency</span><span class="p">](</span><span class="n">index</span><span class="p">))</span>
+    <span class="n">weight_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">weight_series</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> 
+        <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">weight_series</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    
+    <span class="k">return</span> <span class="n">portfolio_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="test_funs"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.test_funs">[docs]</a><span class="k">def</span> <span class="nf">test_funs</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; import pandas.util.testing as put</span>
+<span class="sd">    &gt;&gt;&gt; xl_file = pandas.ExcelFile(&#39;../tests/test_splits.xlsx&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; blotter = xl_file.parse(&#39;blotter&#39;, index_col = 0)</span>
+<span class="sd">    &gt;&gt;&gt; cols = [&#39;Close&#39;, &#39;Adj Close&#39;, &#39;Dividends&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; price_df = xl_file.parse(&#39;calc_sheet&#39;, index_col = 0)</span>
+<span class="sd">    &gt;&gt;&gt; price_df = price_df[cols]</span>
+<span class="sd">    &gt;&gt;&gt; split_frame = calculate_splits(price_df)</span>
+
+<span class="sd">    &gt;&gt;&gt; shares_owned = blotter_to_split_adjusted_shares(blotter, split_frame)</span>
+<span class="sd">    &gt;&gt;&gt; test_vals = xl_file.parse(&#39;share_balance&#39;, index_col = 0)[&#39;cum_shares&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(shares_owned[&#39;cum_shares&#39;].dropna(), test_vals)</span>
+
+<span class="sd">    &gt;&gt;&gt; xl_file = pandas.ExcelFile(&#39;../tests/panel from weight file test.xlsx&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; weight_df = xl_file.parse(&#39;rebal_weights&#39;, index_col = 0)</span>
+<span class="sd">    &gt;&gt;&gt; tickers = [&#39;EEM&#39;, &#39;EFA&#39;, &#39;IYR&#39;, &#39;IWV&#39;, &#39;IEF&#39;, &#39;IYR&#39;, &#39;SHY&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; d = {}</span>
+<span class="sd">    &gt;&gt;&gt; for ticker in tickers:</span>
+<span class="sd">    ...     d[ticker] = xl_file.parse(ticker, index_col = 0)</span>
+<span class="sd">    &gt;&gt;&gt; portfolio = portfolio_from_weight_file(weight_df, pandas.Panel(d), 1000)</span>
+<span class="sd">    &gt;&gt;&gt; manual_calcs = xl_file.parse(&#39;index_result&#39;, index_col = 0)</span>
+<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(manual_calcs[&#39;Close&#39;], portfolio[&#39;Close&#39;])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">None</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">usage</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;file_loc&quot;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;description&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span><span class="p">,</span> <span class="n">usage</span> <span class="o">=</span> <span class="n">usage</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;arg_1&#39;</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s">&#39;help_1&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;arg_2&#39;</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s">&#39;help_2&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Benjamin M. Gross.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

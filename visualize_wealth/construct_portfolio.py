@@ -3,9 +3,6 @@
 """
 .. module:: construct_portfolio.py
    :synopsis: Engine to construct portfolios using three general methodologies:
-   1. By providing purchase quantities and tickers at given dates
-   2. By providing a weight file allocation 
-   3. By providing an initial allocation and a rebalancing frequency
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 """

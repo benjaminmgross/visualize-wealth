@@ -47,6 +47,15 @@
     </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Visualize Wealth</a><ul>
+<li><a class="reference internal" href="#constructing-portfolios">Constructing Portfolios</a></li>
+<li><a class="reference internal" href="#analyzing-portfolio-peformance">Analyzing Portfolio Peformance:</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to Visualize Wealth&#8217;s documentation!</a></p>
@@ -81,6 +90,343 @@
 <p>The goal of these modules is to be able to construct
 portfolio performance and perform comprehensive
 analytics</p>
+<div class="section" id="constructing-portfolios">
+<h2>Constructing Portfolios<a class="headerlink" href="#constructing-portfolios" title="Permalink to this headline">¶</a></h2>
+<p>In general there are three ways to construct a portfolio using
+this module:</p>
+<ol class="arabic">
+<li><p class="first">Provide trades given tickers, buy / sell dates, and prices</p>
+</li>
+<li><p class="first">Provide a weighting scheme with dates along the first column with
+column titles as tickers and percentage allocations to each ticker
+for a given date for values.  For example:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Date</th>
+<th class="head">ticker 1</th>
+<th class="head">ticker 2</th>
+<th class="head">ticker 3</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1/1/2000</td>
+<td>.25</td>
+<td>.30</td>
+<td>.45</td>
+</tr>
+<tr class="row-odd"><td>6/5/2003</td>
+<td>.10</td>
+<td>.65</td>
+<td>.25</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first">Provide an inial allocation scheme, similar to the one provided
+above, and then set some rebalancing frequency, say, &#8216;weekly&#8217;,
+&#8216;monthly&#8217;, &#8216;quarterly&#8217;, and &#8216;yearly.&#8217;</p>
+</li>
+</ol>
+<p>The main aggregation functions that perform portfolio construction
+begin with <tt class="docutils literal"><span class="pre">portfolio_from</span></tt> and are then succeeded by either:</p>
+<ol class="loweralpha simple">
+<li><tt class="docutils literal"><span class="pre">from_blotter</span></tt>: corresponding to bullet point 1</li>
+<li><tt class="docutils literal"><span class="pre">from_weight_file</span></tt>: corresponding to bullet point 2</li>
+<li><tt class="docutils literal"><span class="pre">from_initial_weights</span></tt>: corresponding to bullet point 3</li>
+</ol>
+<span class="target" id="module-visualize_wealth.construct_portfolio"></span><span class="target" id="module-construct_portfolio.py"></span><dl class="function">
+<dt id="visualize_wealth.construct_portfolio.append_price_frame_with_dividends">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">append_price_frame_with_dividends</tt><big>(</big><em>ticker</em>, <em>start_date</em>, <em>end_date=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#append_price_frame_with_dividends"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.append_price_frame_with_dividends" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a ticker, start_date, &amp; end_date, return a pandas.DataFrame with 
+a Dividend Columns</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>ticker:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of ticker</p>
+<p><strong>start_date:</strong> <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt> or string of format &#8220;mm/dd/yyyy&#8221;</p>
+<p><strong>end_date:</strong> a <tt class="docutils literal"><span class="pre">dtetime.datetime</span></tt> or string of format &#8220;mm/dd/yyyy&#8221;</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
+<dd>&#8216;Dividends&#8217;]</dd>
+</dl>
+</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">frame_with_divs</span> <span class="o">=</span> <span class="n">construct_portfolio</span><span class="o">.</span><span class="n">append_price_frame_with_dividends</span><span class="p">(</span>
+    <span class="s">&#39;EEM&#39;</span><span class="p">,</span> <span class="s">&#39;01/01/2000&#39;</span><span class="p">,</span> <span class="s">&#39;01/01/2013&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.blotter_and_price_df_to_cum_shares">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">blotter_and_price_df_to_cum_shares</tt><big>(</big><em>blotter_df</em>, <em>price_df</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.blotter_and_price_df_to_cum_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <tt class="docutils literal"><span class="pre">blotter</span> <span class="pre">DataFrame</span></tt> of dates, purchases (+/-),  and a <tt class="docutils literal"><span class="pre">price</span> 
+<span class="pre">DataFrame</span></tt> with Close Adj Close, Dividends, &amp; Splits, calculate the cumulative
+share balance for the position</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>blotter_df:</strong> a  <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> where index is buy/sell dates</p>
+<p><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;]</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price values</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">agg_stats_for_single_asset</span> <span class="o">=</span> <span class="n">construct_portfolio</span><span class="o">.</span><span class="n">blotter_to_split_adj_shares</span><span class="p">(</span>
+    <span class="n">single_asset_blotter</span><span class="p">,</span> <span class="n">split_adj_price_frame</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.blotter_to_cum_shares">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">blotter_to_cum_shares</tt><big>(</big><em>blotter_series</em>, <em>ticker</em>, <em>start_date</em>, <em>end_date</em>, <em>tol</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#blotter_to_cum_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.blotter_to_cum_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to :fun:blotter_and_price_df_to_cum_shares except that a split adjusted 
+<tt class="docutils literal"><span class="pre">price_df</span></tt> is not necessary.  Only a blotter,  ticker, start_date, &amp; end_date
+are needed.  Returns</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>blotter_series:</strong> a  <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> with index of dates and values of</dt>
+<dd><p class="first">quantity</p>
+<p><strong>ticker:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> the ticker for which the buys and sells occurs</p>
+<p><strong>start_date:</strong> type <tt class="docutils literal"><span class="pre">str</span></tt> or <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt></p>
+<p><strong>end_date:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> or <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt></p>
+<p class="last"><strong>tol:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt>  the tolerance to find the split dates (.1 recommended)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price values</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.calculate_splits">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">calculate_splits</tt><big>(</big><em>price_df</em>, <em>tol=0.1</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#calculate_splits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.calculate_splits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a price_df of the format append_price_frame_with_dividends, return a 
+DataFrame with a split factor columns named &#8216;Splits&#8217;</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
+<dd><p class="first">&#8216;Dividends&#8217;]</p>
+<p class="last"><strong>tol:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt> of the tolerance to determine whether a split has occurred</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>price:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
+<dd>&#8216;Dividends&#8217;, Splits&#8217;]</dd>
+</dl>
+</div></blockquote>
+<p><strong>USAGE:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">price_df_with_divs_and_split_ratios</span> <span class="o">=</span> <span class="n">construct_portfolio</span><span class="o">.</span><span class="n">calculate_splits</span><span class="p">(</span>
+    <span class="n">price_df_with_divs</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.construct_random_trades">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">construct_random_trades</tt><big>(</big><em>split_df</em>, <em>num_trades</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#construct_random_trades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.construct_random_trades" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create random trades on random trade dates, but never allow shares to go negative</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>split_df:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> that has &#8216;Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>blotter_frame:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> a blotter with random trades,</dt>
+<dd>num_trades</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_portfolio_construction</tt><big>(</big><em>weight_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_for_portfolio_construction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a weight frame with index of allocation dates and columns of percentage 
+allocations, fetch the data using Yahoo!&#8217;s API and return a panel of [tickers, 
+dates, price data</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>weight_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and tickers as</dt>
+<dd>columns</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
+* <tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers
+* <tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates
+* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically: 
+[&#8216;ac_c&#8217;, &#8216;c0_ac0&#8217;, &#8216;n0&#8217;, &#8216;Adj_Q&#8217;, &#8216;Asset Value&#8217;, &#8216;Open&#8217;, &#8216;Close&#8217;, 
+&#8216;Adj Close&#8217;]</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.format_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">format_blotter</tt><big>(</big><em>blotter_file</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#format_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.format_blotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pass in either a location of a blotter file (in <tt class="docutils literal"><span class="pre">.csv</span></tt> format) or blotter 
+<tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with all positive values and return a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt>
+where Sell values are then negative values</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>blotter_file:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with at least index (dates of 
+Buy / Sell) columns = [&#8216;Buy/Sell&#8217;, &#8216;Shares&#8217;] or a string of the file
+location to such a formatted file</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>blotter:</strong> of type <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> where sell values have been made 
+negative</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">generate_random_portfolio_blotter</tt><big>(</big><em>tickers</em>, <em>num_trades</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#generate_random_portfolio_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a random trade blotter, given a list of tickers and a number of trades 
+(to be used for all tickers), prices will be  the &#8216;Close&#8217; of that ticker in the 
+price DataFrame that is collected</p>
+<p><strong>INPUTS:</strong></p>
+<blockquote>
+<div><p><strong>tickers:</strong> a <tt class="docutils literal"><span class="pre">list</span></tt> with the tickers to be used</p>
+<dl class="docutils">
+<dt><strong>num_trades:</strong> <tt class="docutils literal"><span class="pre">int</span></tt>, the number of trades to randomly generate for each</dt>
+<dd>ticker</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns &#8216;Ticker&#8217;, &#8216;Buy/Sell&#8217; (+ for buys, - for</dt>
+<dd>sells) and &#8216;Price&#8217;</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.portfolio_from_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_blotter</tt><big>(</big><em>blotter_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_blotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The aggregation function to construct a portfolio given a blotter of tickers,
+trades, and number of shares.</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>agg_blotter_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Ticker&#8217;,</dt>
+<dd><dl class="first last docutils">
+<dt>&#8216;Buy/Sell&#8217;, &#8216;Price&#8217;],  where the &#8216;Buy/Sell&#8217; column is the quantity of</dt>
+<dd>shares, (+) for buy, (-) for sell</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div>** <a href="#id1"><span class="problematic" id="id2">``</span></a>pandas.Panel``** with dimensions [tickers, dates, price data]</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.portfolio_from_initial_weights">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>start_value</em>, <em>rebal_frequency</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_initial_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_initial_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
+a pandas.Series of intial weight allocations, the date of those initial weight 
+allocations (series.name), a starting value of the index, and a rebalance  
+frequency (this is the classical &#8220;static&#8221; construction&#8221; methodology, rebalancing
+at somspecified interval)</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>weight_series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of a weight allocation with an index of</dt>
+<dd>tickers, and a name of the initial allocation</dd>
+<dt><strong>price_panel:</strong> <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index, price</dt>
+<dd>data]</dd>
+</dl>
+<p><strong>start_value:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt> of the value to start the index</p>
+<p><strong>rebal_frequency:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of &#8216;weekly&#8217;, &#8216;monthly&#8217;, &#8216;quarterly&#8217;, &#8216;yearly&#8217;</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>price:</strong> of type <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with portfolio &#8216;Close&#8217; and &#8216;Open&#8217;</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.portfolio_from_weight_file">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_weight_file</tt><big>(</big><em>weight_df</em>, <em>price_panel</em>, <em>start_value</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_weight_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_weight_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
+a pandas.DataFrame of weight allocations and a starting  value of the index</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>weight_df:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> of a weight allocation with tickers for
+columns, index of dates and weight allocations to each of the tickers</p>
+<dl class="docutils">
+<dt><strong>price_panel:</strong> <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index, price</dt>
+<dd>data]</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions (tickers, dates, price date)</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.test_funs">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">test_funs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#test_funs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.test_funs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas.util.testing</span> <span class="kn">as</span> <span class="nn">put</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xl_file</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/test_splits.xlsx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">blotter</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;blotter&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">,</span> <span class="s">&#39;Dividends&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_df</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;calc_sheet&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_df</span> <span class="o">=</span> <span class="n">price_df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">split_frame</span> <span class="o">=</span> <span class="n">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">shares_owned</span> <span class="o">=</span> <span class="n">blotter_and_price_df_to_cum_shares</span><span class="p">(</span><span class="n">blotter</span><span class="p">,</span> <span class="n">split_frame</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_vals</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;share_balance&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">shares_owned</span><span class="p">[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">test_vals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xl_file</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/panel from weight file test.xlsx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weight_df</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;rebal_weights&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tickers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;EEM&#39;</span><span class="p">,</span> <span class="s">&#39;EFA&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;IWV&#39;</span><span class="p">,</span> <span class="s">&#39;IEF&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;SHY&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">portfolio_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">manual_calcs</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;index_result&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">manual_calcs</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">],</span> <span class="n">portfolio</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="analyzing-portfolio-peformance">
+<h2>Analyzing Portfolio Peformance:<a class="headerlink" href="#analyzing-portfolio-peformance" title="Permalink to this headline">¶</a></h2>
+<p>In general, there&#8217;s a myriad of statistics and analysis that
+can be done to analyze portfolio performance, but in general, they
+can be grouped into:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Absolute Statistics:</strong> Statistics that can be calculated without
+another portfolio to compare against</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Relative</strong> -or- <strong>Benchmark Statistics:</strong> Those statistics that</dt>
+<dd><p class="first last">can only be calculated using some comparative series or benchmark</p>
+</dd>
+</dl>
+</li>
+</ol>
 <span class="target" id="module-visualize_wealth.analyze"></span><dl class="function">
 <dt id="visualize_wealth.analyze.annualized_return">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">annualized_return</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#annualized_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.annualized_return" title="Permalink to this definition">¶</a></dt>
@@ -245,7 +591,7 @@ the <tt class="docutils literal"><span class="pre">benchmark</span></tt></p>
 <div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of the prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p><strong>rfr:</strong> <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
-<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <a href="#id1"><span class="problematic" id="id2">``</span></a>daily, monthly, quarterly, or</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <a href="#id3"><span class="problematic" id="id4">``</span></a>daily, monthly, quarterly, or</p>
 </div></blockquote>
 <p>yearly``</p>
 </div></blockquote>
@@ -532,264 +878,11 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </div>
 </dd></dl>
 
-<span class="target" id="module-visualize_wealth.construct_portfolio"></span><dl class="function">
-<dt id="visualize_wealth.construct_portfolio.append_price_frame_with_dividends">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">append_price_frame_with_dividends</tt><big>(</big><em>ticker</em>, <em>start_date</em>, <em>end_date=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#append_price_frame_with_dividends"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.append_price_frame_with_dividends" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a ticker, start_date, &amp; end_date, return a pandas.DataFrame with 
-a Dividend Columns</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><p><strong>ticker:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of ticker</p>
-<p><strong>start_date:</strong> <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt> object to begin the price series</p>
-<p><strong>end_date:</strong> a <tt class="docutils literal"><span class="pre">dtetime.datetime</span></tt> object to end the price series</p>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
-<dd>&#8216;Dividends&#8217;]</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.blotter_to_cum_shares">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">blotter_to_cum_shares</tt><big>(</big><em>blotter_series</em>, <em>ticker</em>, <em>start_date</em>, <em>end_date</em>, <em>tol</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#blotter_to_cum_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.blotter_to_cum_shares" title="Permalink to this definition">¶</a></dt>
-<dd><p>Aggregation function transforming a blotter series for a given ticker into a 
-DataFrame with cumulative investment, price, dividends, etc.</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>blotter_series:</strong> a  <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> with index of dates and values of</dt>
-<dd><p class="first">quantity</p>
-<p><strong>ticker:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> the ticker for which the buys and sells occurs</p>
-<p><strong>start_date:</strong> type <tt class="docutils literal"><span class="pre">str</span></tt> or <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt></p>
-<p><strong>end_date:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> or <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt></p>
-<p class="last"><strong>tol:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt>  the tolerance to find the split dates (.1 recommended)</p>
-</dd>
-</dl>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price values</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.blotter_to_split_adjusted_shares">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">blotter_to_split_adjusted_shares</tt><big>(</big><em>blotter_series</em>, <em>price_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#blotter_to_split_adjusted_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.blotter_to_split_adjusted_shares" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a series of dates and purchases (+) / sales (-) and a DataFrame with Close
-Adj Close, Dividends, &amp; Splits, calculate the cumulative share balance for the
-position</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><p><strong>blotter_series:</strong> a  <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> where index is buy/sell dates</p>
-<p><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;]</p>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price values</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.calculate_splits">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">calculate_splits</tt><big>(</big><em>price_df</em>, <em>tol=0.1</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#calculate_splits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.calculate_splits" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a price_df of the format append_price_frame_with_dividends, return a 
-DataFrame with a split factor columns named &#8216;Splits&#8217;</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>price_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
-<dd><p class="first">&#8216;Dividends&#8217;]</p>
-<p class="last"><strong>tol:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt> of the tolerance to determine whether a split has occurred</p>
-</dd>
-</dl>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>price:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,</dt>
-<dd>&#8216;Dividends&#8217;, Splits&#8217;]</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.construct_random_trades">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">construct_random_trades</tt><big>(</big><em>split_df</em>, <em>num_trades</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#construct_random_trades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.construct_random_trades" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create random trades on random trade dates, but never allow shares to go negative</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><strong>split_df:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> that has &#8216;Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>blotter_series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> a blotter with random trades,</dt>
-<dd>num_trades</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_portfolio_construction</tt><big>(</big><em>weight_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_for_portfolio_construction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a weight frame with index of allocation dates and columns of percentage 
-allocations, fetch the data using Yahoo!&#8217;s API and return a panel of [tickers, 
-dates, price data</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>weight_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and tickers as</dt>
-<dd>columns</dd>
-</dl>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
-* <tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers
-* <tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates
-* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically: 
-[&#8216;ac_c&#8217;, &#8216;c0_ac0&#8217;, &#8216;n0&#8217;, &#8216;Adj_Q&#8217;, &#8216;Asset Value&#8217;, &#8216;Open&#8217;, &#8216;Close&#8217;, 
-&#8216;Adj Close&#8217;]</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.format_blotter">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">format_blotter</tt><big>(</big><em>blotter_file</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#format_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.format_blotter" title="Permalink to this definition">¶</a></dt>
-<dd><p>A blotter file could have positive values for both the buy and sell, 
-this function transforms Sell values that are positive to negative values
-(to be used in the portfolio constructors)</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><strong>blotter_file:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with at least index (dates of 
-Buy / Sell) columns = [&#8216;Buy/Sell&#8217;, &#8216;Shares&#8217;] or a string of the file
-location to such a formatted file</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><strong>blotter:</strong> of type <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> where sell values have been made 
-negative</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">generate_random_portfolio_blotter</tt><big>(</big><em>tickers</em>, <em>num_trades</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#generate_random_portfolio_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a random trade blotter, given a list of tickers and a number of trades 
-(to be used for all tickers), prices will be  the &#8216;Close&#8217; of that ticker in the 
-price DataFrame that is collected</p>
-<p><strong>INPUTS:</strong></p>
-<blockquote>
-<div><p><strong>tickers:</strong> a <tt class="docutils literal"><span class="pre">list</span></tt> with the tickers to be used</p>
-<dl class="docutils">
-<dt><strong>num_trades:</strong> <tt class="docutils literal"><span class="pre">int</span></tt>, the number of trades to randomly generate for each</dt>
-<dd>ticker</dd>
-</dl>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns &#8216;Ticker&#8217;, &#8216;Buy/Sell&#8217; (+ for buys, - for</dt>
-<dd>sells) and &#8216;Price&#8217; of len = num_trades x len(tickers)</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.portfolio_from_blotter">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_blotter</tt><big>(</big><em>blotter_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_blotter" title="Permalink to this definition">¶</a></dt>
-<dd><p>The aggregation function to construct a portfolio given a blotter of tickers,
-trades, and number of shares.</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>agg_blotter_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Ticker&#8217;,</dt>
-<dd><dl class="first last docutils">
-<dt>&#8216;Buy/Sell&#8217;, &#8216;Price&#8217;],  where the &#8216;Buy/Sell&#8217; column is the quantity of</dt>
-<dd>shares, (+) for buy, (-) for sell</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div>** <a href="#id3"><span class="problematic" id="id4">``</span></a>pandas.Panel``** with dimensions [tickers, dates, price data]</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.portfolio_from_initial_weights">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>start_value</em>, <em>rebal_frequency</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_initial_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_initial_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
-a pandas.Series of intial weight allocations, the date of those initial weight 
-allocations (series.name), a starting value of the index, and a rebalance  
-frequency (this is the classical &#8220;static&#8221; construction&#8221; methodology, rebalancing
-at somspecified interval)</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><dl class="docutils">
-<dt><strong>weight_series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of a weight allocation with an index of</dt>
-<dd>tickers, and a name of the initial allocation</dd>
-<dt><strong>price_panel:</strong> <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index, price</dt>
-<dd>data]</dd>
-</dl>
-<p><strong>start_value:</strong> <tt class="docutils literal"><span class="pre">flt</span></tt> of the value to start the index</p>
-<p><strong>rebal_frequency:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of &#8216;weekly&#8217;, &#8216;monthly&#8217;, &#8216;quarterly&#8217;, &#8216;yearly&#8217;</p>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><strong>price:</strong> of type <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with portfolio &#8216;Close&#8217; and &#8216;Open&#8217;</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.portfolio_from_weight_file">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_weight_file</tt><big>(</big><em>weight_df</em>, <em>price_panel</em>, <em>start_value</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_weight_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_weight_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
-a pandas.DataFrame of weight allocations and a starting  value of the index</p>
-<p><strong>ARGS:</strong></p>
-<blockquote>
-<div><p><strong>weight_df:</strong> <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> of a weight allocation with tickers for
-columns, index of dates and weight allocations to each of the tickers</p>
-<dl class="docutils">
-<dt><strong>price_panel:</strong> <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index, price</dt>
-<dd>data]</dd>
-</dl>
-</div></blockquote>
-<p><strong>RETURNS:</strong></p>
-<blockquote>
-<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions (tickers, dates, price date)</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.construct_portfolio.test_funs">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">test_funs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#test_funs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.test_funs" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas.util.testing</span> <span class="kn">as</span> <span class="nn">put</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">xl_file</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/test_splits.xlsx&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">blotter</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;blotter&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">,</span> <span class="s">&#39;Dividends&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">price_df</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;calc_sheet&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">price_df</span> <span class="o">=</span> <span class="n">price_df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">split_frame</span> <span class="o">=</span> <span class="n">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">shares_owned</span> <span class="o">=</span> <span class="n">blotter_to_split_adjusted_shares</span><span class="p">(</span><span class="n">blotter</span><span class="p">,</span> <span class="n">split_frame</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">test_vals</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;share_balance&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">shares_owned</span><span class="p">[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">test_vals</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xl_file</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/panel from weight file test.xlsx&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">weight_df</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;rebal_weights&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tickers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;EEM&#39;</span><span class="p">,</span> <span class="s">&#39;EFA&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;IWV&#39;</span><span class="p">,</span> <span class="s">&#39;IEF&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;SHY&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">portfolio_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">manual_calcs</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;index_result&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">manual_calcs</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">],</span> <span class="n">portfolio</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-</dd></dl>
-
 <p>Add this to your <tt class="docutils literal"><span class="pre">conf.py</span></tt> file:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s">&#39;../&#39;</span><span class="p">)</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 

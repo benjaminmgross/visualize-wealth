@@ -18,9 +18,9 @@ import urllib2
 
 def format_blotter(blotter_file):
     """  
-    A blotter file could have positive values for both the buy and sell, 
-    this function transforms Sell values that are positive to negative values
-    (to be used in the portfolio constructors)
+    Pass in either a location of a blotter file (in ``.csv`` format) or blotter 
+    ``pandas.DataFrame`` with all positive values and return a ``pandas.DataFrame``
+    where Sell values are then negative values
     
     **ARGS:**
     
@@ -55,19 +55,30 @@ def append_price_frame_with_dividends(ticker, start_date, end_date=None):
 
         **ticker:** ``str`` of ticker
 
-        **start_date:** ``datetime.datetime`` object to begin the price series
+        **start_date:** ``datetime.datetime`` or string of format "mm/dd/yyyy"
 
-        **end_date:** a ``dtetime.datetime`` object to end the price series
+        **end_date:** a ``dtetime.datetime`` or string of format "mm/dd/yyyy"
 
     **RETURNS:**
     
         **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
          'Dividends']
+
+    **USAGE:**::
+    
+         frame_with_divs = construct_portfolio.append_price_frame_with_dividends(
+             'EEM', '01/01/2000', '01/01/2013')
+                     
     """
     reader = pandas.io.data.DataReader
 
+    if isinstance(start_date, str):
+        start_date = datetime.datetime.strptime(start_date, "%m/%d/%Y")
+
     if end_date == None:
         end = datetime.datetime.today()
+    elif isinstance(end_date, str):
+        end = datetime.datetime.strptime(end_date, "%m/%d/%Y")
     else:
         end = end_date
 
@@ -109,6 +120,12 @@ def calculate_splits(price_df, tol = .1):
     
          **price:** ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
           'Dividends', Splits']
+
+    **USAGE:**::
+    
+        price_df_with_divs_and_split_ratios = construct_portfolio.calculate_splits(
+            price_df_with_divs, tol = 0.1)
+    
     """
     div_mul = 1 - price_df['Dividends'].shift(-1).div(price_df['Close'])
     rev_cp = div_mul[::-1].cumprod()[::-1]
@@ -126,33 +143,39 @@ def calculate_splits(price_df, tol = .1):
     splits.name = 'Splits'
     return price_df.join(splits)
 
-def blotter_to_split_adjusted_shares(blotter_series, price_df):
+def blotter_and_price_df_to_cum_shares(blotter_df, price_df):
     """
-    Given a series of dates and purchases (+) / sales (-) and a DataFrame with Close
-    Adj Close, Dividends, & Splits, calculate the cumulative share balance for the
-    position
+    Given a ``blotter DataFrame`` of dates, purchases (+/-),  and a ``price 
+    DataFrame`` with Close Adj Close, Dividends, & Splits, calculate the cumulative
+    share balance for the position
     
     **ARGS:**
     
-        **blotter_series:** a  ``pandas.Series`` where index is buy/sell dates
+        **blotter_df:** a  ``pandas.DataFrame`` where index is buy/sell dates
 
         **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close', 'Dividends', 'Splits']
 
-    **RETURNS:**
+    **RETURNS:**                          
 
          ``pandas.DataFrame`` containing contributions, withdrawals, price values
+
+    **USAGE:**::
+
+        agg_stats_for_single_asset = construct_portfolio.blotter_to_split_adj_shares(
+            single_asset_blotter, split_adj_price_frame)
+        
     """
 
-    blotter_series = blotter_series.sort_index()
+    blotter_df = blotter_df.sort_index()
     #make sure all dates in the blotter file are also in the price file
     #consider, if those dates aren't in price frame, assign the "closest date" value
     assert numpy.all(map(lambda x: numpy.any(price_df.index == x), 
-                         blotter_series.index)), "Buy/Sell Dates not in Price File"
+                         blotter_df.index)), "Buy/Sell Dates not in Price File"
 
     #now cumsum the buy/sell chunks and multiply by splits to get total shares
     bs_series = pandas.Series()
-    start_dts = blotter_series.index
-    end_dts = pandas.to_datetime(numpy.append(blotter_series.index[1:], 
+    start_dts = blotter_df.index
+    end_dts = pandas.to_datetime(numpy.append(blotter_df.index[1:],
                                               price_df.index[-1]))
 
     dt_chunks = zip(start_dts, end_dts)
@@ -164,7 +187,7 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
         if chunk[1] == price_df.index[-1]:
             tmp = price_df[chunk[0]:chunk[1]]
         splits = tmp[pandas.notnull(tmp['Splits'])]
-        vals = numpy.append(blotter_series['Buy/Sell'][chunk[0]] + end,
+        vals = numpy.append(blotter_df['Buy/Sell'][chunk[0]] + end,
                             splits['Splits'].values)
         dts = pandas.to_datetime(numpy.append(chunk[0], splits['Splits'].index))
         tmp_series = pandas.Series(vals, index = dts)
@@ -178,10 +201,10 @@ def blotter_to_split_adjusted_shares(blotter_series, price_df):
     #construct the contributions, withdrawals, & cumulative investment
 
     #if a trade is missing a price, it gets assigned the closing price of that day
-    no_price = blotter_series['Price'][pandas.isnull(blotter_series['Price'])]
-    blotter_series.ix[no_price.index, 'Price'] = price_df.ix[no_price.index, 'Close']
+    no_price = blotter_df['Price'][pandas.isnull(blotter_df['Price'])]
+    blotter_df.ix[no_price.index, 'Price'] = price_df.ix[no_price.index, 'Close']
 
-    contr = blotter_series['Buy/Sell'].mul(blotter_series['Price'])
+    contr = blotter_df['Buy/Sell'].mul(blotter_df['Price'])
     cum_inv = contr.cumsum()
     contr = contr[price_df.index].fillna(0.0)
     cum_inv = cum_inv[price_df.index].ffill()
@@ -200,26 +223,35 @@ def construct_random_trades(split_df, num_trades):
 
     **RETURNS:**
 
-         **blotter_series:** ``pandas.Series`` a blotter with random trades,
+         **blotter_frame:** ``pandas.DataFrame`` a blotter with random trades,
           num_trades
     """
     ind = numpy.sort(numpy.random.randint(0, len(split_df), size = num_trades))
     #This unique makes sure there aren't double trade day entries which breaks 
-    #the function blotter_to_split_adjusted_shares
+    #the function blotter_and_price_df_to_cum_shares
     ind = numpy.unique(ind)
     dates = split_df.index[ind]
+
+    #construct random execution prices
+    prices = []
+    for date in dates:
+        u_lim = split_df.loc[date, 'High']
+        l_lim = split_df.loc[date, 'Low']
+        prices.append(numpy.random.rand()*(u_lim - l_lim + 1) + l_lim)
+        
     trades = numpy.random.randint(-100, 100, size = len(ind))
     trades = numpy.round(trades, -1)
 
     while numpy.any(trades.cumsum() < 0):
         trades[numpy.argmin(trades)] *= -1.    
 
-    return pandas.Series( trades, index = dates, name = 'Buy/Sell')
+    return pandas.DataFrame({'Buy/Sell':trades, 'Price':prices}, index = dates)
 
 def blotter_to_cum_shares(blotter_series, ticker, start_date, end_date, tol):
     """
-    Aggregation function transforming a blotter series for a given ticker into a 
-    DataFrame with cumulative investment, price, dividends, etc.
+    Similar to :fun:blotter_and_price_df_to_cum_shares except that a split adjusted 
+    ``price_df`` is not necessary.  Only a blotter,  ticker, start_date, & end_date
+    are needed.  Returns 
 
     **ARGS:**
 
@@ -241,7 +273,7 @@ def blotter_to_cum_shares(blotter_series, ticker, start_date, end_date, tol):
 
     price_df = append_price_frame_with_dividends(ticker, start_date, end_date)
     split_df = calculate_splits(price_df)
-    return blotter_to_split_adjusted_shares(blotter_series, split_df)
+    return blotter_and_price_df_to_cum_shares(blotter_series, split_df)
 
 def generate_random_asset_path(ticker, start_date, num_trades):
     import pdb
@@ -272,7 +304,7 @@ def generate_random_portfolio_blotter(tickers, num_trades):
     **RETURNS:**
 
         ``pandas.DataFrame`` with columns 'Ticker', 'Buy/Sell' (+ for buys, - for
-         sells) and 'Price' of len = num_trades x len(tickers)
+         sells) and 'Price'
     
     """
     blot_d = {}
@@ -284,13 +316,14 @@ def generate_random_portfolio_blotter(tickers, num_trades):
         blot_d[ticker] = construct_random_trades(price_d[ticker], num_trades)
     ind = []
     agg_d = {'Ticker':[],  'Buy/Sell':[], 'Price':[]}
+    #import pdb
+    #pdb.set_trace()
     for ticker in tickers:
-        for i, trade in enumerate(blot_d[ticker]):
-            ind.append(blot_d[ticker].index[i])
+        for date in blot_d[ticker].index:
+            ind.append(date)
             agg_d['Ticker'].append(ticker)
-            agg_d['Buy/Sell'].append(trade)
-            price = price_d[ticker].ix[blot_d[ticker].index[i], 'Close']
-            agg_d['Price'].append(price)
+            agg_d['Buy/Sell'].append(blot_d[ticker].loc[date, 'Buy/Sell'])
+            agg_d['Price'].append(blot_d[ticker].loc[date, 'Price'])
 
     return pandas.DataFrame(agg_d, index = ind)
 
@@ -503,7 +536,7 @@ def test_funs():
     >>> price_df = price_df[cols]
     >>> split_frame = calculate_splits(price_df)
 
-    >>> shares_owned = blotter_to_split_adjusted_shares(blotter, split_frame)
+    >>> shares_owned = blotter_and_price_df_to_cum_shares(blotter, split_frame)
     >>> test_vals = xl_file.parse('share_balance', index_col = 0)['cum_shares']
     >>> put.assert_series_equal(shares_owned['cum_shares'].dropna(), test_vals)
 

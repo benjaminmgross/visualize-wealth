@@ -324,32 +324,6 @@ def generate_random_portfolio_blotter(tickers, num_trades):
 
     return pandas.DataFrame(agg_d, index = ind)
 
-def portfolio_from_blotter(blotter_df):
-    """
-    The aggregation function to construct a portfolio given a blotter of tickers,
-    trades, and number of shares.  
-
-    **ARGS:**
-
-        **agg_blotter_df:** a ``pandas.DataFrame`` with columns ['Ticker',
-         'Buy/Sell', 'Price'],  where the 'Buy/Sell' column is the quantity of
-          shares, (+) for buy, (-) for sell
-
-    **RETURNS:**
-    
-        ** ``pandas.Panel``** with dimensions [tickers, dates, price data]
-    """
-    tickers = pandas.unique(blotter_df['Ticker'])
-    start_date = blotter_df.sort_index().index[0]
-    end_date = datetime.datetime.today()
-    val_d = {}
-    for ticker in tickers:
-        blotter_series = blotter_df[blotter_df['Ticker'] == ticker].sort_index()
-        val_d[ticker] = blotter_to_cum_shares(blotter_series, ticker,
-                                              start_date, end_date, tol = .1)
-
-    return pandas.Panel(val_d)
-
 def fetch_data_for_portfolio_construction(weight_df):
     """
     Given a weight frame with index of allocation dates and columns of percentage 
@@ -412,7 +386,120 @@ def fetch_data_for_portfolio_construction(weight_df):
 
     return panel
 
-def portfolio_from_weight_file(weight_df, price_panel, start_value):
+
+def pfp_from_weight_file(panel_from_weight_file):
+    """
+    pfp stands for "Portfolio from Panel", so this takes the final ``pandas.Panel``
+    that is created in the portfolio construction process when weight file is given
+    and generates a portfolio path of 'Open' and 'Close'
+
+    **ARGS:**
+
+        **panel_from_weight_file:** a ``pandas.Panel`` that was generated using
+        ``panel_from_weight_file``
+
+    **RETURNS:**
+
+        **portfolio prices:** in a ``pandas.DataFrame`` with columns ['Open', 
+        'Close']
+    """
+    port_cols = ['Close', 'Open']
+    index = panel_from_weight_file.major_axis
+    port_df = pandas.DataFrame(numpy.zeros([ len(index), len(port_cols)]), 
+                               index = index, columns = port_cols)
+        
+
+        #assign the portfolio values
+    port_df.loc[:, 'Close'] = (
+        panel_from_weight_file.loc[ :, : ,'Adj_Q'].mul(
+        panel_from_weight_file.loc[ :, :, 'Close']).sum(axis = 1))
+    port_df.loc[:, 'Open'] = (
+        panel_from_weight_file.loc[ :, :, 'Adj_Q'].mul(
+        panel_from_weight_file.loc[ :, :, 'Open']).sum(axis = 1))
+
+    return port_df
+
+def pfp_from_blotter(panel_from_blotter, start_value = 1000.):
+    """
+    pfp stands for "Portfolio from Panel", so this takes the final ``pandas.Panel``
+    that is created in the portfolio construction process when a blotter is given
+    and generates a portfolio path of 'Open' and 'Close'
+
+    **ARGS:**
+
+        **panel_from_weight_file:** a ``pandas.Panel`` that was generated using
+        ``panel_from_weight_file``
+
+        **start_value:** ``float`` of the starting value, defaults to 1000.
+
+    **RETURNS:**
+
+        **portfolio prices:** in a ``pandas.DataFrame`` with columns ['Open', 
+        'Close']
+    """
+    import pdb
+   
+    panel = panel_from_blotter.copy()
+    index = panel.major_axis
+    price_df = pandas.DataFrame(numpy.zeros([len(index), 2]), index = index, 
+                                columns = ['Close', 'Open'])
+
+    price_df.loc[index[0], 'Close'] = start_value
+    
+    #first determine the log returns for the series
+    cl_to_cl_end_val = panel.ix[:, :, 'cum_shares'].mul(
+        panel.ix[:, :, 'Close']).add(panel.ix[:, :, 'cum_shares'].mul(
+        panel.ix[:, :, 'Dividends'])).sub(panel.ix[:, :, 'contr_withdrawal']).sum(
+        axis = 1)
+
+    cl_to_cl_beg_val = panel.ix[:, :, 'cum_shares'].mul(
+        panel.ix[:, :, 'Close']).add(panel.ix[:, :, 'cum_shares'].mul(
+        panel.ix[:, :, 'Dividends'])).sum(axis = 1).shift(1)
+
+    op_to_cl_end_val = panel.ix[:, :, 'cum_shares'].mul(
+        panel.ix[:, :, 'Close']).add(panel.ix[:, :, 'cum_shares'].mul(
+        panel.ix[:, :, 'Dividends'])).sum(axis = 1)
+
+    op_to_cl_beg_val = panel.ix[:, :, 'cum_shares'].mul(
+        panel.ix[:, :, 'Open']).sum(axis = 1)
+
+    cl_to_cl = cl_to_cl_end_val.div(cl_to_cl_beg_val).apply(numpy.log)
+    op_to_cl = op_to_cl_end_val.div(op_to_cl_beg_val).apply(numpy.log)
+    pdb.set_trace()
+    price_df.loc[index[1]:, 'Close'] = start_value*numpy.exp(cl_to_cl[1:].cumsum())
+    price_df['Open'] = price_df['Close'].div(numpy.exp(op_to_cl))
+    
+    return price_df
+            
+
+def panel_from_blotter(blotter_df):
+    """
+    The aggregation function to construct a portfolio given a blotter of tickers,
+    trades, and number of shares.  
+
+    **ARGS:**
+
+        **agg_blotter_df:** a ``pandas.DataFrame`` with columns ['Ticker',
+         'Buy/Sell', 'Price'],  where the 'Buy/Sell' column is the quantity of
+          shares, (+) for buy, (-) for sell
+
+    **RETURNS:**
+    
+        ** ``pandas.Panel``** with dimensions [tickers, dates, price data]
+    """
+    tickers = pandas.unique(blotter_df['Ticker'])
+    start_date = blotter_df.sort_index().index[0]
+    end_date = datetime.datetime.today()
+    val_d = {}
+    for ticker in tickers:
+        blotter_series = blotter_df[blotter_df['Ticker'] == ticker].sort_index()
+        val_d[ticker] = blotter_to_cum_shares(blotter_series, ticker,
+                                              start_date, end_date, tol = .1)
+
+    return pandas.Panel(val_d)
+
+
+def panel_from_weight_file(weight_df, price_panel, start_value):
     """
     Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
     a pandas.DataFrame of weight allocations and a starting  value of the index
@@ -463,21 +550,11 @@ def portfolio_from_weight_file(weight_df, price_panel, start_value):
         panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = (panel.loc[:,
             chunk[0]:chunk[1], ['c0_ac0', 'ac_c', 'n0']].apply(numpy.product, 
             axis = 2))
+        p_val = panel.loc[:, chunk[1], 'Adj_Q'].mul(
+              panel.loc[:, chunk[1], 'Close']).sum(axis = 1)
+    return panel.loc[:, a[0]:, :]
 
-        #assign the portfolio values
-        port_df.loc[chunk[0]:chunk[1], 'Close'] = (
-            panel.loc[:, chunk[0]:chunk[1],'Adj_Q'].mul(
-            panel.loc[:, chunk[0]:chunk[1], 'Close']).sum(axis = 1))
-        port_df.loc[chunk[0]:chunk[1], 'Open'] = (
-            panel.loc[:, chunk[0]:chunk[1],'Adj_Q'].mul(
-            panel.loc[:, chunk[0]:chunk[1], 'Open']).sum(axis = 1))
-
-        p_val = port_df.loc[chunk[1], 'Close']
-
-    #The portfolio should start at the first trade, a[0]
-    return port_df[a[0]:]
-
-def portfolio_from_initial_weights(weight_series, price_panel, start_value,
+def panel_from_initial_weights(weight_series, price_panel, start_value,
                                    rebal_frequency):
     """
     Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
@@ -520,7 +597,7 @@ def portfolio_from_initial_weights(weight_series, price_panel, start_value,
     weight_df = pandas.DataFrame(numpy.tile(weight_series.values, 
         [len(index[ind]), 1]), index = index[ind], columns = weight_series.index)
                     
-    return portfolio_from_weight_file(weight_df, price_panel, start_value)
+    return panel_from_weight_file(weight_df, price_panel, start_value)
 
 
 def test_funs():
@@ -543,7 +620,8 @@ def test_funs():
     >>> d = {}
     >>> for ticker in tickers:
     ...     d[ticker] = xl_file.parse(ticker, index_col = 0)
-    >>> portfolio = portfolio_from_weight_file(weight_df, pandas.Panel(d), 1000)
+    >>> panel = panel_from_weight_file(weight_df, pandas.Panel(d), 1000.)
+    >>> portfolio = pfp_from_weight_file(panel)
     >>> manual_calcs = xl_file.parse('index_result', index_col = 0)
     >>> put.assert_series_equal(manual_calcs['Close'], portfolio['Close'])
     """

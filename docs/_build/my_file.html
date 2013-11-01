@@ -317,8 +317,8 @@ price DataFrame that is collected</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.construct_portfolio.portfolio_from_blotter">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_blotter</tt><big>(</big><em>blotter_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_blotter" title="Permalink to this definition">¶</a></dt>
+<dt id="visualize_wealth.construct_portfolio.panel_from_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">panel_from_blotter</tt><big>(</big><em>blotter_df</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.panel_from_blotter" title="Permalink to this definition">¶</a></dt>
 <dd><p>The aggregation function to construct a portfolio given a blotter of tickers,
 trades, and number of shares.</p>
 <p><strong>ARGS:</strong></p>
@@ -338,8 +338,8 @@ trades, and number of shares.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.construct_portfolio.portfolio_from_initial_weights">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>start_value</em>, <em>rebal_frequency</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_initial_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_initial_weights" title="Permalink to this definition">¶</a></dt>
+<dt id="visualize_wealth.construct_portfolio.panel_from_initial_weights">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">panel_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>start_value</em>, <em>rebal_frequency</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.panel_from_initial_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
 a pandas.Series of intial weight allocations, the date of those initial weight 
 allocations (series.name), a starting value of the index, and a rebalance  
@@ -362,8 +362,8 @@ at somspecified interval)</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.construct_portfolio.portfolio_from_weight_file">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">portfolio_from_weight_file</tt><big>(</big><em>weight_df</em>, <em>price_panel</em>, <em>start_value</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#portfolio_from_weight_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.portfolio_from_weight_file" title="Permalink to this definition">¶</a></dt>
+<dt id="visualize_wealth.construct_portfolio.panel_from_weight_file">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">panel_from_weight_file</tt><big>(</big><em>weight_df</em>, <em>price_panel</em>, <em>start_value</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.panel_from_weight_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
 a pandas.DataFrame of weight allocations and a starting  value of the index</p>
 <p><strong>ARGS:</strong></p>
@@ -378,6 +378,40 @@ columns, index of dates and weight allocations to each of the tickers</p>
 <p><strong>RETURNS:</strong></p>
 <blockquote>
 <div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions (tickers, dates, price date)</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.pfp_from_blotter">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">pfp_from_blotter</tt><big>(</big><em>panel_from_blotter</em>, <em>start_value=1000.0</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.pfp_from_blotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>pfp stands for &#8220;Portfolio from Panel&#8221;, so this takes the final <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt>
+that is created in the portfolio construction process when a blotter is given
+and generates a portfolio path of &#8216;Open&#8217; and &#8216;Close&#8217;</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>panel_from_weight_file:</strong> a <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> that was generated using
+<tt class="docutils literal"><span class="pre">panel_from_weight_file</span></tt></p>
+<p><strong>start_value:</strong> <tt class="docutils literal"><span class="pre">float</span></tt> of the starting value, defaults to 1000.</p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>portfolio prices:</strong> in a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Open&#8217;, 
+&#8216;Close&#8217;]</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.pfp_from_weight_file">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">pfp_from_weight_file</tt><big>(</big><em>panel_from_weight_file</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.pfp_from_weight_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>pfp stands for &#8220;Portfolio from Panel&#8221;, so this takes the final <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt>
+that is created in the portfolio construction process when weight file is given
+and generates a portfolio path of &#8216;Open&#8217; and &#8216;Close&#8217;</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><strong>panel_from_weight_file:</strong> a <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> that was generated using
+<tt class="docutils literal"><span class="pre">panel_from_weight_file</span></tt></div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><strong>portfolio prices:</strong> in a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Open&#8217;, 
+&#8216;Close&#8217;]</div></blockquote>
 </dd></dl>
 
 <dl class="function">
@@ -403,7 +437,8 @@ columns, index of dates and weight allocations to each of the tickers</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">portfolio_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">panel</span> <span class="o">=</span> <span class="n">panel_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="mf">1000.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">pfp_from_weight_file</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">manual_calcs</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;index_result&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">manual_calcs</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">],</span> <span class="n">portfolio</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">])</span>
 </pre></div>

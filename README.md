@@ -107,8 +107,7 @@ Portfolios can (generally) be constructed in one of three ways:
 		2000-07-11  1011.636780  1011.064479
 		2000-07-12  1031.953453  1016.978253
 
-2. The Weight Allocation Method
-
+2. The Weight Allocation Method: A simple way to backtest portfolio strategies is to provide weight allocations that represent proportions of the total portfolio value over time.  So if I wanted to implement a tactical strategy over the past N years, one of the simplest methods is to calculate portfolio performance
 	
 	
 

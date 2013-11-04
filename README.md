@@ -23,6 +23,7 @@ Working on it...
 ##General Summary & Examples
 
 Portfolios can (generally) be constructed in one of three ways:
+
 1. The Blotter Method
 2. Weight Allocation Method
 3. Initial Allocation with specific Rebalancing Period Method

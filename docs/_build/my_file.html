@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" />
-    <link rel="prev" title="Welcome to Visualize Wealth’s documentation!" href="index.html" /> 
+    <link rel="prev" title="README.md" href="intro.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+          <a href="intro.html" title="README.md"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -57,8 +57,8 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to Visualize Wealth&#8217;s documentation!</a></p>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">README.md</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/my_file.txt"
@@ -254,11 +254,13 @@ DataFrame with a split factor columns named &#8216;Splits&#8217;</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_portfolio_construction</tt><big>(</big><em>weight_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_for_portfolio_construction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_portfolio_construction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a weight frame with index of allocation dates and columns of percentage 
-allocations, fetch the data using Yahoo!&#8217;s API and return a panel of [tickers, 
-dates, price data</p>
+<dt id="visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_initial_allocation_method</tt><big>(</big><em>weight_df</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be used with the <strong>Initial Allocaiton &amp; Rebalancing Method</strong> Given a weight_df
+<tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with index of tickers and values of initial allocation 
+percentages, fetch the data using Yahoo!&#8217;s API and return a panel of dimensions
+[tickers, dates, price data], where <tt class="docutils literal"><span class="pre">price_data</span></tt> has columns <tt class="docutils literal"><span class="pre">['Open',</span> 
+<span class="pre">'Close','Adj</span> <span class="pre">Close'].</span></tt></p>
 <p><strong>ARGS:</strong></p>
 <blockquote>
 <div><dl class="docutils">
@@ -268,12 +270,39 @@ dates, price data</p>
 </div></blockquote>
 <p><strong>RETURNS:</strong></p>
 <blockquote>
-<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
+<div><p><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
 * <tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers
 * <tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates
-* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically: 
-[&#8216;ac_c&#8217;, &#8216;c0_ac0&#8217;, &#8216;n0&#8217;, &#8216;Adj_Q&#8217;, &#8216;Asset Value&#8217;, &#8216;Open&#8217;, &#8216;Close&#8217;, 
-&#8216;Adj Close&#8217;]</div></blockquote>
+* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically:</p>
+<blockquote>
+<div>[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.fetch_data_for_weight_allocation_method">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_weight_allocation_method</tt><big>(</big><em>weight_df</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_weight_allocation_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be used with the <strong>Weight Allocation Method</strong> Given a weight_df
+<tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with index of allocation dates and columns of percentage
+allocations, fetch the data using Yahoo!&#8217;s API and return a panel of dimensions
+[tickers, dates, price data], where <tt class="docutils literal"><span class="pre">price_data</span></tt> has columns <tt class="docutils literal"><span class="pre">['Open',</span> 
+<span class="pre">'Close','Adj</span> <span class="pre">Close'].</span></tt></p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>weight_df:</strong> a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and tickers as</dt>
+<dd>columns</dd>
+</dl>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote>
+<div><p><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
+* <tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers
+* <tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates
+* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically:</p>
+<blockquote>
+<div>[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</div></blockquote>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">
@@ -339,7 +368,7 @@ trades, and number of shares.</p>
 
 <dl class="function">
 <dt id="visualize_wealth.construct_portfolio.panel_from_initial_weights">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">panel_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>start_value</em>, <em>rebal_frequency</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.panel_from_initial_weights" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">panel_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>rebal_frequency</em>, <em>start_value=1000</em>, <em>start_date=None</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.panel_from_initial_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
 a pandas.Series of intial weight allocations, the date of those initial weight 
 allocations (series.name), a starting value of the index, and a rebalance  
@@ -364,7 +393,7 @@ at somspecified interval)</p>
 <dl class="function">
 <dt id="visualize_wealth.construct_portfolio.panel_from_weight_file">
 <tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">panel_from_weight_file</tt><big>(</big><em>weight_df</em>, <em>price_panel</em>, <em>start_value</em><big>)</big><a class="headerlink" href="#visualize_wealth.construct_portfolio.panel_from_weight_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a pandas.DataFrame with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
+<dd><p>Returns a <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with columns [&#8216;Close&#8217;, &#8216;Open&#8217;] when provided
 a pandas.DataFrame of weight allocations and a starting  value of the index</p>
 <p><strong>ARGS:</strong></p>
 <blockquote>
@@ -937,7 +966,7 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+          <a href="intro.html" title="README.md"
              >previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>

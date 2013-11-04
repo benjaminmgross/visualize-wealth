@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>README.md &mdash; Visualize Wealth 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="Visualize Wealth" href="my_file.html" />
+    <link rel="prev" title="Welcome to Visualize Wealth’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="my_file.html" title="Visualize Wealth"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">README.md</a><ul>
+<li><a class="reference internal" href="#license">License</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#general-summary-examples">General Summary &amp; Examples</a></li>
+<li><a class="reference internal" href="#todo-list">ToDo List:</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Visualize Wealth&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="my_file.html"
+                        title="next chapter">Visualize Wealth</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/README.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="readme-md">
+<h1>README.md<a class="headerlink" href="#readme-md" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>This program is free software and is distrubuted under the <a class="reference external" href="http://www.gnu.org/licenses/quick-guide-gplv3.html">GNU General
+Public License version
+3</a>(&#8220;GNU GPL
+v3&#8221;)</p>
+<p>© Benjamin M. Gross 2013</p>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">pandas</span></tt>: extensively used (<tt class="docutils literal"><span class="pre">numpy</span></tt> and <tt class="docutils literal"><span class="pre">scipy</span></tt> obviously, but
+<tt class="docutils literal"><span class="pre">pandas</span></tt> depends on those) <tt class="docutils literal"><span class="pre">urllib2</span></tt>: for Yahoo! API calls to append
+price <tt class="docutils literal"><span class="pre">DataFrame</span></tt>s with Dividends</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Working on it...</p>
+</div>
+<div class="section" id="general-summary-examples">
+<h2>General Summary &amp; Examples<a class="headerlink" href="#general-summary-examples" title="Permalink to this headline">¶</a></h2>
+<p>Portfolios can (generally) be constructed in one of three ways:</p>
+<ol class="arabic simple">
+<li><strong>The blotter method:</strong> In finance, a spreadsheet of &#8220;buys/sells&#8221;,
+&#8220;Prices&#8221;, &#8220;Dates&#8221; etc. is called a &#8220;trade blotter.&#8221; This also would
+be the easiest way for an investor to actually analyze the past
+performance of her portfolio, because trade confirmations provide
+this exact data.</li>
+</ol>
+<p>This method is most effectively achieved by providing an Excel /
+<tt class="docutils literal"><span class="pre">.csv</span></tt> file with the following format:</p>
+<p>| Date | Buy / Sell | Price |Ticker |
+|:&#8212;&#8211;|:&#8212;&#8212;&#8212;&#8211;|:&#8212;&#8212;|:&#8212;&#8211; | |9/4/01| 50 | 123.45| EFA
+| |5/5/03| 65 | 107.71| EEM | |6/6/03|-15 | 118.85| EEM |</p>
+<div class="highlight-python"><pre>where "Buys" can be distinguished from "Sells" because buys are positive (+) and sells are negative (-).
+
+
+For example, let's say I wanted to generate a random portfolio containing the following tickers and respective asset classes, using the `generate_random_portfolio_blotter` method
+
+|Ticker  | Description              | Asset Class        | Price Start|</pre>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="38%" />
+<col width="32%" />
+<col width="20%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>IWB</td>
+<td>iShares Russell 1000</td>
+<td>US Equity</td>
+<td>5/19/2000</td>
+</tr>
+<tr class="row-even"><td>IWR</td>
+<td>iShares Russell Midcap</td>
+<td>US Equity</td>
+<td>8/27/2001</td>
+</tr>
+<tr class="row-odd"><td>IWM</td>
+<td>iShares Russell 2000</td>
+<td>US Equity</td>
+<td>5/26/2000</td>
+</tr>
+<tr class="row-even"><td>EFA</td>
+<td>iShares EAFE</td>
+<td>Foreign Dev Equity</td>
+<td>8/27/2001</td>
+</tr>
+<tr class="row-odd"><td>EEM</td>
+<td>iShares EAFE EM</td>
+<td>Foreign EM Equity</td>
+<td>4/15/2003</td>
+</tr>
+<tr class="row-even"><td>TIP</td>
+<td>iShares TIPS</td>
+<td>Fixed Income</td>
+<td>12/5/2003</td>
+</tr>
+<tr class="row-odd"><td>TLT</td>
+<td>iShares LT Treasuries</td>
+<td>Fixed Income</td>
+<td>7/31/2002</td>
+</tr>
+<tr class="row-even"><td>IEF</td>
+<td>iShares MT Treasuries</td>
+<td>Fixed Income</td>
+<td>7/31/2002</td>
+</tr>
+<tr class="row-odd"><td>SHY</td>
+<td>iShares ST Treasuries</td>
+<td>Fixed Income</td>
+<td>7/31/2002</td>
+</tr>
+<tr class="row-even"><td>LQD</td>
+<td>iShares Inv Grade</td>
+<td>Fixed Income</td>
+<td>7/31/2002</td>
+</tr>
+<tr class="row-odd"><td>IYR</td>
+<td>iShares Real Estate</td>
+<td>Alternative</td>
+<td>6/19/2000</td>
+</tr>
+<tr class="row-even"><td>GLD</td>
+<td>iShares Gold Index</td>
+<td>Alternative</td>
+<td>11/18/2004</td>
+</tr>
+<tr class="row-odd"><td>GSG</td>
+<td>iShares Commodities</td>
+<td>Alternative</td>
+<td>7/21/2006</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><pre>I could construct a portfolio of random trades (i.e. the "blotter method"), say 20 trades for each asset, by executing the following:
+
+            #import the modules
+    In [5]: import vizualize_wealth.construct_portfolio as vwcp
+
+    In [6]: ticks = ['IWB','IWR','IWM','EFA','EEM','TIP','TLT','IEF',
+                 'SHY','LQD','IYR','GLD','GSG']
+
+    In [7]: num_trades = 20
+
+            #construct the random trade blotter
+    In [8]: blotter = vwcp.generate_random_portfolio_blotter(ticks, num_trades)
+
+            #construct the portfolio panel
+    In [9]: port_panel = vwcp.portfolio_from_blotter(blotter)
+
+Now I have a `pandas.Panel`. Before we constuct the cumulative portfolio values, let's examine the dimensions of the panel (which are generally the same for all construction methods, although the columns of the `minor_axis` are different because the methods call for different optimized calculations) with the following dimensions:
+
+    #tickers are `panel.items`
+    In [10]: port_panel.items
+    Out[10]: Index([u'EEM', u'EFA', u'GLD', u'GSG', u'IEF', u'IWB', u'IWM', u'IWR',
+                u'IYR', u'LQD', u'SHY', u'TIP', u'TLT'], dtype=object)
+
+    #dates are along the `panel.major_axis`
+    In [12]: port_panel.major_axis
+    Out[12]:
+    &lt;class 'pandas.tseries.index.DatetimeIndex'&gt;
+    [2000-07-06 00:00:00, ..., 2013-10-30 00:00:00]
+    Length: 3351, Freq: None, Timezone: None
+
+    #price data, cumulative investment, dividends, and split ratios are `panel.minor_axis`
+    In [13]: port_panel.minor_axis
+    Out[13]: Index([u'Open', u'High', u'Low', u'Close', u'Volume', u'Adj Close',
+     u'Dividends',u'Splits', u'contr_withdrawal', u'cum_investment', u'cum_shares'],
+     dtype=object)
+
+There is a lot of information to be gleaned from this data object, but the most common goal would be to convert this `pandas.Panel` to a Portfolio `pandas.DataFrame` with columns `['Open', 'Close']`, so it can be compared against other assets or combination of assets.  In this case, use `pfp_from_blotter`(which stands for "portfolio_from_panel" + portfolio construction method [i.e. blotter, weights, or initial allocaiton] which in this case was "the blotter method").
+
+    #construct_the portfolio series
+    In [14]: port_df = vwcp.pfp_from_blotter(panel, 1000.)
+
+    In [117]: port_df.head()
+    Out[117]:
+                  Close         Open
+    Date
+    2000-07-06  1000.000000   988.744754
+    2000-07-07  1006.295307  1000.190767
+    2000-07-10  1012.876765  1005.723006
+    2000-07-11  1011.636780  1011.064479
+    2000-07-12  1031.953453  1016.978253</pre>
+</div>
+<ol class="arabic simple" start="2">
+<li>The Weight Allocation Method: A simple way to backtest portfolio
+strategies is to provide weight allocations that represent
+proportions of the total portfolio value over time. So if I wanted to
+implement a tactical strategy over the past N years, one of the
+simplest methods is to calculate portfolio performance</li>
+</ol>
+</div>
+<div class="section" id="todo-list">
+<h2>ToDo List:<a class="headerlink" href="#todo-list" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Best broad asset classes to determine &#8220;best fit portfolio&#8221;</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="50%" />
+<col width="34%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Ticker</th>
+<th class="head">Name</th>
+<th class="head">Price Data Begins</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>VTSMX</td>
+<td>Vanguard Total Stock Market</td>
+<td>6/20/1996</td>
+</tr>
+<tr class="row-odd"><td>VBMFX</td>
+<td>Vanguard Total Bond Market</td>
+<td>6/4/1990</td>
+</tr>
+<tr class="row-even"><td>VGTSX</td>
+<td>Vanguard Total Intl Stock</td>
+<td>6/28/1996</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li>Put together <tt class="docutils literal"><span class="pre">General</span> <span class="pre">Summary</span> <span class="pre">&amp;</span> <span class="pre">Examples</span></tt></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="my_file.html" title="Visualize Wealth"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Benjamin M. Gross.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

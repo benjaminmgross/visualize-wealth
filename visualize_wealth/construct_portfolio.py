@@ -324,11 +324,39 @@ def generate_random_portfolio_blotter(tickers, num_trades):
 
     return pandas.DataFrame(agg_d, index = ind)
 
-def fetch_data_for_portfolio_construction(weight_df):
+def panel_from_blotter(blotter_df):
     """
-    Given a weight frame with index of allocation dates and columns of percentage 
-    allocations, fetch the data using Yahoo!'s API and return a panel of [tickers, 
-    dates, price data
+    The aggregation function to construct a portfolio given a blotter of tickers,
+    trades, and number of shares.  
+
+    **ARGS:**
+
+        **agg_blotter_df:** a ``pandas.DataFrame`` with columns ['Ticker',
+         'Buy/Sell', 'Price'],  where the 'Buy/Sell' column is the quantity of
+          shares, (+) for buy, (-) for sell
+
+    **RETURNS:**
+    
+        ** ``pandas.Panel``** with dimensions [tickers, dates, price data]
+    """
+    tickers = pandas.unique(blotter_df['Ticker'])
+    start_date = blotter_df.sort_index().index[0]
+    end_date = datetime.datetime.today()
+    val_d = {}
+    for ticker in tickers:
+        blotter_series = blotter_df[blotter_df['Ticker'] == ticker].sort_index()
+        val_d[ticker] = blotter_to_cum_shares(blotter_series, ticker,
+                                              start_date, end_date, tol = .1)
+
+    return pandas.Panel(val_d)
+
+def fetch_data_for_weight_allocation_method(weight_df):
+    """
+    To be used with the **Weight Allocation Method** Given a weight_df
+    ``pandas.DataFrame`` with index of allocation dates and columns of percentage
+    allocations, fetch the data using Yahoo!'s API and return a panel of dimensions
+    [tickers, dates, price data], where ``price_data`` has columns ``['Open', 
+    'Close','Adj Close'].``
 
     **ARGS:**
     
@@ -341,50 +369,167 @@ def fetch_data_for_portfolio_construction(weight_df):
         * ``panel.items:`` are tickers
         * ``panel.major_axis:`` dates
         * ``panel.minor_axis:`` price information, specifically: 
-        ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 'Close', 
-        'Adj Close']
+           ['Open', 'Close', 'Adj Close']
     """
     reader = pandas.io.data.DataReader
     d_0 = weight_df.index.min()
-    tickers = weight_df.columns
-    opens = {}
-    closes = {}
-    acs = {}
-    
-    for ticker in tickers:
-        tmp = reader(ticker, 'yahoo', start = d_0)
-        opens[ticker]  = tmp['Open']
-        closes[ticker] = tmp['Close']
-        acs[ticker] = tmp['Adj Close']
-        
-    
-    close_df = pandas.DataFrame(closes, columns = weight_df.columns)
-    adj_df = pandas.DataFrame(acs, columns = weight_df.columns)
-    open_df = pandas.DataFrame(opens, columns = weight_df.columns)
-    
-    assert numpy.all(close_df.index == adj_df.index), (
-        "Close and Adj Close Indexes are not the same")
 
-    index = close_df.index
+    #dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls
+    d = {}
     
-    #determine the dates chunks
-    import pdb
-    #pdb.set_trace()
-    
-    #the columns correspond to the calculation sheet for interpretability
-    columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 
-               'Close', 'Adj Close']
+    for ticker in weight_df.columns:
+        d[ticker] = reader(ticker, 'yahoo', start = d_0)
 
-    #preallocate for the calculation
-    panel = pandas.Panel(numpy.zeros([len(tickers), len(index), len(columns)]),
-                         major_axis = index, items = tickers, minor_axis = columns)
-    
-    #insert the Close into the panel
-    panel.loc[:, :, 'Close'] = close_df
-    panel.loc[:, :, 'Open'] = open_df
-    panel.loc[:, :, 'Adj Close'] = adj_df
+    return pandas.Panel(d)
 
-    return panel
+def fetch_data_for_initial_allocation_method(weight_df):
+    """
+    To be used with the **Initial Allocaiton & Rebalancing Method** Given a weight_df
+    ``pandas.DataFrame`` with index of tickers and values of initial allocation 
+    percentages, fetch the data using Yahoo!'s API and return a panel of dimensions
+    [tickers, dates, price data], where ``price_data`` has columns ``['Open', 
+    'Close','Adj Close'].``
+
+    **ARGS:**
+    
+        **weight_df:** a ``pandas.DataFrame`` with dates as index and tickers as
+         columns
+
+    **RETURNS:**
+    
+        ``pandas.Panel`` where:
+        * ``panel.items:`` are tickers
+        * ``panel.major_axis:`` dates
+        * ``panel.minor_axis:`` price information, specifically: 
+           ['Open', 'Close', 'Adj Close']
+    """
+    reader = pandas.io.data.DataReader
+    d_0 = datetime.datetime(1990, 1, 1)
+
+    #dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls
+    d = {}
+    
+    for ticker in weight_df.index:
+        d[ticker] = reader(ticker, 'yahoo', start = d_0)
+
+    return pandas.Panel(d)
+
+def panel_from_weight_file(weight_df, price_panel, start_value):
+    """
+    Returns a ``pandas.Panel`` with columns ['Close', 'Open'] when provided
+    a pandas.DataFrame of weight allocations and a starting  value of the index
+
+    **ARGS:**
+    
+        **weight_df:** ``pandas.DataFrame`` of a weight allocation with tickers for
+        columns, index of dates and weight allocations to each of the tickers
+
+        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
+         data]
+
+    **RETURNS:**
+    
+        ``pandas.Panel`` with dimensions (tickers, dates, price date)
+    
+    """
+
+    #these columns correspond to the columns in sheet 'value_calcs!' in "panel from
+    #weight file test.xlsx"
+    
+    columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 'High', 'Low',
+               'Close', 'Volume', 'Adj Close']
+    panel = price_panel.reindex(minor_axis = columns)
+    port_cols = ['Close', 'Open']
+    index = panel.major_axis
+    port_df = pandas.DataFrame(numpy.zeros([ len(index), len(port_cols)]), 
+                               index = index, columns = port_cols)
+
+    a = weight_df.index
+    b = pandas.to_datetime(numpy.append(weight_df.index[1:], index[-1]))
+    dt_chunks = zip(a, b)
+    
+    #fill in the Adjusted Quantity values and the aggregate position values
+    p_val = start_value
+    for chunk in dt_chunks:
+        n = len(panel.loc[:, chunk[0]:chunk[1], 'Close'])
+        c0_ac0 = panel.loc[:, chunk[0], 'Close'].div(
+            panel.loc[:, chunk[0], 'Adj Close'])
+        n0 = p_val*weight_df.loc[chunk[0], :].div(panel.loc[:, chunk[0], 'Close'])
+        panel.loc[:, chunk[0]:chunk[1], 'ac_c']  = (
+            panel.loc[:, chunk[0]:chunk[1],'Adj Close'].div(
+            panel.loc[:, chunk[0]:chunk[1], 'Close']))
+        panel.loc[:, chunk[0]:chunk[1], 'c0_ac0'] = (
+            numpy.tile(c0_ac0.values, [n, 1]).transpose())
+        panel.loc[:, chunk[0]:chunk[1], 'n0'] = numpy.tile(
+            n0.values, [n, 1]).transpose()
+        panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = (panel.loc[:,
+            chunk[0]:chunk[1], ['c0_ac0', 'ac_c', 'n0']].apply(numpy.product, 
+            axis = 2))
+        p_val = panel.loc[:, chunk[1], 'Adj_Q'].mul(
+              panel.loc[:, chunk[1], 'Close']).sum(axis = 1)
+    return panel.loc[:, a[0]:, :]
+
+def panel_from_initial_weights(weight_series, price_panel, rebal_frequency,
+                               start_value = 1000, start_date = None):
+    """
+    Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
+    a pandas.Series of intial weight allocations, the date of those initial weight 
+    allocations (series.name), a starting value of the index, and a rebalance  
+    frequency (this is the classical "static" construction" methodology, rebalancing
+    at somspecified interval)
+
+    **ARGS:**
+    
+        **weight_series:** ``pandas.Series`` of a weight allocation with an index of
+         tickers, and a name of the initial allocation
+
+        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
+          data]
+
+        **start_value:** ``flt`` of the value to start the index
+
+        **rebal_frequency:** ``str`` of 'weekly', 'monthly', 'quarterly', 'yearly'
+
+    **RETURNS:**
+    
+         **price:** of type ``pandas.DataFrame`` with portfolio 'Close' and 'Open'
+    """
+
+    #determine the first valid date and make it the start_date
+    first_valid = numpy.max(price_panel.loc[:, :, 'Close'].apply(
+            pandas.Series.first_valid_index))
+    
+    if start_date == None:
+        d_0 = first_valid
+        index = price_panel.loc[:, d_0:, :].major_axis
+
+    else:
+        #make sure the the start_date begins after all assets are valid
+        if isinstance(start_date, str):
+            start_date = datetime.datetime.strptime(start_date, "%m/%d/%Y")
+        assert start_date > first_valid, (
+            "first_valid index doesn't occur until after start_date")
+        index = price_panel.loc[:, start_date, :].major_axis
+
+    #the weigth_series must be a type series, but sometimes can be a 
+    #``pandas.DataFrame`` with len(columns) = 1
+    if isinstance(weight_series, pandas.DataFrame):
+        assert len(weight_series.columns) == 1, "Initial Allocation is not Series"
+        weight_series = weight_series[weight_series.columns[0]]
+            
+    
+    interval_dict = {'weekly':lambda x: x[:-1].week != x[1:].week, 
+                     'monthly': lambda x: x[:-1].month != x[1:].month,
+                     'quarterly':lambda x: x[:-1].quarter != x[1:].quarter,
+                     'yearly':lambda x: x[:-1].year != x[1:].year}
+
+    #create a boolean array of rebalancing dates
+    ind = numpy.append(True, interval_dict[rebal_frequency](index))
+    weight_df = pandas.DataFrame(numpy.tile(weight_series.values, 
+        [len(index[ind]), 1]), index = index[ind], columns = weight_series.index)
+                    
+    return panel_from_weight_file(weight_df, price_panel, start_value)
+
 
 
 def pfp_from_weight_file(panel_from_weight_file):
@@ -470,135 +615,6 @@ def pfp_from_blotter(panel_from_blotter, start_value = 1000.):
     price_df['Open'] = price_df['Close'].div(numpy.exp(op_to_cl))
     
     return price_df
-            
-
-def panel_from_blotter(blotter_df):
-    """
-    The aggregation function to construct a portfolio given a blotter of tickers,
-    trades, and number of shares.  
-
-    **ARGS:**
-
-        **agg_blotter_df:** a ``pandas.DataFrame`` with columns ['Ticker',
-         'Buy/Sell', 'Price'],  where the 'Buy/Sell' column is the quantity of
-          shares, (+) for buy, (-) for sell
-
-    **RETURNS:**
-    
-        ** ``pandas.Panel``** with dimensions [tickers, dates, price data]
-    """
-    tickers = pandas.unique(blotter_df['Ticker'])
-    start_date = blotter_df.sort_index().index[0]
-    end_date = datetime.datetime.today()
-    val_d = {}
-    for ticker in tickers:
-        blotter_series = blotter_df[blotter_df['Ticker'] == ticker].sort_index()
-        val_d[ticker] = blotter_to_cum_shares(blotter_series, ticker,
-                                              start_date, end_date, tol = .1)
-
-    return pandas.Panel(val_d)
-
-
-def panel_from_weight_file(weight_df, price_panel, start_value):
-    """
-    Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
-    a pandas.DataFrame of weight allocations and a starting  value of the index
-
-    **ARGS:**
-    
-        **weight_df:** ``pandas.DataFrame`` of a weight allocation with tickers for
-        columns, index of dates and weight allocations to each of the tickers
-
-        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
-         data]
-
-    **RETURNS:**
-    
-        ``pandas.Panel`` with dimensions (tickers, dates, price date)
-    
-    """
-
-    #these columns correspond to the columns in sheet 'value_calcs!' in "panel from
-    #weight file test.xlsx"
-    
-    columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 
-               'Close', 'Adj Close']
-    panel = price_panel.reindex(minor_axis = columns)
-    port_cols = ['Close', 'Open']
-    index = panel.major_axis
-    port_df = pandas.DataFrame(numpy.zeros([ len(index), len(port_cols)]), 
-                               index = index, columns = port_cols)
-
-    a = weight_df.index
-    b = pandas.to_datetime(numpy.append(weight_df.index[1:], index[-1]))
-    dt_chunks = zip(a, b)
-    
-    #fill in the Adjusted Quantity values and the aggregate position values
-    p_val = start_value
-    for chunk in dt_chunks:
-        n = len(panel.loc[:, chunk[0]:chunk[1], 'Close'])
-        c0_ac0 = panel.loc[:, chunk[0], 'Close'].div(
-            panel.loc[:, chunk[0], 'Adj Close'])
-        n0 = p_val*weight_df.loc[chunk[0], :].div(panel.loc[:, chunk[0], 'Close'])
-        panel.loc[:, chunk[0]:chunk[1], 'ac_c']  = (
-            panel.loc[:, chunk[0]:chunk[1],'Adj Close'].div(
-            panel.loc[:, chunk[0]:chunk[1], 'Close']))
-        panel.loc[:, chunk[0]:chunk[1], 'c0_ac0'] = (
-            numpy.tile(c0_ac0.values, [n, 1]).transpose())
-        panel.loc[:, chunk[0]:chunk[1], 'n0'] = numpy.tile(
-            n0.values, [n, 1]).transpose()
-        panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = (panel.loc[:,
-            chunk[0]:chunk[1], ['c0_ac0', 'ac_c', 'n0']].apply(numpy.product, 
-            axis = 2))
-        p_val = panel.loc[:, chunk[1], 'Adj_Q'].mul(
-              panel.loc[:, chunk[1], 'Close']).sum(axis = 1)
-    return panel.loc[:, a[0]:, :]
-
-def panel_from_initial_weights(weight_series, price_panel, start_value,
-                                   rebal_frequency):
-    """
-    Returns a pandas.DataFrame with columns ['Close', 'Open'] when provided
-    a pandas.Series of intial weight allocations, the date of those initial weight 
-    allocations (series.name), a starting value of the index, and a rebalance  
-    frequency (this is the classical "static" construction" methodology, rebalancing
-    at somspecified interval)
-
-    **ARGS:**
-    
-        **weight_series:** ``pandas.Series`` of a weight allocation with an index of
-         tickers, and a name of the initial allocation
-
-        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
-          data]
-
-        **start_value:** ``flt`` of the value to start the index
-
-        **rebal_frequency:** ``str`` of 'weekly', 'monthly', 'quarterly', 'yearly'
-
-    **RETURNS:**
-    
-         **price:** of type ``pandas.DataFrame`` with portfolio 'Close' and 'Open'
-    """
-    
-    d_0 = numpy.max(price_panel.loc[:, :, 'Close'].apply(
-        pandas.Series.first_valid_index))
-    index = price_panel.loc[:, d_0:, :].major_axis
-    
-    assert numpy.any(index == weight_series.name), (
-        "The first trade date is not part of the prices panel")
-    
-    interval_dict = {'weekly':lambda x: x[:-1].week != x[1:].week, 
-                     'monthly': lambda x: x[:-1].month != x[1:].month,
-                     'quarterly':lambda x: x[:-1].quarter != x[1:].quarter,
-                     'yearly':lambda x: x[:-1].year != x[1:].year}
-
-    #create a boolean array of rebalancing dates
-    ind = numpy.append(True, interval_dict[rebal_frequency](index))
-    weight_df = pandas.DataFrame(numpy.tile(weight_series.values, 
-        [len(index[ind]), 1]), index = index[ind], columns = weight_series.index)
-                    
-    return panel_from_weight_file(weight_df, price_panel, start_value)
-
 
 def test_funs():
     """

@@ -10,9 +10,10 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-
+   
    intro
-   my_file
+   readme
+   
 
 
 Indices and tables

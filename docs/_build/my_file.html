@@ -26,8 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" />
-    <link rel="prev" title="README.md" href="intro.html" /> 
+    <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,9 +38,6 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="intro.html" title="README.md"
-             accesskey="P">previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
@@ -56,9 +52,6 @@
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="intro.html"
-                        title="previous chapter">README.md</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/my_file.txt"
@@ -87,59 +80,44 @@
             
   <div class="section" id="visualize-wealth">
 <h1>Visualize Wealth<a class="headerlink" href="#visualize-wealth" title="Permalink to this headline">¶</a></h1>
-<p>The goal of these modules is to be able to construct
-portfolio performance and perform comprehensive
-analytics</p>
+<p>There are few tools available to the public that allow them to
+effectively evaluate portfolio performance, analyze historical
+results, and isolate decisions made within the portfolio that
+contributed to the overall benefit / detriment of the investor.  That
+is the aim of this library.</p>
+<p><strong>Optimization of Functions:</strong></p>
+<p>In all cases, functions have been optimized to ensure the most
+expeditious calculation times possible, so most of the lag time the
+user experiences will be due to the <tt class="docutils literal"><span class="pre">Yahoo!</span></tt> API Calls.</p>
+<p><strong>Examples:</strong></p>
+<p>Fairly comprehensive examples can be found in the <tt class="docutils literal"><span class="pre">README</span></tt> section
+of this documentation, which also resides on the <a class="reference external" href="http://www.github.com/benjaminmgross/grind-my-ass-ets">Splash Page</a> of this
+project&#8217;s GitHub Repository.</p>
+<p><strong>Testing</strong>:</p>
+<p>The folder under <tt class="docutils literal"><span class="pre">visualize_wealth/tests/</span></tt> has fairly significant
+tests that illustrate the calculations of:</p>
+<ol class="arabic simple">
+<li>Portoflio Construction (all methods)</li>
+</ol>
+<p>2. The portfolio statistic calculations use in the <tt class="docutils literal"><span class="pre">analyze.py</span></tt>
+module</p>
 <div class="section" id="constructing-portfolios">
 <h2>Constructing Portfolios<a class="headerlink" href="#constructing-portfolios" title="Permalink to this headline">¶</a></h2>
 <p>In general there are three ways to construct a portfolio using
 this module:</p>
-<ol class="arabic">
-<li><p class="first">Provide trades given tickers, buy / sell dates, and prices</p>
-</li>
-<li><p class="first">Provide a weighting scheme with dates along the first column with
+<ol class="arabic simple">
+<li>Provide trades given tickers, buy / sell dates, and prices</li>
+<li>Provide a weighting scheme with dates along the first column with
 column titles as tickers and percentage allocations to each ticker
-for a given date for values.  For example:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Date</th>
-<th class="head">ticker 1</th>
-<th class="head">ticker 2</th>
-<th class="head">ticker 3</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>1/1/2000</td>
-<td>.25</td>
-<td>.30</td>
-<td>.45</td>
-</tr>
-<tr class="row-odd"><td>6/5/2003</td>
-<td>.10</td>
-<td>.65</td>
-<td>.25</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><p class="first">Provide an inial allocation scheme, similar to the one provided
-above, and then set some rebalancing frequency, say, &#8216;weekly&#8217;,
-&#8216;monthly&#8217;, &#8216;quarterly&#8217;, and &#8216;yearly.&#8217;</p>
-</li>
+for a given date for values.  For example:</li>
+<li>Provide an inial allocation scheme representing the static weights
+to rebalance to at some given interval, and then define the
+rebalancing interval as  &#8216;weekly&#8217;,   &#8216;monthly&#8217;, &#8216;quarterly&#8217;, and &#8216;yearly.&#8217;</li>
 </ol>
-<p>The main aggregation functions that perform portfolio construction
-begin with <tt class="docutils literal"><span class="pre">portfolio_from</span></tt> and are then succeeded by either:</p>
-<ol class="loweralpha simple">
-<li><tt class="docutils literal"><span class="pre">from_blotter</span></tt>: corresponding to bullet point 1</li>
-<li><tt class="docutils literal"><span class="pre">from_weight_file</span></tt>: corresponding to bullet point 2</li>
-<li><tt class="docutils literal"><span class="pre">from_initial_weights</span></tt>: corresponding to bullet point 3</li>
-</ol>
+<p>In the cases where prices are not available to the investor, helper
+functions for all of the construction methods are available that use
+<a class="reference external" href="http://www.finance.yahoo.com">Yahoo!&#8217;s API</a> to pull down relevant
+price series to be incorprated into the portfolio series calculation.</p>
 <span class="target" id="module-visualize_wealth.construct_portfolio"></span><span class="target" id="module-construct_portfolio.py"></span><dl class="function">
 <dt id="visualize_wealth.construct_portfolio.append_price_frame_with_dividends">
 <tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">append_price_frame_with_dividends</tt><big>(</big><em>ticker</em>, <em>start_date</em>, <em>end_date=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#append_price_frame_with_dividends"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.append_price_frame_with_dividends" title="Permalink to this definition">¶</a></dt>
@@ -491,7 +469,7 @@ another portfolio to compare against</p>
 </dl>
 </li>
 </ol>
-<span class="target" id="module-visualize_wealth.analyze"></span><dl class="function">
+<span class="target" id="module-visualize_wealth.analyze"></span><span class="target" id="module-analyze.py"></span><dl class="function">
 <dt id="visualize_wealth.analyze.annualized_return">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">annualized_return</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#annualized_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.annualized_return" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the annualized linear return of a series, i.e. the linear compounding
@@ -965,9 +943,6 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="intro.html" title="README.md"
-             >previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>

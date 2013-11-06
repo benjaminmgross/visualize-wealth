@@ -81,7 +81,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 
-<div class="viewcode-block" id="sortino_ratio"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.sortino_ratio">[docs]</a><span class="k">def</span> <span class="nf">sortino_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="sortino_ratio"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.sortino_ratio">[docs]</a><span class="k">def</span> <span class="nf">sortino_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the Sortino Ratio which is (R-rf)/downside_vol</span>
 
@@ -106,7 +106,7 @@
     <span class="k">return</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span><span class="o">/</span><span class="n">downside_deviation</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> 
                                                                      <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
     </div>
-<div class="viewcode-block" id="value_at_risk"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.value_at_risk">[docs]</a><span class="k">def</span> <span class="nf">value_at_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;weekly&#39;</span><span class="p">,</span> <span class="n">percentile</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">):</span>
+<div class="viewcode-block" id="value_at_risk"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.value_at_risk">[docs]</a><span class="k">def</span> <span class="nf">value_at_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;weekly&#39;</span><span class="p">,</span> <span class="n">percentile</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;    </span>
 <span class="sd">    Return the non-parametric VaR (non-parametric estimate) for a given percentile</span>
 
@@ -136,7 +136,7 @@
     <span class="c">#transform to linear returns, and loss is always reported as positive</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">series_rets</span><span class="p">,</span> <span class="n">percentile</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="annualized_return"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.annualized_return">[docs]</a><span class="k">def</span> <span class="nf">annualized_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="annualized_return"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.annualized_return">[docs]</a><span class="k">def</span> <span class="nf">annualized_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the annualized linear return of a series, i.e. the linear compounding</span>
 <span class="sd">    rate that would have been necessary, given the initial investment, to arrive at</span>
@@ -164,7 +164,7 @@
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">*</span><span class="n">fac</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
 </div>
-<div class="viewcode-block" id="annualized_vol"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.annualized_vol">[docs]</a><span class="k">def</span> <span class="nf">annualized_vol</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="annualized_vol"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.annualized_vol">[docs]</a><span class="k">def</span> <span class="nf">annualized_vol</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the annlualized volatility of the log changes of the price series, by</span>
 <span class="sd">    calculating the volatility of the series, and then applying the square root of </span>
@@ -191,7 +191,7 @@
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">fac</span><span class="p">)</span>
     </div>
-<div class="viewcode-block" id="max_drawdown"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.max_drawdown">[docs]</a><span class="k">def</span> <span class="nf">max_drawdown</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+<div class="viewcode-block" id="max_drawdown"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.max_drawdown">[docs]</a><span class="k">def</span> <span class="nf">max_drawdown</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the maximum drawdown, or the maximum peak to trough linear distance, as </span>
 <span class="sd">    a positive value</span>
@@ -212,7 +212,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">series</span><span class="o">/</span><span class="n">series</span><span class="o">.</span><span class="n">cummax</span><span class="p">())</span>
     </div>
-<div class="viewcode-block" id="ulcer_index"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.ulcer_index">[docs]</a><span class="k">def</span> <span class="nf">ulcer_index</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+<div class="viewcode-block" id="ulcer_index"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.ulcer_index">[docs]</a><span class="k">def</span> <span class="nf">ulcer_index</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the ulcer index of  the series, which is defined as the squared drawdowns</span>
 <span class="sd">    (instead of the squared deviations from the mean).  Further explanation can be </span>
@@ -237,7 +237,7 @@
     <span class="n">ssdd</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dd</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">ssdd</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 </div>
-<div class="viewcode-block" id="rolling_ui"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.rolling_ui">[docs]</a><span class="k">def</span> <span class="nf">rolling_ui</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="mi">21</span><span class="p">):</span>
+<div class="viewcode-block" id="rolling_ui"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.rolling_ui">[docs]</a><span class="k">def</span> <span class="nf">rolling_ui</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="mi">21</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;   </span>
 <span class="sd">    returns the rolling ulcer index over a series for a given ``window``</span>
 <span class="sd">    (instead of the squared deviations from the mean).</span>
@@ -266,7 +266,7 @@
         <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">rui</span>
     </div>
-<div class="viewcode-block" id="sharpe_ratio"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.sharpe_ratio">[docs]</a><span class="k">def</span> <span class="nf">sharpe_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="sharpe_ratio"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.sharpe_ratio">[docs]</a><span class="k">def</span> <span class="nf">sharpe_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the `Sharpe Ratio&lt;http://en.wikipedia.org/wiki/Sharpe_ratio&gt;`_ of an </span>
 <span class="sd">    asset, given a price series, risk free rate of ``rfr``, and ``frequency`` of the </span>
@@ -290,7 +290,7 @@
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">*</span><span class="n">fac</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rfr</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">series_rets</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">fac</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="risk_adjusted_excess_returns"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.risk_adjusted_excess_returns">[docs]</a><span class="k">def</span> <span class="nf">risk_adjusted_excess_returns</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="risk_adjusted_excess_returns"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.risk_adjusted_excess_returns">[docs]</a><span class="k">def</span> <span class="nf">risk_adjusted_excess_returns</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the MMRAP or the `Modigliani Risk Adjusted Performance &lt;http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance&gt;`_ that</span>
 <span class="sd">    calculates the excess returns for a given amount of risk along the `Capital</span>
@@ -319,7 +319,7 @@
 
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">series_rets</span><span class="p">)</span><span class="o">*</span><span class="n">fac</span> <span class="o">-</span> <span class="n">series_vol</span> <span class="o">*</span> <span class="n">benchmark_sharpe</span>
 </div>
-<div class="viewcode-block" id="jensens_alpha"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.jensens_alpha">[docs]</a><span class="k">def</span> <span class="nf">jensens_alpha</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="jensens_alpha"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.jensens_alpha">[docs]</a><span class="k">def</span> <span class="nf">jensens_alpha</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the `Jensen&#39;s Alpha &lt;http://en.wikipedia.org/wiki/Jensen&#39;s_alpha&gt;`_ or </span>
 <span class="sd">    the excess return based on the systematic risk of the ``series`` relative to</span>
@@ -347,7 +347,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">rfr</span> <span class="o">+</span> <span class="n">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span><span class="o">*</span><span class="p">(</span>
         <span class="n">bench_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">rfr</span><span class="p">)))</span><span class="o">*</span><span class="n">fac</span>
 </div>
-<div class="viewcode-block" id="beta"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.beta">[docs]</a><span class="k">def</span> <span class="nf">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+<div class="viewcode-block" id="beta"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.beta">[docs]</a><span class="k">def</span> <span class="nf">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the sensitivity of one price series to a chosen benchmark </span>
 
@@ -365,7 +365,7 @@
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">)</span><span class="o">/</span><span class="n">bench_rets</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
     </div>
-<div class="viewcode-block" id="r_squared"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.r_squared">[docs]</a><span class="k">def</span> <span class="nf">r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+<div class="viewcode-block" id="r_squared"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.r_squared">[docs]</a><span class="k">def</span> <span class="nf">r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the R-Squared of `Coefficient of Variation &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination&gt;`_</span>
 
@@ -386,7 +386,7 @@
     <span class="n">sst</span> <span class="o">=</span> <span class="p">((</span><span class="n">series_rets</span> <span class="o">-</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sse</span><span class="o">/</span><span class="n">sst</span>
     </div>
-<div class="viewcode-block" id="tracking_error"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.tracking_error">[docs]</a><span class="k">def</span> <span class="nf">tracking_error</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="tracking_error"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.tracking_error">[docs]</a><span class="k">def</span> <span class="nf">tracking_error</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a ``float`` of the `Tracking Error &lt;http://en.wikipedia.org/wiki/Tracking_error&gt;`_ or standard deviation of the </span>
 <span class="sd">    differences of returns </span>
@@ -412,7 +412,7 @@
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">series_rets</span><span class="p">,</span> <span class="n">bench_rets</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">fac</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="idiosyncratic_risk"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.idiosyncratic_risk">[docs]</a><span class="k">def</span> <span class="nf">idiosyncratic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="idiosyncratic_risk"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.idiosyncratic_risk">[docs]</a><span class="k">def</span> <span class="nf">idiosyncratic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the idiosyncratic risk, or (total variance - syst variance) ^ (1/2)</span>
 
@@ -438,7 +438,7 @@
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">series_vol</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span>
         <span class="n">benchmark_vol</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="idiosyncratic_as_proportion"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.idiosyncratic_as_proportion">[docs]</a><span class="k">def</span> <span class="nf">idiosyncratic_as_proportion</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="idiosyncratic_as_proportion"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.idiosyncratic_as_proportion">[docs]</a><span class="k">def</span> <span class="nf">idiosyncratic_as_proportion</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the idiosyncratic risk as proportion of total volatility</span>
 
@@ -462,7 +462,7 @@
     <span class="k">return</span> <span class="n">idiosyncratic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span>
         <span class="n">series_rets</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">fac</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="systematic_risk"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.systematic_risk">[docs]</a><span class="k">def</span> <span class="nf">systematic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="systematic_risk"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.systematic_risk">[docs]</a><span class="k">def</span> <span class="nf">systematic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">   Returns the systematic risk, or :math:`\beta^2 x \sigma^2`</span>
 
@@ -483,7 +483,7 @@
     <span class="n">benchmark_vol</span> <span class="o">=</span> <span class="n">bench_rets</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">fac</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">benchmark_vol</span> <span class="o">*</span> <span class="n">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="systematic_as_proportion"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.systematic_as_proportion">[docs]</a><span class="k">def</span> <span class="nf">systematic_as_proportion</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="systematic_as_proportion"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.systematic_as_proportion">[docs]</a><span class="k">def</span> <span class="nf">systematic_as_proportion</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the idiosyncratic risk as proportion of total volatility</span>
 
@@ -505,7 +505,7 @@
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">systematic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span> <span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">((</span><span class="n">series</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">252</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="median_upcapture"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.median_upcapture">[docs]</a><span class="k">def</span> <span class="nf">median_upcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+<div class="viewcode-block" id="median_upcapture"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.median_upcapture">[docs]</a><span class="k">def</span> <span class="nf">median_upcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the median upcapture of a ``series`` of prices against a ``benchmark`` </span>
 <span class="sd">    prices, given that the ``benchmark`` achieved positive returns in a given period</span>
@@ -526,7 +526,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">bench_rets</span> <span class="o">&gt;</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="n">series_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span> <span class="o">/</span> <span class="n">bench_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="median_downcapture"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.median_downcapture">[docs]</a><span class="k">def</span> <span class="nf">median_downcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+<div class="viewcode-block" id="median_downcapture"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.median_downcapture">[docs]</a><span class="k">def</span> <span class="nf">median_downcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the median downcapture of a ``series`` of prices against a ``benchmark`` </span>
 <span class="sd">    prices, given that the ``benchmark`` achieved negative returns in a given period</span>
@@ -546,7 +546,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">bench_rets</span> <span class="o">&lt;</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="n">series_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span> <span class="o">/</span> <span class="n">bench_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="upcapture"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.upcapture">[docs]</a><span class="k">def</span> <span class="nf">upcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+<div class="viewcode-block" id="upcapture"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.upcapture">[docs]</a><span class="k">def</span> <span class="nf">upcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the proportion of ``series``&#39;s cumulative positive returns to</span>
 <span class="sd">    ``benchmark``&#39;s cumulative  returns, given benchmark&#39;s returns were positive </span>
@@ -567,7 +567,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">bench_rets</span> <span class="o">&gt;</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="n">series_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="n">bench_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     </div>
-<div class="viewcode-block" id="downcapture"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.downcapture">[docs]</a><span class="k">def</span> <span class="nf">downcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+<div class="viewcode-block" id="downcapture"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.downcapture">[docs]</a><span class="k">def</span> <span class="nf">downcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the proportion of ``series``&#39;s cumulative negative returns to</span>
 <span class="sd">    ``benchmark``&#39;s cumulative  returns, given benchmark&#39;s returns were negative in</span>
@@ -588,7 +588,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">bench_rets</span> <span class="o">&lt;</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="n">series_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="n">bench_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="upside_deviation"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.upside_deviation">[docs]</a><span class="k">def</span> <span class="nf">upside_deviation</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="upside_deviation"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.upside_deviation">[docs]</a><span class="k">def</span> <span class="nf">upside_deviation</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the volatility of the returns that are greater than zero</span>
 
@@ -608,7 +608,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">series_rets</span> <span class="o">&gt;</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="n">series_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">fac</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="downside_deviation"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.downside_deviation">[docs]</a><span class="k">def</span> <span class="nf">downside_deviation</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="downside_deviation"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.downside_deviation">[docs]</a><span class="k">def</span> <span class="nf">downside_deviation</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the volatility of the returns that are less than zero</span>
 
@@ -628,7 +628,7 @@
     <span class="n">index</span> <span class="o">=</span> <span class="n">series_rets</span> <span class="o">&lt;</span> <span class="mf">0.</span>    
     <span class="k">return</span> <span class="n">series_rets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">fac</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="return_by_year"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.return_by_year">[docs]</a><span class="k">def</span> <span class="nf">return_by_year</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+<div class="viewcode-block" id="return_by_year"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.return_by_year">[docs]</a><span class="k">def</span> <span class="nf">return_by_year</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    the annualized returns for each of the years</span>
 
@@ -647,7 +647,7 @@
     
     <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">yearly_rets</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">name</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     </div>
-<div class="viewcode-block" id="generate_all_metrics"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.analyze.generate_all_metrics">[docs]</a><span class="k">def</span> <span class="nf">generate_all_metrics</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_all_metrics"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.generate_all_metrics">[docs]</a><span class="k">def</span> <span class="nf">generate_all_metrics</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    cumulative values of relevant statistics is calculated for the ``series`` and </span>
 <span class="sd">    ``benchmark`` for a given ``frequency`` and risk free rate</span>

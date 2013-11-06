@@ -1,10 +1,37 @@
 Visualize Wealth
 ****************
 
-The goal of these modules is to be able to construct 
-portfolio performance and perform comprehensive
-analytics
+There are few tools available to the public that allow them to
+effectively evaluate portfolio performance, analyze historical
+results, and isolate decisions made within the portfolio that
+contributed to the overall benefit / detriment of the investor.  That
+is the aim of this library.
 
+
+**Optimization of Functions:**
+
+In all cases, functions have been optimized to ensure the most
+expeditious calculation times possible, so most of the lag time the
+user experiences will be due to the ``Yahoo!`` API Calls. 
+
+
+**Examples:**
+
+Fairly comprehensive examples can be found in the ``README`` section
+of this documentation, which also resides on the `Splash Page
+<http://www.github.com/benjaminmgross/grind-my-ass-ets>`_ of this
+project's GitHub Repository.
+
+
+**Testing**:
+
+The folder under ``visualize_wealth/tests/`` has fairly significant
+tests that illustrate the calculations of:
+
+1. Portoflio Construction (all methods)
+
+2. The portfolio statistic calculations use in the ``analyze.py``
+module
 
 Constructing Portfolios
 ========================
@@ -18,28 +45,15 @@ this module:
    column titles as tickers and percentage allocations to each ticker
    for a given date for values.  For example:
 
-   +---------+---------+---------+---------+
-   | Date    | ticker 1|ticker 2 |ticker 3 |
-   +=========+=========+=========+=========+
-   |1/1/2000 | .25     | .30     | .45     |
-   +---------+---------+---------+---------+
-   |6/5/2003 |  .10    | .65     | .25     |
-   +---------+---------+---------+---------+
+3. Provide an inial allocation scheme representing the static weights
+   to rebalance to at some given interval, and then define the
+   rebalancing interval as  'weekly',   'monthly', 'quarterly', and 'yearly.'
 
+In the cases where prices are not available to the investor, helper
+functions for all of the construction methods are available that use
+`Yahoo!'s API <http://www.finance.yahoo.com>`_ to pull down relevant
+price series to be incorprated into the portfolio series calculation. 
 
-3. Provide an inial allocation scheme, similar to the one provided
-   above, and then set some rebalancing frequency, say, 'weekly', 
-   'monthly', 'quarterly', and 'yearly.'
-
-The main aggregation functions that perform portfolio construction
-begin with ``portfolio_from`` and are then succeeded by either:
-
-a. ``from_blotter``: corresponding to bullet point 1
-
-b. ``from_weight_file``: corresponding to bullet point 2
-
-c. ``from_initial_weights``: corresponding to bullet point 3
-  
     
 .. automodule:: visualize_wealth.construct_portfolio
    :members:

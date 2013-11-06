@@ -85,7 +85,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">urllib2</span>
 
-<div class="viewcode-block" id="format_blotter"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.format_blotter">[docs]</a><span class="k">def</span> <span class="nf">format_blotter</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">):</span>
+<div class="viewcode-block" id="format_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.format_blotter">[docs]</a><span class="k">def</span> <span class="nf">format_blotter</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;  </span>
 <span class="sd">    A blotter file could have positive values for both the buy and sell, </span>
 <span class="sd">    this function transforms Sell values that are positive to negative values</span>
@@ -115,7 +115,7 @@
     
     <span class="k">return</span> <span class="n">blot</span>
 </div>
-<div class="viewcode-block" id="append_price_frame_with_dividends"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.append_price_frame_with_dividends">[docs]</a><span class="k">def</span> <span class="nf">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="append_price_frame_with_dividends"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.append_price_frame_with_dividends">[docs]</a><span class="k">def</span> <span class="nf">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a ticker, start_date, &amp; end_date, return a pandas.DataFrame with </span>
 <span class="sd">    a Dividend Columns</span>
@@ -162,7 +162,7 @@
 
     <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">div_df</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="calculate_splits"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.calculate_splits">[docs]</a><span class="k">def</span> <span class="nf">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_splits"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.calculate_splits">[docs]</a><span class="k">def</span> <span class="nf">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a price_df of the format append_price_frame_with_dividends, return a </span>
 <span class="sd">    DataFrame with a split factor columns named &#39;Splits&#39;</span>
@@ -259,7 +259,7 @@
     
     <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         </div>
-<div class="viewcode-block" id="construct_random_trades"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.construct_random_trades">[docs]</a><span class="k">def</span> <span class="nf">construct_random_trades</span><span class="p">(</span><span class="n">split_df</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+<div class="viewcode-block" id="construct_random_trades"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.construct_random_trades">[docs]</a><span class="k">def</span> <span class="nf">construct_random_trades</span><span class="p">(</span><span class="n">split_df</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create random trades on random trade dates, but never allow shares to go negative</span>
 <span class="sd">    </span>
@@ -285,7 +285,7 @@
 
     <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span> <span class="n">trades</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">dates</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Buy/Sell&#39;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="blotter_to_cum_shares"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.blotter_to_cum_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
+<div class="viewcode-block" id="blotter_to_cum_shares"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.blotter_to_cum_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Aggregation function transforming a blotter series for a given ticker into a </span>
 <span class="sd">    DataFrame with cumulative investment, price, dividends, etc.</span>
@@ -325,7 +325,7 @@
                                  <span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">end_date</span><span class="p">,</span> 
                                  <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="generate_random_portfolio_blotter"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">[docs]</a><span class="k">def</span> <span class="nf">generate_random_portfolio_blotter</span><span class="p">(</span><span class="n">tickers</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_random_portfolio_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">[docs]</a><span class="k">def</span> <span class="nf">generate_random_portfolio_blotter</span><span class="p">(</span><span class="n">tickers</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct a random trade blotter, given a list of tickers and a number of trades </span>
 <span class="sd">    (to be used for all tickers), prices will be  the &#39;Close&#39; of that ticker in the </span>
@@ -562,7 +562,7 @@
     <span class="k">return</span> <span class="n">portfolio_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="test_funs"><a class="viewcode-back" href="../../my_file.html#visualize_wealth.construct_portfolio.test_funs">[docs]</a><span class="k">def</span> <span class="nf">test_funs</span><span class="p">():</span>
+<div class="viewcode-block" id="test_funs"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.test_funs">[docs]</a><span class="k">def</span> <span class="nf">test_funs</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &gt;&gt;&gt; import pandas.util.testing as put</span>
 <span class="sd">    &gt;&gt;&gt; xl_file = pandas.ExcelFile(&#39;../tests/test_splits.xlsx&#39;)</span>

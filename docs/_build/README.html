@@ -27,8 +27,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" />
-    <link rel="next" title="Visualize Wealth" href="my_file.html" />
-    <link rel="prev" title="Welcome to Visualize Wealth’s documentation!" href="index.html" /> 
+    <link rel="prev" title="README.md" href="intro.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,10 +40,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="my_file.html" title="Visualize Wealth"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+          <a href="intro.html" title="README.md"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -57,21 +53,23 @@
 <li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#general-summary-examples">General Summary &amp; Examples</a></li>
+<li><a class="reference internal" href="#general-summary-examples">General Summary &amp; Examples</a><ul>
+<li><a class="reference internal" href="#the-blotter-method">1. The Blotter Method</a></li>
+<li><a class="reference internal" href="#the-weight-allocation-method">2. The Weight Allocation Method</a></li>
+<li><a class="reference internal" href="#the-initial-allocation-rebalancing-method">3. The Initial Allocation &amp; Rebalancing Method</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#todo-list">ToDo List:</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to Visualize Wealth&#8217;s documentation!</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="my_file.html"
-                        title="next chapter">Visualize Wealth</a></p>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">README.md</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/README.txt"
+    <li><a href="_sources/readme.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -117,159 +115,440 @@ price <tt class="docutils literal"><span class="pre">DataFrame</span></tt>s with
 </div>
 <div class="section" id="general-summary-examples">
 <h2>General Summary &amp; Examples<a class="headerlink" href="#general-summary-examples" title="Permalink to this headline">¶</a></h2>
-<p>Portfolios can (generally) be constructed in one of three ways:</p>
-<ol class="arabic simple">
-<li><strong>The blotter method:</strong> In finance, a spreadsheet of &#8220;buys/sells&#8221;,
-&#8220;Prices&#8221;, &#8220;Dates&#8221; etc. is called a &#8220;trade blotter.&#8221; This also would
-be the easiest way for an investor to actually analyze the past
-performance of her portfolio, because trade confirmations provide
-this exact data.</li>
-</ol>
+<p>Portfolios can (generally) be constructed in one of three ways: 1. The
+Blotter Method 2. Weight Allocation Method 3. Initial Allocation with
+specific Rebalancing Period Method</p>
+<div class="section" id="the-blotter-method">
+<h3>1. The Blotter Method<a class="headerlink" href="#the-blotter-method" title="Permalink to this headline">¶</a></h3>
+<p><strong>The blotter method:</strong> In finance, a spreadsheet of &#8220;buys/sells&#8221;,
+&#8220;Prices&#8221;, &#8220;Dates&#8221; etc. is called a &#8220;trade blotter.&#8221; This also would be
+the easiest way for an investor to actually analyze the past performance
+of her portfolio, because trade confirmations provide this exact data.</p>
 <p>This method is most effectively achieved by providing an Excel /
 <tt class="docutils literal"><span class="pre">.csv</span></tt> file with the following format:</p>
-<p>| Date | Buy / Sell | Price |Ticker |
-|:&#8212;&#8211;|:&#8212;&#8212;&#8212;&#8211;|:&#8212;&#8212;|:&#8212;&#8211; | |9/4/01| 50 | 123.45| EFA
-| |5/5/03| 65 | 107.71| EEM | |6/6/03|-15 | 118.85| EEM |</p>
-<div class="highlight-python"><pre>where "Buys" can be distinguished from "Sells" because buys are positive (+) and sells are negative (-).
-
-
-For example, let's say I wanted to generate a random portfolio containing the following tickers and respective asset classes, using the `generate_random_portfolio_blotter` method
-
-|Ticker  | Description              | Asset Class        | Price Start|</pre>
-</div>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
-<col width="38%" />
-<col width="32%" />
-<col width="20%" />
+<col width="26%" />
+<col width="30%" />
+<col width="22%" />
+<col width="22%" />
 </colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Date</th>
+<th class="head">Buy / Sell</th>
+<th class="head">Price</th>
+<th class="head">Ticker</th>
+</tr>
+</thead>
 <tbody valign="top">
-<tr class="row-odd"><td>IWB</td>
+<tr class="row-even"><td>9/4/2001</td>
+<td>50</td>
+<td>123.45</td>
+<td>EFA</td>
+</tr>
+<tr class="row-odd"><td>5/5/2003</td>
+<td>65</td>
+<td>107.71</td>
+<td>EEM</td>
+</tr>
+<tr class="row-even"><td>6/6/2003</td>
+<td>-15</td>
+<td>118.85</td>
+<td>EEM</td>
+</tr>
+</tbody>
+</table>
+<p>where &#8220;Buys&#8221; can be distinguished from &#8220;Sells&#8221; because buys are positive
+(+) and sells are negative (-).</p>
+<p>For example, let&#8217;s say I wanted to generate a random portfolio
+containing the following tickers and respective asset classes, using the
+<tt class="docutils literal"><span class="pre">generate_random_portfolio_blotter</span></tt> method</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="36%" />
+<col width="30%" />
+<col width="21%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Ticker</th>
+<th class="head">Description</th>
+<th class="head">Asset Class</th>
+<th class="head">Price Start</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>IWB</td>
 <td>iShares Russell 1000</td>
 <td>US Equity</td>
 <td>5/19/2000</td>
 </tr>
-<tr class="row-even"><td>IWR</td>
+<tr class="row-odd"><td>IWR</td>
 <td>iShares Russell Midcap</td>
 <td>US Equity</td>
 <td>8/27/2001</td>
 </tr>
-<tr class="row-odd"><td>IWM</td>
+<tr class="row-even"><td>IWM</td>
 <td>iShares Russell 2000</td>
 <td>US Equity</td>
 <td>5/26/2000</td>
 </tr>
-<tr class="row-even"><td>EFA</td>
+<tr class="row-odd"><td>EFA</td>
 <td>iShares EAFE</td>
 <td>Foreign Dev Equity</td>
 <td>8/27/2001</td>
 </tr>
-<tr class="row-odd"><td>EEM</td>
+<tr class="row-even"><td>EEM</td>
 <td>iShares EAFE EM</td>
 <td>Foreign EM Equity</td>
 <td>4/15/2003</td>
 </tr>
-<tr class="row-even"><td>TIP</td>
+<tr class="row-odd"><td>TIP</td>
 <td>iShares TIPS</td>
 <td>Fixed Income</td>
 <td>12/5/2003</td>
 </tr>
-<tr class="row-odd"><td>TLT</td>
+<tr class="row-even"><td>TLT</td>
 <td>iShares LT Treasuries</td>
 <td>Fixed Income</td>
 <td>7/31/2002</td>
 </tr>
-<tr class="row-even"><td>IEF</td>
+<tr class="row-odd"><td>IEF</td>
 <td>iShares MT Treasuries</td>
 <td>Fixed Income</td>
 <td>7/31/2002</td>
 </tr>
-<tr class="row-odd"><td>SHY</td>
+<tr class="row-even"><td>SHY</td>
 <td>iShares ST Treasuries</td>
 <td>Fixed Income</td>
 <td>7/31/2002</td>
 </tr>
-<tr class="row-even"><td>LQD</td>
+<tr class="row-odd"><td>LQD</td>
 <td>iShares Inv Grade</td>
 <td>Fixed Income</td>
 <td>7/31/2002</td>
 </tr>
-<tr class="row-odd"><td>IYR</td>
+<tr class="row-even"><td>IYR</td>
 <td>iShares Real Estate</td>
 <td>Alternative</td>
 <td>6/19/2000</td>
 </tr>
-<tr class="row-even"><td>GLD</td>
+<tr class="row-odd"><td>GLD</td>
 <td>iShares Gold Index</td>
 <td>Alternative</td>
 <td>11/18/2004</td>
 </tr>
-<tr class="row-odd"><td>GSG</td>
+<tr class="row-even"><td>GSG</td>
 <td>iShares Commodities</td>
 <td>Alternative</td>
 <td>7/21/2006</td>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><pre>I could construct a portfolio of random trades (i.e. the "blotter method"), say 20 trades for each asset, by executing the following:
+<p>I could construct a portfolio of random trades (i.e. the &#8220;blotter
+method&#8221;), say 20 trades for each asset, by executing the following:</p>
+<div class="highlight-python"><pre>        #import the modules
+In [5]: import vizualize_wealth.construct_portfolio as vwcp
 
-            #import the modules
-    In [5]: import vizualize_wealth.construct_portfolio as vwcp
-
-    In [6]: ticks = ['IWB','IWR','IWM','EFA','EEM','TIP','TLT','IEF',
+In [6]: ticks = ['IWB','IWR','IWM','EFA','EEM','TIP','TLT','IEF',
                  'SHY','LQD','IYR','GLD','GSG']
+In [7]: num_trades = 20
 
-    In [7]: num_trades = 20
+        #construct the random trade blotter
+In [8]: blotter = vwcp.generate_random_portfolio_blotter(ticks, num_trades)
 
-            #construct the random trade blotter
-    In [8]: blotter = vwcp.generate_random_portfolio_blotter(ticks, num_trades)
-
-            #construct the portfolio panel
-    In [9]: port_panel = vwcp.portfolio_from_blotter(blotter)
-
-Now I have a `pandas.Panel`. Before we constuct the cumulative portfolio values, let's examine the dimensions of the panel (which are generally the same for all construction methods, although the columns of the `minor_axis` are different because the methods call for different optimized calculations) with the following dimensions:
-
-    #tickers are `panel.items`
-    In [10]: port_panel.items
-    Out[10]: Index([u'EEM', u'EFA', u'GLD', u'GSG', u'IEF', u'IWB', u'IWM', u'IWR',
-                u'IYR', u'LQD', u'SHY', u'TIP', u'TLT'], dtype=object)
-
-    #dates are along the `panel.major_axis`
-    In [12]: port_panel.major_axis
-    Out[12]:
-    &lt;class 'pandas.tseries.index.DatetimeIndex'&gt;
-    [2000-07-06 00:00:00, ..., 2013-10-30 00:00:00]
-    Length: 3351, Freq: None, Timezone: None
-
-    #price data, cumulative investment, dividends, and split ratios are `panel.minor_axis`
-    In [13]: port_panel.minor_axis
-    Out[13]: Index([u'Open', u'High', u'Low', u'Close', u'Volume', u'Adj Close',
-     u'Dividends',u'Splits', u'contr_withdrawal', u'cum_investment', u'cum_shares'],
-     dtype=object)
-
-There is a lot of information to be gleaned from this data object, but the most common goal would be to convert this `pandas.Panel` to a Portfolio `pandas.DataFrame` with columns `['Open', 'Close']`, so it can be compared against other assets or combination of assets.  In this case, use `pfp_from_blotter`(which stands for "portfolio_from_panel" + portfolio construction method [i.e. blotter, weights, or initial allocaiton] which in this case was "the blotter method").
-
-    #construct_the portfolio series
-    In [14]: port_df = vwcp.pfp_from_blotter(panel, 1000.)
-
-    In [117]: port_df.head()
-    Out[117]:
-                  Close         Open
-    Date
-    2000-07-06  1000.000000   988.744754
-    2000-07-07  1006.295307  1000.190767
-    2000-07-10  1012.876765  1005.723006
-    2000-07-11  1011.636780  1011.064479
-    2000-07-12  1031.953453  1016.978253</pre>
+        #construct the portfolio panel
+In [9]: port_panel = vwcp.portfolio_from_blotter(blotter)</pre>
 </div>
-<ol class="arabic simple" start="2">
-<li>The Weight Allocation Method: A simple way to backtest portfolio
-strategies is to provide weight allocations that represent
-proportions of the total portfolio value over time. So if I wanted to
-implement a tactical strategy over the past N years, one of the
-simplest methods is to calculate portfolio performance</li>
-</ol>
+<p>Now I have a <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt>. Before we constuct the cumulative
+portfolio values, let&#8217;s examine the dimensions of the panel (which are
+generally the same for all construction methods, although the columns of
+the <tt class="docutils literal"><span class="pre">minor_axis</span></tt> are different because the methods call for different
+optimized calculations) with the following dimensions:</p>
+<div class="highlight-python"><pre>#tickers are `panel.items`
+In [10]: port_panel.items
+Out[10]: Index([u'EEM', u'EFA', u'GLD', u'GSG', u'IEF', u'IWB', u'IWM', u'IWR',
+            u'IYR', u'LQD', u'SHY', u'TIP', u'TLT'], dtype=object)
+
+#dates are along the `panel.major_axis`
+In [12]: port_panel.major_axis
+Out[12]:
+&lt;class 'pandas.tseries.index.DatetimeIndex'&gt;
+[2000-07-06 00:00:00, ..., 2013-10-30 00:00:00]
+Length: 3351, Freq: None, Timezone: None
+
+#price data, cumulative investment, dividends, and split ratios are `panel.minor_axis`
+In [13]: port_panel.minor_axis
+Out[13]: Index([u'Open', u'High', u'Low', u'Close', u'Volume', u'Adj Close',
+    u'Dividends',u'Splits', u'contr_withdrawal', u'cum_investment',
+    u'cum_shares'], dtype=object)</pre>
+</div>
+<p>There is a lot of information to be gleaned from this data object, but
+the most common goal would be to convert this <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> to a
+Portfolio <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns <tt class="docutils literal"><span class="pre">['Open',</span> <span class="pre">'Close']</span></tt>, so it
+can be compared against other assets or combination of assets. In this
+case, use <tt class="docutils literal"><span class="pre">pfp_from_blotter</span></tt>(which stands for
+&#8220;portfolio_from_panel&#8221; + portfolio construction method [i.e. blotter,
+weights, or initial allocaiton] which in this case was &#8220;the blotter
+method&#8221;).</p>
+<div class="highlight-python"><pre>#construct_the portfolio series
+In [14]: port_df = vwcp.pfp_from_blotter(panel, 1000.)
+
+In [117]: port_df.head()
+Out[117]:
+              Close         Open
+Date
+2000-07-06  1000.000000   988.744754
+2000-07-07  1006.295307  1000.190767
+2000-07-10  1012.876765  1005.723006
+2000-07-11  1011.636780  1011.064479
+2000-07-12  1031.953453  1016.978253</pre>
+</div>
+</div>
+<div class="section" id="the-weight-allocation-method">
+<h3>2. The Weight Allocation Method<a class="headerlink" href="#the-weight-allocation-method" title="Permalink to this headline">¶</a></h3>
+<p>A commonplace way to test portoflio management strategies using a group
+of underlying assets is to construct aggregate portofolio performance,
+given a specified weighting allocation to specific assets on specified
+dates. Specifically, those (often times) percentage allocations
+represent a recommended allocation at some point in time, based on some
+&#8220;view&#8221; derived from either the output of a model or some qualitative
+analysis. Therefore, having an engine that is capable of taking in a
+weighting file (say, a <tt class="docutils literal"><span class="pre">.csv</span></tt>) with the following format:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Date</th>
+<th class="head">Ticker 1</th>
+<th class="head">Ticker 2</th>
+<th class="head">Ticker 3</th>
+<th class="head">Ticker 4</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1/1/2002</td>
+<td>5%</td>
+<td>20%</td>
+<td>30%</td>
+<td>45%</td>
+</tr>
+<tr class="row-odd"><td>6/3/2003</td>
+<td>40%</td>
+<td>10%</td>
+<td>40%</td>
+<td>10%</td>
+</tr>
+<tr class="row-even"><td>7/8/2003</td>
+<td>25%</td>
+<td>25%</td>
+<td>25%</td>
+<td>25%</td>
+</tr>
+</tbody>
+</table>
+<p>and turning the above allocation file into a cumulative portfolio value
+that can then be analyzed and compared (both in isolation and relative
+to specified benchmarks) is highly valuable in the process of portfolio
+strategy creation.</p>
+<p>A quick example of a weighting allocation file can be found in the Excel
+File <tt class="docutils literal"><span class="pre">visualize_wealth/tests/panel</span> <span class="pre">from</span> <span class="pre">weight</span> <span class="pre">file</span> <span class="pre">test.xlsx</span></tt>, where
+the tab <tt class="docutils literal"><span class="pre">rebal_weights</span></tt> represents one of these specific weighting
+files.</p>
+<p>To construct a portfolio of using the <strong>Weighting Allocation Method</strong>, a
+process such as the following would be carried out.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#import the library</span>
+<span class="kn">import</span> <span class="nn">visualize_wealth.construct_portfolio</span> <span class="kn">as</span> <span class="nn">vwcp</span>
+</pre></div>
+</div>
+<p>If we didn&#8217;t have the prices already, there&#8217;s a function for that</p>
+<div class="highlight-python"><pre>#fetch the prices and put them into a pandas.Panel
+price_panel = vwcp.fetch_data_for_weight_allocation_method(weight_df)
+
+#construct the panel that will go into the portfolio constructor
+
+ port_panel = vwcp.panel_from_weight_file(weight_df, price_panel,
+     start_value = 1000.)</pre>
+</div>
+<p>Construct the <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> for the portfolio, starting at
+<tt class="docutils literal"><span class="pre">start_value</span></tt> of 1000 with columns <tt class="docutils literal"><span class="pre">['Open',</span> <span class="pre">Close']</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">portfolio</span> <span class="o">=</span> <span class="n">vwcp</span><span class="o">.</span><span class="n">pfp_from_weight_file</span><span class="p">(</span><span class="n">port_panel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now a portfolio with <tt class="docutils literal"><span class="pre">index</span></tt> of daily values and columns
+<tt class="docutils literal"><span class="pre">['Open',</span> <span class="pre">'Close']</span></tt> has been created upon which analytics and
+performance analysis can be done.</p>
+</div>
+<div class="section" id="the-initial-allocation-rebalancing-method">
+<h3>3. The Initial Allocation &amp; Rebalancing Method<a class="headerlink" href="#the-initial-allocation-rebalancing-method" title="Permalink to this headline">¶</a></h3>
+<p>The standard method of portoflio construction that pervades in many
+circles to this day is static allocation with a given interval of
+rebalancing. For instance, if I wanted to implement Oppenheimers&#8217; <a class="reference external" href="https://www.oppenheimerfunds.com/digitalAssets/Discover-the-New-60-40-43f7f642-e0aa-40d9-a3fc-00f31be5a4fa.pdf">The
+New
+60/40</a>
+static portfolio, rebalancing on a yearly interval, my weighting scheme
+would be as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="38%" />
+<col width="30%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Ticker</th>
+<th class="head">Name</th>
+<th class="head">Asset Class</th>
+<th class="head">Allocation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>IWB</td>
+<td>iShares Russell 1000</td>
+<td>US Equity</td>
+<td>15%</td>
+</tr>
+<tr class="row-odd"><td>IWR</td>
+<td>iShares Russell Midcap</td>
+<td>US Equity</td>
+<td>7.5%</td>
+</tr>
+<tr class="row-even"><td>IWM</td>
+<td>iShares Russell 2000</td>
+<td>US Equity</td>
+<td>7.5%</td>
+</tr>
+<tr class="row-odd"><td>SCZ</td>
+<td>iShares EAFE Small Cap</td>
+<td>Foreign Dev Equity</td>
+<td>7.5%</td>
+</tr>
+<tr class="row-even"><td>EFA</td>
+<td>iShares EAFE</td>
+<td>Foreign Dev Equity</td>
+<td>12.5%</td>
+</tr>
+<tr class="row-odd"><td>EEM</td>
+<td>iShares EAFE EM</td>
+<td>Foreign EM Equity</td>
+<td>10%</td>
+</tr>
+<tr class="row-even"><td>TIP</td>
+<td>iShares TIPS</td>
+<td>Fixed Income</td>
+<td>5%</td>
+</tr>
+<tr class="row-odd"><td>TLT</td>
+<td>iShares LT Treasuries</td>
+<td>Fixed Income</td>
+<td>2.5%</td>
+</tr>
+<tr class="row-even"><td>IEF</td>
+<td>iShares MT Treasuries</td>
+<td>Fixed Income</td>
+<td>2.5%</td>
+</tr>
+<tr class="row-odd"><td>SHY</td>
+<td>iShares ST Treasuries</td>
+<td>Fixed Income</td>
+<td>5%</td>
+</tr>
+<tr class="row-even"><td>HYG</td>
+<td>iShares High Yield</td>
+<td>Fixed Income</td>
+<td>2.5%</td>
+</tr>
+<tr class="row-odd"><td>LQD</td>
+<td>iShares Inv Grade</td>
+<td>Fixed Income</td>
+<td>2.5%</td>
+</tr>
+<tr class="row-even"><td>PCY</td>
+<td>PowerShares EM Sovereign</td>
+<td>Fixed Income</td>
+<td>2%</td>
+</tr>
+<tr class="row-odd"><td>BWX</td>
+<td>SPDR intl Treasuries</td>
+<td>Fixed Income</td>
+<td>2%</td>
+</tr>
+<tr class="row-even"><td>MBB</td>
+<td>iShares MBS</td>
+<td>Fixed Income</td>
+<td>1%</td>
+</tr>
+<tr class="row-odd"><td>PFF</td>
+<td>iShares Preferred Equity</td>
+<td>Alternative</td>
+<td>2.5%</td>
+</tr>
+<tr class="row-even"><td>IYR</td>
+<td>iShares Real Estate</td>
+<td>Alternative</td>
+<td>5%</td>
+</tr>
+<tr class="row-odd"><td>GLD</td>
+<td>iShares Gold Index</td>
+<td>Alternative</td>
+<td>2.5%</td>
+</tr>
+<tr class="row-even"><td>GSG</td>
+<td>iShares Commodities</td>
+<td>Alternative</td>
+<td>5%</td>
+</tr>
+</tbody>
+</table>
+<p>To implement such a weighting scheme, we can use the same worksheet
+<tt class="docutils literal"><span class="pre">visualize_wealth/tests/panel</span> <span class="pre">from</span> <span class="pre">weight</span> <span class="pre">file</span> <span class="pre">test.xlsx</span></tt>, and the
+tab. <tt class="docutils literal"><span class="pre">static_allocation</span></tt>. Note there is only a single row of weights,
+as this will be the &#8220;static allocation&#8221; to be rebalanced to at some
+given interval.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#import the construct_portfolio library</span>
+<span class="kn">import</span> <span class="nn">visualize_wealth.construct_portfolio</span> <span class="kn">as</span> <span class="nn">vwcp</span>
+</pre></div>
+</div>
+<p>Let&#8217;s use the <tt class="docutils literal"><span class="pre">static_allocation</span></tt> provided in the
+<tt class="docutils literal"><span class="pre">panel</span> <span class="pre">from</span> <span class="pre">weight</span> <span class="pre">file.xlsx</span></tt> workbook</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">f</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;tests/panel from weight file test.xlsx&#39;</span><span class="p">)</span>
+<span class="n">static_alloc</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;static_allocation&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">header_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Again, assume we don&#8217;t have the prices and need to donwload them, use
+the <tt class="docutils literal"><span class="pre">fetch_data_for_initial_allocation_method</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">price</span><span class="o">-</span><span class="n">panel</span> <span class="o">=</span> <span class="n">vwcp</span><span class="o">.</span><span class="n">fetch_data_for_initial_allocation_method</span><span class="p">(</span><span class="n">static_alloc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Construct the <tt class="docutils literal"><span class="pre">panel</span></tt> for the portoflio while determining the desired
+rebalance frequency</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">panel</span> <span class="o">=</span> <span class="n">vwcp</span><span class="o">.</span><span class="n">panel_from_initial_weights</span><span class="p">(</span><span class="n">weight_series</span> <span class="o">=</span> <span class="n">static_alloc</span><span class="p">,</span>
+    <span class="n">static_alloc</span><span class="p">,</span> <span class="n">price_panel</span> <span class="o">=</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">rebal_frequency</span> <span class="o">=</span> <span class="s">&#39;quarterly&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Construct the final portfolio with columns <tt class="docutils literal"><span class="pre">['Open',</span> <span class="pre">'Close']</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">portfolio</span> <span class="o">=</span> <span class="n">vwcp</span><span class="o">.</span><span class="n">pfp_from_weight_file</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Take a look at the portfolio series:</p>
+<div class="highlight-python"><pre>In [10:] portfolio.head()
+Out[11:]
+
+            Close        Open
+Date
+2007-12-12  1000.000000  1007.885932
+2007-12-13   991.329125   990.717915
+2007-12-14   978.157960   983.057829
+2007-12-17   961.705069   969.797167
+2007-12-18   969.794966   972.365687</pre>
+</div>
+</div>
 </div>
 <div class="section" id="todo-list">
 <h2>ToDo List:<a class="headerlink" href="#todo-list" title="Permalink to this headline">¶</a></h2>
@@ -325,10 +604,7 @@ simplest methods is to calculate portfolio performance</li>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="my_file.html" title="Visualize Wealth"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="Welcome to Visualize Wealth’s documentation!"
+          <a href="intro.html" title="README.md"
              >previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>

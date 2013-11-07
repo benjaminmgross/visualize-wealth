@@ -9,5 +9,5 @@ setup(name='VisualizeWealth',
       author='Benjamin M. Gross',
       author_email='benjaminMgross@gmail.com',
       url='https://github.com/benjaminmgross/grind-my-ass-ets',
-      packages=['visualize_wealth.analyze', 'visualize_wealth.construct_portfolio'],
+      packages=['visualize_wealth'],
      )

@@ -360,7 +360,7 @@ def tracking_error(series, benchmark, freq = 'daily'):
 
 def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
     """
-    Returns Carol Alexander's calculation for `Mean Absolute Tracking Error which is
+    Returns Carol Alexander's calculation for Mean Absolute Tracking Error which is
     $$\sqrt{\frac{(T-1)}{T}\cdot \tau^2 + \bar{R}}$$, where $$\tau = Tracking Error$$
     and $$\bar{R} = $$ mean of the active returns
 
@@ -742,7 +742,7 @@ def test_funs():
     Function names, and number of args.  Because the names of the functions are
     the same as the statistic in the ``results`` tab of
     ``../tests/test_analyze.xlsx`` I can use those key values to both call the
-     function and reference the manually calculated value in the ``stats`` frame.
+    function and reference the manually calculated value in the ``stats`` frame.
 
     >>> for fun in funs:
     ...    if (fun[0][0] != '_') and (fun[0] not in no_calc_list):

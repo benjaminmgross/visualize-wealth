@@ -337,7 +337,7 @@ def panel_from_blotter(blotter_df):
 
     **RETURNS:**
     
-        ** ``pandas.Panel``** with dimensions [tickers, dates, price data]
+        ``pandas.Panel`` with dimensions [tickers, dates, price data]
     """
     tickers = pandas.unique(blotter_df['Ticker'])
     start_date = blotter_df.sort_index().index[0]
@@ -365,11 +365,14 @@ def fetch_data_for_weight_allocation_method(weight_df):
 
     **RETURNS:**
     
-        ``pandas.Panel`` where:
-        * ``panel.items:`` are tickers
-        * ``panel.major_axis:`` dates
-        * ``panel.minor_axis:`` price information, specifically: 
-           ['Open', 'Close', 'Adj Close']
+        **``pandas.Panel``** where:
+
+            * ``panel.items:`` are tickers
+
+            * ``panel.major_axis:`` dates
+
+            * ``panel.minor_axis:`` price information, specifically: 
+               ['Open', 'Close', 'Adj Close']
     """
     reader = pandas.io.data.DataReader
     d_0 = weight_df.index.min()
@@ -391,17 +394,20 @@ def fetch_data_for_initial_allocation_method(weight_df):
     'Close','Adj Close'].``
 
     **ARGS:**
-    
+ 
         **weight_df:** a ``pandas.DataFrame`` with dates as index and tickers as
          columns
 
     **RETURNS:**
-    
-        ``pandas.Panel`` where:
-        * ``panel.items:`` are tickers
-        * ``panel.major_axis:`` dates
-        * ``panel.minor_axis:`` price information, specifically: 
-           ['Open', 'Close', 'Adj Close']
+
+        **``pandas.Panel``** where:
+
+            * ``panel.items:`` are tickers
+
+            * ``panel.major_axis:`` dates
+
+            * ``panel.minor_axis:`` price information, specifically: 
+              ['Open', 'Close', 'Adj Close']
     """
     reader = pandas.io.data.DataReader
     d_0 = datetime.datetime(1990, 1, 1)

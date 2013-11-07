@@ -262,12 +262,15 @@ percentages, fetch the data using Yahoo!&#8217;s API and return a panel of dimen
 </div></blockquote>
 <p><strong>RETURNS:</strong></p>
 <blockquote>
-<div><p><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
-* <tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers
-* <tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates
-* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically:</p>
+<div><p><strong>``pandas.Panel``</strong> where:</p>
 <blockquote>
-<div>[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</div></blockquote>
+<div><ul class="simple">
+<li><tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers</li>
+<li><tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates</li>
+<li><tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically: 
+[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</li>
+</ul>
+</div></blockquote>
 </div></blockquote>
 </dd></dl>
 
@@ -288,12 +291,21 @@ allocations, fetch the data using Yahoo!&#8217;s API and return a panel of dimen
 </div></blockquote>
 <p><strong>RETURNS:</strong></p>
 <blockquote>
-<div><p><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> where:
-* <tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers
-* <tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates
-* <tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically:</p>
+<div><p><strong>``pandas.Panel``</strong> where:</p>
 <blockquote>
-<div>[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</div></blockquote>
+<div><ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">panel.items:</span></tt> are tickers</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">panel.major_axis:</span></tt> dates</p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">panel.minor_axis:</span></tt> price information, specifically: </dt>
+<dd><p class="first last">[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
 </div></blockquote>
 </dd></dl>
 
@@ -355,7 +367,7 @@ trades, and number of shares.</p>
 </div></blockquote>
 <p><strong>RETURNS:</strong></p>
 <blockquote>
-<div>** <a href="#id1"><span class="problematic" id="id2">``</span></a>pandas.Panel``** with dimensions [tickers, dates, price data]</div></blockquote>
+<div><tt class="docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, dates, price data]</div></blockquote>
 </dd></dl>
 
 <dl class="function">
@@ -484,6 +496,13 @@ another portfolio to compare against</p>
 </li>
 </ol>
 <span class="target" id="module-visualize_wealth.analyze"></span><span class="target" id="module-analyze.py"></span><dl class="function">
+<dt id="visualize_wealth.analyze.active_returns">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">active_returns</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.active_returns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Active returns is defined as the compound difference between linear returns i.e.
+$$(1 + r_p)/(1 + r_b) - 1$$</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.annualized_return">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">annualized_return</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#annualized_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.annualized_return" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the annualized linear return of a series, i.e. the linear compounding
@@ -643,13 +662,10 @@ the excess return based on the systematic risk of the <tt class="docutils litera
 the <tt class="docutils literal"><span class="pre">benchmark</span></tt></p>
 <p><strong>ARGS:</strong></p>
 <blockquote>
-<div><blockquote>
 <div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of the prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p><strong>rfr:</strong> <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
-<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <a href="#id3"><span class="problematic" id="id4">``</span></a>daily, monthly, quarterly, or</p>
-</div></blockquote>
-<p>yearly``</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either daily, monthly, quarterly, or yearly</p>
 </div></blockquote>
 <p><strong>RETURNS:</strong></p>
 <blockquote>
@@ -688,6 +704,28 @@ a positive value</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.mean_absolute_tracking_error">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">mean_absolute_tracking_error</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.mean_absolute_tracking_error" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Returns Carol Alexander&#8217;s calculation for Mean Absolute Tracking Error which is</dt>
+<dd>$$sqrt{</dd>
+<dt>rac{(T-1)}{T}cdot         au^2 + ar{R}}$$, where $$      au = Tracking Error$$</dt>
+<dd><p class="first">and $$ar{R} = $$ mean of the active returns</p>
+<p><strong>ARGS:</strong></p>
+<blockquote>
+<div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p><strong>freq:</strong> <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</div></blockquote>
+<p><strong>RETURNS:</strong></p>
+<blockquote class="last">
+<div><strong>float:</strong> of the mean absolute tracking error</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.median_downcapture">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">median_downcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#median_downcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.median_downcapture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the median downcapture of a <tt class="docutils literal"><span class="pre">series</span></tt> of prices against a <tt class="docutils literal"><span class="pre">benchmark</span></tt> 
@@ -720,7 +758,7 @@ prices, given that the <tt class="docutils literal"><span class="pre">benchmark<
 <dl class="function">
 <dt id="visualize_wealth.analyze.r_squared">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r_squared</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r_squared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r_squared" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the R-Squared of <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Variation</a></p>
+<dd><p>Returns the R-Squared of <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a></p>
 <p><strong>ARGS:</strong></p>
 <blockquote>
 <div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
@@ -745,8 +783,8 @@ annual returns for that year</div></blockquote>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.analyze.risk_adjusted_excess_returns">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_adjusted_excess_returns</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#risk_adjusted_excess_returns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.risk_adjusted_excess_returns" title="Permalink to this definition">¶</a></dt>
+<dt id="visualize_wealth.analyze.risk_adjusted_excess_return">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_adjusted_excess_return</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.risk_adjusted_excess_return" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the MMRAP or the <a class="reference external" href="http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance">Modigliani Risk Adjusted Performance</a> that
 calculates the excess returns for a given amount of risk along the <a class="reference external" href="http://en.wikipedia.org/wiki/Capital_allocation_line">Capital
 Allocation Line</a></p>
@@ -787,7 +825,7 @@ Allocation Line</a></p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.sharpe_ratio">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">sharpe_ratio</tt><big>(</big><em>series</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#sharpe_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.sharpe_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the <a href="#id5"><span class="problematic" id="id6">`Sharpe Ratio&lt;http://en.wikipedia.org/wiki/Sharpe_ratio&gt;`_</span></a> of an 
+<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Sharpe_ratio">Sharpe Ratio</a> of an 
 asset, given a price series, risk free rate of <tt class="docutils literal"><span class="pre">rfr</span></tt>, and <tt class="docutils literal"><span class="pre">frequency</span></tt> of the 
 time series</p>
 <p><strong>ARGS:</strong></p>
@@ -857,11 +895,56 @@ by systematic risk</div></blockquote>
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.test_funs">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">test_funs</tt><big>(</big><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.test_funs" title="Permalink to this definition">¶</a></dt>
+<dd><p>The testing function for <tt class="docutils literal"><span class="pre">analyze.py</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas.util.testing</span> <span class="kn">as</span> <span class="nn">put</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">analyze</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/test_analyze.xlsx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">man_calcs</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;calcs&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prices</span> <span class="o">=</span> <span class="n">man_calcs</span><span class="p">[[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">,</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stats</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;results&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;S&amp;P 500 Log Ret&#39;</span><span class="p">],</span> 
+<span class="gp">... </span>   <span class="n">log_returns</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;VGTSX Lin Ret&#39;</span><span class="p">],</span> 
+<span class="gp">... </span>   <span class="n">linear_returns</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;Active Return&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">analyze</span><span class="o">.</span><span class="n">active_returns</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> 
+<span class="gp">... </span>   <span class="n">benchmark</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">no_calc_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;value_at_risk&#39;</span><span class="p">,</span> <span class="s">&#39;rolling_ui&#39;</span><span class="p">,</span> <span class="s">&#39;active_returns&#39;</span><span class="p">,</span> <span class="s">&#39;test_funs&#39;</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="s">&#39;linear_returns&#39;</span><span class="p">,</span> <span class="s">&#39;log_returns&#39;</span><span class="p">,</span> <span class="s">&#39;generate_all_metrics&#39;</span><span class="p">,</span> <span class="s">&#39;return_by_year&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;series&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> <span class="s">&#39;benchmark&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span> 
+<span class="gp">... </span>   <span class="s">&#39;freq&#39;</span><span class="p">:</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="s">&#39;rfr&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">funs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">analyze</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Instead of writing out each function, I use the <tt class="docutils literal"><span class="pre">inspect</span> <span class="pre">module</span></tt> to determine
+Function names, and number of args.  Because the names of the functions are
+the same as the statistic in the <tt class="docutils literal"><span class="pre">results</span></tt> tab of
+<tt class="docutils literal"><span class="pre">../tests/test_analyze.xlsx</span></tt> I can use those key values to both call the
+function and reference the manually calculated value in the <tt class="docutils literal"><span class="pre">stats</span></tt> frame.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">fun</span> <span class="ow">in</span> <span class="n">funs</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="k">if</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">no_calc_list</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="n">arg_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">args</span>
+<span class="gp">... </span>       <span class="n">in_vals</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arg_list</span><span class="p">])</span>
+<span class="gp">... </span>       <span class="n">put</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="o">*</span><span class="n">in_vals</span><span class="p">),</span> <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.tracking_error">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">tracking_error</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#tracking_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.tracking_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <tt class="docutils literal"><span class="pre">float</span></tt> of the <a class="reference external" href="http://en.wikipedia.org/wiki/Tracking_error">Tracking Error</a> or standard deviation of the 
-differences of returns</p>
-<p><strong>ARGS:</strong></p>
+compound differences of linear returns</p>
+<blockquote>
+<div><p><strong>ARGS:</strong></p>
 <blockquote>
 <div><p><strong>series:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p><strong>benchmark:</strong> <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
@@ -871,6 +954,7 @@ differences of returns</p>
 <p><strong>RETURNS:</strong></p>
 <blockquote>
 <div><strong>float:</strong> of the tracking error</div></blockquote>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">

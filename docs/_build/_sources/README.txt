@@ -26,9 +26,11 @@ Working on it...
 General Summary & Examples
 --------------------------
 
-Portfolios can (generally) be constructed in one of three ways: 1. The
-Blotter Method 2. Weight Allocation Method 3. Initial Allocation with
-specific Rebalancing Period Method
+Portfolios can (generally) be constructed in one of three ways:
+
+1. The Blotter Method
+2. Weight Allocation Method
+3. Initial Allocation with specific Rebalancing Period Method
 
 1. The Blotter Method
 ~~~~~~~~~~~~~~~~~~~~~
@@ -331,6 +333,10 @@ Take a look at the portfolio series:
 ToDo List:
 ----------
 
+-  Determine why LaTeX output from ``.rst`` to ``.html`` isn't working
+
+-  create installer with ``distutils``
+
 -  Best broad asset classes to determine "best fit portfolio"
 
 +----------+-------------------------------+---------------------+
@@ -342,6 +348,4 @@ ToDo List:
 +----------+-------------------------------+---------------------+
 | VGTSX    | Vanguard Total Intl Stock     | 6/28/1996           |
 +----------+-------------------------------+---------------------+
-
--  Put together ``General Summary & Examples``
 

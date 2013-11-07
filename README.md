@@ -240,6 +240,10 @@ Take a look at the portfolio series:
 
 ##ToDo List:
 
+* Determine why LaTeX output from `.rst` to `.html` isn't working
+
+* create installer with `distutils`
+
 * Best broad asset classes to determine "best fit portfolio"
 
 | Ticker | Name                         | Price Data Begins | 
@@ -249,5 +253,4 @@ Take a look at the portfolio series:
 |VGTSX   |Vanguard Total Intl Stock     | 6/28/1996         |
 
 
-* Put together `General Summary & Examples`
 

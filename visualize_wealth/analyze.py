@@ -22,6 +22,13 @@ def linear_returns(series):
     """
     return series.div(series.shift(1)) - 1
 
+def active_returns(series, benchmark):
+    """
+    Active returns is defined as the compound difference between linear returns i.e.
+    $$(1 + r_p)/(1 + r_b) - 1$$
+    """
+    return (1 + linear_returns(series)).div(1 + linear_returns(benchmark)) - 1 
+
 def annualized_return(series, freq = 'daily'):
     """
     Returns the annualized linear return of a series, i.e. the linear compounding
@@ -175,9 +182,9 @@ def ulcer_index(series):
         ui = vwp.ulcer_index(price_series)
 
     """
-    dd = 1 - series/series.cummax()
+    dd = 1. - series/series.cummax()
     ssdd = numpy.sum(dd**2)
-    return numpy.sqrt(numpy.divide(ssdd, series.shape[0]))
+    return numpy.sqrt(numpy.divide(ssdd, series.shape[0] - 1))
 
 def rolling_ui(series, window = 21):
     """   
@@ -232,7 +239,7 @@ def sharpe_ratio(series, rfr = 0., freq = 'daily'):
     
     return (annualized_return(series, freq) - rfr)/annualized_vol(series, freq)
 
-def risk_adjusted_excess_returns(series, benchmark, rfr = 0., freq = 'daily'):
+def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
     """
     Returns the MMRAP or the `Modigliani Risk Adjusted Performance <http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance>`_ that
     calculates the excess returns for a given amount of risk along the `Capital
@@ -255,10 +262,10 @@ def risk_adjusted_excess_returns(series, benchmark, rfr = 0., freq = 'daily'):
     
     """
     benchmark_sharpe = sharpe_ratio(benchmark, rfr, freq)
-    annualized_return = annualized_return(series, freq)
+    annualized_ret = annualized_return(series, freq)
     series_vol = annualized_vol(series, freq)
 
-    return annualized_return - series_vol * benchmark_sharpe - rfr
+    return annualized_ret - series_vol * benchmark_sharpe - rfr
 
 def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
     """
@@ -274,8 +281,7 @@ def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
 
          **rfr:** ``float`` of the risk free rate
 
-         **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or 
-        yearly``
+         **freq:** ``str`` of frequency, either daily, monthly, quarterly, or yearly
 
     **RETURNS:**
 
@@ -304,11 +310,11 @@ def beta(series, benchmark):
     """
     series_rets = log_returns(series)
     bench_rets = log_returns(benchmark)
-    return series_rets.cov(bench_rets)/bench_rets.var()
+    return numpy.divide(bench_rets.cov(series_rets), bench_rets.var())
     
 def r_squared(series, benchmark):
     """
-    Returns the R-Squared of `Coefficient of Variation <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_
+    Returns the R-Squared of `Coefficient of Determination <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_
 
     **ARGS:**
 
@@ -321,16 +327,15 @@ def r_squared(series, benchmark):
         **float:** of the coefficient of variation
     
     """
-    series_rets = series.apply(numpy.log).diff()
-    bench_rets = benchmark.apply(numpy.log).diff()
-    sse = ((series_rets - bench_rets)**2).sum()
-    sst = ((series_rets - series_rets.mean())**2).sum()
-    return 1 - sse/sst
+    series_rets = log_returns(series)
+    bench_rets = log_returns(benchmark)
+    
+    return series_rets.corr(bench_rets)**2
     
 def tracking_error(series, benchmark, freq = 'daily'):
     """
     Returns a ``float`` of the `Tracking Error <http://en.wikipedia.org/wiki/Tracking_error>`_ or standard deviation of the 
-    differences of returns 
+   compound differences of linear returns
 
     **ARGS:**
 
@@ -349,14 +354,36 @@ def tracking_error(series, benchmark, freq = 'daily'):
     """
     #This needs to be changed to MATE (Mean Absolute Tracking Error)
     fac = _interval_to_factor(freq)
-    series_rets = log_returns(series)
-    bench_rets = log_returns(benchmark)
-    return series_rets.sub(bench_rets).std()*numpy.sqrt(fac)
+    series_rets = linear_returns(series)
+    bench_rets = linear_returns(benchmark)
+    return ((1 + series_rets).div(1 + bench_rets) - 1).std()*numpy.sqrt(fac)
 
 def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
     """
+    Returns Carol Alexander's calculation for `Mean Absolute Tracking Error which is
+    $$\sqrt{\frac{(T-1)}{T}\cdot \tau^2 + \bar{R}}$$, where $$\tau = Tracking Error$$
+    and $$\bar{R} = $$ mean of the active returns
+
+    **ARGS:**
+
+        **series:** ``pandas.Series`` of prices
+
+        **benchmark:** ``pandas.Series`` to compare ``series`` against
+
+        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or 
+        yearly`` 
+
+
+    **RETURNS:**
+
+        **float:** of the mean absolute tracking error
+       
     """
-    return MATE
+    
+    active_rets = active_returns(series = series, benchmark = benchmark)
+    N = active_rets.shape[0]
+    return numpy.sqrt((N - 1)/float(N) * tracking_error(series, benchmark, freq)**2
+                      + active_rets.mean()**2)
 
 def idiosyncratic_risk(series, benchmark, freq = 'daily'):
     """
@@ -426,7 +453,7 @@ def systematic_risk(series, benchmark, freq = 'daily'):
         **float:** the systematic volatility (not variance)
     """
     bench_rets = log_returns(benchmark)
-    benchmark_vol = annualize_vol(benchmark)
+    benchmark_vol = annualized_vol(benchmark)
     return benchmark_vol * beta(series, benchmark)
 
 def systematic_as_proportion(series, benchmark, freq = 'daily'):
@@ -634,7 +661,7 @@ def generate_all_metrics(series, benchmark, freq = 'daily', rfr = 0.):
 
         a = jensens_alpha(series, benchmark, rfr = rfr)   
         b = beta(series, benchmark)
-        r  = risk_adjusted_excess_returns(series, benchmark, rfr = rfr, freq = freq)
+        r  = risk_adjusted_excess_return(series, benchmark, rfr = rfr, freq = freq)
         up = upcapture(series, benchmark)
         down = downcapture(series, benchmark) 
         te = tracking_error(series, benchmark, freq = freq)
@@ -688,8 +715,39 @@ def _bool_interval_index(pandas_index, interval = 'monthly'):
 def test_funs():
     """
     The testing function for ``analyze.py``
+
     >>> import pandas.util.testing as put
+    >>> import inspect, analyze
+    
     >>> f = pandas.ExcelFile('../tests/test_analyze.xlsx')
-    >>> 
+    >>> man_calcs = f.parse('calcs', index_col = 0)
+    >>> prices = man_calcs[['S&P 500', 'VGTSX']]
+    >>> stats = f.parse('results', index_col = 0)
+    >>> put.assert_series_equal(man_calcs['S&P 500 Log Ret'], 
+    ...    log_returns(prices['S&P 500']))
+    >>> put.assert_series_equal(man_calcs['VGTSX Lin Ret'], 
+    ...    linear_returns(prices['VGTSX']))
+    >>> put.assert_series_equal(man_calcs['Active Return'],
+    ...    analyze.active_returns(series = prices['VGTSX'], 
+    ...    benchmark = prices['S&P 500']))
+
+    >>> no_calc_list = ['value_at_risk', 'rolling_ui', 'active_returns', 'test_funs',
+    ...   'linear_returns', 'log_returns', 'generate_all_metrics', 'return_by_year']
+    
+    >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
+    ...    'freq': 'daily', 'rfr': 0.0}
+    >>> funs = inspect.getmembers(analyze, inspect.isfunction)
+
+    Instead of writing out each function, I use the ``inspect module`` to determine
+    Function names, and number of args.  Because the names of the functions are
+    the same as the statistic in the ``results`` tab of
+    ``../tests/test_analyze.xlsx`` I can use those key values to both call the
+     function and reference the manually calculated value in the ``stats`` frame.
+
+    >>> for fun in funs:
+    ...    if (fun[0][0] != '_') and (fun[0] not in no_calc_list):
+    ...        arg_list = inspect.getargspec(fun[1]).args
+    ...        in_vals = tuple([d[arg] for arg in arg_list])
+    ...        put.assert_almost_equal(fun[1](*in_vals), stats.loc[fun[0], 'VGTSX'])
     """
     return None

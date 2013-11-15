@@ -313,8 +313,7 @@ def generate_random_portfolio_blotter(tickers, num_trades):
         blot_d[ticker] = construct_random_trades(price_d[ticker], num_trades)
     ind = []
     agg_d = {'Ticker':[],  'Buy/Sell':[], 'Price':[]}
-    #import pdb
-    #pdb.set_trace()
+
     for ticker in tickers:
         for date in blot_d[ticker].index:
             ind.append(date)
@@ -588,8 +587,7 @@ def pfp_from_blotter(panel_from_blotter, start_value = 1000.):
         **portfolio prices:** in a ``pandas.DataFrame`` with columns ['Open', 
         'Close']
     """
-    import pdb
-   
+
     panel = panel_from_blotter.copy()
     index = panel.major_axis
     price_df = pandas.DataFrame(numpy.zeros([len(index), 2]), index = index, 

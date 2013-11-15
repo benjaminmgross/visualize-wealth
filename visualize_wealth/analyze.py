@@ -12,20 +12,49 @@ import collections
 
 def log_returns(series):
     """
-    Returns a series of log returns given a series of prices
+    Returns a series of log returns given a series of prices where
+    
+    .. math::
+
+        R_t = \\log(\\frac{P_{t+1}}{P_t})
+
+    ** ARGS:**
+
+        **series:** ``pandas.Series`` of prices
+
+    **RETURNS:**
+
+        **series:** ``pandas.Series`` of log returns 
+         
     """
     return series.apply(numpy.log).diff()
 
 def linear_returns(series):
     """
     Returns a series of linear returns given a series of prices
+        
+    .. math::
+
+        R_t = \\frac{P_{t+1}}{P_t}) - 1
+    
+    ** ARGS:**
+
+        **series:** ``pandas.Series`` of prices
+
+    **RETURNS:**
+
+        **series:** ``pandas.Series`` of linear returns
+             
     """
     return series.div(series.shift(1)) - 1
 
 def active_returns(series, benchmark):
     """
     Active returns is defined as the compound difference between linear returns i.e.
-    $$(1 + r_p)/(1 + r_b) - 1$$
+
+    .. math::
+
+        (1 + r_p)/(1 + r_b) - 1
     """
     return (1 + linear_returns(series)).div(1 + linear_returns(benchmark)) - 1 
 
@@ -61,8 +90,17 @@ def annualized_vol(series, freq = 'daily'):
     """
     Returns the annlualized volatility of the log changes of the price series, by
     calculating the volatility of the series, and then applying the square root of 
-    time rule
+    time rule, where:
 
+    .. math::
+       :nowrap:
+
+        \\sigma = \\sigma_t \\cdot \\sqrt{k}, \\textrm{where},
+
+        k & \\triangleq \\textrm{Factor of annualization}
+        
+        \\sigma_t & \\triangleq \\textrm{volatility of period log returns}
+        
     **ARGS:**
     
         **series:** ``pandas.Series`` of prices
@@ -86,7 +124,11 @@ def annualized_vol(series, freq = 'daily'):
 
 def sortino_ratio(series, freq = 'daily'):
     """
-    Returns the Sortino Ratio which is (R-rf)/downside_vol
+    Returns the Sortino Ratio, or excess returns per unit downside volatility
+
+    .. math::
+
+        \\frac{(\\mathbb{R}-r_f)}{\\sigma_\\textrm{downside}}
 
     **ARGS:**
     
@@ -220,7 +262,11 @@ def sharpe_ratio(series, rfr = 0., freq = 'daily'):
     """
     Returns the `Sharpe Ratio <http://en.wikipedia.org/wiki/Sharpe_ratio>`_ of an 
     asset, given a price series, risk free rate of ``rfr``, and ``frequency`` of the 
-    time series
+    time series, where:
+
+    .. math::
+
+        \\textrm{SR} = \\frac{R_p - r_f}{\\sigma}
 
     **ARGS:**
 
@@ -242,9 +288,16 @@ def sharpe_ratio(series, rfr = 0., freq = 'daily'):
 def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
     """
     Returns the MMRAP or the `Modigliani Risk Adjusted Performance <http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance>`_ that
-    calculates the excess returns for a given amount of risk along the `Capital
-    Allocation Line <http://en.wikipedia.org/wiki/Capital_allocation_line>`_
+    calculates the excess return from the `Capital
+    Allocation Line <http://en.wikipedia.org/wiki/Capital_allocation_line>`_,
+    at the same level of risk (or volatility), specificaly,
 
+    .. math::
+
+        raer = r_p - (\\textr{SR}_b \\cdot \\sigma_p + r_f), \\texrm{where}
+
+        r_p &=
+        
     **ARGS:**
 
         **series:** ``pandas.Series`` of prices

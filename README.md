@@ -272,7 +272,12 @@ Take a look at the portfolio series:
 
 ##ToDo List:
 
-* Determine why LaTeX output from `.rst` to `.html` isn't working
+* ~~Determine why LaTeX output from `.rst` to `.html` isn't working~~
+
+ * Double backslashes (`\\`) must be used in the place of all (`\'), as in `\sigma_t`.
+
+* occassionally `generate_random_asset_path` will return with an Assertion Error
+
 
 * Best broad asset classes to determine "best fit portfolio"
 

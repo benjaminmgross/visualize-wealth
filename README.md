@@ -52,7 +52,16 @@ your desired folder of choice (say `Downloads`), and:
 
 **"Ligget Se!"**
 
-##General Summary & Examples
+##Documentation
+
+The `README.md` file has fairly good examples, but I've gone to great lengths to autogenerate documentation for the code using [Sphinx](http://sphinx-doc.org/).  Therefore, aside from the docstrings, when you `git clone` the repository, you can `cd` into:
+
+	$ cd visualize_wealth/docs/build/
+
+and find full `.html` browseable code documentation (that's pretty fucking beautiful... if I do say so my damn self) with live links, function explanations (that also have live links to their respective definition on the web), etc.   
+
+
+##[Portfolio Construction Examples](portfolio-construction-examples)
 
 Portfolios can (generally) be constructed in one of three ways:
 
@@ -60,7 +69,7 @@ Portfolios can (generally) be constructed in one of three ways:
 2. Weight Allocation Method
 3. Initial Allocation with specific Rebalancing Period Method
 
-### 1. The Blotter Method
+### 1. [The Blotter Method](blotter-method-examples)
 
 **The blotter method:** In finance, a spreadsheet of "buys/sells", "Prices", "Dates" etc. is called a "trade blotter."  This also would be the easiest way for an investor to actually analyze the past performance of her portfolio, because trade confirmations provide this exact data.
    
@@ -142,7 +151,7 @@ There is a lot of information to be gleaned from this data object, but the most 
 		2000-07-11  1011.636780  1011.064479
 		2000-07-12  1031.953453  1016.978253
 
-###2. The Weight Allocation Method
+###2. [The Weight Allocation Method](weight-allocation-method-examples)
 
 A commonplace way to test portoflio management strategies using a
 group of underlying assets is to construct aggregate portofolio
@@ -193,7 +202,7 @@ Now a portfolio with `index` of daily values and columns
 `['Open', 'Close']` has been created upon which analytics and
 performance analysis can be done.
 
-### 3. The Initial Allocation & Rebalancing Method
+### 3. [The Initial Allocation & Rebalancing Method](initial-allocation-method-examples)
 
 The standard method of portoflio construction that pervades in many
 circles to this day is static allocation with a given interval of
@@ -274,7 +283,7 @@ Take a look at the portfolio series:
 
 * ~~Determine why LaTeX output from `.rst` to `.html` isn't working~~
 
- * Double backslashes (`\\`) must be used in the place of all (`\'), as in `\sigma_t`.
+ * ~~Double backslashes (`\\`) must be used in the place of all (`\'), as in `\sigma_t`.~~
 
 * occassionally `generate_random_asset_path` will return with an Assertion Error
 

@@ -1,12 +1,8 @@
-Visualize Wealth
-****************
+.. _intro:
 
-There are few tools available to the public that allow them to
-effectively evaluate portfolio performance, analyze historical
-results, and isolate decisions made within the portfolio that
-contributed to the overall benefit / detriment of the investor.  That
-is the aim of this library.
-
+*****************
+Modules Explained
+*****************
 
 **Optimization of Functions:**
 
@@ -28,54 +24,145 @@ project's GitHub Repository.
 The folder under ``visualize_wealth/tests/`` has fairly significant
 tests that illustrate the calculations of:
 
-1. Portoflio Construction (all methods)
+1. Portoflio construction methods
 
-2. The portfolio statistic calculations use in the ``analyze.py``
-module
+2. The portfolio statistic calculations use in the :mod:`analyze` module
 
-Constructing Portfolios
-========================
+All the files are Microsoft Excel files (extensions `.xslx`), so
+seeing cell calculations and the steps to arrive at a final value
+should be pretty straightforward.
 
-In general there are three ways to construct a portfolio using 
-this module:
+.. _constructing-portfolios:
 
-1. Provide trades given tickers, buy / sell dates, and prices
+Constructing portfolios
+=======================
 
-2. Provide a weighting scheme with dates along the first column with  
-   column titles as tickers and percentage allocations to each ticker
-   for a given date for values.  For example:
+In general I've provided for three ways to construct a portfolio using 
+this package:
 
-3. Provide an inial allocation scheme representing the static weights
-   to rebalance to at some given interval, and then define the
-   rebalancing interval as  'weekly',   'monthly', 'quarterly', and 'yearly.'
+1. **The Blotter Method:** Provide trades given tickers, buy / sell
+    dates, and prices.  In general, this method most closely approximates
+    how you would reconstruct your own portfolio performance (if you had
+    to).  You would essentially take trade confirmations of buys and
+    sells, calcluate dividends and splits, and then arrive at an
+    aggregate  portfolio path.  Specific examples can be found under 
+    `blotter method examples <./readme.html#the-blotter-method>`_.
+
+2. **The Weight Allocation Method:** Provide a weighting scheme with
+    dates along the first column with column titles as tickers and
+    percentage allocations to each ticker for a given date for values.
+    Specific examples can be found under
+    `weight allocation examples
+    <./readme.html#the-weight-allocation-method>`_.
+
+3. **The Initial Allocation Method:** with specific Rebalancing
+    Periods provide an initial allocation scheme representing the
+    static weights to rebalance to at some given interval, and then
+    define the rebalancing interval as  'weekly',   'monthly',
+    'quarterly', and 'yearly.' Specific examples can found under
+    `initial allocation examples
+    <./readme.html#the-initial-allocation-rebalancing-method>`_.
+
+Much more detailed examples of these three methods, as well as
+specific examples of code that would leverage this package can be
+found in the `Portfolio Construction Examples <./readme.html#portfolio-construction-examples>`_.
+
 
 In the cases where prices are not available to the investor, helper
 functions for all of the construction methods are available that use
 `Yahoo!'s API <http://www.finance.yahoo.com>`_ to pull down relevant
-price series to be incorprated into the portfolio series calculation. 
+price series to be incorporated into the portfolio series calculation. 
 
-    
-.. automodule:: visualize_wealth.construct_portfolio
-   :members:
+.. _analyzing-portfolio-performance:
 
-Analyzing Portfolio Peformance:
+Analyzing portfolio performance
 ===============================
 
 In general, there's a myriad of statistics and analysis that 
-can be done to analyze portfolio performance, but in general, they
-can be grouped into:
+can be done to analyze portfolio performance.  I don't go really
+deeply into the uses of any of these statistics, but any number of
+them can be "Google-ed", if there aren't live links already provided.
 
-1. **Absolute Statistics:** Statistics that can be calculated without
-   another portfolio to compare against
+Fairly extensive formulas are provided for each of the performance statistics
+inside of the :mod:`analyze`.  Formulas were inserted using the
+`MathJax <http://www.mathjax.org/>`_ rendering capability that `Sphinx
+<http://sphinx-doc.org/>`_ provides.  
 
-2. **Relative** -or- **Benchmark Statistics:** Those statistics that
-    can only be calculated using some comparative series or benchmark
+
+.. _construct-portfolio-documentation:
+
+``construct_portfolio.py`` documentation
+========================================    
+
+Full documentation for each of the functions of :mod:`construct-portfolio`
+
+.. automodule:: visualize_wealth.construct_portfolio
+   :members:
+
+.. _analyze-documentation:
+
+``analyze.py`` documentation
+============================
+
+Full documentation for each of the functions of :mod:`analyze`
 
 .. automodule:: visualize_wealth.analyze
    :members:
 
 
-Add this to your ``conf.py`` file::
+Sphinx Customizations
+=====================
 
-	s = os.path.abspath('../')
-	sys.path.append(s)
+The documentation for this module was created using `Sphinx
+<http://sphinx-doc.org/>`_. I keep a couple of commands here that I
+use when re-committing to `GitHub <http://www.github.com>`_, or
+regenerating the documentation.  It serves
+as reference for myself, but in case other people might find it useful
+I've posted that as well
+
+.. _convert-markdown-to-rst:
+
+Convert `README.md` to `.rst` format
+------------------------------------
+
+I use `Pandoc <http://johnmacfarlane.net/pandoc/>`_ to convert my
+`README <./readme.html>`_ (that's in Markdown format) into ``.rst`` format (that
+can be interepreted by Sphinx).
+
+.. code:: bash
+   
+   $ cd visualize_wealth
+   $ pandoc README.md -f markdown -t rst -o docs/source/readme.rst
+
+
+.. _build-sphinx-documentation:
+
+Build Sphinx Documentation
+--------------------------
+
+.. code:: bash
+    
+    #rebuild the package
+    $ cd visualize_wealth
+    $ python setup.py install
+
+    #rebuild the documentation
+    $ sphinx-build -b html docs/source/ docs/build/
+ 
+.. _sphinx-customizations:
+
+Sphinx Customizations in ``conf.py``
+------------------------------------
+
+Current customizations I use in order to make the docs look like they
+currently do
+
+.. code:: python
+
+    #use the sphinxdoc theme
+    html_theme = 'sphinxdoc'
+
+    #enable todos
+    todo_include_todos = True
+    extensions = ['sphinx.ext.autodoc',..., 'sphinx.ext.todo']
+    

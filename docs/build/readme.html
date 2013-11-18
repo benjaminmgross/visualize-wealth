@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" />
-    <link rel="prev" title="Visualize Wealth" href="intro.html" /> 
+    <link rel="prev" title="Modules Explained" href="intro.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="intro.html" title="Visualize Wealth"
+          <a href="intro.html" title="Modules Explained"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -53,7 +53,8 @@
 <li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#general-summary-examples">General Summary &amp; Examples</a><ul>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#portfolio-construction-examples">Portfolio Construction Examples</a><ul>
 <li><a class="reference internal" href="#the-blotter-method">1. The Blotter Method</a></li>
 <li><a class="reference internal" href="#the-weight-allocation-method">2. The Weight Allocation Method</a></li>
 <li><a class="reference internal" href="#the-initial-allocation-rebalancing-method">3. The Initial Allocation &amp; Rebalancing Method</a></li>
@@ -66,7 +67,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="intro.html"
-                        title="previous chapter">Visualize Wealth</a></p>
+                        title="previous chapter">Modules Explained</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/readme.txt"
@@ -145,8 +146,21 @@ In [1]: import visualize_wealth</pre>
 </ol>
 <p><strong>&#8220;Ligget Se!&#8221;</strong></p>
 </div>
-<div class="section" id="general-summary-examples">
-<h2>General Summary &amp; Examples<a class="headerlink" href="#general-summary-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">README.md</span></tt> file has fairly good examples, but I&#8217;ve gone to great
+lengths to autogenerate documentation for the code using
+<a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>. Therefore, aside from the
+docstrings, when you <tt class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span></tt> the repository, you can <tt class="docutils literal"><span class="pre">cd</span></tt> into:</p>
+<div class="highlight-python"><pre>$ cd visualize_wealth/docs/build/</pre>
+</div>
+<p>and find full <tt class="docutils literal"><span class="pre">.html</span></tt> browseable code documentation (that&#8217;s pretty
+fucking beautiful... if I do say so my damn self) with live links,
+function explanations (that also have live links to their respective
+definition on the web), etc.</p>
+</div>
+<div class="section" id="portfolio-construction-examples">
+<h2><a class="reference external" href="portfolio-construction-examples">Portfolio Construction Examples</a><a class="headerlink" href="#portfolio-construction-examples" title="Permalink to this headline">¶</a></h2>
 <p>Portfolios can (generally) be constructed in one of three ways:</p>
 <ol class="arabic simple">
 <li>The Blotter Method</li>
@@ -154,7 +168,7 @@ In [1]: import visualize_wealth</pre>
 <li>Initial Allocation with specific Rebalancing Period Method</li>
 </ol>
 <div class="section" id="the-blotter-method">
-<h3>1. The Blotter Method<a class="headerlink" href="#the-blotter-method" title="Permalink to this headline">¶</a></h3>
+<h3>1. <a class="reference external" href="blotter-method-examples">The Blotter Method</a><a class="headerlink" href="#the-blotter-method" title="Permalink to this headline">¶</a></h3>
 <p><strong>The blotter method:</strong> In finance, a spreadsheet of &#8220;buys/sells&#8221;,
 &#8220;Prices&#8221;, &#8220;Dates&#8221; etc. is called a &#8220;trade blotter.&#8221; This also would be
 the easiest way for an investor to actually analyze the past performance
@@ -341,7 +355,7 @@ Date
 </div>
 </div>
 <div class="section" id="the-weight-allocation-method">
-<h3>2. The Weight Allocation Method<a class="headerlink" href="#the-weight-allocation-method" title="Permalink to this headline">¶</a></h3>
+<h3>2. <a class="reference external" href="weight-allocation-method-examples">The Weight Allocation Method</a><a class="headerlink" href="#the-weight-allocation-method" title="Permalink to this headline">¶</a></h3>
 <p>A commonplace way to test portoflio management strategies using a group
 of underlying assets is to construct aggregate portofolio performance,
 given a specified weighting allocation to specific assets on specified
@@ -420,7 +434,7 @@ price_panel = vwcp.fetch_data_for_weight_allocation_method(weight_df)
 performance analysis can be done.</p>
 </div>
 <div class="section" id="the-initial-allocation-rebalancing-method">
-<h3>3. The Initial Allocation &amp; Rebalancing Method<a class="headerlink" href="#the-initial-allocation-rebalancing-method" title="Permalink to this headline">¶</a></h3>
+<h3>3. <a class="reference external" href="initial-allocation-method-examples">The Initial Allocation &amp; Rebalancing Method</a><a class="headerlink" href="#the-initial-allocation-rebalancing-method" title="Permalink to this headline">¶</a></h3>
 <p>The standard method of portoflio construction that pervades in many
 circles to this day is static allocation with a given interval of
 rebalancing. For instance, if I wanted to implement Oppenheimers&#8217; <a class="reference external" href="https://www.oppenheimerfunds.com/digitalAssets/Discover-the-New-60-40-43f7f642-e0aa-40d9-a3fc-00f31be5a4fa.pdf">The
@@ -588,7 +602,12 @@ Date
 <div class="section" id="todo-list">
 <h2>ToDo List:<a class="headerlink" href="#todo-list" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Determine why LaTeX output from <tt class="docutils literal"><span class="pre">.rst</span></tt> to <tt class="docutils literal"><span class="pre">.html</span></tt> isn&#8217;t working</li>
+<li>[STRIKEOUT:Determine why LaTeX output from <tt class="docutils literal"><span class="pre">.rst</span></tt> to <tt class="docutils literal"><span class="pre">.html</span></tt>
+isn&#8217;t working]</li>
+<li>~~Double backslashes (<tt class="docutils literal"><span class="pre">\\</span></tt>) must be used in the place of all
+(<tt class="docutils literal"><span class="pre">\'),</span> <span class="pre">as</span> <span class="pre">in</span></tt>_t`.~~</li>
+<li>occassionally <tt class="docutils literal"><span class="pre">generate_random_asset_path</span></tt> will return with an
+Assertion Error</li>
 <li>Best broad asset classes to determine &#8220;best fit portfolio&#8221;</li>
 </ul>
 <table border="1" class="docutils">
@@ -637,7 +656,7 @@ Date
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="intro.html" title="Visualize Wealth"
+          <a href="intro.html" title="Modules Explained"
              >previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>

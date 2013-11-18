@@ -341,7 +341,7 @@
     <span class="n">split_df</span> <span class="o">=</span> <span class="n">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">blotter_and_price_df_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">split_df</span><span class="p">)</span>
 </div>
-<span class="k">def</span> <span class="nf">generate_random_asset_path</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_random_asset_path"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.generate_random_asset_path">[docs]</a><span class="k">def</span> <span class="nf">generate_random_asset_path</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">pdb</span>
     <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -353,7 +353,7 @@
     <span class="k">return</span> <span class="n">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span> <span class="o">=</span> <span class="n">blotter</span><span class="p">,</span> <span class="n">ticker</span> <span class="o">=</span> <span class="n">ticker</span><span class="p">,</span>
                                  <span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">end_date</span><span class="p">,</span> 
                                  <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
-
+</div>
 <div class="viewcode-block" id="generate_random_portfolio_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">[docs]</a><span class="k">def</span> <span class="nf">generate_random_portfolio_blotter</span><span class="p">(</span><span class="n">tickers</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct a random trade blotter, given a list of tickers and a number of trades </span>

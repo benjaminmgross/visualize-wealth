@@ -14,22 +14,27 @@ import datetime
 import urllib2
 
 def format_blotter(blotter_file):
-    """  
+    """
     Pass in either a location of a blotter file (in ``.csv`` format) or blotter 
-    ``pandas.DataFrame`` with all positive values and return a ``pandas.DataFrame``
-    where Sell values are then negative values
+    :class:`pandas.DataFrame` with all positive values and return a
+    :class:pandas.DataFrame` where Sell values are then negative values
     
-    **ARGS:**
+    :ARGS:
     
-        **blotter_file:** ``pandas.DataFrame`` with at least index (dates of 
+        blotter_file: :class:`pandas.DataFrame` with at least index (dates of 
         Buy / Sell) columns = ['Buy/Sell', 'Shares'] or a string of the file
         location to such a formatted file
 
-    **RETURNS:**
+    :RETURNS:
 
-        **blotter:** of type ``pandas.DataFrame`` where sell values have been made 
+        blotter: of type :class:`pandas.DataFrame` where sell values have been made 
         negative
-        
+
+    .. todo::
+
+        Current functionality changes sell values to their opposite sign, it 
+        should actually check to make sure a "sell is positive," and **only** then 
+        change the sign from negative to positive
     """
     if isinstance(blotter_file, str):
         blot = pandas.DataFrame.from_csv(blotter_file)
@@ -45,27 +50,31 @@ def format_blotter(blotter_file):
 
 def append_price_frame_with_dividends(ticker, start_date, end_date=None):
     """
-    Given a ticker, start_date, & end_date, return a pandas.DataFrame with 
-    a Dividend Columns
+    Given a ticker, start_date, & end_date, return a :class:`pandas.DataFrame` with 
+    a Dividend Columns appended to it
 
-    **ARGS:**
+    :ARGS:
 
-        **ticker:** ``str`` of ticker
+        ticker: :meth:`str` of ticker
 
-        **start_date:** ``datetime.datetime`` or string of format "mm/dd/yyyy"
+        start_date: :class:`datetime.datetime` or string of format "mm/dd/yyyy"
 
-        **end_date:** a ``dtetime.datetime`` or string of format "mm/dd/yyyy"
+        end_date: a :class:`datetime.datetime` or string of format "mm/dd/yyyy"
 
-    **RETURNS:**
+    :RETURNS:
     
-        **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
-         'Dividends']
+        price_df: a :class:`pandas.DataFrame` with columns ['Close', 'Adj Close',
+        'Dividends']
 
-    **USAGE:**::
+    .. code:: python
     
-         frame_with_divs = construct_portfolio.append_price_frame_with_dividends(
-             'EEM', '01/01/2000', '01/01/2013')
-                     
+        frame_with_divs = construct_portfolio.append_price_frame_with_dividends('EEM', 
+        '01/01/2000', '01/01/2013')
+
+    .. warning:: Requires Internet Connectivity
+
+        Because the function calls the `Yahoo! API <http://www.finance.yahoo.com>`_
+        internet connectivity is required for the function to work properly
     """
     reader = pandas.io.data.DataReader
 
@@ -103,26 +112,34 @@ def append_price_frame_with_dividends(ticker, start_date, end_date=None):
 
 def calculate_splits(price_df, tol = .1):
     """
-    Given a price_df of the format append_price_frame_with_dividends, return a 
-    DataFrame with a split factor columns named 'Splits'
+    Given a ``price_df`` of the format :meth:`append_price_frame_with_dividends`, 
+    return a :class:`pandas.DataFrame` with a split factor columns named 'Splits'
     
-    **ARGS:**
+    :ARGS:
     
-        **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
-         'Dividends']
+        price_df: a :class:`pandas.DataFrame` with columns ['Close', 'Adj Close',
+        'Dividends']
 
-         **tol:** ``flt`` of the tolerance to determine whether a split has occurred
+        tol: class:`float` of the tolerance to determine whether a split has
+        occurred
 
-    **RETURNS:**
+    :RETURNS:
     
-         **price:** ``pandas.DataFrame`` with columns ['Close', 'Adj Close',
-          'Dividends', Splits']
+        price: :class:`pandas.DataFrame` with columns ['Close', 'Adj Close',
+        'Dividends', Splits']
 
-    **USAGE:**::
+    .. code::
     
         price_df_with_divs_and_split_ratios = construct_portfolio.calculate_splits(
             price_df_with_divs, tol = 0.1)
-    
+
+    .. note:: Calculating Splits
+
+        This function specifically looks at the ratios of close to adjusted close to
+        determine whether a split has occurred. To see the manual calculations of 
+        this function, see ``visualize_wealth/tests/estimating when splits have
+        occurred.xlsx``
+
     """
     div_mul = 1 - price_df['Dividends'].shift(-1).div(price_df['Close'])
     rev_cp = div_mul[::-1].cumprod()[::-1]
@@ -142,27 +159,36 @@ def calculate_splits(price_df, tol = .1):
 
 def blotter_and_price_df_to_cum_shares(blotter_df, price_df):
     """
-    Given a ``blotter DataFrame`` of dates, purchases (+/-),  and a ``price 
-    DataFrame`` with Close Adj Close, Dividends, & Splits, calculate the cumulative
-    share balance for the position
+    Given a blotter :class:`pandas.DataFrame` of dates, purchases (+/-),  and 
+    price :class:`pandas.DataFrame` with Close Adj Close, Dividends, & Splits, 
+    calculate the cumulative share balance for the position
     
-    **ARGS:**
+    :ARGS:
     
-        **blotter_df:** a  ``pandas.DataFrame`` where index is buy/sell dates
+        blotter_df: a  :class:`pandas.DataFrame` where index is buy/sell dates
 
-        **price_df:** a ``pandas.DataFrame`` with columns ['Close', 'Adj Close', 'Dividends', 'Splits']
+        price_df: a :class:`pandas.DataFrame` with columns ['Close', 'Adj Close', 
+        'Dividends', 'Splits']
 
-    **RETURNS:**                          
+    :RETURNS:                          
 
-         ``pandas.DataFrame`` containing contributions, withdrawals, price values
+        :class:`pandas.DataFrame` containing contributions, withdrawals, price
+        values
 
-    **USAGE:**::
+    .. code:: python
 
         agg_stats_for_single_asset = construct_portfolio.blotter_to_split_adj_shares(
             single_asset_blotter, split_adj_price_frame)
-        
-    """
 
+    .. note:: Calculating Position Value
+
+        The sole reason you can't take the number of trades for a given asset, 
+        apply a :meth:`cumsum`, and then multiply by 'Close' for a given day is 
+        because of splits.  Therefore, once this function has run, taking the 
+        cumulative shares and then multiplying by close **is** an appropriate way
+        to determine aggregate position value for any given day
+
+    """
     blotter_df = blotter_df.sort_index()
     #make sure all dates in the blotter file are also in the price file
     #consider, if those dates aren't in price frame, assign the "closest date" value
@@ -214,14 +240,23 @@ def construct_random_trades(split_df, num_trades):
     """
     Create random trades on random trade dates, but never allow shares to go negative
     
-    **ARGS:**
+    :ARGS:
     
-        **split_df:** ``pandas.DataFrame`` that has 'Close', 'Dividends', 'Splits'
+        split_df: :class:`pandas.DataFrame` that has 'Close', 'Dividends', 'Splits'
 
-    **RETURNS:**
+    :RETURNS:
 
-         **blotter_frame:** ``pandas.DataFrame`` a blotter with random trades,
+        blotter_frame: :class:`pandas.DataFrame` a blotter with random trades,
           num_trades
+
+    .. note:: Why Create Random Trades?
+
+        One disappointing aspect of any type of financial software is the fact that
+        you **need** to have a portfolio to view what the software does (which
+        never seemed like an appropriate "necessary" condition to me).  Therefore,
+        I've created comprehensive ability to create random trades for single assets,
+        as well as random portfolios of assets, to avoid the "unnecessary condition"
+        of having a portfolio to understand how to anaylze one.
     """
     ind = numpy.sort(numpy.random.randint(0, len(split_df), size = num_trades))
     #This unique makes sure there aren't double trade day entries which breaks 
@@ -246,26 +281,33 @@ def construct_random_trades(split_df, num_trades):
 
 def blotter_to_cum_shares(blotter_series, ticker, start_date, end_date, tol):
     """
-    Similar to :fun:blotter_and_price_df_to_cum_shares except that a split adjusted 
-    ``price_df`` is not necessary.  Only a blotter,  ticker, start_date, & end_date
-    are needed.  Returns 
+    Aggregation function for :meth:`append_price_frame_with_dividend`, :meth:`
+    calculate_splits`, and :meth:`blotter_and_price_df_to_cum_shares`.  Only a
+    blotter,  ticker, start_date, & end_date are needed.
 
-    **ARGS:**
+    :ARGS:
 
-        **blotter_series:** a  ``pandas.Series`` with index of dates and values of
-         quantity
+        blotter_series: a  :class:`pandas.Series` with index of dates and values of
+        quantity
 
-         **ticker:** ``str`` the ticker for which the buys and sells occurs
+        ticker: class:`str` the ticker for which the buys and sells occurs
 
-         **start_date:** type ``str`` or ``datetime.datetime``
+        start_date: a :class:`string` or :class:`datetime.datetime`
 
-         **end_date:** ``str`` or ``datetime.datetime``
+        end_date: :class:`string` or :class:`datetime.datetime`
 
-         **tol:** ``flt``  the tolerance to find the split dates (.1 recommended)
+        tol: :class:`float`  the tolerance to find the split dates (.1 recommended)
     
-    **RETURNS:**
+    :RETURNS:
 
-         ``pandas.DataFrame`` containing contributions, withdrawals, price values
+         :class:`pandas.DataFrame` containing contributions, withdrawals, price 
+         values
+
+    .. warning:: Requires Internet Connectivity
+
+    Because the function calls the `Yahoo! API <http://www.finance.yahoo.com>`_
+    internet connectivity is required for the function to work properly
+    
     """
 
     price_df = append_price_frame_with_dividends(ticker, start_date, end_date)
@@ -273,6 +315,30 @@ def blotter_to_cum_shares(blotter_series, ticker, start_date, end_date, tol):
     return blotter_and_price_df_to_cum_shares(blotter_series, split_df)
 
 def generate_random_asset_path(ticker, start_date, num_trades):
+    """
+    Allows the user to input a ticker, start date, and num_trades to generate 
+    a :class:`pandas.DataFrame` with columns 'Open', 'Close', cum_withdrawals', 
+    'cum_shares' (i.e. bypasses the need for a price :class:`pandas.DataFrame` 
+    to  generate an asset path, as is required in :meth:`construct_random_trades`
+
+    :ARGS:
+
+        ticker: :class:`string` of the ticker to generate the path
+
+        start_date: :class:`string` of format 'mm/dd/yyyy' or :class:`datetime`
+
+        num_trades: :class:`int` of the number of trades to generate
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` with the additional columns 'cum_shares', 
+           'contr_withdrawal', 'Splits', Dividends'
+        
+    .. warning:: Requires Internet Connectivity
+
+    Because the function calls the `Yahoo! API <http://www.finance.yahoo.com>`_
+    internet connectivity is required for the function to work properly
+    """
     import pdb
     pdb.set_trace()
     if isinstance(start_date, str):
@@ -287,21 +353,26 @@ def generate_random_asset_path(ticker, start_date, num_trades):
 
 def generate_random_portfolio_blotter(tickers, num_trades):
     """
-    Construct a random trade blotter, given a list of tickers and a number of trades 
-    (to be used for all tickers), prices will be  the 'Close' of that ticker in the 
-    price DataFrame that is collected
+    :meth:`construct_random_asset_path`, for multiple assets, given a list of
+    tickers and a number of trades (to be used for all tickers). Execution prices
+    will be the 'Close' of that ticker in the price DataFrame that is collected
 
-    **INPUTS:**
+    :ARGS:
     
-        **tickers:** a ``list`` with the tickers to be used
+        tickers: a :class:`list` with the tickers to be used
 
-        **num_trades:** ``int``, the number of trades to randomly generate for each
-         ticker
+        num_trades: :class:`integer`, the number of trades to randomly generate for
+        each ticker
 
-    **RETURNS:**
+    :RETURNS:
 
-        ``pandas.DataFrame`` with columns 'Ticker', 'Buy/Sell' (+ for buys, - for
-         sells) and 'Price'
+        :class:`pandas.DataFrame` with columns 'Ticker', 'Buy/Sell' (+ for buys, - 
+        for sells) and 'Price'
+
+    .. warning:: Requires Internet Connectivity
+
+    Because the function calls the `Yahoo! API <http://www.finance.yahoo.com>`_
+    internet connectivity is required for the function to work properly
     
     """
     blot_d = {}
@@ -328,15 +399,23 @@ def panel_from_blotter(blotter_df):
     The aggregation function to construct a portfolio given a blotter of tickers,
     trades, and number of shares.  
 
-    **ARGS:**
+    :ARGS:
 
-        **agg_blotter_df:** a ``pandas.DataFrame`` with columns ['Ticker',
+        agg_blotter_df: a :class:`pandas.DataFrame` with columns ['Ticker',
          'Buy/Sell', 'Price'],  where the 'Buy/Sell' column is the quantity of
           shares, (+) for buy, (-) for sell
 
-    **RETURNS:**
+    :RETURNS:
     
-        ``pandas.Panel`` with dimensions [tickers, dates, price data]
+        :class:`pandas.Panel` with dimensions [tickers, dates, price data]
+
+    .. note:: What to Do with your Panel
+
+        The :class:`pandas.Panel` returned by this function has all of the necessary
+        information to do some fairly exhaustive analysis.  Cumulative investment,
+        portfolio value (simply the ``cum_shares``*``close`` for all assets), closes,
+        opens, etc.  You've got a world of information about "your portfolio" with
+        this object... get diggin!
     """
     tickers = pandas.unique(blotter_df['Ticker'])
     start_date = blotter_df.sort_index().index[0]
@@ -351,27 +430,33 @@ def panel_from_blotter(blotter_df):
 
 def fetch_data_for_weight_allocation_method(weight_df):
     """
-    To be used with the **Weight Allocation Method** Given a weight_df
-    ``pandas.DataFrame`` with index of allocation dates and columns of percentage
+    To be used with `The Weight Allocation Method 
+    <./readme.html#the-weight-allocation-method>_` Given a weight_df
+    with index of allocation dates and columns of percentage
     allocations, fetch the data using Yahoo!'s API and return a panel of dimensions
     [tickers, dates, price data], where ``price_data`` has columns ``['Open', 
     'Close','Adj Close'].``
 
-    **ARGS:**
+    :ARGS:
     
-        **weight_df:** a ``pandas.DataFrame`` with dates as index and tickers as
+        weight_df: a :class:`pandas.DataFrame` with dates as index and tickers as
          columns
 
-    **RETURNS:**
+    :RETURNS:
     
-        **``pandas.Panel``** where:
+        :class:`pandas.Panel` where:
 
-            * ``panel.items:`` are tickers
+            * :meth:`panel.items` are tickers
 
-            * ``panel.major_axis:`` dates
+            * :meth:`panel.major_axis` dates
 
-            * ``panel.minor_axis:`` price information, specifically: 
+            * :meth:`panel.minor_axis:` price information, specifically: 
                ['Open', 'Close', 'Adj Close']
+
+    .. warning:: Requires Internet Connectivity
+
+    Because the function calls the `Yahoo! API <http://www.finance.yahoo.com>`_
+    internet connectivity is required for the function to work properly
     """
     reader = pandas.io.data.DataReader
     d_0 = weight_df.index.min()
@@ -386,26 +471,27 @@ def fetch_data_for_weight_allocation_method(weight_df):
 
 def fetch_data_for_initial_allocation_method(weight_df):
     """
-    To be used with the **Initial Allocaiton & Rebalancing Method** Given a weight_df
-    ``pandas.DataFrame`` with index of tickers and values of initial allocation 
+    To be used with `The Initial Allocaiton Method 
+    <./readme.html#the-initial-allocation-rebalancing-method>`_ Given a weight_df
+    :class:`pandas.DataFrame` with index of tickers and values of initial allocation 
     percentages, fetch the data using Yahoo!'s API and return a panel of dimensions
     [tickers, dates, price data], where ``price_data`` has columns ``['Open', 
     'Close','Adj Close'].``
 
-    **ARGS:**
+    :ARGS:
  
-        **weight_df:** a ``pandas.DataFrame`` with dates as index and tickers as
+        weight_df: a :class:`pandas.DataFrame` with dates as index and tickers as
          columns
 
-    **RETURNS:**
+    :RETURNS:
 
-        **``pandas.Panel``** where:
+        :class:`pandas.Panel` where:
 
-            * ``panel.items:`` are tickers
+            * :meth:`panel.items` are tickers
 
-            * ``panel.major_axis:`` dates
+            * :meth:`panel.major_axis` dates
 
-            * ``panel.minor_axis:`` price information, specifically: 
+            * :meth:`panel.minor_axis` price information, specifically: 
               ['Open', 'Close', 'Adj Close']
     """
     reader = pandas.io.data.DataReader
@@ -421,20 +507,28 @@ def fetch_data_for_initial_allocation_method(weight_df):
 
 def panel_from_weight_file(weight_df, price_panel, start_value):
     """
-    Returns a ``pandas.Panel`` with columns ['Close', 'Open'] when provided
+    Returns a :class:`pandas.Panel` with columns ['Close', 'Open'] when provided
     a pandas.DataFrame of weight allocations and a starting  value of the index
 
-    **ARGS:**
+    :ARGS:
     
-        **weight_df:** ``pandas.DataFrame`` of a weight allocation with tickers for
-        columns, index of dates and weight allocations to each of the tickers
+        weight_df of :class:`pandas.DataFrame` of a weight allocation with tickers 
+        for columns, index of dates and weight allocations to each of the tickers
 
-        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
+        price_panel of :class:`pandas.Panel` with dimensions [tickers, index, price
          data]
 
-    **RETURNS:**
+    :RETURNS:
     
-        ``pandas.Panel`` with dimensions (tickers, dates, price date)
+        :class:`pandas.Panel` with dimensions (tickers, dates, price data)
+
+    .. note:: What to Do with your Panel
+
+        The :class:`pandas.Panel` returned by this function has all of the necessary
+        information to do some fairly exhaustive analysis.  Cumulative investment,
+        portfolio value (simply the ``cum_shares``*``close`` for all assets), closes,
+        opens, etc.  You've got a world of information about "your portfolio" with
+        this object... get diggin!
     
     """
 
@@ -483,21 +577,22 @@ def panel_from_initial_weights(weight_series, price_panel, rebal_frequency,
     frequency (this is the classical "static" construction" methodology, rebalancing
     at somspecified interval)
 
-    **ARGS:**
+    :ARGS:
     
-        **weight_series:** ``pandas.Series`` of a weight allocation with an index of
-         tickers, and a name of the initial allocation
+        weight_series of :class:`pandas.Series` of a weight allocation with an 
+        index of tickers, and a name of the initial allocation
 
-        **price_panel:** ``pandas.Panel`` with dimensions [tickers, index, price
-          data]
+        price_panel of type :class:`pandas.Panel` with dimensions [tickers, index,
+        price data]
 
-        **start_value:** ``flt`` of the value to start the index
+        start_value: of type :class:`float` of the value to start the index
 
-        **rebal_frequency:** ``str`` of 'weekly', 'monthly', 'quarterly', 'yearly'
+        rebal_frequency: :class:`string` of 'weekly', 'monthly', 'quarterly',
+        'yearly'
 
-    **RETURNS:**
+    :RETURNS:
     
-         **price:** of type ``pandas.DataFrame`` with portfolio 'Close' and 'Open'
+         price: of type :class:`pandas.DataFrame` with portfolio 'Close' and 'Open'
     """
 
     #determine the first valid date and make it the start_date
@@ -543,15 +638,29 @@ def pfp_from_weight_file(panel_from_weight_file):
     that is created in the portfolio construction process when weight file is given
     and generates a portfolio path of 'Open' and 'Close'
 
-    **ARGS:**
+    :ARGS:
 
-        **panel_from_weight_file:** a ``pandas.Panel`` that was generated using
+        panel_from_weight_file: a :class:`pandas.Panel` that was generated using
         ``panel_from_weight_file``
 
-    **RETURNS:**
+    :RETURNS:
 
-        **portfolio prices:** in a ``pandas.DataFrame`` with columns ['Open', 
+        portfolio prices in a :class:`pandas.DataFrame` with columns ['Open', 
         'Close']
+
+    .. note:: The Holy Grail of the Portfolio Path
+
+        The portfolio path is what goes into all of the :mod:`analyze` 
+        functions.  So once the `pfp_from_`... has been created, you've got all 
+        of the necessary bits to begin calculating performance metrics on your 
+        portfolio!
+
+    .. note:: Another way to think of Portfolio Path
+
+        This "Portfolio Path" is really nothing more than a series of prices that, 
+        should you have made the trades given in the blotter, would have been the 
+        the experience of someone investing `start_value` in your strategy when 
+        your strategy first begins, up until today.
     """
     port_cols = ['Close', 'Open']
     index = panel_from_weight_file.major_axis
@@ -571,21 +680,35 @@ def pfp_from_weight_file(panel_from_weight_file):
 
 def pfp_from_blotter(panel_from_blotter, start_value = 1000.):
     """
-    pfp stands for "Portfolio from Panel", so this takes the final ``pandas.Panel``
-    that is created in the portfolio construction process when a blotter is given
-    and generates a portfolio path of 'Open' and 'Close'
+    pfp stands for "Portfolio from Panel", so this takes the final
+    :class`pandas.Panel` that is created in the portfolio construction process 
+    when a blotter is given and generates a portfolio path of 'Open' and 'Close'
 
-    **ARGS:**
+    :ARGS:
 
-        **panel_from_weight_file:** a ``pandas.Panel`` that was generated using
-        ``panel_from_weight_file``
+         panel_from_blotter: a :class:`pandas.Panel` that was generated using
+         ref:`panel_from_weight_file`
 
-        **start_value:** ``float`` of the starting value, defaults to 1000.
+        start_value: :class:`float` of the starting value, defaults to 1000.
 
-    **RETURNS:**
+    :RETURNS:
 
-        **portfolio prices:** in a ``pandas.DataFrame`` with columns ['Open', 
+        portfolio prices in a :class:`pandas.DataFrame` with columns ['Open', 
         'Close']
+
+    .. note:: The Holy Grail of the Portfolio Path
+
+        The portfolio path is what goes into all of the :mod:`analyze` 
+        functions.  So once the `pfp_from_`... has been created, you've got all 
+        of the necessary bits to begin calculating performance metrics on your 
+        portfolio!
+
+    .. note:: Another way to think of Portfolio Path
+
+        This "Portfolio Path" is really nothing more than a series of prices that, 
+        should you have made the trades given in the blotter, would have been the 
+        the experience of someone investing `start_value` in your strategy when 
+        your strategy first begins, up until today.
     """
 
     panel = panel_from_blotter.copy()

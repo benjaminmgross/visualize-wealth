@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -82,18 +80,20 @@
 <div class="viewcode-block" id="log_returns"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.log_returns">[docs]</a><span class="k">def</span> <span class="nf">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a series of log returns given a series of prices where</span>
-<span class="sd">    </span>
-<span class="sd">    .. math::</span>
 
-<span class="sd">        R_t = \\log(\\frac{P_{t+1}}{P_t})</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">    ** ARGS:**</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">        series: ``pandas.Series`` of log returns </span>
 
-<span class="sd">        **series:** ``pandas.Series`` of log returns </span>
+<span class="sd">    .. note:: Calculating Log Returns</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            R_t = \\log(\\frac{P_{t+1}}{P_t})</span>
 <span class="sd">         </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
@@ -101,18 +101,20 @@
 <div class="viewcode-block" id="linear_returns"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.linear_returns">[docs]</a><span class="k">def</span> <span class="nf">linear_returns</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a series of linear returns given a series of prices</span>
-<span class="sd">        </span>
-<span class="sd">    .. math::</span>
-
-<span class="sd">        R_t = \\frac{P_{t+1}}{P_t}) - 1</span>
 <span class="sd">    </span>
-<span class="sd">    ** ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of linear returns</span>
+<span class="sd">        series: ``pandas.Series`` of linear returns</span>
+
+<span class="sd">    .. note:: Calculating Linear Returns</span>
+
+<span class="sd">            .. math::</span>
+
+<span class="sd">                R_t = \\frac{P_{t+1}}{P_t} - 1</span>
 <span class="sd">             </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
@@ -121,9 +123,24 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Active returns is defined as the compound difference between linear returns i.e.</span>
 
-<span class="sd">    .. math::</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        (1 + r_p)/(1 + r_b) - 1</span>
+<span class="sd">        series: ``pandas.Series`` of prices of the portfolio</span>
+
+<span class="sd">        benchmark: ``pandas.Series`` of prices of the benchmark</span>
+
+<span class="sd">    :RETURNS: </span>
+
+<span class="sd">        ``pandas.Series`` of active returns</span>
+
+<span class="sd">    .. note:: Compound Linear Returns</span>
+
+<span class="sd">         Linear returns are not simply subtracted, but rather the compound</span>
+<span class="sd">         difference is taken such that</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            r_a = (1 + r_p)/(1 + r_b) - 1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">linear_returns</span><span class="p">(</span><span class="n">series</span><span class="p">))</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">linear_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span> 
 </div>
@@ -133,18 +150,18 @@
 <span class="sd">    rate that would have been necessary, given the initial investment, to arrive at</span>
 <span class="sd">    the final value</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 <span class="sd">        </span>
-<span class="sd">        **freq:** ``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
+<span class="sd">        freq: ``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
 <span class="sd">        indicating the frequency of the data ``default=`` daily</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        **float**: of the annualized linear return</span>
+<span class="sd">        ``float``: of the annualized linear return</span>
 
-<span class="sd">    **USAGE:**::</span>
+<span class="sd">    .. code:: python</span>
 
 <span class="sd">        import visualize_wealth.performance as vwp</span>
 
@@ -159,29 +176,30 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the annlualized volatility of the log changes of the price series, by</span>
 <span class="sd">    calculating the volatility of the series, and then applying the square root of </span>
-<span class="sd">    time rule, where:</span>
+<span class="sd">    time rule</span>
 
-<span class="sd">    .. math::</span>
-<span class="sd">       :nowrap:</span>
-
-<span class="sd">        \\sigma = \\sigma_t \\cdot \\sqrt{k}, \\textrm{where},</span>
-
-<span class="sd">        k &amp; \\triangleq \\textrm{Factor of annualization}</span>
-<span class="sd">        </span>
-<span class="sd">        \\sigma_t &amp; \\triangleq \\textrm{volatility of period log returns}</span>
-<span class="sd">        </span>
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **freq:** ``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
+<span class="sd">        freq: ``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
 <span class="sd">        indicating the frequency of the data ``default=`` daily</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        **float**: of the annualized volatility</span>
+<span class="sd">        float: of the annualized volatility</span>
 
-<span class="sd">    **USAGE:**::</span>
+<span class="sd">    .. note:: Applying the Square root of time rule</span>
+
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \\sigma = \\sigma_t \\cdot \\sqrt{k},\\: \\textrm{where},</span>
+
+<span class="sd">            k &amp;= \\textrm{Factor of annualization} \\\\</span>
+<span class="sd">            \\sigma_t &amp;= \\textrm{volatility of period log returns}</span>
+<span class="sd">        </span>
+<span class="sd">    .. code::</span>
 
 <span class="sd">        import visualize_wealth.performance as vwp</span>
 
@@ -193,24 +211,30 @@
 </div>
 <div class="viewcode-block" id="sortino_ratio"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.sortino_ratio">[docs]</a><span class="k">def</span> <span class="nf">sortino_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the Sortino Ratio, or excess returns per unit downside volatility</span>
+<span class="sd">    Returns the `Sortino Ratio &lt;http://en.wikipedia.org/wiki/Sortino_ratio&gt;`_, or</span>
+<span class="sd">    excess returns per unit downside volatility</span>
 
-<span class="sd">    .. math::</span>
-
-<span class="sd">        \\frac{(\\mathbb{R}-r_f)}{\\sigma_\\textrm{downside}}</span>
-
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 <span class="sd">    </span>
-<span class="sd">        **freq:** ``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
+<span class="sd">        freq: ``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
 <span class="sd">        indicating the frequency of the data ``default=`` daily</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        **float** of the Sortino Ratio</span>
+<span class="sd">        float of the Sortino Ratio</span>
 
-<span class="sd">    **USAGE:**::</span>
+<span class="sd">    .. note:: Calculating the Sortino Ratio</span>
+
+<span class="sd">        There are several calculation methodologies for the Sortino Ratio, this</span>
+<span class="sd">        method using downside volatility, where</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \\textrm{Sortino Ratio} = \\frac{(R-r_f)}{\\sigma_\\textrm{downside}}</span>
+<span class="sd">    </span>
+<span class="sd">    .. code:: </span>
 
 <span class="sd">        import visualize_wealth.performance as vwp</span>
 
@@ -222,26 +246,29 @@
     </div>
 <div class="viewcode-block" id="value_at_risk"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.value_at_risk">[docs]</a><span class="k">def</span> <span class="nf">value_at_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;weekly&#39;</span><span class="p">,</span> <span class="n">percentile</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;    </span>
-<span class="sd">    Return the non-parametric VaR (non-parametric estimate) for a given percentile</span>
+<span class="sd">    Return the non-parametric VaR (non-parametric estimate) for a given percentile,</span>
+<span class="sd">    i.e. the loss for which there is less than a ``percentile`` of exceeding in a </span>
+<span class="sd">    period `freq`.</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **freq:** ``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
-<span class="sd">        indicating the frequency of the data ``default=`` daily</span>
+<span class="sd">        freq:``str`` of either ``daily, monthly, quarterly, or yearly``    </span>
+<span class="sd">        indicating the frequency of the data ``default = daily``</span>
 
-<span class="sd">        **percentile:** ``float`` of the percentile at which to calculate VaR</span>
+<span class="sd">        percentile: ``float`` of the percentile at which to calculate VaR</span>
 <span class="sd">        </span>
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        **float** of the Value at Risk given a ``percentile``</span>
+<span class="sd">        float of the Value at Risk given a ``percentile``</span>
 
-<span class="sd">    **USAGE:**::</span>
+<span class="sd">    .. code::</span>
 
 <span class="sd">        import visualize_wealth.performance as vwp</span>
 
-<span class="sd">        var = vwp.value_at_risk(price_series, frequency = &#39;monthly&#39;, percentile = 0.1)</span>
+<span class="sd">        var = vwp.value_at_risk(price_series, frequency = &#39;monthly&#39;, percentile =</span>
+<span class="sd">        0.1)</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ind</span> <span class="o">=</span> <span class="n">_bool_interval_index</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
@@ -254,17 +281,17 @@
 <div class="viewcode-block" id="max_drawdown"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.max_drawdown">[docs]</a><span class="k">def</span> <span class="nf">max_drawdown</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the maximum drawdown, or the maximum peak to trough linear distance, as </span>
-<span class="sd">    a positive value</span>
+<span class="sd">    a positive drawdown value</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        **float**: the maximum drawdown of the period, expressed as a positive number</span>
+<span class="sd">        float: the maximum drawdown of the period, expressed as a positive number</span>
 
-<span class="sd">    **USAGE:**::</span>
+<span class="sd">    .. code::</span>
 
 <span class="sd">        import visualize_wealth.performance as vwp</span>
 
@@ -278,15 +305,15 @@
 <span class="sd">    (instead of the squared deviations from the mean).  Further explanation can be </span>
 <span class="sd">    found at `Tanger Tools &lt;http://www.tangotools.com/ui/ui.htm&gt;`_</span>
 <span class="sd">    </span>
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        **float**: the maximum drawdown of the period, expressed as a positive number</span>
+<span class="sd">        :float: the maximum drawdown of the period, expressed as a positive number</span>
 
-<span class="sd">    **USAGE:**::</span>
+<span class="sd">    .. code::</span>
 
 <span class="sd">        import visualize_wealth.performance as vwp</span>
 
@@ -302,17 +329,17 @@
 <span class="sd">    returns the rolling ulcer index over a series for a given ``window``</span>
 <span class="sd">    (instead of the squared deviations from the mean).</span>
 <span class="sd">    </span>
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **window:** ``int`` of the size of the rolling window</span>
+<span class="sd">        window: ``int`` of the size of the rolling window</span>
 <span class="sd">        </span>
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        **pandas.Series**: of the rolling ulcer index</span>
+<span class="sd">        ``pandas.Series``: of the rolling ulcer index</span>
 
-<span class="sd">    **USAGE:**::</span>
+<span class="sd">    .. code::</span>
 
 <span class="sd">        import visualize_wealth.performance as vwp</span>
 
@@ -331,24 +358,30 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the `Sharpe Ratio &lt;http://en.wikipedia.org/wiki/Sharpe_ratio&gt;`_ of an </span>
 <span class="sd">    asset, given a price series, risk free rate of ``rfr``, and ``frequency`` of the </span>
-<span class="sd">    time series, where:</span>
+<span class="sd">    time series</span>
+<span class="sd">    </span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">    .. math::</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        \\textrm{SR} = \\frac{R_p - r_f}{\\sigma}</span>
+<span class="sd">        rfr: ``float`` of the risk free rate</span>
 
-<span class="sd">    **ARGS:**</span>
-
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
-
-<span class="sd">        **rfr:** ``float`` of the risk free rate</span>
-
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
 
-<span class="sd">    **RETURN:**</span>
+<span class="sd">    :RETURN:</span>
 
-<span class="sd">        **flaot:** of the Sharpe Ratio</span>
+<span class="sd">        ``float`` of the Sharpe Ratio</span>
+
+<span class="sd">    .. note:: Calculating Sharpe </span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \\textrm{SR} = \\frac{(R_p - r_f)}{\\sigma} \\: \\textrm{where},</span>
+
+<span class="sd">            R_p &amp;= \\textrm{series annualized return} \\\\</span>
+<span class="sd">            r_f &amp;= \\textrm{Risk free rate} \\\\</span>
+<span class="sd">            \\sigma &amp;= \\textrm{Portfolio annualized volatility}</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     
@@ -360,27 +393,33 @@
 <span class="sd">    calculates the excess return from the `Capital</span>
 <span class="sd">    Allocation Line &lt;http://en.wikipedia.org/wiki/Capital_allocation_line&gt;`_,</span>
 <span class="sd">    at the same level of risk (or volatility), specificaly,</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">        raer = r_p - (\\textr{SR}_b \\cdot \\sigma_p + r_f), \\texrm{where}</span>
-
-<span class="sd">        r_p &amp;=</span>
 <span class="sd">        </span>
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` from which to compare ``series``</span>
+<span class="sd">        benchmark: ``pandas.Series`` from which to compare ``series``</span>
 
-<span class="sd">        **rfr:** ``float`` of the risk free rate</span>
+<span class="sd">        rfr: ``float`` of the risk free rate</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the risk adjusted excess performance</span>
+<span class="sd">        ``float`` of the risk adjusted excess performance</span>
+
+<span class="sd">    .. note:: Calculating Risk Adjusted Excess Returns</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">    </span>
+<span class="sd">            raer = r_p - \\left(\\textrm{SR}_b \\cdot \\sigma_p + r_f\\right), \\:</span>
+<span class="sd">            \\textrm{where},</span>
+
+<span class="sd">            r_p &amp;= \\textrm{annualized linear return} \\\\</span>
+<span class="sd">            \\textrm{SR}_b &amp;= \\textrm{Sharpe Ratio of the benchmark} \\\\</span>
+<span class="sd">            \\sigma_p &amp;= \\textrm{volatility of the portfolio} \\\\</span>
+<span class="sd">            r_f &amp;= \\textrm{Risk free rate}</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">benchmark_sharpe</span> <span class="o">=</span> <span class="n">sharpe_ratio</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">rfr</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
@@ -395,40 +434,62 @@
 <span class="sd">    the excess return based on the systematic risk of the ``series`` relative to</span>
 <span class="sd">    the ``benchmark``</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">         **series:** ``pandas.Series`` of prices </span>
+<span class="sd">         series: ``pandas.Series`` of prices </span>
 
-<span class="sd">         **benchmark:** ``pandas.Series`` of the prices to compare ``series`` against</span>
+<span class="sd">         benchmark: ``pandas.Series`` of the prices to compare ``series`` against</span>
 
-<span class="sd">         **rfr:** ``float`` of the risk free rate</span>
+<span class="sd">         rfr: ``float`` of the risk free rate</span>
 
-<span class="sd">         **freq:** ``str`` of frequency, either daily, monthly, quarterly, or yearly</span>
+<span class="sd">         freq: ``str`` of frequency, either daily, monthly, quarterly, or yearly</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** representing the Jensen&#39;s Alpha</span>
+<span class="sd">        ``float`` representing the Jensen&#39;s Alpha</span>
+
+<span class="sd">    .. note:: Calculating Jensen&#39;s Alpha</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \\alpha_{\\textrm{Jensen}} = r_p - \\beta \\cdot r_b </span>
+<span class="sd">            \\: \\textrm{where}</span>
+
+<span class="sd">            r_p &amp;= \\textrm{annualized linear return of the portfolio} \\\\</span>
+<span class="sd">            \\beta &amp;= \\frac{\\sigma_{s, b}}{\\sigma^2_{b}} \\\\</span>
+<span class="sd">            r_b &amp;= \\textrm{annualized linear return of the benchmark}</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
     <span class="n">series_ret</span> <span class="o">=</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
     <span class="n">bench_ret</span> <span class="o">=</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">series_ret</span> <span class="o">-</span> <span class="p">(</span><span class="n">rfr</span> <span class="o">+</span> <span class="n">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span><span class="o">*</span><span class="p">(</span>
-        <span class="n">bench_ret</span> <span class="o">-</span> <span class="n">rfr</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">series_ret</span> <span class="o">-</span> <span class="p">(</span><span class="n">rfr</span> <span class="o">+</span> <span class="n">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">bench_ret</span> <span class="o">-</span> <span class="n">rfr</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="beta"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.beta">[docs]</a><span class="k">def</span> <span class="nf">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the sensitivity of one price series to a chosen benchmark </span>
+<span class="sd">    Returns the sensitivity of one price series to a chosen benchmark:</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` of a benchmark to calculate the sensitivity</span>
+<span class="sd">        benchmark: ``pandas.Series`` of a benchmark to calculate the sensitivity</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** the sensitivity of the series to the benchmark</span>
+<span class="sd">        float: the sensitivity of the series to the benchmark</span>
+
+<span class="sd">    .. note:: Calculating Beta</span>
+
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \\beta \\triangleq \\frac{\\sigma_{s, b}}{\\sigma^2_{b}},</span>
+<span class="sd">           \\: \\textrm{where},</span>
+
+<span class="sd">           \\sigma^2_{b} &amp;= \\textrm{Variance of the Benchmark} \\\\</span>
+<span class="sd">           \\sigma_{s, b} &amp;= \\textrm{Covariance of the Series &amp; Benchmark}</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -436,18 +497,28 @@
     </div>
 <div class="viewcode-block" id="r_squared"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.r_squared">[docs]</a><span class="k">def</span> <span class="nf">r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the R-Squared of `Coefficient of Determination &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination&gt;`_</span>
+<span class="sd">    Returns the R-Squared or `Coefficient of Determination &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination&gt;`_ by squaring the</span>
+<span class="sd">    correlation coefficient of the returns of the two series</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series of prices to regress ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series of prices to regress ``series`` against</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the coefficient of variation</span>
-<span class="sd">    </span>
+<span class="sd">        float: of the coefficient of variation</span>
+
+<span class="sd">    .. note:: Calculating R-Squared</span>
+
+<span class="sd">        .. math:: </span>
+
+<span class="sd">           R^2 = \\rho_{s, b}^2 \\: \\textrm{where},</span>
+
+<span class="sd">           \\rho_{s, b} = \\textrm{correlation between series and benchmark log</span>
+<span class="sd">           returns}</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -457,24 +528,35 @@
 <div class="viewcode-block" id="tracking_error"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.tracking_error">[docs]</a><span class="k">def</span> <span class="nf">tracking_error</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a ``float`` of the `Tracking Error &lt;http://en.wikipedia.org/wiki/Tracking_error&gt;`_ or standard deviation of the </span>
-<span class="sd">   compound differences of linear returns</span>
+<span class="sd">    active returns</span>
+<span class="sd">      </span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        benchmark: ``pandas.Series`` to compare ``series`` against</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` to compare ``series`` against</span>
-
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly`` </span>
 
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the tracking error</span>
-<span class="sd">        </span>
+<span class="sd">        ``float`` of the tracking error</span>
+
+<span class="sd">    .. note:: Calculating Tracking Error</span>
+
+<span class="sd">        Let :math:`r_{a_i} =` &quot;Active Return&quot; for period :math:`i`, to calculate the</span>
+<span class="sd">        compound linear difference between :math:`r_s` and :math:`r_b` is,</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">          r_{a_i} = \\frac{(1+r_{s_i})}{(1+r_{b_i})}-1</span>
+
+<span class="sd">          \\textrm{then, } \\textrm{TE} &amp;= \\sigma_a \\cdot \\sqrt{k} \\\\</span>
+<span class="sd">          k &amp;= \\textrm{Annualization factor}</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c">#This needs to be changed to MATE (Mean Absolute Tracking Error)</span>
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">linear_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">linear_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -482,24 +564,38 @@
 </div>
 <div class="viewcode-block" id="mean_absolute_tracking_error"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.mean_absolute_tracking_error">[docs]</a><span class="k">def</span> <span class="nf">mean_absolute_tracking_error</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns Carol Alexander&#39;s calculation for Mean Absolute Tracking Error which is</span>
-<span class="sd">    $$\sqrt{\frac{(T-1)}{T}\cdot \tau^2 + \bar{R}}$$, where $$\tau = Tracking Error$$</span>
-<span class="sd">    and $$\bar{R} = $$ mean of the active returns</span>
+<span class="sd">    Returns Carol Alexander&#39;s calculation for Mean Absolute Tracking Error</span>
+<span class="sd">    (&quot;MATE&quot;).</span>
 
-<span class="sd">    **ARGS:**</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` to compare ``series`` against</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        benchmark: ``pandas.Series`` to compare ``series`` against</span>
+
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly`` </span>
 
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the mean absolute tracking error</span>
-<span class="sd">       </span>
+<span class="sd">        ``float`` of the mean absolute tracking error</span>
+<span class="sd">        </span>
+<span class="sd">    .. note:: Why Mean Absolute Tracking Error</span>
+
+<span class="sd">        One of the downfalls of </span>
+<span class="sd">        `Tracking Error &lt;http://en.wikipedia.org/wiki/Tracking_error&gt;`_ (&quot;TE&quot;) is</span>
+<span class="sd">        that diverging price series that diverge at a constant rate **may** have low </span>
+<span class="sd">        TE.  MATE addresses this issue.</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">    </span>
+<span class="sd">           \\sqrt{\\frac{(T-1)}{T}\\cdot \\tau^2 + \\bar{R}} \\: \\textrm{where}</span>
+
+<span class="sd">           \\tau &amp;= \\textrm{Tracking Error} \\\\</span>
+<span class="sd">           \\bar{R} &amp;= \\textrm{mean of the active returns}</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">active_rets</span> <span class="o">=</span> <span class="n">active_returns</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">)</span>
@@ -509,20 +605,46 @@
 </div>
 <div class="viewcode-block" id="idiosyncratic_risk"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.idiosyncratic_risk">[docs]</a><span class="k">def</span> <span class="nf">idiosyncratic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the idiosyncratic risk, or (total variance - syst variance) ^ (1/2)</span>
+<span class="sd">    Returns the idiosyncratic risk, i.e. unexplained variation between a price series</span>
+<span class="sd">    and a chosen benchmark </span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">       series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` to compare ``series`` against</span>
+<span class="sd">       benchmark: ``pandas.Series`` to compare ``series`` against</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
-<span class="sd">        yearly``</span>
+<span class="sd">       freq: ``str`` of frequency, either ``daily, monthly, quarterly, or yearly``</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** the idiosyncratic volatility (not variance)</span>
+<span class="sd">        float: the idiosyncratic volatility (not variance)</span>
+
+
+<span class="sd">    .. note:: Additivity of an asset&#39;s Variance</span>
+
+<span class="sd">        An asset&#39;s variance can be broken down into systematic risk, i.e. that </span>
+<span class="sd">        proportion of risk that can be attributed to some benchmark or risk factor</span>
+<span class="sd">        and idiosyncratic risk, or the unexplained variation between the series and </span>
+<span class="sd">        the chosen benchmark / factor.  </span>
+
+<span class="sd">        Therefore, using the additivity of variances, we can calculate idiosyncratic</span>
+<span class="sd">        risk as follows:</span>
+
+<span class="sd">       .. math::</span>
+
+<span class="sd">           \\sigma^2_{\\textrm{total}} = \\sigma^2_{\\beta} + \\sigma^2_{\\epsilon} +</span>
+<span class="sd">           \\sigma^2_{\\epsilon, \\beta}, \\: \\textrm{where}, </span>
+
+<span class="sd">           \\sigma^2_{\\beta} &amp;= \\textrm{variance attributable to systematic risk}</span>
+<span class="sd">           \\\\</span>
+<span class="sd">           \\sigma^2_{\\epsilon} &amp;= \\textrm{idiosyncratic risk} \\\\</span>
+<span class="sd">           \\sigma^2_{\\epsilon, \\beta} &amp;= \\textrm{covariance between idiosyncratic</span>
+<span class="sd">           and systematic risk, which by definition} = 0 \\\\</span>
+
+<span class="sd">           \\Rightarrow \\sigma_{\\epsilon} = \\sqrt{\\sigma^2_{\\beta} + </span>
+<span class="sd">           \\sigma^2_{\\epsilon, \\beta}}</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
     <span class="n">series_rets</span> <span class="o">=</span><span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
@@ -537,19 +659,19 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the idiosyncratic risk as proportion of total volatility</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` to compare ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series`` to compare ``series`` against</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** (0, 1) representing the proportion of  volatility represented</span>
-<span class="sd">        by idiosycratic risk</span>
+<span class="sd">        ``float`` between (0, 1) representing the proportion of  volatility</span>
+<span class="sd">        represented by idiosycratic risk</span>
 <span class="sd">        </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
@@ -559,20 +681,31 @@
 </div>
 <div class="viewcode-block" id="systematic_risk"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.systematic_risk">[docs]</a><span class="k">def</span> <span class="nf">systematic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">   Returns the systematic risk, or :math:`\beta^2 x \sigma^2`</span>
+<span class="sd">    Returns the systematic risk, or the volatility that is directly attributable</span>
+<span class="sd">    to the benchmark</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` to compare ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series`` to compare ``series`` against</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** the systematic volatility (not variance)</span>
+<span class="sd">        ``float`` of the systematic volatility (not variance)</span>
+
+<span class="sd">    .. note::  Calculating Systematic Risk</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \\sigma_b &amp;= \\textrm{Volatility of the Benchmark} \\\\</span>
+<span class="sd">            \\sigma^2_{\\beta} &amp;= \\textrm{Systematic Risk} \\\\</span>
+<span class="sd">            \\beta &amp;= \\frac{\\sigma^2_{s, b}}{\\sigma^2_{b}} \\: \\textrm{then,}</span>
+
+<span class="sd">            \\sigma^2_{\\beta} &amp;= \\beta^2 \\cdot \\sigma^2_{b}</span>
+<span class="sd">            \\Rightarrow \\sigma_{\\beta} &amp;= \\beta \\cdot \\sigma_{b}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
     <span class="n">benchmark_vol</span> <span class="o">=</span> <span class="n">annualized_vol</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -580,21 +713,21 @@
 </div>
 <div class="viewcode-block" id="systematic_as_proportion"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.systematic_as_proportion">[docs]</a><span class="k">def</span> <span class="nf">systematic_as_proportion</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the idiosyncratic risk as proportion of total volatility</span>
+<span class="sd">    Returns the systematic risk as proportion of total volatility</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` to compare ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series`` to compare ``series`` against</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** (0, 1) representing the proportion of  volatility represented</span>
-<span class="sd">        by systematic risk</span>
+<span class="sd">        ``float`` between (0, 1) representing the proportion of  volatility</span>
+<span class="sd">        represented by systematic risk</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
@@ -606,16 +739,24 @@
 <span class="sd">    Returns the median upcapture of a ``series`` of prices against a ``benchmark`` </span>
 <span class="sd">    prices, given that the ``benchmark`` achieved positive returns in a given period</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` of prices to compare ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series`` of prices to compare ``series`` against</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the median upcapture </span>
+<span class="sd">        float: of the median upcapture </span>
 
+<span class="sd">    .. warning:: About Upcapture</span>
+
+<span class="sd">        Upcapture can be a difficult statistic to ensure validity.  As upcapture</span>
+<span class="sd">        is :math:`\\frac{\\sum{r_{\\textrm{series}}}}{\\sum{r_{b|r_i \\geq 0}}}` or </span>
+<span class="sd">        the median values (in this case), dividing by small numbers can have </span>
+<span class="sd">        asymptotic effects to the overall value of this statistic.  Therefore, it&#39;s </span>
+<span class="sd">        good to do a &quot;sanity check&quot; between ``median_upcapture`` and ``upcapture``</span>
+<span class="sd">        </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -627,15 +768,24 @@
 <span class="sd">    Returns the median downcapture of a ``series`` of prices against a ``benchmark`` </span>
 <span class="sd">    prices, given that the ``benchmark`` achieved negative returns in a given period</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` of prices to compare ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series`` of prices to compare ``series`` against</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the median downcapture</span>
+<span class="sd">        ``float`` of the median downcapture</span>
+
+<span class="sd">    .. warning:: About Downcapture</span>
+
+<span class="sd">        Upcapture can be a difficult statistic to ensure validity.  As upcapture</span>
+<span class="sd">        is :math:`\\frac{\\sum{r_{\\textrm{series}}}}{\\sum{r_{b|r_i \\geq 0}}}` or </span>
+<span class="sd">        the median values (in this case), dividing by small numbers can have </span>
+<span class="sd">        asymptotic effects to the overall value of this statistic.  Therefore, it&#39;s </span>
+<span class="sd">        good to do a &quot;sanity check&quot; between ``median_upcapture`` and ``upcapture``</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -648,15 +798,18 @@
 <span class="sd">    ``benchmark``&#39;s cumulative  returns, given benchmark&#39;s returns were positive </span>
 <span class="sd">    in that period</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` of prices to compare ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series`` of prices to compare ``series`` against</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the upcapture of cumulative positive returns</span>
+<span class="sd">        float: of the upcapture of cumulative positive returns</span>
+
+<span class="sd">    .. seealso:: :py:data:`median_upcature(series, benchmark)`</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -669,15 +822,18 @@
 <span class="sd">    ``benchmark``&#39;s cumulative  returns, given benchmark&#39;s returns were negative in</span>
 <span class="sd">    that period</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **benchmark:** ``pandas.Series`` of prices to compare ``series`` against</span>
+<span class="sd">        benchmark: ``pandas.Series`` of prices to compare ``series`` against</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the downcapture of cumulative positive ret</span>
+<span class="sd">        ``float`` of the downcapture of cumulative positive ret</span>
+
+<span class="sd">    .. seealso:: :py:data:`median_downcapture(series, benchmark)`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
     <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
@@ -688,16 +844,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the volatility of the returns that are greater than zero</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the upside standard deviation</span>
+<span class="sd">        ``float`` of the upside standard deviation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
@@ -708,16 +864,17 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the volatility of the returns that are less than zero</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series:``pandas.Series`` of prices</span>
 
-<span class="sd">        **freq:** ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        **float:** of the downside standard deviation</span>
+<span class="sd">        float: of the downside standard deviation</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fac</span> <span class="o">=</span> <span class="n">_interval_to_factor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
     <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
@@ -728,13 +885,13 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    the annualized returns for each of the years</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 
-<span class="sd">        **series:** ``pandas.Series`` of prices</span>
+<span class="sd">        series: ``pandas.Series`` of prices</span>
 
-<span class="sd">    **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 
-<span class="sd">        ``**pandas.Series**`` where ``index is years and ``values`` are linear </span>
+<span class="sd">        ``pandas.Series`` where ``index is years and ``values`` are linear </span>
 <span class="sd">        annual returns for that year</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">end_of_year_series</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">year</span> <span class="o">!=</span> <span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">year</span><span class="p">]</span>
@@ -749,19 +906,19 @@
 <span class="sd">    cumulative values of relevant statistics is calculated for the ``series`` and </span>
 <span class="sd">    ``benchmark`` for a given ``frequency`` and risk free rate</span>
 
-<span class="sd">    **ARGS:**</span>
+<span class="sd">    :ARGS:</span>
 <span class="sd">    </span>
-<span class="sd">        **series:** ``pandas.Series`` or ``Pandas.DataFrame`` of prices to compare</span>
+<span class="sd">        series: ``pandas.Series`` or ``Pandas.DataFrame`` of prices to compare</span>
 <span class="sd">         against benchmark</span>
 
-<span class="sd">         **benchmark:** ``pandas.Series`` of prices to compare series against</span>
+<span class="sd">         benchmark: ``pandas.Series`` of prices to compare series against</span>
 
-<span class="sd">         **freq:**  ``str`` of the frequency of prices.  &#39;daily&#39;, &#39;weekly&#39;,</span>
+<span class="sd">         freq: ``str`` of the frequency of prices.  &#39;daily&#39;, &#39;weekly&#39;,</span>
 <span class="sd">          &#39;monthly&#39;, &#39;quarterly&#39;,&#39;yearly&#39;</span>
 <span class="sd">    </span>
-<span class="sd">   **RETURNS:**</span>
+<span class="sd">    :RETURNS:</span>
 <span class="sd">   </span>
-<span class="sd">         **``pandas.DataFrame``** of columns [&#39;series&#39;,&#39;benchmark&#39;] with statistics </span>
+<span class="sd">         ``pandas.DataFrame`` of columns [&#39;series&#39;,&#39;benchmark&#39;] with statistics </span>
 <span class="sd">         (index) of [&#39;annualized_return&#39;, annualized_vol&#39;,&#39;sharpe&#39;,&#39;max DD&#39;,&#39;ulcer</span>
 <span class="sd">         index&#39;,&#39;beta&#39;,&#39;alpha&#39;, &#39;upcapture&#39;,&#39;downcapture&#39;,&#39;tracking error&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -895,7 +1052,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Benjamin M. Gross.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

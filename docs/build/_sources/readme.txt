@@ -163,7 +163,7 @@ method"), say 20 trades for each asset, by executing the following:
     In [8]: blotter = vwcp.generate_random_portfolio_blotter(ticks, num_trades)
 
             #construct the portfolio panel
-    In [9]: port_panel = vwcp.portfolio_from_blotter(blotter)
+    In [9]: port_panel = vwcp.panel_from_blotter(blotter)
 
 Now I have a ``pandas.Panel``. Before we constuct the cumulative
 portfolio values, let's examine the dimensions of the panel (which are
@@ -390,12 +390,6 @@ Take a look at the portfolio series:
 ToDo List:
 ----------
 
--  [STRIKEOUT:Determine why LaTeX output from ``.rst`` to ``.html``
-   isn't working]
-
--  ~~Double backslashes (``\\``) must be used in the place of all
-   (``\'), as in``\ \_t\`.~~
-
 -  occassionally ``generate_random_asset_path`` will return with an
    Assertion Error
 
@@ -410,4 +404,11 @@ ToDo List:
 +----------+-------------------------------+---------------------+
 | VGTSX    | Vanguard Total Intl Stock     | 6/28/1996           |
 +----------+-------------------------------+---------------------+
+
+-  Rebuild Process:
+
+1. If the ``README.md`` file is altered, run: $ pandoc -f markdown -t
+   rst README.md /docs/readme.rst
+2. Then rebuild the Sphinx documentation $ cd docs $ sphinx-build -b
+   html source/ build/
 

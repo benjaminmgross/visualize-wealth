@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '0.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -307,7 +305,7 @@ In [7]: num_trades = 20
 In [8]: blotter = vwcp.generate_random_portfolio_blotter(ticks, num_trades)
 
         #construct the portfolio panel
-In [9]: port_panel = vwcp.portfolio_from_blotter(blotter)</pre>
+In [9]: port_panel = vwcp.panel_from_blotter(blotter)</pre>
 </div>
 <p>Now I have a <tt class="docutils literal"><span class="pre">pandas.Panel</span></tt>. Before we constuct the cumulative
 portfolio values, let&#8217;s examine the dimensions of the panel (which are
@@ -602,10 +600,6 @@ Date
 <div class="section" id="todo-list">
 <h2>ToDo List:<a class="headerlink" href="#todo-list" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>[STRIKEOUT:Determine why LaTeX output from <tt class="docutils literal"><span class="pre">.rst</span></tt> to <tt class="docutils literal"><span class="pre">.html</span></tt>
-isn&#8217;t working]</li>
-<li>~~Double backslashes (<tt class="docutils literal"><span class="pre">\\</span></tt>) must be used in the place of all
-(<tt class="docutils literal"><span class="pre">\'),</span> <span class="pre">as</span> <span class="pre">in</span></tt>_t`.~~</li>
 <li>occassionally <tt class="docutils literal"><span class="pre">generate_random_asset_path</span></tt> will return with an
 Assertion Error</li>
 <li>Best broad asset classes to determine &#8220;best fit portfolio&#8221;</li>
@@ -637,6 +631,15 @@ Assertion Error</li>
 </tr>
 </tbody>
 </table>
+<ul class="simple">
+<li>Rebuild Process:</li>
+</ul>
+<ol class="arabic simple">
+<li>If the <tt class="docutils literal"><span class="pre">README.md</span></tt> file is altered, run: $ pandoc -f markdown -t
+rst README.md /docs/readme.rst</li>
+<li>Then rebuild the Sphinx documentation $ cd docs $ sphinx-build -b
+html source/ build/</li>
+</ol>
 </div>
 </div>
 
@@ -663,7 +666,7 @@ Assertion Error</li>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Benjamin M. Gross.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

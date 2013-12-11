@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '0.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -186,12 +184,12 @@ a Dividend Columns appended to it</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">ticker: <tt class="xref py py-meth docutils literal"><span class="pre">str()</span></tt> of ticker</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker: <tt class="xref py py-meth docutils literal"><span class="pre">str()</span></tt> of ticker</p>
 <p>start_date: <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a> or string of format &#8220;mm/dd/yyyy&#8221;</p>
 <p>end_date: a <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a> or string of format &#8220;mm/dd/yyyy&#8221;</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">price_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">price_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,
 &#8216;Dividends&#8217;]</p>
 </td>
 </tr>
@@ -219,12 +217,12 @@ calculate the cumulative share balance for the position</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">blotter_df: a  <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> where index is buy/sell dates</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">blotter_df: a  <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> where index is buy/sell dates</p>
 <p>price_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;, 
 &#8216;Dividends&#8217;, &#8216;Splits&#8217;]</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price
 values</p>
 </td>
 </tr>
@@ -255,7 +253,7 @@ blotter,  ticker, start_date, &amp; end_date are needed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">blotter_series: a  <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with index of dates and values of
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">blotter_series: a  <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with index of dates and values of
 quantity</p>
 <p>ticker: class:<cite>str</cite> the ticker for which the buys and sells occurs</p>
 <p>start_date: a <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a></p>
@@ -263,7 +261,7 @@ quantity</p>
 <p>tol: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>  the tolerance to find the split dates (.1 recommended)</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> containing contributions, withdrawals, price 
 values</p>
 </td>
 </tr>
@@ -286,13 +284,13 @@ return a <tt class="xref py py-class docutils literal"><span class="pre">pandas.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">price_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">price_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,
 &#8216;Dividends&#8217;]</p>
 <p>tol: class:<cite>float</cite> of the tolerance to determine whether a split has
 occurred</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">price: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">price: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,
 &#8216;Dividends&#8217;, Splits&#8217;]</p>
 </td>
 </tr>
@@ -320,10 +318,10 @@ this function, see <tt class="docutils literal"><span class="pre">visualize_weal
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">split_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> that has &#8216;Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">split_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> that has &#8216;Close&#8217;, &#8216;Dividends&#8217;, &#8216;Splits&#8217;</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><dl class="first last docutils">
 <dt>blotter_frame: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> a blotter with random trades,</dt>
 <dd><p class="first last">num_trades</p>
 </dd>
@@ -356,14 +354,14 @@ percentages, fetch the data using Yahoo!&#8217;s API and return a panel of dimen
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><dl class="first docutils">
 <dt>weight_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and tickers as</dt>
 <dd><p class="first last">columns</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> where:</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> where:</p>
 <blockquote class="last">
 <div><ul class="simple">
 <li><tt class="xref py py-meth docutils literal"><span class="pre">panel.items()</span></tt> are tickers</li>
@@ -391,14 +389,14 @@ allocations, fetch the data using Yahoo!&#8217;s API and return a panel of dimen
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><dl class="first docutils">
 <dt>weight_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and tickers as</dt>
 <dd><p class="first last">columns</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> where:</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> where:</p>
 <blockquote class="last">
 <div><ul>
 <li><p class="first"><tt class="xref py py-meth docutils literal"><span class="pre">panel.items()</span></tt> are tickers</p>
@@ -435,11 +433,11 @@ internet connectivity is required for the function to work properly</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">blotter_file: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with at least index (dates of 
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">blotter_file: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with at least index (dates of 
 Buy / Sell) columns = [&#8216;Buy/Sell&#8217;, &#8216;Shares&#8217;] or a string of the file
 location to such a formatted file</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">blotter: of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> where sell values have been made 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">blotter: of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> where sell values have been made 
 negative</td>
 </tr>
 </tbody>
@@ -463,12 +461,12 @@ to  generate an asset path, as is required in <tt class="xref py py-meth docutil
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">ticker: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the ticker to generate the path</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the ticker to generate the path</p>
 <p>start_date: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of format &#8216;mm/dd/yyyy&#8217; or <tt class="xref py py-class docutils literal"><span class="pre">datetime</span></tt></p>
 <p>num_trades: <tt class="xref py py-class docutils literal"><span class="pre">int</span></tt> of the number of trades to generate</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><dl class="first last docutils">
 <dt><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with the additional columns &#8216;cum_shares&#8217;, </dt>
 <dd><p class="first last">&#8216;contr_withdrawal&#8217;, &#8216;Splits&#8217;, Dividends&#8217;</p>
 </dd>
@@ -495,12 +493,12 @@ will be the &#8216;Close&#8217; of that ticker in the price DataFrame that is co
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">tickers: a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> with the tickers to be used</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">tickers: a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> with the tickers to be used</p>
 <p>num_trades: <tt class="xref py py-class docutils literal"><span class="pre">integer</span></tt>, the number of trades to randomly generate for
 each ticker</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns &#8216;Ticker&#8217;, &#8216;Buy/Sell&#8217; (+ for buys, - 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns &#8216;Ticker&#8217;, &#8216;Buy/Sell&#8217; (+ for buys, - 
 for sells) and &#8216;Price&#8217;</p>
 </td>
 </tr>
@@ -523,7 +521,7 @@ trades, and number of shares.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><dl class="first docutils">
 <dt>agg_blotter_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Ticker&#8217;,</dt>
 <dd><dl class="first last docutils">
 <dt>&#8216;Buy/Sell&#8217;, &#8216;Price&#8217;],  where the &#8216;Buy/Sell&#8217; column is the quantity of</dt>
@@ -534,7 +532,7 @@ trades, and number of shares.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, dates, price data]</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, dates, price data]</p>
 </td>
 </tr>
 </tbody>
@@ -562,7 +560,7 @@ at somspecified interval)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">weight_series of <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of a weight allocation with an 
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">weight_series of <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of a weight allocation with an 
 index of tickers, and a name of the initial allocation</p>
 <p>price_panel of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index,
 price data]</p>
@@ -571,7 +569,7 @@ price data]</p>
 &#8216;yearly&#8217;</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">price: of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with portfolio &#8216;Close&#8217; and &#8216;Open&#8217;</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">price: of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with portfolio &#8216;Close&#8217; and &#8216;Open&#8217;</p>
 </td>
 </tr>
 </tbody>
@@ -587,7 +585,7 @@ a pandas.DataFrame of weight allocations and a starting  value of the index</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">weight_df of <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of a weight allocation with tickers 
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">weight_df of <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of a weight allocation with tickers 
 for columns, index of dates and weight allocations to each of the tickers</p>
 <dl class="docutils">
 <dt>price_panel of <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions [tickers, index, price</dt>
@@ -596,7 +594,7 @@ for columns, index of dates and weight allocations to each of the tickers</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions (tickers, dates, price data)</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions (tickers, dates, price data)</p>
 </td>
 </tr>
 </tbody>
@@ -622,14 +620,14 @@ when a blotter is given and generates a portfolio path of &#8216;Open&#8217; and
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><blockquote class="first">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><blockquote class="first">
 <div><p>panel_from_blotter: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> that was generated using
 ref:<cite>panel_from_weight_file</cite></p>
 </div></blockquote>
 <p>start_value: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the starting value, defaults to 1000.</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">portfolio prices in a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Open&#8217;, 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">portfolio prices in a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Open&#8217;, 
 &#8216;Close&#8217;]</p>
 </td>
 </tr>
@@ -663,10 +661,10 @@ and generates a portfolio path of &#8216;Open&#8217; and &#8216;Close&#8217;</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">panel_from_weight_file: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> that was generated using
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">panel_from_weight_file: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> that was generated using
 <tt class="docutils literal"><span class="pre">panel_from_weight_file</span></tt></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">portfolio prices in a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Open&#8217;, 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">portfolio prices in a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Open&#8217;, 
 &#8216;Close&#8217;]</td>
 </tr>
 </tbody>
@@ -732,11 +730,11 @@ your strategy first begins, up until today.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices of the portfolio</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices of the portfolio</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices of the benchmark</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of active returns</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of active returns</p>
 </td>
 </tr>
 </tbody>
@@ -762,12 +760,12 @@ the final value</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
 indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt>: of the annualized linear return</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt>: of the annualized linear return</p>
 </td>
 </tr>
 </tbody>
@@ -789,12 +787,12 @@ time rule</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
 indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float: of the annualized volatility</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the annualized volatility</p>
 </td>
 </tr>
 </tbody>
@@ -821,11 +819,11 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of a benchmark to calculate the sensitivity</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float: the sensitivity of the series to the benchmark</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: the sensitivity of the series to the benchmark</p>
 </td>
 </tr>
 </tbody>
@@ -850,16 +848,16 @@ that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the downcapture of cumulative positive ret</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the downcapture of cumulative positive ret</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-data docutils literal"><span class="pre">median_downcapture(series,</span> <span class="pre">benchmark)</span></tt></p>
 </div>
@@ -873,12 +871,12 @@ that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series:<tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series:<tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float: of the downside standard deviation</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the downside standard deviation</p>
 </td>
 </tr>
 </tbody>
@@ -894,7 +892,7 @@ that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><dl class="first docutils">
 <dt>series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="docutils literal"><span class="pre">Pandas.DataFrame</span></tt> of prices to compare</dt>
 <dd><p class="first">against benchmark</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare series against</p>
@@ -907,7 +905,7 @@ that period</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> of columns [&#8216;series&#8217;,&#8217;benchmark&#8217;] with statistics 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> of columns [&#8216;series&#8217;,&#8217;benchmark&#8217;] with statistics 
 (index) of [&#8216;annualized_return&#8217;, annualized_vol&#8217;,&#8217;sharpe&#8217;,&#8217;max DD&#8217;,&#8217;ulcer
 index&#8217;,&#8217;beta&#8217;,&#8217;alpha&#8217;, &#8216;upcapture&#8217;,&#8217;downcapture&#8217;,&#8217;tracking error&#8217;]</p>
 </td>
@@ -924,13 +922,13 @@ index&#8217;,&#8217;beta&#8217;,&#8217;alpha&#8217;, &#8216;upcapture&#8217;,&#8
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> between (0, 1) representing the proportion of  volatility
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> between (0, 1) representing the proportion of  volatility
 represented by idiosycratic risk</p>
 </td>
 </tr>
@@ -947,12 +945,12 @@ and a chosen benchmark</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float: the idiosyncratic volatility (not variance)</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: the idiosyncratic volatility (not variance)</p>
 </td>
 </tr>
 </tbody>
@@ -989,13 +987,13 @@ the <tt class="docutils literal"><span class="pre">benchmark</span></tt></p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of the prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>rfr: <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either daily, monthly, quarterly, or yearly</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> representing the Jensen&#8217;s Alpha</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> representing the Jensen&#8217;s Alpha</p>
 </td>
 </tr>
 </tbody>
@@ -1019,9 +1017,9 @@ r_b &amp;= \textrm{annualized linear return of the benchmark}\end{split}\]</div>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of linear returns</td>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of linear returns</td>
 </tr>
 </tbody>
 </table>
@@ -1041,9 +1039,9 @@ r_b &amp;= \textrm{annualized linear return of the benchmark}\end{split}\]</div>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of log returns</td>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of log returns</td>
 </tr>
 </tbody>
 </table>
@@ -1064,9 +1062,9 @@ a positive drawdown value</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">float: the maximum drawdown of the period, expressed as a positive number</td>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">float: the maximum drawdown of the period, expressed as a positive number</td>
 </tr>
 </tbody>
 </table>
@@ -1086,13 +1084,13 @@ a positive drawdown value</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the mean absolute tracking error</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the mean absolute tracking error</p>
 </td>
 </tr>
 </tbody>
@@ -1119,11 +1117,11 @@ prices, given that the <tt class="docutils literal"><span class="pre">benchmark<
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the median downcapture</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the median downcapture</p>
 </td>
 </tr>
 </tbody>
@@ -1148,11 +1146,11 @@ prices, given that the <tt class="docutils literal"><span class="pre">benchmark<
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float: of the median upcapture</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the median upcapture</p>
 </td>
 </tr>
 </tbody>
@@ -1177,11 +1175,11 @@ correlation coefficient of the returns of the two series</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span> <span class="pre">of</span> <span class="pre">prices</span> <span class="pre">to</span> <span class="pre">regress</span> <span class="pre">``series</span></tt> against</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float: of the coefficient of variation</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the coefficient of variation</p>
 </td>
 </tr>
 </tbody>
@@ -1203,9 +1201,9 @@ returns}\]</div>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt> where <tt class="docutils literal"><span class="pre">index</span> <span class="pre">is</span> <span class="pre">years</span> <span class="pre">and</span> <span class="pre">``values</span></tt> are linear 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt> where <tt class="docutils literal"><span class="pre">index</span> <span class="pre">is</span> <span class="pre">years</span> <span class="pre">and</span> <span class="pre">``values</span></tt> are linear 
 annual returns for that year</td>
 </tr>
 </tbody>
@@ -1223,14 +1221,14 @@ at the same level of risk (or volatility), specificaly,</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> from which to compare <tt class="docutils literal"><span class="pre">series</span></tt></p>
 <p>rfr: <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the risk adjusted excess performance</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the risk adjusted excess performance</p>
 </td>
 </tr>
 </tbody>
@@ -1256,11 +1254,11 @@ r_f &amp;= \textrm{Risk free rate}\end{split}\]</div>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>window: <tt class="docutils literal"><span class="pre">int</span></tt> of the size of the rolling window</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt>: of the rolling ulcer index</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt>: of the rolling ulcer index</p>
 </td>
 </tr>
 </tbody>
@@ -1282,13 +1280,13 @@ time series</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>rfr: <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the Sharpe Ratio</p>
+<tr class="field-even field"><th class="field-name">RETURN:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the Sharpe Ratio</p>
 </td>
 </tr>
 </tbody>
@@ -1312,12 +1310,12 @@ excess returns per unit downside volatility</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
 indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float of the Sortino Ratio</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float of the Sortino Ratio</p>
 </td>
 </tr>
 </tbody>
@@ -1345,13 +1343,13 @@ method using downside volatility, where</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> between (0, 1) representing the proportion of  volatility
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> between (0, 1) representing the proportion of  volatility
 represented by systematic risk</p>
 </td>
 </tr>
@@ -1368,13 +1366,13 @@ to the benchmark</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the systematic volatility (not variance)</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the systematic volatility (not variance)</p>
 </td>
 </tr>
 </tbody>
@@ -1443,13 +1441,13 @@ active returns</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the tracking error</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the tracking error</p>
 </td>
 </tr>
 </tbody>
@@ -1475,10 +1473,10 @@ found at <a class="reference external" href="http://www.tangotools.com/ui/ui.htm
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -1507,16 +1505,16 @@ in that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float: of the upcapture of cumulative positive returns</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the upcapture of cumulative positive returns</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-data docutils literal"><span class="pre">median_upcature(series,</span> <span class="pre">benchmark)</span></tt></p>
 </div>
@@ -1530,12 +1528,12 @@ in that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the upside standard deviation</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the upside standard deviation</p>
 </td>
 </tr>
 </tbody>
@@ -1552,13 +1550,13 @@ period <cite>freq</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>freq:<tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
 indicating the frequency of the data <tt class="docutils literal"><span class="pre">default</span> <span class="pre">=</span> <span class="pre">daily</span></tt></p>
 <p>percentile: <tt class="docutils literal"><span class="pre">float</span></tt> of the percentile at which to calculate VaR</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">float of the Value at Risk given a <tt class="docutils literal"><span class="pre">percentile</span></tt></p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float of the Value at Risk given a <tt class="docutils literal"><span class="pre">percentile</span></tt></p>
 </td>
 </tr>
 </tbody>
@@ -1640,7 +1638,7 @@ currently do</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Benjamin M. Gross.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

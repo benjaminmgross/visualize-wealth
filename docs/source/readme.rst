@@ -407,8 +407,16 @@ ToDo List:
 
 -  Rebuild Process:
 
-1. If the ``README.md`` file is altered, run: $ pandoc -f markdown -t
-   rst README.md /docs/readme.rst
-2. Then rebuild the Sphinx documentation $ cd docs $ sphinx-build -b
-   html source/ build/
+1. If the ``README.md`` file is altered, run:
+
+   ::
+
+        $ pandoc -f markdown -t rst README.md -o docs/source/readme.rst 
+
+2. Then rebuild the Sphinx documentation
+
+   ::
+
+        $ sphinx-build -b html docs/source/ docs/build/
+
 

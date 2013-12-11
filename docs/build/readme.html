@@ -634,11 +634,15 @@ Assertion Error</li>
 <ul class="simple">
 <li>Rebuild Process:</li>
 </ul>
-<ol class="arabic simple">
-<li>If the <tt class="docutils literal"><span class="pre">README.md</span></tt> file is altered, run: $ pandoc -f markdown -t
-rst README.md /docs/readme.rst</li>
-<li>Then rebuild the Sphinx documentation $ cd docs $ sphinx-build -b
-html source/ build/</li>
+<ol class="arabic">
+<li><p class="first">If the <tt class="docutils literal"><span class="pre">README.md</span></tt> file is altered, run:</p>
+<div class="highlight-python"><pre>$ pandoc -f markdown -t rst README.md -o docs/source/readme.rst</pre>
+</div>
+</li>
+<li><p class="first">Then rebuild the Sphinx documentation</p>
+<div class="highlight-python"><pre>$ sphinx-build -b html docs/source/ docs/build/</pre>
+</div>
+</li>
 </ol>
 </div>
 </div>

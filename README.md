@@ -283,6 +283,10 @@ Take a look at the portfolio series:
 
 * occassionally `generate_random_asset_path` will return with an Assertion Error
 
+* Add the following statistics to the `analyze.py` library:
+   - Absolute Alpha: $$R_p - R_b$$
+   - Treynor ratio: $$\\textrm{T.R.}\\triangleq \\frac{r_i - r_f}{\\beta{i}}$$
+   - Information Ratio or Appraisal Ratio: $$\\textrm{I.R.} \\triangleq \\frac{\\alpha}{\\omega}$$, or absolute alpha / tracking error.  Other formulations include Jensens's Alpha / Idiosyncratic Vol
 
 * Best broad asset classes to determine "best fit portfolio"
 

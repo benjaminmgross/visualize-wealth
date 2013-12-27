@@ -3,7 +3,7 @@
 
 from distutils.core import setup
 
-setup(name='Visualize Wealth',
+setup(name='VisualizeWealth',
       version='0.0.1',
       description='Portfolio Construction and Analysis',
       author='Benjamin M. Gross',

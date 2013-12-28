@@ -29,7 +29,12 @@ def log_returns(series):
             R_t = \\log(\\frac{P_{t+1}}{P_t})
          
     """
-    return series.apply(numpy.log).diff()
+    def _log_returns(series):
+        return series.apply(numpy.log).diff()
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_log_returns)
+    else:
+        return _log_returns(series)
 
 def linear_returns(series):
     """
@@ -50,7 +55,12 @@ def linear_returns(series):
                 R_t = \\frac{P_{t+1}}{P_t} - 1
              
     """
-    return series.div(series.shift(1)) - 1
+    def _linear_returns(series):
+        return series.div(series.shift(1)) - 1
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_linear_returns)
+    else:
+        return _linear_returns(series)
 
 def active_returns(series, benchmark):
     """
@@ -75,7 +85,13 @@ def active_returns(series, benchmark):
 
             r_a = (1 + r_p)/(1 + r_b) - 1
     """
-    return (1 + linear_returns(series)).div(1 + linear_returns(benchmark)) - 1 
+    def _active_returns(series, benchmark):
+        return (1 + linear_returns(series)).div(1 + linear_returns(benchmark)) - 1 
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _active_returns(series, x))
+    else:
+        return _active_returns(series, benchmark)
+    
 
 def annualized_return(series, freq = 'daily'):
     """
@@ -101,9 +117,14 @@ def annualized_return(series, freq = 'daily'):
         linear_return = vwp.annualized_return(price_series, frequency = 'monthly')
     
     """
-    fac = _interval_to_factor(freq)
-    series_rets = log_returns(series)
-    return numpy.exp(series_rets.mean()*fac)-1
+    def _annualized_return(series, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets = log_returns(series)
+        return numpy.exp(series_rets.mean()*fac) - 1
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _annualized_return(x, freq = freq))
+    else:
+        return _annualized_return(series, freq = freq)
 
 def annualized_vol(series, freq = 'daily'):
     """
@@ -138,9 +159,14 @@ def annualized_vol(series, freq = 'daily'):
 
         ann_vol = vwp.annualized_vol(price_series, frequency = 'monthly')
     """
-    fac = _interval_to_factor(freq)
-    series_rets = log_returns(series)
-    return series_rets.std()*numpy.sqrt(fac)
+    def _annualized_vol(series, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets = log_returns(series)
+        return series_rets.std()*numpy.sqrt(fac)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _annualized_return(x, freq = freq))
+    else:
+        return _annualized_return(series, freq = freq)
 
 def sortino_ratio(series, freq = 'daily'):
     """
@@ -174,9 +200,14 @@ def sortino_ratio(series, freq = 'daily'):
         sortino_ratio = vwp.sortino_ratio(price_series, frequency = 'monthly')
         
     """
-    return annualized_return(series, freq = freq)/downside_deviation(series, 
+    def _sortino_ratio(series, freq = 'daily'):
+        return annualized_return(series, freq = freq)/downside_deviation(series, 
                                                                      freq = freq)
-    
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _sortino_ratio(x, freq = freq))
+    else:
+        return _sortino_ratio(series, freq = freq)
+
 def value_at_risk(series, freq = 'weekly', percentile = 5.):
     """    
     Return the non-parametric VaR (non-parametric estimate) for a given percentile,
@@ -204,13 +235,18 @@ def value_at_risk(series, freq = 'weekly', percentile = 5.):
         0.1)
     
     """
-    ind = _bool_interval_index(series.index, interval = freq)
-    series_rets = log_returns(series[ind])
-    
-    #transform to linear returns, and loss is always reported as positive
-    return -1 * (numpy.exp(numpy.percentile(series_rets, percentile))-1)
+    def _value_at_risk(series, freq = 'weekly', percentile = 5.):
+        ind = _bool_interval_index(series.index, interval = freq)
+        series_rets = log_returns(series[ind])
+        
+        #transform to linear returns, and loss is always reported as positive
+        return -1 * (numpy.exp(numpy.percentile(series_rets, percentile))-1)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _value_at_risk(x, freq = freq,
+                                                     percentile = percentile))
+    else:
+        return _value_at_risk(series, freq = freq, percentile = percentile)
 
-    
 def max_drawdown(series):
     """
     Returns the maximum drawdown, or the maximum peak to trough linear distance, as 
@@ -230,7 +266,12 @@ def max_drawdown(series):
 
         max_dd = vwp.max_drawdown(price_series)
         """
-    return numpy.max(1 - series/series.cummax())
+    def _max_drawdown(series):
+        return numpy.max(1 - series/series.cummax())
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_max_drawdown)
+    else:
+        return _max_drawdown(series)
     
 def ulcer_index(series):
     """
@@ -253,9 +294,14 @@ def ulcer_index(series):
         ui = vwp.ulcer_index(price_series)
 
     """
-    dd = 1. - series/series.cummax()
-    ssdd = numpy.sum(dd**2)
-    return numpy.sqrt(numpy.divide(ssdd, series.shape[0] - 1))
+    def _ulcer_index(series):
+        dd = 1. - series/series.cummax()
+        ssdd = numpy.sum(dd**2)
+        return numpy.sqrt(numpy.divide(ssdd, series.shape[0] - 1))
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_ulcer_index)
+    else:
+        return _ulcer_index(series)
 
 def rolling_ui(series, window = 21):
     """   
@@ -279,13 +325,19 @@ def rolling_ui(series, window = 21):
         ui = vwp.rolling_ui(price_series, window = 252)
 
     """
-    rui = pandas.Series(numpy.tile(numpy.nan, [len(series),]), index = series.index,
-                        name = 'rolling UI')
-    j = 0
-    for i in numpy.arange(window, len(series)):
-        rui[i] = ulcer_index(series[j:i])
-        j += 1
-    return rui
+    def _rolling_ui(series, window = 21):
+        rui = pandas.Series(numpy.tile(numpy.nan, [len(series),]), 
+                            index = series.index, name = 'rolling UI')
+        j = 0
+        for i in numpy.arange(window, len(series)):
+            rui[i] = ulcer_index(series[j:i])
+            j += 1
+        return rui
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _rolling_ui(x, window = window))
+    else:
+        return _rolling_ui(series)
     
 def sharpe_ratio(series, rfr = 0., freq = 'daily'):
     """
@@ -317,8 +369,12 @@ def sharpe_ratio(series, rfr = 0., freq = 'daily'):
             \\sigma &= \\textrm{Portfolio annualized volatility}
 
     """
-    
-    return (annualized_return(series, freq) - rfr)/annualized_vol(series, freq)
+    def _sharpe_ratio(series, rfr = 0., freq = 'daily'):
+        return (annualized_return(series, freq) - rfr)/annualized_vol(series, freq)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _sharpe_ratio(x, rfr = rfr, freq = freq))
+    else:
+        return _sharpe_ratio(series, rfr = 0., freq = freq)
 
 def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
     """
@@ -355,11 +411,19 @@ def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
             r_f &= \\textrm{Risk free rate}
     
     """
-    benchmark_sharpe = sharpe_ratio(benchmark, rfr, freq)
-    annualized_ret = annualized_return(series, freq)
-    series_vol = annualized_vol(series, freq)
+    def _risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
+        benchmark_sharpe = sharpe_ratio(benchmark, rfr, freq)
+        annualized_ret = annualized_return(series, freq)
+        series_vol = annualized_vol(series, freq)
+        
+        return annualized_ret - series_vol * benchmark_sharpe - rfr
 
-    return annualized_ret - series_vol * benchmark_sharpe - rfr
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _risk_adjusted_excess_return(series, 
+                            x, rfr = rfr, freq = freq))
+    else:
+        return _risk_adjusted_excess_return(series, benchmark, 
+                                            rfr = rfr, freq = freq)
 
 def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
     """
@@ -393,10 +457,17 @@ def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
             r_b &= \\textrm{annualized linear return of the benchmark}
 
     """
-    fac = _interval_to_factor(freq)
-    series_ret = annualized_return(series, freq)
-    bench_ret = annualized_return(benchmark, freq)
-    return series_ret - (rfr + beta(series, benchmark)*(bench_ret - rfr))
+    def _jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_ret = annualized_return(series, freq)
+        bench_ret = annualized_return(benchmark, freq)
+        return series_ret - (rfr + beta(series, benchmark)*(bench_ret - rfr))
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _jensens_alpha(series, x, rfr = rfr, 
+            freq = freq))
+    else:
+        return _jensens_alpha(series, benchmark, rfr = rfr, freq = freq)
 
 def beta(series, benchmark):
     """
@@ -424,9 +495,14 @@ def beta(series, benchmark):
            \\sigma_{s, b} &= \\textrm{Covariance of the Series & Benchmark}
     
     """
-    series_rets = log_returns(series)
-    bench_rets = log_returns(benchmark)
-    return numpy.divide(bench_rets.cov(series_rets), bench_rets.var())
+    def _beta(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)
+        return numpy.divide(bench_rets.cov(series_rets), bench_rets.var())
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _beta(series, x)):
+    else:
+        return _beta(series, benchmark)
     
 def r_squared(series, benchmark):
     """
@@ -453,10 +529,15 @@ def r_squared(series, benchmark):
            returns}
 
     """
-    series_rets = log_returns(series)
-    bench_rets = log_returns(benchmark)
-    
-    return series_rets.corr(bench_rets)**2
+    def _r_squared(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)        
+        return series_rets.corr(bench_rets)**2
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _r_squared(series, x)):
+    else:
+        return _r_squared(series, benchmark)
     
 def tracking_error(series, benchmark, freq = 'daily'):
     """
@@ -490,10 +571,16 @@ def tracking_error(series, benchmark, freq = 'daily'):
           k &= \\textrm{Annualization factor}
 
     """
-    fac = _interval_to_factor(freq)
-    series_rets = linear_returns(series)
-    bench_rets = linear_returns(benchmark)
-    return ((1 + series_rets).div(1 + bench_rets) - 1).std()*numpy.sqrt(fac)
+    def _tracking_error(series, benchmark, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets = linear_returns(series)
+        bench_rets = linear_returns(benchmark)
+        return ((1 + series_rets).div(1 + bench_rets) - 1).std()*numpy.sqrt(fac)
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _tracking_error(series, x, freq = freq))
+    else:
+        return _tracking_error(series, benchmark, freq = freq)
 
 def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
     """
@@ -530,11 +617,18 @@ def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
            \\bar{R} &= \\textrm{mean of the active returns}
 
     """
-    
-    active_rets = active_returns(series = series, benchmark = benchmark)
-    N = active_rets.shape[0]
-    return numpy.sqrt((N - 1)/float(N) * tracking_error(series, benchmark, freq)**2
-                      + active_rets.mean()**2)
+    def _mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
+        active_rets = active_returns(series = series, benchmark = benchmark)
+        N = active_rets.shape[0]
+        return numpy.sqrt((N - 1)/float(N) * tracking_error(series, benchmark, 
+                freq)**2 + active_rets.mean()**2)
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _mean_absolute_tracking_error(series, x,
+                               freq = freq))
+    else:
+        return _mean_absolute_tracking_error(series, benchmark, freq = freq)
+
 
 def idiosyncratic_risk(series, benchmark, freq = 'daily'):
     """
@@ -579,14 +673,20 @@ def idiosyncratic_risk(series, benchmark, freq = 'daily'):
            \\sigma^2_{\\epsilon, \\beta}}
 
     """
-    fac = _interval_to_factor(freq)
-    series_rets =log_returns(series)
-    bench_rets = log_returns(benchmark)
-    series_vol = annualized_vol(series, freq)
-    benchmark_vol = annualized_vol(benchmark, freq)
-    
-    return numpy.sqrt(series_vol**2 - beta(series, benchmark)**2 * (
-        benchmark_vol ** 2))
+    def _idiosyncratic_risk(series, benchmark, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets =log_returns(series)
+        bench_rets = log_returns(benchmark)
+        series_vol = annualized_vol(series, freq)
+        benchmark_vol = annualized_vol(benchmark, freq)
+        
+        return numpy.sqrt(series_vol**2 - beta(series, benchmark)**2 * (
+            benchmark_vol ** 2))
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _idiosyncratic_risk(series, x, freq = freq))
+    else:
+        return _idiosyncratic_risk(series, benchmark, freq)
 
 def idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
     """
@@ -607,10 +707,16 @@ def idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
         represented by idiosycratic risk
         
     """
-    fac = _interval_to_factor(freq)
-    series_rets = log_returns(series)
-    return idiosyncratic_risk(series, benchmark, freq)**2 / (
-        annualized_vol(series, freq)**2)
+    def _idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets = log_returns(series)
+        return idiosyncratic_risk(series, benchmark, freq)**2 / (
+            annualized_vol(series, freq)**2)
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _idiosyncratic_as_proportion(series, x, 
+                                freq))
+    else:
+        return _idiosyncratic_as_proportion(series, benchmark, freq)
 
 def systematic_risk(series, benchmark, freq = 'daily'):
     """
@@ -640,9 +746,14 @@ def systematic_risk(series, benchmark, freq = 'daily'):
             \\sigma^2_{\\beta} &= \\beta^2 \\cdot \\sigma^2_{b}
             \\Rightarrow \\sigma_{\\beta} &= \\beta \\cdot \\sigma_{b}
     """
-    bench_rets = log_returns(benchmark)
-    benchmark_vol = annualized_vol(benchmark)
-    return benchmark_vol * beta(series, benchmark)
+    def _systematic_risk(series, benchmark, freq = 'daily'):
+        bench_rets = log_returns(benchmark)
+        benchmark_vol = annualized_vol(benchmark)
+        return benchmark_vol * beta(series, benchmark)
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _systematic_risk(series, x, freq))
+    else:
+        return _systematic_risk(series, benchmark, freq)
 
 def systematic_as_proportion(series, benchmark, freq = 'daily'):
     """
@@ -663,10 +774,15 @@ def systematic_as_proportion(series, benchmark, freq = 'daily'):
         represented by systematic risk
 
     """
-    fac = _interval_to_factor(freq)
-    return systematic_risk(series, benchmark, freq) **2 / (
-        annualized_vol(series, freq)**2)
-
+    def _systematic_as_proportion(series, benchmark, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        return systematic_risk(series, benchmark, freq) **2 / (
+            annualized_vol(series, freq)**2)
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _systematic_as_proportion(series, x, freq))
+    else:
+        return _systematic_as_proportion(series, benchmark, freq)
+    
 def median_upcapture(series, benchmark):
     """
     Returns the median upcapture of a ``series`` of prices against a ``benchmark`` 
@@ -691,10 +807,15 @@ def median_upcapture(series, benchmark):
         good to do a "sanity check" between ``median_upcapture`` and ``upcapture``
         
     """
-    series_rets = log_returns(series)
-    bench_rets = log_returns(benchmark)
-    index = bench_rets > 0.
-    return series_rets[index].median() / bench_rets[index].median()
+    def _median_upcapture(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)
+        index = bench_rets > 0.
+        return series_rets[index].median() / bench_rets[index].median()
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _median_upcapture(series, x))
+    else:
+        return _median_upcapture(series, benchmark)
 
 def median_downcapture(series, benchmark):
     """
@@ -720,10 +841,15 @@ def median_downcapture(series, benchmark):
         good to do a "sanity check" between ``median_upcapture`` and ``upcapture``
     
     """
-    series_rets = log_returns(series)
-    bench_rets = log_returns(benchmark)
-    index = bench_rets < 0.
-    return series_rets[index].median() / bench_rets[index].median()
+    def _median_downcapture(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)
+        index = bench_rets < 0.
+        return series_rets[index].median() / bench_rets[index].median()
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _median_downcapture(series, x))
+    else:
+        return _median_downcapture(series, benchmark)
 
 def upcapture(series, benchmark):
     """
@@ -744,11 +870,16 @@ def upcapture(series, benchmark):
     .. seealso:: :py:data:`median_upcature(series, benchmark)`
     
     """
-    series_rets = log_returns(series)
-    bench_rets = log_returns(benchmark)
-    index = bench_rets > 0.
-    return series_rets[index].mean() / bench_rets[index].mean()
-    
+    def _upcapture(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)
+        index = bench_rets > 0.
+        return series_rets[index].mean() / bench_rets[index].mean()
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _upcapture(series, x))
+    else:
+        return _upcapture(series, benchmark)
+
 def downcapture(series, benchmark):
     """
     Returns the proportion of ``series``'s cumulative negative returns to
@@ -768,10 +899,15 @@ def downcapture(series, benchmark):
     .. seealso:: :py:data:`median_downcapture(series, benchmark)`
 
     """
-    series_rets = log_returns(series)
-    bench_rets = log_returns(benchmark)
-    index = bench_rets < 0.
-    return series_rets[index].mean() / bench_rets[index].mean()
+    def _downcapture(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)
+        index = bench_rets < 0.
+        return series_rets[index].mean() / bench_rets[index].mean()
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _downcapture(series, x))
+    else:
+        return _downcapture(series, benchmark)
 
 def upside_deviation(series, freq = 'daily'):
     """
@@ -788,10 +924,15 @@ def upside_deviation(series, freq = 'daily'):
 
         ``float`` of the upside standard deviation
     """
-    fac = _interval_to_factor(freq)
-    series_rets = log_returns(series)
-    index = series_rets > 0.
-    return series_rets[index].std()*numpy.sqrt(fac)
+    def _upside_deviation(series, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets = log_returns(series)
+        index = series_rets > 0.
+        return series_rets[index].std()*numpy.sqrt(fac)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _upside_deviation(x, freq = freq))
+    else:
+        return _upside_deviation(series, freq)
 
 def downside_deviation(series, freq = 'daily'):
     """
@@ -809,10 +950,15 @@ def downside_deviation(series, freq = 'daily'):
         float: of the downside standard deviation
 
     """
-    fac = _interval_to_factor(freq)
-    series_rets = log_returns(series)
-    index = series_rets < 0.    
-    return series_rets[index].std()*numpy.sqrt(fac)
+    def _downside_deviation(series, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets = log_returns(series)
+        index = series_rets < 0.    
+        return series_rets[index].std()*numpy.sqrt(fac)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _downside_deviation(x, freq = freq))
+    else:
+        return _downside_deviation(series, freq = freq)
 
 def return_by_year(series):
     """

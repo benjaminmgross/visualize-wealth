@@ -164,9 +164,9 @@ def annualized_vol(series, freq = 'daily'):
         series_rets = log_returns(series)
         return series_rets.std()*numpy.sqrt(fac)
     if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _annualized_return(x, freq = freq))
+        return series.apply(lambda x: _annualized_vol(x, freq = freq))
     else:
-        return _annualized_return(series, freq = freq)
+        return _annualized_vol(series, freq = freq)
 
 def sortino_ratio(series, freq = 'daily'):
     """
@@ -500,7 +500,7 @@ def beta(series, benchmark):
         bench_rets = log_returns(benchmark)
         return numpy.divide(bench_rets.cov(series_rets), bench_rets.var())
     if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _beta(series, x)):
+        return benchmark.apply(lambda x: _beta(series, x))
     else:
         return _beta(series, benchmark)
     
@@ -535,7 +535,7 @@ def r_squared(series, benchmark):
         return series_rets.corr(bench_rets)**2
 
     if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _r_squared(series, x)):
+        return benchmark.apply(lambda x: _r_squared(series, x))
     else:
         return _r_squared(series, benchmark)
     

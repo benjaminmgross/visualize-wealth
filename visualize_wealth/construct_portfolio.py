@@ -17,7 +17,7 @@ def format_blotter(blotter_file):
     """
     Pass in either a location of a blotter file (in ``.csv`` format) or blotter 
     :class:`pandas.DataFrame` with all positive values and return a
-    :class:pandas.DataFrame` where Sell values are then negative values
+    :class:`pandas.DataFrame` where Sell values are then negative values
     
     :ARGS:
     

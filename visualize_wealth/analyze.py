@@ -10,58 +10,6 @@ import numpy
 import pandas
 import collections
 
-def log_returns(series):
-    """
-    Returns a series of log returns given a series of prices where
-
-    :ARGS:
-
-        series: ``pandas.Series`` of prices
-
-    :RETURNS:
-
-        series: ``pandas.Series`` of log returns 
-
-    .. note:: Calculating Log Returns
-
-        .. math::
-
-            R_t = \\log(\\frac{P_{t+1}}{P_t})
-         
-    """
-    def _log_returns(series):
-        return series.apply(numpy.log).diff()
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(_log_returns)
-    else:
-        return _log_returns(series)
-
-def linear_returns(series):
-    """
-    Returns a series of linear returns given a series of prices
-    
-    :ARGS:
-
-        series: ``pandas.Series`` of prices
-
-    :RETURNS:
-
-        series: ``pandas.Series`` of linear returns
-
-    .. note:: Calculating Linear Returns
-
-            .. math::
-
-                R_t = \\frac{P_{t+1}}{P_t} - 1
-             
-    """
-    def _linear_returns(series):
-        return series.div(series.shift(1)) - 1
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(_linear_returns)
-    else:
-        return _linear_returns(series)
-
 def active_returns(series, benchmark):
     """
     Active returns is defined as the compound difference between linear returns i.e.
@@ -91,7 +39,6 @@ def active_returns(series, benchmark):
         return benchmark.apply(lambda x: _active_returns(series, x))
     else:
         return _active_returns(series, benchmark)
-    
 
 def annualized_return(series, freq = 'daily'):
     """
@@ -168,307 +115,6 @@ def annualized_vol(series, freq = 'daily'):
     else:
         return _annualized_vol(series, freq = freq)
 
-def sortino_ratio(series, freq = 'daily'):
-    """
-    Returns the `Sortino Ratio <http://en.wikipedia.org/wiki/Sortino_ratio>`_, or
-    excess returns per unit downside volatility
-
-    :ARGS:
-    
-        series: ``pandas.Series`` of prices
-    
-        freq: ``str`` of either ``daily, monthly, quarterly, or yearly``    
-        indicating the frequency of the data ``default=`` daily
-
-    :RETURNS:
-    
-        float of the Sortino Ratio
-
-    .. note:: Calculating the Sortino Ratio
-
-        There are several calculation methodologies for the Sortino Ratio, this
-        method using downside volatility, where
-        
-        .. math::
-
-            \\textrm{Sortino Ratio} = \\frac{(R-r_f)}{\\sigma_\\textrm{downside}}
-    
-    .. code:: 
-
-        import visualize_wealth.performance as vwp
-
-        sortino_ratio = vwp.sortino_ratio(price_series, frequency = 'monthly')
-        
-    """
-    def _sortino_ratio(series, freq = 'daily'):
-        return annualized_return(series, freq = freq)/downside_deviation(series, 
-                                                                     freq = freq)
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _sortino_ratio(x, freq = freq))
-    else:
-        return _sortino_ratio(series, freq = freq)
-
-def value_at_risk(series, freq = 'weekly', percentile = 5.):
-    """    
-    Return the non-parametric VaR (non-parametric estimate) for a given percentile,
-    i.e. the loss for which there is less than a ``percentile`` of exceeding in a 
-    period `freq`.
-
-    :ARGS:
-    
-        series: ``pandas.Series`` of prices
-
-        freq:``str`` of either ``daily, monthly, quarterly, or yearly``    
-        indicating the frequency of the data ``default = daily``
-
-        percentile: ``float`` of the percentile at which to calculate VaR
-        
-    :RETURNS:
-    
-        float of the Value at Risk given a ``percentile``
-
-    .. code::
-
-        import visualize_wealth.performance as vwp
-
-        var = vwp.value_at_risk(price_series, frequency = 'monthly', percentile =
-        0.1)
-    
-    """
-    def _value_at_risk(series, freq = 'weekly', percentile = 5.):
-        ind = _bool_interval_index(series.index, interval = freq)
-        series_rets = log_returns(series[ind])
-        
-        #transform to linear returns, and loss is always reported as positive
-        return -1 * (numpy.exp(numpy.percentile(series_rets, percentile))-1)
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _value_at_risk(x, freq = freq,
-                                                     percentile = percentile))
-    else:
-        return _value_at_risk(series, freq = freq, percentile = percentile)
-
-def max_drawdown(series):
-    """
-    Returns the maximum drawdown, or the maximum peak to trough linear distance, as 
-    a positive drawdown value
-
-    :ARGS:
-    
-        series: ``pandas.Series`` of prices
-
-    :RETURNS:
-    
-        float: the maximum drawdown of the period, expressed as a positive number
-
-    .. code::
-
-        import visualize_wealth.performance as vwp
-
-        max_dd = vwp.max_drawdown(price_series)
-        """
-    def _max_drawdown(series):
-        return numpy.max(1 - series/series.cummax())
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(_max_drawdown)
-    else:
-        return _max_drawdown(series)
-    
-def ulcer_index(series):
-    """
-    Returns the ulcer index of  the series, which is defined as the squared drawdowns
-    (instead of the squared deviations from the mean).  Further explanation can be 
-    found at `Tanger Tools <http://www.tangotools.com/ui/ui.htm>`_
-    
-    :ARGS:
-    
-        series: ``pandas.Series`` of prices
-
-    :RETURNS:
-    
-        :float: the maximum drawdown of the period, expressed as a positive number
-
-    .. code::
-
-        import visualize_wealth.performance as vwp
-
-        ui = vwp.ulcer_index(price_series)
-
-    """
-    def _ulcer_index(series):
-        dd = 1. - series/series.cummax()
-        ssdd = numpy.sum(dd**2)
-        return numpy.sqrt(numpy.divide(ssdd, series.shape[0] - 1))
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(_ulcer_index)
-    else:
-        return _ulcer_index(series)
-
-def rolling_ui(series, window = 21):
-    """   
-    returns the rolling ulcer index over a series for a given ``window``
-    (instead of the squared deviations from the mean).
-    
-    :ARGS:
-    
-        series: ``pandas.Series`` of prices
-
-        window: ``int`` of the size of the rolling window
-        
-    :RETURNS:
-    
-        ``pandas.Series``: of the rolling ulcer index
-
-    .. code::
-
-        import visualize_wealth.performance as vwp
-
-        ui = vwp.rolling_ui(price_series, window = 252)
-
-    """
-    def _rolling_ui(series, window = 21):
-        rui = pandas.Series(numpy.tile(numpy.nan, [len(series),]), 
-                            index = series.index, name = 'rolling UI')
-        j = 0
-        for i in numpy.arange(window, len(series)):
-            rui[i] = ulcer_index(series[j:i])
-            j += 1
-        return rui
-
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _rolling_ui(x, window = window))
-    else:
-        return _rolling_ui(series)
-    
-def sharpe_ratio(series, rfr = 0., freq = 'daily'):
-    """
-    Returns the `Sharpe Ratio <http://en.wikipedia.org/wiki/Sharpe_ratio>`_ of an 
-    asset, given a price series, risk free rate of ``rfr``, and ``frequency`` of the 
-    time series
-    
-    :ARGS:
-
-        series: ``pandas.Series`` of prices
-
-        rfr: ``float`` of the risk free rate
-
-        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
-        yearly``
-
-    :RETURN:
-
-        ``float`` of the Sharpe Ratio
-
-    .. note:: Calculating Sharpe 
-
-        .. math::
-
-            \\textrm{SR} = \\frac{(R_p - r_f)}{\\sigma} \\: \\textrm{where},
-
-            R_p &= \\textrm{series annualized return} \\\\
-            r_f &= \\textrm{Risk free rate} \\\\
-            \\sigma &= \\textrm{Portfolio annualized volatility}
-
-    """
-    def _sharpe_ratio(series, rfr = 0., freq = 'daily'):
-        return (annualized_return(series, freq) - rfr)/annualized_vol(series, freq)
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _sharpe_ratio(x, rfr = rfr, freq = freq))
-    else:
-        return _sharpe_ratio(series, rfr = 0., freq = freq)
-
-def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
-    """
-    Returns the MMRAP or the `Modigliani Risk Adjusted Performance <http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance>`_ that
-    calculates the excess return from the `Capital
-    Allocation Line <http://en.wikipedia.org/wiki/Capital_allocation_line>`_,
-    at the same level of risk (or volatility), specificaly,
-        
-    :ARGS:
-
-        series: ``pandas.Series`` of prices
-
-        benchmark: ``pandas.Series`` from which to compare ``series``
-
-        rfr: ``float`` of the risk free rate
-
-        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
-        yearly``
-
-    :RETURNS:
-
-        ``float`` of the risk adjusted excess performance
-
-    .. note:: Calculating Risk Adjusted Excess Returns
-
-        .. math::
-    
-            raer = r_p - \\left(\\textrm{SR}_b \\cdot \\sigma_p + r_f\\right), \\:
-            \\textrm{where},
-
-            r_p &= \\textrm{annualized linear return} \\\\
-            \\textrm{SR}_b &= \\textrm{Sharpe Ratio of the benchmark} \\\\
-            \\sigma_p &= \\textrm{volatility of the portfolio} \\\\
-            r_f &= \\textrm{Risk free rate}
-    
-    """
-    def _risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
-        benchmark_sharpe = sharpe_ratio(benchmark, rfr, freq)
-        annualized_ret = annualized_return(series, freq)
-        series_vol = annualized_vol(series, freq)
-        
-        return annualized_ret - series_vol * benchmark_sharpe - rfr
-
-    if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _risk_adjusted_excess_return(series, 
-                            x, rfr = rfr, freq = freq))
-    else:
-        return _risk_adjusted_excess_return(series, benchmark, 
-                                            rfr = rfr, freq = freq)
-
-def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
-    """
-    Returns the `Jensen's Alpha <http://en.wikipedia.org/wiki/Jensen's_alpha>`_ or 
-    the excess return based on the systematic risk of the ``series`` relative to
-    the ``benchmark``
-
-    :ARGS:
-
-         series: ``pandas.Series`` of prices 
-
-         benchmark: ``pandas.Series`` of the prices to compare ``series`` against
-
-         rfr: ``float`` of the risk free rate
-
-         freq: ``str`` of frequency, either daily, monthly, quarterly, or yearly
-
-    :RETURNS:
-
-        ``float`` representing the Jensen's Alpha
-
-    .. note:: Calculating Jensen's Alpha
-
-        .. math::
-
-            \\alpha_{\\textrm{Jensen}} = r_p - \\beta \\cdot r_b 
-            \\: \\textrm{where}
-
-            r_p &= \\textrm{annualized linear return of the portfolio} \\\\
-            \\beta &= \\frac{\\sigma_{s, b}}{\\sigma^2_{b}} \\\\
-            r_b &= \\textrm{annualized linear return of the benchmark}
-
-    """
-    def _jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
-        fac = _interval_to_factor(freq)
-        series_ret = annualized_return(series, freq)
-        bench_ret = annualized_return(benchmark, freq)
-        return series_ret - (rfr + beta(series, benchmark)*(bench_ret - rfr))
-
-    if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _jensens_alpha(series, x, rfr = rfr, 
-            freq = freq))
-    else:
-        return _jensens_alpha(series, benchmark, rfr = rfr, freq = freq)
-
 def beta(series, benchmark):
     """
     Returns the sensitivity of one price series to a chosen benchmark:
@@ -503,90 +149,65 @@ def beta(series, benchmark):
         return benchmark.apply(lambda x: _beta(series, x))
     else:
         return _beta(series, benchmark)
-    
-def r_squared(series, benchmark):
+
+def downcapture(series, benchmark):
     """
-    Returns the R-Squared or `Coefficient of Determination <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_ by squaring the
-    correlation coefficient of the returns of the two series
+    Returns the proportion of ``series``'s cumulative negative returns to
+    ``benchmark``'s cumulative  returns, given benchmark's returns were negative in
+    that period
 
     :ARGS:
 
         series: ``pandas.Series`` of prices
 
-        benchmark: ``pandas.Series of prices to regress ``series`` against
+        benchmark: ``pandas.Series`` of prices to compare ``series`` against
 
     :RETURNS:
 
-        float: of the coefficient of variation
+        ``float`` of the downcapture of cumulative positive ret
 
-    .. note:: Calculating R-Squared
-
-        .. math:: 
-
-           R^2 = \\rho_{s, b}^2 \\: \\textrm{where},
-
-           \\rho_{s, b} = \\textrm{correlation between series and benchmark log
-           returns}
+    .. seealso:: :py:data:`median_downcapture(series, benchmark)`
 
     """
-    def _r_squared(series, benchmark):
+    def _downcapture(series, benchmark):
         series_rets = log_returns(series)
-        bench_rets = log_returns(benchmark)        
-        return series_rets.corr(bench_rets)**2
-
+        bench_rets = log_returns(benchmark)
+        index = bench_rets < 0.
+        return series_rets[index].mean() / bench_rets[index].mean()
     if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _r_squared(series, x))
+        return benchmark.apply(lambda x: _downcapture(series, x))
     else:
-        return _r_squared(series, benchmark)
-    
-def tracking_error(series, benchmark, freq = 'daily'):
+        return _downcapture(series, benchmark)
+
+def downside_deviation(series, freq = 'daily'):
     """
-    Returns a ``float`` of the `Tracking Error <http://en.wikipedia.org/wiki/Tracking_error>`_ or standard deviation of the 
-    active returns
-      
+    Returns the volatility of the returns that are less than zero
+
     :ARGS:
 
-        series: ``pandas.Series`` of prices
-
-        benchmark: ``pandas.Series`` to compare ``series`` against
+        series:``pandas.Series`` of prices
 
         freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
-        yearly`` 
-
+        yearly``
 
     :RETURNS:
 
-        ``float`` of the tracking error
-
-    .. note:: Calculating Tracking Error
-
-        Let :math:`r_{a_i} =` "Active Return" for period :math:`i`, to calculate the
-        compound linear difference between :math:`r_s` and :math:`r_b` is,
-
-        .. math::
-
-          r_{a_i} = \\frac{(1+r_{s_i})}{(1+r_{b_i})}-1
-
-          \\textrm{then, } \\textrm{TE} &= \\sigma_a \\cdot \\sqrt{k} \\\\
-          k &= \\textrm{Annualization factor}
+        float: of the downside standard deviation
 
     """
-    def _tracking_error(series, benchmark, freq = 'daily'):
+    def _downside_deviation(series, freq = 'daily'):
         fac = _interval_to_factor(freq)
-        series_rets = linear_returns(series)
-        bench_rets = linear_returns(benchmark)
-        return ((1 + series_rets).div(1 + bench_rets) - 1).std()*numpy.sqrt(fac)
-
-    if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _tracking_error(series, x, freq = freq))
+        series_rets = log_returns(series)
+        index = series_rets < 0.    
+        return series_rets[index].std()*numpy.sqrt(fac)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _downside_deviation(x, freq = freq))
     else:
-        return _tracking_error(series, benchmark, freq = freq)
+        return _downside_deviation(series, freq = freq)
 
-def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
+def idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
     """
-    Returns Carol Alexander's calculation for Mean Absolute Tracking Error
-    ("MATE").
-
+    Returns the idiosyncratic risk as proportion of total volatility
 
     :ARGS:
 
@@ -595,40 +216,24 @@ def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
         benchmark: ``pandas.Series`` to compare ``series`` against
 
         freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
-        yearly`` 
-
+        yearly``
 
     :RETURNS:
 
-        ``float`` of the mean absolute tracking error
+        ``float`` between (0, 1) representing the proportion of  volatility
+        represented by idiosycratic risk
         
-    .. note:: Why Mean Absolute Tracking Error
-
-        One of the downfalls of 
-        `Tracking Error <http://en.wikipedia.org/wiki/Tracking_error>`_ ("TE") is
-        that diverging price series that diverge at a constant rate **may** have low 
-        TE.  MATE addresses this issue.
-        
-        .. math::
-    
-           \\sqrt{\\frac{(T-1)}{T}\\cdot \\tau^2 + \\bar{R}} \\: \\textrm{where}
-
-           \\tau &= \\textrm{Tracking Error} \\\\
-           \\bar{R} &= \\textrm{mean of the active returns}
-
     """
-    def _mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
-        active_rets = active_returns(series = series, benchmark = benchmark)
-        N = active_rets.shape[0]
-        return numpy.sqrt((N - 1)/float(N) * tracking_error(series, benchmark, 
-                freq)**2 + active_rets.mean()**2)
-
+    def _idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_rets = log_returns(series)
+        return idiosyncratic_risk(series, benchmark, freq)**2 / (
+            annualized_vol(series, freq)**2)
     if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _mean_absolute_tracking_error(series, x,
-                               freq = freq))
+        return benchmark.apply(lambda x: _idiosyncratic_as_proportion(series, x, 
+                                freq))
     else:
-        return _mean_absolute_tracking_error(series, benchmark, freq = freq)
-
+        return _idiosyncratic_as_proportion(series, benchmark, freq)
 
 def idiosyncratic_risk(series, benchmark, freq = 'daily'):
     """
@@ -688,9 +293,445 @@ def idiosyncratic_risk(series, benchmark, freq = 'daily'):
     else:
         return _idiosyncratic_risk(series, benchmark, freq)
 
-def idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
+def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
     """
-    Returns the idiosyncratic risk as proportion of total volatility
+    Returns the `Jensen's Alpha <http://en.wikipedia.org/wiki/Jensen's_alpha>`_ or 
+    the excess return based on the systematic risk of the ``series`` relative to
+    the ``benchmark``
+
+    :ARGS:
+
+         series: ``pandas.Series`` of prices 
+
+         benchmark: ``pandas.Series`` of the prices to compare ``series`` against
+
+         rfr: ``float`` of the risk free rate
+
+         freq: ``str`` of frequency, either daily, monthly, quarterly, or yearly
+
+    :RETURNS:
+
+        ``float`` representing the Jensen's Alpha
+
+    .. note:: Calculating Jensen's Alpha
+
+        .. math::
+
+            \\alpha_{\\textrm{Jensen}} = r_p - \\beta \\cdot r_b 
+            \\: \\textrm{where}
+
+            r_p &= \\textrm{annualized linear return of the portfolio} \\\\
+            \\beta &= \\frac{\\sigma_{s, b}}{\\sigma^2_{b}} \\\\
+            r_b &= \\textrm{annualized linear return of the benchmark}
+
+    """
+    def _jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
+        fac = _interval_to_factor(freq)
+        series_ret = annualized_return(series, freq)
+        bench_ret = annualized_return(benchmark, freq)
+        return series_ret - (rfr + beta(series, benchmark)*(bench_ret - rfr))
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _jensens_alpha(series, x, rfr = rfr, 
+            freq = freq))
+    else:
+        return _jensens_alpha(series, benchmark, rfr = rfr, freq = freq)
+
+def linear_returns(series):
+    """
+    Returns a series of linear returns given a series of prices
+    
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+    :RETURNS:
+
+        series: ``pandas.Series`` of linear returns
+
+    .. note:: Calculating Linear Returns
+
+            .. math::
+
+                R_t = \\frac{P_{t+1}}{P_t} - 1
+             
+    """
+    def _linear_returns(series):
+        return series.div(series.shift(1)) - 1
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_linear_returns)
+    else:
+        return _linear_returns(series)    
+
+def log_returns(series):
+    """
+    Returns a series of log returns given a series of prices where
+
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+    :RETURNS:
+
+        series: ``pandas.Series`` of log returns 
+
+    .. note:: Calculating Log Returns
+
+        .. math::
+
+            R_t = \\log(\\frac{P_{t+1}}{P_t})
+         
+    """
+    def _log_returns(series):
+        return series.apply(numpy.log).diff()
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_log_returns)
+    else:
+        return _log_returns(series)
+
+def max_drawdown(series):
+    """
+    Returns the maximum drawdown, or the maximum peak to trough linear distance, as 
+    a positive drawdown value
+
+    :ARGS:
+    
+        series: ``pandas.Series`` of prices
+
+    :RETURNS:
+    
+        float: the maximum drawdown of the period, expressed as a positive number
+
+    .. code::
+
+        import visualize_wealth.performance as vwp
+
+        max_dd = vwp.max_drawdown(price_series)
+        """
+    def _max_drawdown(series):
+        return numpy.max(1 - series/series.cummax())
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_max_drawdown)
+    else:
+        return _max_drawdown(series)
+
+def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
+    """
+    Returns Carol Alexander's calculation for Mean Absolute Tracking Error
+    ("MATE").
+
+
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+        benchmark: ``pandas.Series`` to compare ``series`` against
+
+        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
+        yearly`` 
+
+
+    :RETURNS:
+
+        ``float`` of the mean absolute tracking error
+        
+    .. note:: Why Mean Absolute Tracking Error
+
+        One of the downfalls of 
+        `Tracking Error <http://en.wikipedia.org/wiki/Tracking_error>`_ ("TE") is
+        that diverging price series that diverge at a constant rate **may** have low 
+        TE.  MATE addresses this issue.
+        
+        .. math::
+    
+           \\sqrt{\\frac{(T-1)}{T}\\cdot \\tau^2 + \\bar{R}} \\: \\textrm{where}
+
+           \\tau &= \\textrm{Tracking Error} \\\\
+           \\bar{R} &= \\textrm{mean of the active returns}
+
+    """
+    def _mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
+        active_rets = active_returns(series = series, benchmark = benchmark)
+        N = active_rets.shape[0]
+        return numpy.sqrt((N - 1)/float(N) * tracking_error(series, benchmark, 
+                freq)**2 + active_rets.mean()**2)
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _mean_absolute_tracking_error(series, x,
+                               freq = freq))
+    else:
+        return _mean_absolute_tracking_error(series, benchmark, freq = freq)
+
+def median_downcapture(series, benchmark):
+    """
+    Returns the median downcapture of a ``series`` of prices against a ``benchmark`` 
+    prices, given that the ``benchmark`` achieved negative returns in a given period
+
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+        benchmark: ``pandas.Series`` of prices to compare ``series`` against
+
+    :RETURNS:
+
+        ``float`` of the median downcapture
+
+    .. warning:: About Downcapture
+
+        Upcapture can be a difficult statistic to ensure validity.  As upcapture
+        is :math:`\\frac{\\sum{r_{\\textrm{series}}}}{\\sum{r_{b|r_i \\geq 0}}}` or 
+        the median values (in this case), dividing by small numbers can have 
+        asymptotic effects to the overall value of this statistic.  Therefore, it's 
+        good to do a "sanity check" between ``median_upcapture`` and ``upcapture``
+    
+    """
+    def _median_downcapture(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)
+        index = bench_rets < 0.
+        return series_rets[index].median() / bench_rets[index].median()
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _median_downcapture(series, x))
+    else:
+        return _median_downcapture(series, benchmark)
+
+def median_upcapture(series, benchmark):
+    """
+    Returns the median upcapture of a ``series`` of prices against a ``benchmark`` 
+    prices, given that the ``benchmark`` achieved positive returns in a given period
+
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+        benchmark: ``pandas.Series`` of prices to compare ``series`` against
+
+    :RETURNS:
+
+        float: of the median upcapture 
+
+    .. warning:: About Upcapture
+
+        Upcapture can be a difficult statistic to ensure validity.  As upcapture
+        is :math:`\\frac{\\sum{r_{\\textrm{series}}}}{\\sum{r_{b|r_i \\geq 0}}}` or 
+        the median values (in this case), dividing by small numbers can have 
+        asymptotic effects to the overall value of this statistic.  Therefore, it's 
+        good to do a "sanity check" between ``median_upcapture`` and ``upcapture``
+        
+    """
+    def _median_upcapture(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)
+        index = bench_rets > 0.
+        return series_rets[index].median() / bench_rets[index].median()
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _median_upcapture(series, x))
+    else:
+        return _median_upcapture(series, benchmark)
+
+def r_squared(series, benchmark):
+    """
+    Returns the R-Squared or `Coefficient of Determination <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_ by squaring the
+    correlation coefficient of the returns of the two series
+
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+        benchmark: ``pandas.Series of prices to regress ``series`` against
+
+    :RETURNS:
+
+        float: of the coefficient of variation
+
+    .. note:: Calculating R-Squared
+
+        .. math:: 
+
+           R^2 = \\rho_{s, b}^2 \\: \\textrm{where},
+
+           \\rho_{s, b} = \\textrm{correlation between series and benchmark log
+           returns}
+
+    """
+    def _r_squared(series, benchmark):
+        series_rets = log_returns(series)
+        bench_rets = log_returns(benchmark)        
+        return series_rets.corr(bench_rets)**2
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _r_squared(series, x))
+    else:
+        return _r_squared(series, benchmark)
+
+def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
+    """
+    Returns the MMRAP or the `Modigliani Risk Adjusted Performance <http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance>`_ that
+    calculates the excess return from the `Capital
+    Allocation Line <http://en.wikipedia.org/wiki/Capital_allocation_line>`_,
+    at the same level of risk (or volatility), specificaly,
+        
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+        benchmark: ``pandas.Series`` from which to compare ``series``
+
+        rfr: ``float`` of the risk free rate
+
+        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
+        yearly``
+
+    :RETURNS:
+
+        ``float`` of the risk adjusted excess performance
+
+    .. note:: Calculating Risk Adjusted Excess Returns
+
+        .. math::
+    
+            raer = r_p - \\left(\\textrm{SR}_b \\cdot \\sigma_p + r_f\\right), \\:
+            \\textrm{where},
+
+            r_p &= \\textrm{annualized linear return} \\\\
+            \\textrm{SR}_b &= \\textrm{Sharpe Ratio of the benchmark} \\\\
+            \\sigma_p &= \\textrm{volatility of the portfolio} \\\\
+            r_f &= \\textrm{Risk free rate}
+    
+    """
+    def _risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
+        benchmark_sharpe = sharpe_ratio(benchmark, rfr, freq)
+        annualized_ret = annualized_return(series, freq)
+        series_vol = annualized_vol(series, freq)
+        
+        return annualized_ret - series_vol * benchmark_sharpe - rfr
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _risk_adjusted_excess_return(series, 
+                            x, rfr = rfr, freq = freq))
+    else:
+        return _risk_adjusted_excess_return(series, benchmark, 
+                                            rfr = rfr, freq = freq)
+
+
+def rolling_ui(series, window = 21):
+    """   
+    returns the rolling ulcer index over a series for a given ``window``
+    (instead of the squared deviations from the mean).
+    
+    :ARGS:
+    
+        series: ``pandas.Series`` of prices
+
+        window: ``int`` of the size of the rolling window
+        
+    :RETURNS:
+    
+        ``pandas.Series``: of the rolling ulcer index
+
+    .. code::
+
+        import visualize_wealth.performance as vwp
+
+        ui = vwp.rolling_ui(price_series, window = 252)
+
+    """
+    def _rolling_ui(series, window = 21):
+        rui = pandas.Series(numpy.tile(numpy.nan, [len(series),]), 
+                            index = series.index, name = 'rolling UI')
+        j = 0
+        for i in numpy.arange(window, len(series)):
+            rui[i] = ulcer_index(series[j:i])
+            j += 1
+        return rui
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _rolling_ui(x, window = window))
+    else:
+        return _rolling_ui(series)
+
+def sharpe_ratio(series, rfr = 0., freq = 'daily'):
+    """
+    Returns the `Sharpe Ratio <http://en.wikipedia.org/wiki/Sharpe_ratio>`_ of an 
+    asset, given a price series, risk free rate of ``rfr``, and ``frequency`` of the 
+    time series
+    
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+        rfr: ``float`` of the risk free rate
+
+        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
+        yearly``
+
+    :RETURN:
+
+        ``float`` of the Sharpe Ratio
+
+    .. note:: Calculating Sharpe 
+
+        .. math::
+
+            \\textrm{SR} = \\frac{(R_p - r_f)}{\\sigma} \\: \\textrm{where},
+
+            R_p &= \\textrm{series annualized return} \\\\
+            r_f &= \\textrm{Risk free rate} \\\\
+            \\sigma &= \\textrm{Portfolio annualized volatility}
+
+    """
+    def _sharpe_ratio(series, rfr = 0., freq = 'daily'):
+        return (annualized_return(series, freq) - rfr)/annualized_vol(series, freq)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _sharpe_ratio(x, rfr = rfr, freq = freq))
+    else:
+        return _sharpe_ratio(series, rfr = 0., freq = freq)
+
+
+def sortino_ratio(series, freq = 'daily'):
+    """
+    Returns the `Sortino Ratio <http://en.wikipedia.org/wiki/Sortino_ratio>`_, or
+    excess returns per unit downside volatility
+
+    :ARGS:
+    
+        series: ``pandas.Series`` of prices
+    
+        freq: ``str`` of either ``daily, monthly, quarterly, or yearly``    
+        indicating the frequency of the data ``default=`` daily
+
+    :RETURNS:
+    
+        float of the Sortino Ratio
+
+    .. note:: Calculating the Sortino Ratio
+
+        There are several calculation methodologies for the Sortino Ratio, this
+        method using downside volatility, where
+        
+        .. math::
+
+            \\textrm{Sortino Ratio} = \\frac{(R-r_f)}{\\sigma_\\textrm{downside}}
+    
+    .. code:: 
+
+        import visualize_wealth.performance as vwp
+
+        sortino_ratio = vwp.sortino_ratio(price_series, frequency = 'monthly')
+        
+    """
+    def _sortino_ratio(series, freq = 'daily'):
+        return annualized_return(series, freq = freq)/downside_deviation(series, 
+                                                                     freq = freq)
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _sortino_ratio(x, freq = freq))
+    else:
+        return _sortino_ratio(series, freq = freq)
+
+def systematic_as_proportion(series, benchmark, freq = 'daily'):
+    """
+    Returns the systematic risk as proportion of total volatility
 
     :ARGS:
 
@@ -704,19 +745,18 @@ def idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
     :RETURNS:
 
         ``float`` between (0, 1) representing the proportion of  volatility
-        represented by idiosycratic risk
-        
+        represented by systematic risk
+
     """
-    def _idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
+    def _systematic_as_proportion(series, benchmark, freq = 'daily'):
         fac = _interval_to_factor(freq)
-        series_rets = log_returns(series)
-        return idiosyncratic_risk(series, benchmark, freq)**2 / (
+        return systematic_risk(series, benchmark, freq) **2 / (
             annualized_vol(series, freq)**2)
     if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _idiosyncratic_as_proportion(series, x, 
-                                freq))
+        return benchmark.apply(lambda x: _systematic_as_proportion(series, x, freq))
     else:
-        return _idiosyncratic_as_proportion(series, benchmark, freq)
+        return _systematic_as_proportion(series, benchmark, freq)
+
 
 def systematic_risk(series, benchmark, freq = 'daily'):
     """
@@ -755,10 +795,11 @@ def systematic_risk(series, benchmark, freq = 'daily'):
     else:
         return _systematic_risk(series, benchmark, freq)
 
-def systematic_as_proportion(series, benchmark, freq = 'daily'):
+def tracking_error(series, benchmark, freq = 'daily'):
     """
-    Returns the systematic risk as proportion of total volatility
-
+    Returns a ``float`` of the `Tracking Error <http://en.wikipedia.org/wiki/Tracking_error>`_ or standard deviation of the 
+    active returns
+      
     :ARGS:
 
         series: ``pandas.Series`` of prices
@@ -766,90 +807,67 @@ def systematic_as_proportion(series, benchmark, freq = 'daily'):
         benchmark: ``pandas.Series`` to compare ``series`` against
 
         freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
-        yearly``
+        yearly`` 
+
 
     :RETURNS:
 
-        ``float`` between (0, 1) representing the proportion of  volatility
-        represented by systematic risk
+        ``float`` of the tracking error
+
+    .. note:: Calculating Tracking Error
+
+        Let :math:`r_{a_i} =` "Active Return" for period :math:`i`, to calculate the
+        compound linear difference between :math:`r_s` and :math:`r_b` is,
+
+        .. math::
+
+          r_{a_i} = \\frac{(1+r_{s_i})}{(1+r_{b_i})}-1
+
+          \\textrm{then, } \\textrm{TE} &= \\sigma_a \\cdot \\sqrt{k} \\\\
+          k &= \\textrm{Annualization factor}
 
     """
-    def _systematic_as_proportion(series, benchmark, freq = 'daily'):
+    def _tracking_error(series, benchmark, freq = 'daily'):
         fac = _interval_to_factor(freq)
-        return systematic_risk(series, benchmark, freq) **2 / (
-            annualized_vol(series, freq)**2)
+        series_rets = linear_returns(series)
+        bench_rets = linear_returns(benchmark)
+        return ((1 + series_rets).div(1 + bench_rets) - 1).std()*numpy.sqrt(fac)
+
     if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _systematic_as_proportion(series, x, freq))
+        return benchmark.apply(lambda x: _tracking_error(series, x, freq = freq))
     else:
-        return _systematic_as_proportion(series, benchmark, freq)
-    
-def median_upcapture(series, benchmark):
+        return _tracking_error(series, benchmark, freq = freq)
+
+def ulcer_index(series):
     """
-    Returns the median upcapture of a ``series`` of prices against a ``benchmark`` 
-    prices, given that the ``benchmark`` achieved positive returns in a given period
-
+    Returns the ulcer index of  the series, which is defined as the squared drawdowns
+    (instead of the squared deviations from the mean).  Further explanation can be 
+    found at `Tanger Tools <http://www.tangotools.com/ui/ui.htm>`_
+    
     :ARGS:
-
+    
         series: ``pandas.Series`` of prices
 
-        benchmark: ``pandas.Series`` of prices to compare ``series`` against
-
     :RETURNS:
-
-        float: of the median upcapture 
-
-    .. warning:: About Upcapture
-
-        Upcapture can be a difficult statistic to ensure validity.  As upcapture
-        is :math:`\\frac{\\sum{r_{\\textrm{series}}}}{\\sum{r_{b|r_i \\geq 0}}}` or 
-        the median values (in this case), dividing by small numbers can have 
-        asymptotic effects to the overall value of this statistic.  Therefore, it's 
-        good to do a "sanity check" between ``median_upcapture`` and ``upcapture``
-        
-    """
-    def _median_upcapture(series, benchmark):
-        series_rets = log_returns(series)
-        bench_rets = log_returns(benchmark)
-        index = bench_rets > 0.
-        return series_rets[index].median() / bench_rets[index].median()
-    if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _median_upcapture(series, x))
-    else:
-        return _median_upcapture(series, benchmark)
-
-def median_downcapture(series, benchmark):
-    """
-    Returns the median downcapture of a ``series`` of prices against a ``benchmark`` 
-    prices, given that the ``benchmark`` achieved negative returns in a given period
-
-    :ARGS:
-
-        series: ``pandas.Series`` of prices
-
-        benchmark: ``pandas.Series`` of prices to compare ``series`` against
-
-    :RETURNS:
-
-        ``float`` of the median downcapture
-
-    .. warning:: About Downcapture
-
-        Upcapture can be a difficult statistic to ensure validity.  As upcapture
-        is :math:`\\frac{\\sum{r_{\\textrm{series}}}}{\\sum{r_{b|r_i \\geq 0}}}` or 
-        the median values (in this case), dividing by small numbers can have 
-        asymptotic effects to the overall value of this statistic.  Therefore, it's 
-        good to do a "sanity check" between ``median_upcapture`` and ``upcapture``
     
+        :float: the maximum drawdown of the period, expressed as a positive number
+
+    .. code::
+
+        import visualize_wealth.performance as vwp
+
+        ui = vwp.ulcer_index(price_series)
+
     """
-    def _median_downcapture(series, benchmark):
-        series_rets = log_returns(series)
-        bench_rets = log_returns(benchmark)
-        index = bench_rets < 0.
-        return series_rets[index].median() / bench_rets[index].median()
-    if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _median_downcapture(series, x))
+    def _ulcer_index(series):
+        dd = 1. - series/series.cummax()
+        ssdd = numpy.sum(dd**2)
+        return numpy.sqrt(numpy.divide(ssdd, series.shape[0] - 1))
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_ulcer_index)
     else:
-        return _median_downcapture(series, benchmark)
+        return _ulcer_index(series)
+
 
 def upcapture(series, benchmark):
     """
@@ -880,35 +898,6 @@ def upcapture(series, benchmark):
     else:
         return _upcapture(series, benchmark)
 
-def downcapture(series, benchmark):
-    """
-    Returns the proportion of ``series``'s cumulative negative returns to
-    ``benchmark``'s cumulative  returns, given benchmark's returns were negative in
-    that period
-
-    :ARGS:
-
-        series: ``pandas.Series`` of prices
-
-        benchmark: ``pandas.Series`` of prices to compare ``series`` against
-
-    :RETURNS:
-
-        ``float`` of the downcapture of cumulative positive ret
-
-    .. seealso:: :py:data:`median_downcapture(series, benchmark)`
-
-    """
-    def _downcapture(series, benchmark):
-        series_rets = log_returns(series)
-        bench_rets = log_returns(benchmark)
-        index = bench_rets < 0.
-        return series_rets[index].mean() / bench_rets[index].mean()
-    if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _downcapture(series, x))
-    else:
-        return _downcapture(series, benchmark)
-
 def upside_deviation(series, freq = 'daily'):
     """
     Returns the volatility of the returns that are greater than zero
@@ -934,31 +923,45 @@ def upside_deviation(series, freq = 'daily'):
     else:
         return _upside_deviation(series, freq)
 
-def downside_deviation(series, freq = 'daily'):
-    """
-    Returns the volatility of the returns that are less than zero
+def value_at_risk(series, freq = 'weekly', percentile = 5.):
+    """    
+    Return the non-parametric VaR (non-parametric estimate) for a given percentile,
+    i.e. the loss for which there is less than a ``percentile`` of exceeding in a 
+    period `freq`.
 
     :ARGS:
+    
+        series: ``pandas.Series`` of prices
 
-        series:``pandas.Series`` of prices
+        freq:``str`` of either ``daily, monthly, quarterly, or yearly``    
+        indicating the frequency of the data ``default = daily``
 
-        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
-        yearly``
-
+        percentile: ``float`` of the percentile at which to calculate VaR
+        
     :RETURNS:
+    
+        float of the Value at Risk given a ``percentile``
 
-        float: of the downside standard deviation
+    .. code::
 
+        import visualize_wealth.performance as vwp
+
+        var = vwp.value_at_risk(price_series, frequency = 'monthly', percentile =
+        0.1)
+    
     """
-    def _downside_deviation(series, freq = 'daily'):
-        fac = _interval_to_factor(freq)
-        series_rets = log_returns(series)
-        index = series_rets < 0.    
-        return series_rets[index].std()*numpy.sqrt(fac)
+    def _value_at_risk(series, freq = 'weekly', percentile = 5.):
+        ind = _bool_interval_index(series.index, interval = freq)
+        series_rets = log_returns(series[ind])
+        
+        #transform to linear returns, and loss is always reported as positive
+        return -1 * (numpy.exp(numpy.percentile(series_rets, percentile))-1)
     if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _downside_deviation(x, freq = freq))
+        return series.apply(lambda x: _value_at_risk(x, freq = freq,
+                                                     percentile = percentile))
     else:
-        return _downside_deviation(series, freq = freq)
+        return _value_at_risk(series, freq = freq, percentile = percentile)
+
 
 def return_by_year(series):
     """

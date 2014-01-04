@@ -1,13 +1,17 @@
 README.md
 =========
 
+A library built in Python to construct, backtest, analyze, and evaluate
+portfolios and their benchmarks, with comprehensive documentation and
+manual calculations to illustrate all underlying methodologies and
+statistics.
+
 License
 -------
 
 This program is free software and is distrubuted under the `GNU General
 Public License version
-3 <http://www.gnu.org/licenses/quick-guide-gplv3.html>`__\ ("GNU GPL
-v3")
+3 <http://www.gnu.org/licenses/quick-guide-gplv3.html>`__ ("GNU GPL v3")
 
 © Benjamin M. Gross 2013
 
@@ -76,9 +80,21 @@ docstrings, when you ``git clone`` the repository, you can ``cd`` into:
     $ cd visualize_wealth/docs/build/
 
 and find full ``.html`` browseable code documentation (that's pretty
-fucking beautiful... if I do say so my damn self) with live links,
+f\*cking beautiful... if I do say so my damn self) with live links,
 function explanations (that also have live links to their respective
 definition on the web), etc.
+
+Also I've created an Excel spreadsheet that illustrates almost all of
+the ``analyze.py`` portfolio statistic calculations. That spreadsheet
+can found in:
+
+::
+
+    visualize_wealth > tests > test_analyze.xlsx
+
+In fact, the unit testing for the ``analyze.py`` portfolio statistics
+tests the python calculations against this same excel spreadsheet, so
+you can really get into the guts of how these things are calculated.
 
 `Portfolio Construction Examples <portfolio-construction-examples>`__
 ---------------------------------------------------------------------
@@ -392,6 +408,25 @@ ToDo List:
 
 -  occassionally ``generate_random_asset_path`` will return with an
    Assertion Error
+
+-  Add the following statistics to the ``analyze.py`` library:
+-  [STRIKEOUT:Absolute Alpha:
+
+   .. math:: R_p - R_b
+
+   ]
+-  Treynor ratio:
+
+   .. math:: \\textrm{T.R.}\\triangleq \\frac{r_i - r_f}{\\beta{i}}
+
+-  Information Ratio or Appraisal Ratio:
+
+   .. math:: \\textrm{I.R.} \\triangleq \\frac{\\alpha}{\\omega}
+
+   , or absolute alpha / tracking error. Other formulations include
+   Jensens's Alpha / Idiosyncratic Vol
+-  Up / Down beta (or
+   `Dual-Beta <http://en.wikipedia.org/wiki/Dual-beta>`__)
 
 -  Best broad asset classes to determine "best fit portfolio"
 

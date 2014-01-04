@@ -40,6 +40,32 @@ def active_returns(series, benchmark):
     else:
         return _active_returns(series, benchmark)
 
+def alpha(series, benchmark, freq = 'daily', rfr = 0.0):
+    """
+    Alpha is defined as simply the geometric difference between the return of a 
+    portfolio and a benchmark, less the risk free rate or:
+
+    .. math::
+
+        \\alpha = \\frac{(1 + R_p - r_f)}{(1 + R_b - r_f)}  - 1 \\\\
+        
+        \\textrm{where},
+
+            R_p &= \\textrm{Portfolio Annualized Return} \\\\
+            R_b &= \\textrm{Benchmark Annualized Return} \\\\
+            r_f &= \\textrm{Risk Free Rate}
+    """
+    def _alpha(series, benchmark, freq = 'daily', rfr = 0.0):
+        return numpy.divide(1 + annualized_return(series, freq = freq) - rfr,
+                        1 + annualized_return(benchmark, freq = freq) - rfr) - 1
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _alpha(series, x, freq = freq, rfr = rfr))
+    else:
+        return _alpha(series, benchmark, freq = freq, rfr = rfr)
+
+
+
 def annualized_return(series, freq = 'daily'):
     """
     Returns the annualized linear return of a series, i.e. the linear compounding
@@ -689,7 +715,7 @@ def sharpe_ratio(series, rfr = 0., freq = 'daily'):
         return _sharpe_ratio(series, rfr = 0., freq = freq)
 
 
-def sortino_ratio(series, freq = 'daily'):
+def sortino_ratio(series, freq = 'daily', rfr = 0.0):
     """
     Returns the `Sortino Ratio <http://en.wikipedia.org/wiki/Sortino_ratio>`_, or
     excess returns per unit downside volatility

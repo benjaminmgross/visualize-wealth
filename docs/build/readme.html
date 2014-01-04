@@ -94,12 +94,15 @@
             
   <div class="section" id="readme-md">
 <h1>README.md<a class="headerlink" href="#readme-md" title="Permalink to this headline">¶</a></h1>
+<p>A library built in Python to construct, backtest, analyze, and evaluate
+portfolios and their benchmarks, with comprehensive documentation and
+manual calculations to illustrate all underlying methodologies and
+statistics.</p>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
 <p>This program is free software and is distrubuted under the <a class="reference external" href="http://www.gnu.org/licenses/quick-guide-gplv3.html">GNU General
 Public License version
-3</a>(&#8220;GNU GPL
-v3&#8221;)</p>
+3</a> (&#8220;GNU GPL v3&#8221;)</p>
 <p>© Benjamin M. Gross 2013</p>
 </div>
 <div class="section" id="dependencies">
@@ -153,9 +156,18 @@ docstrings, when you <tt class="docutils literal"><span class="pre">git</span> <
 <div class="highlight-python"><pre>$ cd visualize_wealth/docs/build/</pre>
 </div>
 <p>and find full <tt class="docutils literal"><span class="pre">.html</span></tt> browseable code documentation (that&#8217;s pretty
-fucking beautiful... if I do say so my damn self) with live links,
+f*cking beautiful... if I do say so my damn self) with live links,
 function explanations (that also have live links to their respective
 definition on the web), etc.</p>
+<p>Also I&#8217;ve created an Excel spreadsheet that illustrates almost all of
+the <tt class="docutils literal"><span class="pre">analyze.py</span></tt> portfolio statistic calculations. That spreadsheet
+can found in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">visualize_wealth</span> <span class="o">&gt;</span> <span class="n">tests</span> <span class="o">&gt;</span> <span class="n">test_analyze</span><span class="o">.</span><span class="n">xlsx</span>
+</pre></div>
+</div>
+<p>In fact, the unit testing for the <tt class="docutils literal"><span class="pre">analyze.py</span></tt> portfolio statistics
+tests the python calculations against this same excel spreadsheet, so
+you can really get into the guts of how these things are calculated.</p>
 </div>
 <div class="section" id="portfolio-construction-examples">
 <h2><a class="reference external" href="portfolio-construction-examples">Portfolio Construction Examples</a><a class="headerlink" href="#portfolio-construction-examples" title="Permalink to this headline">¶</a></h2>
@@ -599,10 +611,32 @@ Date
 </div>
 <div class="section" id="todo-list">
 <h2>ToDo List:<a class="headerlink" href="#todo-list" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>occassionally <tt class="docutils literal"><span class="pre">generate_random_asset_path</span></tt> will return with an
-Assertion Error</li>
-<li>Best broad asset classes to determine &#8220;best fit portfolio&#8221;</li>
+<ul>
+<li><p class="first">occassionally <tt class="docutils literal"><span class="pre">generate_random_asset_path</span></tt> will return with an
+Assertion Error</p>
+</li>
+<li><p class="first">Add the following statistics to the <tt class="docutils literal"><span class="pre">analyze.py</span></tt> library:</p>
+</li>
+<li><p class="first">[STRIKEOUT:Absolute Alpha:</p>
+<div class="math">
+\[R_p - R_b\]</div>
+<p>]</p>
+</li>
+<li><p class="first">Treynor ratio:</p>
+<div class="math">
+\[\begin{split}\\textrm{T.R.}\\triangleq \\frac{r_i - r_f}{\\beta{i}}\end{split}\]</div>
+</li>
+<li><p class="first">Information Ratio or Appraisal Ratio:</p>
+<div class="math">
+\[\begin{split}\\textrm{I.R.} \\triangleq \\frac{\\alpha}{\\omega}\end{split}\]</div>
+<p>, or absolute alpha / tracking error. Other formulations include
+Jensens&#8217;s Alpha / Idiosyncratic Vol</p>
+</li>
+<li><p class="first">Up / Down beta (or
+<a class="reference external" href="http://en.wikipedia.org/wiki/Dual-beta">Dual-Beta</a>)</p>
+</li>
+<li><p class="first">Best broad asset classes to determine &#8220;best fit portfolio&#8221;</p>
+</li>
 </ul>
 <table border="1" class="docutils">
 <colgroup>

@@ -428,7 +428,7 @@ internet connectivity is required for the function to work properly</p>
 <tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">format_blotter</tt><big>(</big><em>blotter_file</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#format_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.format_blotter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass in either a location of a blotter file (in <tt class="docutils literal"><span class="pre">.csv</span></tt> format) or blotter 
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with all positive values and return a
-:class:pandas.DataFrame` where Sell values are then negative values</p>
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> where Sell values are then negative values</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -748,6 +748,17 @@ difference is taken such that</div></blockquote>
 <div class="last math">
 \[r_a = (1 + r_p)/(1 + r_b) - 1\]</div>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.alpha">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">alpha</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alpha is defined as simply the geometric difference between the return of a 
+portfolio and a benchmark, less the risk free rate or:</p>
+<div class="math">
+\[\begin{split}\alpha = \frac{(1 + R_p - r_f)}{(1 + R_b - r_f)}  - 1 \\\end{split}\]\[\textrm{where},\]\[\begin{split}    R_p &amp;= \textrm{Portfolio Annualized Return} \\
+    R_b &amp;= \textrm{Benchmark Annualized Return} \\
+    r_f &amp;= \textrm{Risk Free Rate}\end{split}\]</div>
 </dd></dl>
 
 <dl class="function">
@@ -1303,7 +1314,7 @@ r_f &amp;= \textrm{Risk free rate} \\
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.sortino_ratio">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">sortino_ratio</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#sortino_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.sortino_ratio" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">sortino_ratio</tt><big>(</big><em>series</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#sortino_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.sortino_ratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Sortino_ratio">Sortino Ratio</a>, or
 excess returns per unit downside volatility</p>
 <table class="docutils field-list" frame="void" rules="none">

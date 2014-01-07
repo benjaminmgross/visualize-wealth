@@ -43,9 +43,12 @@ def format_blotter(blotter_file):
     blot['Buy/Sell'] = map(str.strip, blot['Buy/Sell'])
 
     #if the Sell values are not negative, make them negative
-    blot.loc[blot['Buy/Sell'] == 'Sell', 'Shares'] = (-blot.loc[blot['Buy/Sell'] 
-                                                       == 'Sell', 'Shares'])
-    
+    if ((blot['Buy/Sell'] == 'Sell') & (blot['Shares'] > 0.)).any():
+        idx = (blot['Buy/Sell'] == 'Sell') & (blot['Shares'] > 0.)
+        sub = blot[idx]
+        sub['Shares'] = -1.*sub['Shares']
+        blot.update(sub)
+
     return blot
 
 def append_price_frame_with_dividends(ticker, start_date, end_date=None):

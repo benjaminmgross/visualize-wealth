@@ -228,7 +228,7 @@ values</p>
 </tr>
 </tbody>
 </table>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">agg_stats_for_single_asset</span> <span class="o">=</span> <span class="n">construct_portfolio</span><span class="o">.</span><span class="n">blotter_to_split_adj_shares</span><span class="p">(</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">agg_stats_for_single_asset</span><span class="o">=</span><span class="n">construct_portfolio</span><span class="o">.</span><span class="n">blotter_to_split_adj_shares</span><span class="p">(</span>
     <span class="n">single_asset_blotter</span><span class="p">,</span> <span class="n">split_adj_price_frame</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -442,12 +442,6 @@ negative</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Current functionality changes sell values to their opposite sign, it 
-should actually check to make sure a &#8220;sell is positive,&#8221; and <strong>only</strong> then 
-change the sign from negative to positive</p>
-</div>
 </dd></dl>
 
 <dl class="function">

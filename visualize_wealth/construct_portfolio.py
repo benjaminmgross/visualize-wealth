@@ -30,15 +30,13 @@ def format_blotter(blotter_file):
         blotter: of type :class:`pandas.DataFrame` where sell values have been made 
         negative
 
-    .. todo::
-
-        Current functionality changes sell values to their opposite sign, it 
-        should actually check to make sure a "sell is positive," and **only** then 
-        change the sign from negative to positive
     """
     if isinstance(blotter_file, str):
         blot = pandas.DataFrame.from_csv(blotter_file)
-
+    elif isinstance(blotter_file, pandas.DataFrame):
+        blot = blotter_file.copy()
+    #map to ascii
+    blot['Buy/Sell'] = map(lambda x: x.encode('ascii', 'ingore'), blot['Buy/Sell'])
     #remove whitespaces
     blot['Buy/Sell'] = map(str.strip, blot['Buy/Sell'])
 
@@ -180,7 +178,7 @@ def blotter_and_price_df_to_cum_shares(blotter_df, price_df):
 
     .. code:: python
 
-        agg_stats_for_single_asset = construct_portfolio.blotter_to_split_adj_shares(
+        agg_stats_for_single_asset=construct_portfolio.blotter_to_split_adj_shares(
             single_asset_blotter, split_adj_price_frame)
 
     .. note:: Calculating Position Value
@@ -740,7 +738,6 @@ def pfp_from_blotter(panel_from_blotter, start_value = 1000.):
 
     cl_to_cl = cl_to_cl_end_val.div(cl_to_cl_beg_val).apply(numpy.log)
     op_to_cl = op_to_cl_end_val.div(op_to_cl_beg_val).apply(numpy.log)
-    pdb.set_trace()
     price_df.loc[index[1]:, 'Close'] = start_value*numpy.exp(cl_to_cl[1:].cumsum())
     price_df['Open'] = price_df['Close'].div(numpy.exp(op_to_cl))
     

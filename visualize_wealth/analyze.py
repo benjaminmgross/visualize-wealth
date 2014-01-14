@@ -720,7 +720,62 @@ def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
         return _risk_adjusted_excess_return(series, benchmark, 
                                             rfr = rfr, freq = freq)
 
+def risk_contribution(mctr_series, weight_series):
+    """
+    Returns the risk contribution for each asset, given the marginal contribution
+    to risk ("mctr") and the ``weight_series`` of asset weights
 
+    :ARGS:
+
+        mctr_series: :class:`pandas.Series` of the marginal risk contribution 
+
+        weight_series: :class:`pandas.Series` of weights of each asset
+
+    :RETURNS:
+
+        a :class:`pandas.Series` of the risk contribution of each asset
+
+    .. note:: Calculating Risk Contribution
+
+        If :math:`RC_i` is the Risk Contribution of asset :math:`i`, and 
+        :math:`\omega_i` is the weight of asset :math:`i`, then
+
+        .. math::
+
+            RC_i = mctr_i \\cdot \\omega_i
+        
+    
+    .. seealso:: :meth:`mctr` for Marginal Contribution to Risk ("mctr") as well as
+        the :ref:`Risk Contribution is Exposure Times Volatility Times Correlation`
+    
+    """
+    return mctr_series.mul(weight_series)
+
+
+def risk_contribution_as_proportion(mctr_series, weight_series):
+    """
+    Returns the proprtion of the risk contribution for each asset, given the 
+    marginal contribution to risk ("mctr") and the ``weight_series`` of asset
+    weights
+
+    :ARGS:
+
+        mctr_series: :class:`pandas.Series` of the marginal risk contribution 
+
+        weight_series: :class:`pandas.Series` of weights of each asset
+
+    :RETURNS:
+
+        a :class:`pandas.Series` of the proportional risk contribution of each asset
+
+    
+    .. seealso:: :meth:`mctr` for Marginal Contribution to Risk ("mctr") as well as
+        the :ref:`Risk Contribution is Exposure Times Volatility Times Correlation`
+    
+    """
+    rc = mctr_series.mul(weight_series)
+    return rc/rc.sum()
+ 
 def rolling_ui(series, window = 21):
     """   
     returns the rolling ulcer index over a series for a given ``window``
@@ -1210,13 +1265,20 @@ def test_funs():
     >>> mctr_prices = f.parse('mctr', index_col = 0)
     >>> mctr_manual = f.parse('mctr_results', index_col = 0)
     >>> cols = ['BSV','VBK','VBR','VOE','VOT']
-    >>> put.assert_series_equal(mctr(mctr_prices[cols],
-    ...  mctr_prices['Portfolio']), mctr_manual.ix['mctr', cols])
+    >>> mctr = mctr(mctr_prices[cols], mctr_prices['Portfolio'])
+    >>> put.assert_series_equal(mctr, mctr_manual.loc['mctr', cols])
+    >>> weights = pandas.Series( [.2, .2, .2, .2, .2], index = cols, 
+    ... name = 'risk_contribution')
+    >>> put.assert_series_equal(risk_contribution(mctr, weights), 
+    ... mctr_manual.loc['risk_contribution', :])
+    >>> put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),
+    ... mctr_manual.loc['risk_contribution_as_proportion'])
     
     These functions are already calculated or aren't calculated in the spreadsheet
     >>> no_calc_list = ['value_at_risk', 'rolling_ui', 'active_returns',
     ... 'test_funs', 'linear_returns', 'log_returns', 'generate_all_metrics',
-    ... 'return_by_year', 'cumulative_turnover', 'mctr']
+    ... 'return_by_year', 'cumulative_turnover', 'mctr', 'risk_contribution',
+    ... 'risk_contribution_as_proportion']
     
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
     ...    'freq': 'daily', 'rfr': 0.0}

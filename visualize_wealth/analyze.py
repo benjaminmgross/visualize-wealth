@@ -502,12 +502,13 @@ def mctr(asset_df, portfolio_df):
 
         .. math::
 
-            MCTR_i = \\sigma_i \\cdot \\rho_{i, P} 
+            MCTR_i = \\sigma_i \\cdot \\rho_{i, P} \\\\
+            
             \\textrm{where, }
 
-            \\sigma_i = \\textrm{volatility of asset } i
-            \\rho_i = \\texrm{correlation of asset } i \\textrm{ with the Portfolio}
-        
+            \\sigma_i &= \\textrm{volatility of asset } i
+            \\rho_i &= \\texrm{correlation of asset } i 
+            \\textrm{ with the Portfolio}
 
     .. note:: Reference for Further Reading
 
@@ -1197,16 +1198,25 @@ def test_funs():
     >>> put.assert_series_equal(man_calcs['Active Return'],
     ...    analyze.active_returns(series = prices['VGTSX'], 
     ...    benchmark = prices['S&P 500']))
+
+    cumulative turnover calculation
     >>> alloc_df = f.parse('alloc_df', index_col = 0)
     >>> alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!='Daily TO']].dropna()
     >>> asset_wt_df = f.parse('asset_wt_df', index_col = 0)
     >>> put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), 
     ... stats.loc['cumulative_turnover', 'S&P 500'])
 
+    marginal contributions to risk and risk contribution calcs
+    >>> mctr_prices = f.parse('mctr', index_col = 0)
+    >>> mctr_manual = f.parse('mctr_results', index_col = 0)
+    >>> cols = ['BSV','VBK','VBR','VOE','VOT']
+    >>> put.assert_series_equal(mctr(mctr_prices[cols],
+    ...  mctr_prices['Portfolio']), mctr_manual.ix['mctr', cols])
+    
     These functions are already calculated or aren't calculated in the spreadsheet
     >>> no_calc_list = ['value_at_risk', 'rolling_ui', 'active_returns',
     ... 'test_funs', 'linear_returns', 'log_returns', 'generate_all_metrics',
-    ... 'return_by_year', 'cumulative_turnover']
+    ... 'return_by_year', 'cumulative_turnover', 'mctr']
     
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
     ...    'freq': 'daily', 'rfr': 0.0}

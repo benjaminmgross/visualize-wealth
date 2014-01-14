@@ -507,15 +507,16 @@ def mctr(asset_df, portfolio_df):
             \\textrm{where, }
 
             \\sigma_i &= \\textrm{volatility of asset } i
+            
             \\rho_i &= \\texrm{correlation of asset } i 
+            
             \\textrm{ with the Portfolio}
 
     .. note:: Reference for Further Reading
 
         MSCI Barra did an extensive (and easy to read) white paper entitled 
-        `Risk Contribution is Exposure Times Volatility Times Correlation 
-         <http://bit.ly/1eGmxJG>`_ that explicitly details the risk exposure 
-         calculation.
+        `Risk Contribution <http://bit.ly/1eGmxJG>`_ that explicitly details 
+        the risk exposure calculation.
     """
     asset_rets = log_returns(asset_df)
     port_rets = log_returns(portfolio_df)
@@ -746,7 +747,7 @@ def risk_contribution(mctr_series, weight_series):
         
     
     .. seealso:: :meth:`mctr` for Marginal Contribution to Risk ("mctr") as well as
-        the :ref:`Risk Contribution is Exposure Times Volatility Times Correlation`
+        the `Risk Contribution <http://bit.ly/1eGmxJG>`_ paper from MSCI Barra
     
     """
     return mctr_series.mul(weight_series)
@@ -770,7 +771,7 @@ def risk_contribution_as_proportion(mctr_series, weight_series):
 
     
     .. seealso:: :meth:`mctr` for Marginal Contribution to Risk ("mctr") as well as
-        the :ref:`Risk Contribution is Exposure Times Volatility Times Correlation`
+        the `Risk Contribution <http://bit.ly/1eGmxJG>`_ paper from MSCI Barra
     
     """
     rc = mctr_series.mul(weight_series)

@@ -864,6 +864,43 @@ def tracking_error(series, benchmark, freq = 'daily'):
     else:
         return _tracking_error(series, benchmark, freq = freq)
 
+def cumulative_turnover(alloc_df, asset_wt_df):
+    """
+    Provided an allocation frame (i.e. the weights to which the portfolio was 
+    rebalanced), and the historical asset weights,  return the cumulative turnover,
+    where turnover is defined below.  The first period is excluded of the
+    ``alloc_df`` is excluded as that represents the initial investment
+
+    :ARGS:
+
+        alloc_df: :class:`pandas.DataFrame` of the the weighting allocation that was
+        provided to construct the portfolio
+
+        asset_wt_df: :class:`pandas.DataFrame` of the actual historical weights of
+        each asset
+
+    :RETURNS:
+
+        cumulative turnover
+
+    .. note:: Calcluating Turnover
+
+    Let :math:`\\tau_j = `"Single Period period turnover for period :math:`j`,
+    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is
+    represented by :math:`\\omega_i`.
+    
+    Then the single period :math:`j` turnover for all assets :math:`1,..,n` can be
+     calculated as:
+    
+    .. math::
+
+        \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}
+        
+    """
+    ind = alloc_df.index[1:]
+    return asset_wt_df.iloc[ind, :].sub(
+        asset_wt_df.shift(-1).iloc[ind, :]).abs().sum(axis = 1).sum()
+    
 def ulcer_index(series):
     """
     Returns the ulcer index of  the series, which is defined as the squared drawdowns

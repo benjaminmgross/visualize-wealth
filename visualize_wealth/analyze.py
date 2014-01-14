@@ -176,6 +176,43 @@ def beta(series, benchmark):
     else:
         return _beta(series, benchmark)
 
+def cumulative_turnover(alloc_df, asset_wt_df):
+    """
+    Provided an allocation frame (i.e. the weights to which the portfolio was 
+    rebalanced), and the historical asset weights,  return the cumulative turnover,
+    where turnover is defined below.  The first period is excluded of the
+    ``alloc_df`` is excluded as that represents the initial investment
+
+    :ARGS:
+
+        alloc_df: :class:`pandas.DataFrame` of the the weighting allocation that was
+        provided to construct the portfolio
+
+        asset_wt_df: :class:`pandas.DataFrame` of the actual historical weights of
+        each asset
+
+    :RETURNS:
+
+        cumulative turnover
+
+    .. note:: Calcluating Turnover
+
+    Let :math:`\\tau_j = `"Single Period period turnover for period :math:`j`,
+    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is
+    represented by :math:`\\omega_i`.
+    
+    Then the single period :math:`j` turnover for all assets :math:`1,..,n` can be
+     calculated as:
+    
+    .. math::
+
+        \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}
+        
+    """
+    ind = alloc_df.index[1:]
+    return asset_wt_df.loc[ind, :].sub(
+        asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
+
 def downcapture(series, benchmark):
     """
     Returns the proportion of ``series``'s cumulative negative returns to
@@ -414,7 +451,7 @@ def log_returns(series):
         return series.apply(_log_returns)
     else:
         return _log_returns(series)
-
+    
 def max_drawdown(series):
     """
     Returns the maximum drawdown, or the maximum peak to trough linear distance, as 
@@ -440,6 +477,48 @@ def max_drawdown(series):
         return series.apply(_max_drawdown)
     else:
         return _max_drawdown(series)
+
+def mctr(asset_df, portfolio_df):
+    """
+    Return a :class:`pandas.Series` of the marginal contribution for risk ("mctr") 
+    for each of the assets that construct ``portfolio_df``
+
+    :ARGS:
+
+        asset_df: :class:`pandas.DataFrame` of asset prices
+
+        portfolio_df: :class:`pandas.Series` of the portfolio value that is 
+        consructed by ``asset_df``
+
+    :RETURNS:
+
+        a :class:`pandas.Series` of each of the asset's marginal contribution to
+        risk
+
+    .. note:: Calculating Marginal Contribution to Risk
+
+        If we define, :math:`MCR_i` to be the Marginal Contribution to Risk for 
+        asset :math:`i`, then,
+
+        .. math::
+
+            MCTR_i = \\sigma_i \\cdot \\rho_{i, P} 
+            \\textrm{where, }
+
+            \\sigma_i = \\textrm{volatility of asset } i
+            \\rho_i = \\texrm{correlation of asset } i \\textrm{ with the Portfolio}
+        
+
+    .. note:: Reference for Further Reading
+
+        MSCI Barra did an extensive (and easy to read) white paper entitled 
+        `Risk Contribution is Exposure Times Volatility Times Correlation 
+         <http://bit.ly/1eGmxJG>`_ that explicitly details the risk exposure 
+         calculation.
+    """
+    asset_rets = log_returns(asset_df)
+    port_rets = log_returns(portfolio_df)
+    return asset_rets.corrwith(port_rets).mul(asset_rets.std())
 
 def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):
     """
@@ -864,42 +943,6 @@ def tracking_error(series, benchmark, freq = 'daily'):
     else:
         return _tracking_error(series, benchmark, freq = freq)
 
-def cumulative_turnover(alloc_df, asset_wt_df):
-    """
-    Provided an allocation frame (i.e. the weights to which the portfolio was 
-    rebalanced), and the historical asset weights,  return the cumulative turnover,
-    where turnover is defined below.  The first period is excluded of the
-    ``alloc_df`` is excluded as that represents the initial investment
-
-    :ARGS:
-
-        alloc_df: :class:`pandas.DataFrame` of the the weighting allocation that was
-        provided to construct the portfolio
-
-        asset_wt_df: :class:`pandas.DataFrame` of the actual historical weights of
-        each asset
-
-    :RETURNS:
-
-        cumulative turnover
-
-    .. note:: Calcluating Turnover
-
-    Let :math:`\\tau_j = `"Single Period period turnover for period :math:`j`,
-    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is
-    represented by :math:`\\omega_i`.
-    
-    Then the single period :math:`j` turnover for all assets :math:`1,..,n` can be
-     calculated as:
-    
-    .. math::
-
-        \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}
-        
-    """
-    ind = alloc_df.index[1:]
-    return asset_wt_df.loc[ind, :].sub(
-        asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
     
 def ulcer_index(series):
     """

@@ -898,8 +898,8 @@ def cumulative_turnover(alloc_df, asset_wt_df):
         
     """
     ind = alloc_df.index[1:]
-    return asset_wt_df.iloc[ind, :].sub(
-        asset_wt_df.shift(-1).iloc[ind, :]).abs().sum(axis = 1).sum()
+    return asset_wt_df.loc[ind, :].sub(
+        asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
     
 def ulcer_index(series):
     """
@@ -1154,9 +1154,16 @@ def test_funs():
     >>> put.assert_series_equal(man_calcs['Active Return'],
     ...    analyze.active_returns(series = prices['VGTSX'], 
     ...    benchmark = prices['S&P 500']))
+    >>> alloc_df = f.parse('alloc_df', index_col = 0)
+    >>> alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!='Daily TO']].dropna()
+    >>> asset_wt_df = f.parse('asset_wt_df', index_col = 0)
+    >>> put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), 
+    ... stats.loc['cumulative_turnover', 'S&P 500'])
 
-    >>> no_calc_list = ['value_at_risk', 'rolling_ui', 'active_returns', 'test_funs',
-    ...   'linear_returns', 'log_returns', 'generate_all_metrics', 'return_by_year']
+    These functions are already calculated or aren't calculated in the spreadsheet
+    >>> no_calc_list = ['value_at_risk', 'rolling_ui', 'active_returns',
+    ... 'test_funs', 'linear_returns', 'log_returns', 'generate_all_metrics',
+    ... 'return_by_year', 'cumulative_turnover']
     
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
     ...    'freq': 'daily', 'rfr': 0.0}

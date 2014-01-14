@@ -844,6 +844,43 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.cumulative_turnover">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cumulative_turnover</tt><big>(</big><em>alloc_df</em>, <em>asset_wt_df</em><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.cumulative_turnover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provided an allocation frame (i.e. the weights to which the portfolio was 
+rebalanced), and the historical asset weights,  return the cumulative turnover,
+where turnover is defined below.  The first period is excluded of the
+<tt class="docutils literal"><span class="pre">alloc_df</span></tt> is excluded as that represents the initial investment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">alloc_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the the weighting allocation that was
+provided to construct the portfolio</p>
+<p>asset_wt_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the actual historical weights of
+each asset</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">cumulative turnover</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Calcluating Turnover</p>
+</div>
+<p>Let <span class="math">\(\tau_j = `&quot;Single Period period turnover for period :math:`j\)</span>,
+and assets <span class="math">\(i = 1,:2,:...:,n\)</span>, each whose respective portfolio weight is
+represented by <span class="math">\(\omega_i\)</span>.</p>
+<dl class="docutils">
+<dt>Then the single period <span class="math">\(j\)</span> turnover for all assets <span class="math">\(1,..,n\)</span> can be</dt>
+<dd>calculated as:</dd>
+</dl>
+<div class="math">
+\[\tau_j = \frac{\sum_{i=1}^n|\omega_i - \omega_{i+1}|  }{2}\]</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.downcapture">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">downcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#downcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.downcapture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the proportion of <tt class="docutils literal"><span class="pre">series</span></tt>&#8216;s cumulative negative returns to
@@ -1081,6 +1118,43 @@ a positive drawdown value</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.mctr">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">mctr</tt><big>(</big><em>asset_df</em>, <em>portfolio_df</em><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.mctr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal contribution for risk (&#8220;mctr&#8221;) 
+for each of the assets that construct <tt class="docutils literal"><span class="pre">portfolio_df</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">asset_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset prices</p>
+<p>portfolio_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the portfolio value that is 
+consructed by <tt class="docutils literal"><span class="pre">asset_df</span></tt></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of each of the asset&#8217;s marginal contribution to
+risk</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Calculating Marginal Contribution to Risk</p>
+<p>If we define, <span class="math">\(MCR_i\)</span> to be the Marginal Contribution to Risk for 
+asset <span class="math">\(i\)</span>, then,</p>
+<div class="last math">
+\[\begin{split}MCTR_i = \sigma_i \cdot \rho_{i, P} \\\end{split}\]\[\textrm{where, }\]\[\begin{split}\sigma_i &amp;= \textrm{volatility of asset } i\end{split}\]\[\begin{split}\rho_i &amp;= \texrm{correlation of asset } i \end{split}\]\[\textrm{ with the Portfolio}\]</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Reference for Further Reading</p>
+<p class="last">MSCI Barra did an extensive (and easy to read) white paper entitled 
+<a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> that explicitly details 
+the risk exposure calculation.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.mean_absolute_tracking_error">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">mean_absolute_tracking_error</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#mean_absolute_tracking_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.mean_absolute_tracking_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns Carol Alexander&#8217;s calculation for Mean Absolute Tracking Error
@@ -1251,6 +1325,65 @@ r_f &amp;= \textrm{Risk free rate}\end{split}\]</div>
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.risk_contribution">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_contribution</tt><big>(</big><em>mctr_series</em>, <em>weight_series</em><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.risk_contribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the risk contribution for each asset, given the marginal contribution
+to risk (&#8220;mctr&#8221;) and the <tt class="docutils literal"><span class="pre">weight_series</span></tt> of asset weights</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">mctr_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal risk contribution</p>
+<p>weight_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights of each asset</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the risk contribution of each asset</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Calculating Risk Contribution</p>
+<p>If <span class="math">\(RC_i\)</span> is the Risk Contribution of asset <span class="math">\(i\)</span>, and 
+<span class="math">\(\omega_i\)</span> is the weight of asset <span class="math">\(i\)</span>, then</p>
+<div class="last math">
+\[RC_i = mctr_i \cdot \omega_i\]</div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">mctr()</span></tt> for Marginal Contribution to Risk (&#8220;mctr&#8221;) as well as
+the <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> paper from MSCI Barra</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.risk_contribution_as_proportion">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_contribution_as_proportion</tt><big>(</big><em>mctr_series</em>, <em>weight_series</em><big>)</big><a class="headerlink" href="#visualize_wealth.analyze.risk_contribution_as_proportion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the proprtion of the risk contribution for each asset, given the 
+marginal contribution to risk (&#8220;mctr&#8221;) and the <tt class="docutils literal"><span class="pre">weight_series</span></tt> of asset
+weights</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">mctr_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal risk contribution</p>
+<p>weight_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights of each asset</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the proportional risk contribution of each asset</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">mctr()</span></tt> for Marginal Contribution to Risk (&#8220;mctr&#8221;) as well as
+the <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> paper from MSCI Barra</p>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.rolling_ui">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">rolling_ui</tt><big>(</big><em>series</em>, <em>window=21</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#rolling_ui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.rolling_ui" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the rolling ulcer index over a series for a given <tt class="docutils literal"><span class="pre">window</span></tt>
@@ -1414,10 +1547,29 @@ to the benchmark</p>
 <span class="gp">... </span>   <span class="n">benchmark</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">no_calc_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;value_at_risk&#39;</span><span class="p">,</span> <span class="s">&#39;rolling_ui&#39;</span><span class="p">,</span> <span class="s">&#39;active_returns&#39;</span><span class="p">,</span> <span class="s">&#39;test_funs&#39;</span><span class="p">,</span>
-<span class="gp">... </span>  <span class="s">&#39;linear_returns&#39;</span><span class="p">,</span> <span class="s">&#39;log_returns&#39;</span><span class="p">,</span> <span class="s">&#39;generate_all_metrics&#39;</span><span class="p">,</span> <span class="s">&#39;return_by_year&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
+<p>cumulative turnover calculation
+&gt;&gt;&gt; alloc_df = f.parse(&#8216;alloc_df&#8217;, index_col = 0)
+&gt;&gt;&gt; alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!=&#8217;Daily TO&#8217;]].dropna()
+&gt;&gt;&gt; asset_wt_df = f.parse(&#8216;asset_wt_df&#8217;, index_col = 0)
+&gt;&gt;&gt; put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), 
+... stats.loc[&#8216;cumulative_turnover&#8217;, &#8216;S&amp;P 500&#8217;])</p>
+<p>marginal contributions to risk and risk contribution calcs
+&gt;&gt;&gt; mctr_prices = f.parse(&#8216;mctr&#8217;, index_col = 0)
+&gt;&gt;&gt; mctr_manual = f.parse(&#8216;mctr_results&#8217;, index_col = 0)
+&gt;&gt;&gt; cols = [&#8216;BSV&#8217;,&#8217;VBK&#8217;,&#8217;VBR&#8217;,&#8217;VOE&#8217;,&#8217;VOT&#8217;]
+&gt;&gt;&gt; mctr = mctr(mctr_prices[cols], mctr_prices[&#8216;Portfolio&#8217;])
+&gt;&gt;&gt; put.assert_series_equal(mctr, mctr_manual.loc[&#8216;mctr&#8217;, cols])
+&gt;&gt;&gt; weights = pandas.Series( [.2, .2, .2, .2, .2], index = cols, 
+... name = &#8216;risk_contribution&#8217;)
+&gt;&gt;&gt; put.assert_series_equal(risk_contribution(mctr, weights), 
+... mctr_manual.loc[&#8216;risk_contribution&#8217;, :])
+&gt;&gt;&gt; put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),
+... mctr_manual.loc[&#8216;risk_contribution_as_proportion&#8217;])</p>
+<p>These functions are already calculated or aren&#8217;t calculated in the spreadsheet
+&gt;&gt;&gt; no_calc_list = [&#8216;value_at_risk&#8217;, &#8216;rolling_ui&#8217;, &#8216;active_returns&#8217;,
+... &#8216;test_funs&#8217;, &#8216;linear_returns&#8217;, &#8216;log_returns&#8217;, &#8216;generate_all_metrics&#8217;,
+... &#8216;return_by_year&#8217;, &#8216;cumulative_turnover&#8217;, &#8216;mctr&#8217;, &#8216;risk_contribution&#8217;,
+... &#8216;risk_contribution_as_proportion&#8217;]</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;series&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> <span class="s">&#39;benchmark&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span> 
 <span class="gp">... </span>   <span class="s">&#39;freq&#39;</span><span class="p">:</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="s">&#39;rfr&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">funs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">analyze</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">)</span>
@@ -1592,7 +1744,7 @@ $ pandoc README.md -f markdown -t rst -o docs/source/readme.rst</pre>
 </div>
 </div>
 <div class="section" id="build-sphinx-documentation">
-<span id="id9"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
+<span id="id11"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-python"><pre>#rebuild the package
 $ cd visualize_wealth
 $ python setup.py install
@@ -1602,7 +1754,7 @@ $ sphinx-build -b html docs/source/ docs/build/</pre>
 </div>
 </div>
 <div class="section" id="sphinx-customizations-in-conf-py">
-<span id="id10"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
+<span id="id12"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
 <p>Current customizations I use in order to make the docs look like they
 currently do</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="c">#use the sphinxdoc theme</span>

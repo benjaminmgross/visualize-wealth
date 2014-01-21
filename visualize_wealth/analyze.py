@@ -848,7 +848,7 @@ def sharpe_ratio(series, rfr = 0., freq = 'daily'):
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _sharpe_ratio(x, rfr = rfr, freq = freq))
     else:
-        return _sharpe_ratio(series, rfr = 0., freq = freq)
+        return _sharpe_ratio(series, rfr = rfr, freq = freq)
 
 
 def sortino_ratio(series, freq = 'daily', rfr = 0.0):

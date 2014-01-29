@@ -6,9 +6,11 @@
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 
 """
+import collections
 import numpy
 import pandas
-import collections
+import scipy
+
 
 def active_returns(series, benchmark):
     """
@@ -175,6 +177,122 @@ def beta(series, benchmark):
         return benchmark.apply(lambda x: _beta(series, x))
     else:
         return _beta(series, benchmark)
+
+def cvar_cf(series, p = .01):
+    """
+    CVaR (Expected Shortfall), using the `Cornish Fisher Approximation 
+    <http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1997178>`_
+
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of the
+        asset prices
+
+        p: :class:`float` of the desired percentile, defaults to .01 or the 1% CVaR
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of the CVaR
+    
+    """
+    def _cvar_cf(series, p):
+        pdf = scipy.stats.norm.pdf
+        series_rets = log_returns(series)
+        mu, sigma = series_rets.mean(), series_rets.std()
+        skew, kurt = series_rets.skew(), series_rets.kurtosis() - 3.
+        v = lambda a: scipy.stats.distributions.norm.ppf(1 - a)
+        y = lambda a: 1/a * pdf(v(a))
+
+        Y = y(p)*(1-v(p)*skew/6+(1-2*v(p)**2)*skew**2/36+(-1+v(p)**2)*kurt/24)
+        return mu + sigma * Y
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _cvar_cf(x, p = p))
+    else:
+        return _cvar_cf(series, p = p)
+
+def cvar_norm(series, p = .01):
+    """
+    CVaR (Conditional Value at Risk), fitting the normal distribution to the
+    historical time series using
+
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of the
+        asset prices
+        
+        p: :class:`float` of the desired percentile, defaults to .01 or the 1% CVaR
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of the CVaR
+    """
+    def _cvar_norm(series):
+        pdf = scipy.stats.norm.pdf
+        series_rets = log_returns(series)
+        mu, sigma = series_rets.mean(), series_rets.std()
+        var = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
+        return mu + sigma/p * pdf(var(p))
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _cvar_norm(x, p = p))
+    else:
+        return _cvar_norm(series, p = p)
+
+def cvar_median_np(series, p):
+    """
+    Non-parametric CVaR or Expected Shortfall, solely based on the median  of
+    historical values (because the median will provide a more unbiased estimate)
+
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of the
+        asset prices
+
+        p: :class:`float` of the desired percentile, defaults to .01 or the 1% CVaR
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of the CVaR
+    
+    """
+    def _cvar_median_np(series, p):
+        series_rets = linear_returns(series)
+        var = numpy.percentile(series_rets, p*100.)
+        return  series_rets[series_rets <= var].median()
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _cvar_mu_np(x, p = p))
+    else:
+        return _cvar_median_np(series, p = p)
+
+def cvar_mu_np(series, p):
+    """
+    Non-parametric CVaR or Expected Shortfall, solely based on the mean  of
+    historical values
+
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of the
+        asset prices
+
+        p: :class:`float` of the desired percentile, defaults to .01 or the 1% CVaR
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of the CVaR
+    
+    """
+    def _cvar_mu_np(series, p):
+        losses = (series.div(price_series.shift(1)) - 1)
+        var = numpy.percentile(losses, p*100.)
+        return  losses[losses <= var].mean()
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _cvar_mu_np(x, p = p))
+    else:
+        return _cvar_mu_np(series, p = p)
+
 
 def cumulative_turnover(alloc_df, asset_wt_df):
     """
@@ -1086,11 +1204,34 @@ def upside_deviation(series, freq = 'daily'):
     else:
         return _upside_deviation(series, freq)
 
-def value_at_risk(series, freq = 'weekly', percentile = 5.):
+def var_norm(price_series, p):
+    """
+    VaR (Value at Risk), fitting the normal distribution to the historical
+    time series
+    """
+    log_returns = price_series.apply(numpy.log).diff()
+    mu, sigma = log_returns.mean(), log_returns.std()
+    var = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
+    return mu + sigma * var(p) 
+
+
+def var_cf(price_series, p):
+    """
+    VaR (Value at Risk), using the Cornish Fisher Approximation
+    """
+    log_returns = price_series.apply(numpy.log).diff()
+    mu, sigma = log_returns.mean(), log_returns.std()
+    skew, kurt = log_returns.skew(), log_returns.kurtosis() - 3.
+    var = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
+    V = var(p)+(1-var(p)**2)*skew/6+(5*var(p)-2*var(p)**3)*skew**2/36 + (
+        var(p)**3-3*var(p))*kurt/24
+    return mu + sigma * V
+
+def var_np(series, p = .01):
     """    
     Return the non-parametric VaR (non-parametric estimate) for a given percentile,
-    i.e. the loss for which there is less than a ``percentile`` of exceeding in a 
-    period `freq`.
+    i.e. the loss for which there is less than a ``percentile`` chance of exceeding
+    in a period of `freq`.
 
     :ARGS:
     
@@ -1113,8 +1254,8 @@ def value_at_risk(series, freq = 'weekly', percentile = 5.):
         0.1)
     
     """
-    def _value_at_risk(series, freq = 'weekly', percentile = 5.):
-        ind = _bool_interval_index(series.index, interval = freq)
+    def _var(series, freq = 'weekly', percentile = 5.):
+        
         series_rets = log_returns(series[ind])
         
         #transform to linear returns, and loss is always reported as positive

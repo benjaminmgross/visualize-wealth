@@ -9,7 +9,7 @@
 import collections
 import numpy
 import pandas
-import scipy
+import scipy.stats
 
 
 def active_returns(series, benchmark):
@@ -1204,16 +1204,66 @@ def upside_deviation(series, freq = 'daily'):
     else:
         return _upside_deviation(series, freq)
 
-def var_norm(price_series, p):
+def var_norm(series, p):
     """
-    VaR (Value at Risk), fitting the normal distribution to the historical
-    time series
-    """
-    log_returns = price_series.apply(numpy.log).diff()
-    mu, sigma = log_returns.mean(), log_returns.std()
-    var = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
-    return mu + sigma * var(p) 
+    Value at Risk ("VaR") of the $$p = \\alpha$$ quantile, defines the loss, such
+    that there is an $$\\alpha$$ percent chance of a loss, greater than or equal to
+    $$\\textrm{VaR}_\\alpha$$. :meth:`var_norm` fits a normal distribution to the
+    log returns of the series, and then estimates the $$\\textrm{VaR}_\\alpha$$
 
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of prices
+
+        p: :class:`float` of the $$\\alpha$$ quantile for which to estimate VaR
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of VaR
+
+    .. note:: Derivation of Value at Risk
+
+        .. math::
+
+            Let Y \sim N(\mu, \sigma^2), we choose y_\alpha such that \\
+
+            \mathbb{P}(Y < y_\alpha) = \alpha \\
+
+            Then, \\
+
+            \mathbb{P}(Y < y_\alpha) &= \alpha \\
+            
+            \Rightarrow \mathbb{P}(\frac{Y - \mu}{\sigma} < \frac{y_\alpha -
+            \mu}{\sigma}) &= \alpha \\
+
+            \Rightarrow \mathbb{P}(Z < \frac{y_\alpha - \mu}{\sigma} &= \alpha \\
+
+            \Rightarrow \Phi(\frac{y_\alpha - \mu}{\sigma} ) &= \alpha, where \\
+
+            \Phi(.) is the standard normal cdf operator
+
+            Then using the inverse of the function \Phi, we have:
+
+            \Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} &= \Phi^{-1}(\alpha) \\
+
+            \Rightarrow \Phi^{-1}(\alpha)\cdot\sigma + \mu = y_\alpha, but
+            y_\alpha is \bold{negative} and VaR is always positive, so,
+
+            VaR_\alpha = -y_\alpha &= -\Phi{-1}(\alpha)\cdot\sigma - \mu \\
+            &= \Phi{-1}(1 - \alpha) - \mu
+
+    .. seealso:: :meth:var_cf :meth:var_np
+             
+    """
+    def _var_norm(series, p):
+        series_rets = log_returns(series)
+        mu, sigma = series_rets.mean(), series_rets.std()
+        v = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
+        return sigma * v(p) - mu
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _var_norm(x, p = p))
+    else:
+        return _var_norm(series, p = p)
 
 def var_cf(price_series, p):
     """
@@ -1222,10 +1272,10 @@ def var_cf(price_series, p):
     log_returns = price_series.apply(numpy.log).diff()
     mu, sigma = log_returns.mean(), log_returns.std()
     skew, kurt = log_returns.skew(), log_returns.kurtosis() - 3.
-    var = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
-    V = var(p)+(1-var(p)**2)*skew/6+(5*var(p)-2*var(p)**3)*skew**2/36 + (
-        var(p)**3-3*var(p))*kurt/24
-    return mu + sigma * V
+    v = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
+    V = v(p)+(1-v(p)**2)*skew/6+(5*v(p)-2*v(p)**3)*skew**2/36 + (
+        v(p)**3-3*v(p))*kurt/24
+    return sigma * V - mu
 
 def var_np(series, p = .01):
     """    
@@ -1254,17 +1304,16 @@ def var_np(series, p = .01):
         0.1)
     
     """
-    def _var(series, freq = 'weekly', percentile = 5.):
+    def _var_np(series, p = .01):
         
-        series_rets = log_returns(series[ind])
+        series_rets = linear_returns(series)
         
         #transform to linear returns, and loss is always reported as positive
-        return -1 * (numpy.exp(numpy.percentile(series_rets, percentile))-1)
+        return -1 * (numpy.percentile(series_rets, p*100.))
     if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _value_at_risk(x, freq = freq,
-                                                     percentile = percentile))
+        return series.apply(lambda x: _value_at_risk(x, p = p))
     else:
-        return _value_at_risk(series, freq = freq, percentile = percentile)
+        return _value_at_risk(series, p = p)
 
 
 def return_by_year(series):

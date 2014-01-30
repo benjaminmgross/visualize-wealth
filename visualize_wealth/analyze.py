@@ -204,7 +204,7 @@ def cvar_cf(series, p = .01):
         y = lambda a: 1/a * pdf(v(a))
 
         Y = y(p)*(1-v(p)*skew/6+(1-2*v(p)**2)*skew**2/36+(-1+v(p)**2)*kurt/24)
-        return mu + sigma * Y
+        return  sigma * Y - mu
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_cf(x, p = p))
@@ -227,12 +227,12 @@ def cvar_norm(series, p = .01):
 
         :class:`float` or :class:`pandas.Series` of the CVaR
     """
-    def _cvar_norm(series):
+    def _cvar_norm(series, p):
         pdf = scipy.stats.norm.pdf
         series_rets = log_returns(series)
         mu, sigma = series_rets.mean(), series_rets.std()
         var = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
-        return mu + sigma/p * pdf(var(p))
+        return sigma/p * pdf(var(p)) - mu
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_norm(x, p = p))
@@ -1204,7 +1204,7 @@ def upside_deviation(series, freq = 'daily'):
     else:
         return _upside_deviation(series, freq)
 
-def var_norm(series, p):
+def var_norm(series, p = .01):
     """
     Value at Risk ("VaR") of the $$p = \\alpha$$ quantile, defines the loss, such
     that there is an $$\\alpha$$ percent chance of a loss, greater than or equal to
@@ -1265,13 +1265,26 @@ def var_norm(series, p):
     else:
         return _var_norm(series, p = p)
 
-def var_cf(price_series, p):
+def var_cf(series, p = .01):
     """
     VaR (Value at Risk), using the Cornish Fisher Approximation
+
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of prices
+
+        p: :class:`float` of the $$\\alpha$$ percentile
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of the VaR, where skew and
+        kurtosis are used to adjust the tail density estimation (using the
+        Cornish Fisher Approximation)
+    
     """
-    log_returns = price_series.apply(numpy.log).diff()
-    mu, sigma = log_returns.mean(), log_returns.std()
-    skew, kurt = log_returns.skew(), log_returns.kurtosis() - 3.
+    series_rets = log_returns(series)
+    mu, sigma = series_rets.mean(), series_rets.std()
+    skew, kurt = series_rets.skew(), series_rets.kurtosis() - 3.
     v = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
     V = v(p)+(1-v(p)**2)*skew/6+(5*v(p)-2*v(p)**3)*skew**2/36 + (
         v(p)**3-3*v(p))*kurt/24

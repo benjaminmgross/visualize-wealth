@@ -271,7 +271,7 @@
         <span class="n">y</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="n">a</span> <span class="o">*</span> <span class="n">pdf</span><span class="p">(</span><span class="n">v</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
 
         <span class="n">Y</span> <span class="o">=</span> <span class="n">y</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">skew</span><span class="o">/</span><span class="mi">6</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">skew</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">36</span><span class="o">+</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">kurt</span><span class="o">/</span><span class="mi">24</span><span class="p">)</span>
-        <span class="k">return</span>  <span class="n">sigma</span> <span class="o">*</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">mu</span>
+        <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">Y</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_cvar_cf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">))</span>
@@ -294,12 +294,12 @@
 
 <span class="sd">        :class:`float` or :class:`pandas.Series` of the CVaR</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">_cvar_norm</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cvar_norm</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
         <span class="n">pdf</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span>
         <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
         <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
         <span class="n">var</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">alpha</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sigma</span><span class="o">/</span><span class="n">p</span> <span class="o">*</span> <span class="n">pdf</span><span class="p">(</span><span class="n">var</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">-</span> <span class="n">mu</span>
+        <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">sigma</span><span class="o">/</span><span class="n">p</span> <span class="o">*</span> <span class="n">pdf</span><span class="p">(</span><span class="n">var</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_cvar_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">))</span>
@@ -1271,44 +1271,18 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_upside_deviation</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="var_cf"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.var_cf">[docs]</a><span class="k">def</span> <span class="nf">var_cf</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="o">.</span><span class="mo">01</span><span class="p">):</span>
+<div class="viewcode-block" id="var_norm"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.var_norm">[docs]</a><span class="k">def</span> <span class="nf">var_norm</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    VaR (Value at Risk), using the Cornish Fisher Approximation</span>
+<span class="sd">    Value at Risk (&quot;VaR&quot;) of the $$p = \\alpha$$ quantile, defines the loss, such</span>
+<span class="sd">    that there is an $$\\alpha$$ percent chance of a loss, greater than or equal to</span>
+<span class="sd">    $$\\textrm{VaR}_\\alpha$$. :meth:`var_norm` fits a normal distribution to the</span>
+<span class="sd">    log returns of the series, and then estimates the $$\\textrm{VaR}_\\alpha$$</span>
 
 <span class="sd">    :ARGS:</span>
 
 <span class="sd">        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of prices</span>
 
-<span class="sd">        p: :class:`float` of the :math:`\\alpha` percentile</span>
-
-<span class="sd">    :RETURNS:</span>
-
-<span class="sd">        :class:`float` or :class:`pandas.Series` of the VaR, where skew and</span>
-<span class="sd">        kurtosis are used to adjust the tail density estimation (using the</span>
-<span class="sd">        Cornish Fisher Approximation)</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
-    <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-    <span class="n">skew</span><span class="p">,</span> <span class="n">kurt</span> <span class="o">=</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">skew</span><span class="p">(),</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">()</span> <span class="o">-</span> <span class="mf">3.</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">alpha</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">skew</span><span class="o">/</span><span class="mi">6</span><span class="o">+</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">skew</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">36</span> <span class="o">+</span> <span class="p">(</span>
-        <span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">))</span><span class="o">*</span><span class="n">kurt</span><span class="o">/</span><span class="mi">24</span>
-    <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">V</span> <span class="o">-</span> <span class="n">mu</span>
-</div>
-<div class="viewcode-block" id="var_norm"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.var_norm">[docs]</a><span class="k">def</span> <span class="nf">var_norm</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="o">.</span><span class="mo">01</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Value at Risk (&quot;VaR&quot;) of the :math:`p = \\alpha` quantile, defines the loss,</span>
-<span class="sd">    such that there is an :math:`\\alpha` percent chance of a loss, greater than or</span>
-<span class="sd">    equal to :math:`\\textrm{VaR}_\\alpha`. :meth:`var_norm` fits a normal</span>
-<span class="sd">    distribution to the log returns of the series, and then estimates the</span>
-<span class="sd">    :math:`\\textrm{VaR}_\\alpha`</span>
-
-<span class="sd">    :ARGS:</span>
-
-<span class="sd">        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of prices</span>
-
-<span class="sd">        p: :class:`float` of the :math:`\\alpha` quantile for which to estimate VaR</span>
+<span class="sd">        p: :class:`float` of the $$\\alpha$$ quantile for which to estimate VaR</span>
 
 <span class="sd">    :RETURNS:</span>
 
@@ -1318,32 +1292,32 @@
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            Let Y \\sim N(\\mu, \\sigma^2) \\textrm{, we choose} y_\\alpha</span>
-<span class="sd">            \\textrm{ such that} \\\\</span>
-<span class="sd">            \\mathbb{P}(Y &lt; y_\\alpha) = \\alpha,</span>
-<span class="sd">            \\textrm{Then,} \\\\</span>
+<span class="sd">            Let Y \sim N(\mu, \sigma^2), we choose y_\alpha such that \\</span>
 
-<span class="sd">            \\mathbb{P}(Y &lt; y_\\alpha) &amp;= \\alpha \\\\</span>
-<span class="sd">            \\Rightarrow \\mathbb{P}(\\frac{Y - \\mu}{\\sigma} &lt; \\frac{y_\\alpha -</span>
-<span class="sd">            \\mu}{\\sigma}) &amp;= \\alpha \\\\</span>
-<span class="sd">            \\Rightarrow \\mathbb{P}(Z &lt; \\frac{y_\\alpha - \\mu}{\sigma} &amp;= \\alpha</span>
-<span class="sd">            \\\\</span>
-<span class="sd">            \\Rightarrow \\Phi(\\frac{y_\\alpha - \\mu}{\\sigma} ) &amp;= \\alpha,</span>
-<span class="sd">            \\textrm{ where}</span>
-<span class="sd">            \\\\</span>
-<span class="sd">            \\Phi(.) \\textrm{ is the standard normal cdf operator.</span>
-<span class="sd">            Then using the inverse of the function} \\Phi,</span>
-<span class="sd">            \\textrm{ we have:} \\\\</span>
+<span class="sd">            \mathbb{P}(Y &lt; y_\alpha) = \alpha \\</span>
 
-<span class="sd">            \\Phi^{-1}( \\Phi(\\frac{y_\\alpha - \\mu}{\\sigma} &amp;=</span>
-<span class="sd">            \\Phi^{-1}(\\alpha) \\\\</span>
-<span class="sd">            \\Rightarrow \\Phi^{-1}(\\alpha)\\cdot\\sigma + \\mu = y_\\alpha</span>
-<span class="sd">            \\textrm{, but}</span>
-<span class="sd">            y_\\alpha \\textrm{ is negative and VaR is always positive, so,} \\\\</span>
+<span class="sd">            Then, \\</span>
 
-<span class="sd">            VaR_\\alpha = -y_\\alpha &amp;= -\\Phi^{-1}(\\alpha)\\cdot\\sigma - \\mu</span>
-<span class="sd">            \\\\</span>
-<span class="sd">            &amp;= \\Phi^{-1}(1 - \\alpha) - \\mu \\\\</span>
+<span class="sd">            \mathbb{P}(Y &lt; y_\alpha) &amp;= \alpha \\</span>
+<span class="sd">            </span>
+<span class="sd">            \Rightarrow \mathbb{P}(\frac{Y - \mu}{\sigma} &lt; \frac{y_\alpha -</span>
+<span class="sd">            \mu}{\sigma}) &amp;= \alpha \\</span>
+
+<span class="sd">            \Rightarrow \mathbb{P}(Z &lt; \frac{y_\alpha - \mu}{\sigma} &amp;= \alpha \\</span>
+
+<span class="sd">            \Rightarrow \Phi(\frac{y_\alpha - \mu}{\sigma} ) &amp;= \alpha, where \\</span>
+
+<span class="sd">            \Phi(.) is the standard normal cdf operator</span>
+
+<span class="sd">            Then using the inverse of the function \Phi, we have:</span>
+
+<span class="sd">            \Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} &amp;= \Phi^{-1}(\alpha) \\</span>
+
+<span class="sd">            \Rightarrow \Phi^{-1}(\alpha)\cdot\sigma + \mu = y_\alpha, but</span>
+<span class="sd">            y_\alpha is \bold{negative} and VaR is always positive, so,</span>
+
+<span class="sd">            VaR_\alpha = -y_\alpha &amp;= -\Phi{-1}(\alpha)\cdot\sigma - \mu \\</span>
+<span class="sd">            &amp;= \Phi{-1}(1 - \alpha) - \mu</span>
 
 <span class="sd">    .. seealso:: :meth:var_cf :meth:var_np</span>
 <span class="sd">             </span>
@@ -1357,6 +1331,18 @@
         <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_var_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_var_norm</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="var_cf"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.var_cf">[docs]</a><span class="k">def</span> <span class="nf">var_cf</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    VaR (Value at Risk), using the Cornish Fisher Approximation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log_returns</span> <span class="o">=</span> <span class="n">price_series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+    <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">log_returns</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">log_returns</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+    <span class="n">skew</span><span class="p">,</span> <span class="n">kurt</span> <span class="o">=</span> <span class="n">log_returns</span><span class="o">.</span><span class="n">skew</span><span class="p">(),</span> <span class="n">log_returns</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">()</span> <span class="o">-</span> <span class="mf">3.</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">alpha</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">skew</span><span class="o">/</span><span class="mi">6</span><span class="o">+</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">skew</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">36</span> <span class="o">+</span> <span class="p">(</span>
+        <span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">p</span><span class="p">))</span><span class="o">*</span><span class="n">kurt</span><span class="o">/</span><span class="mi">24</span>
+    <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">V</span> <span class="o">-</span> <span class="n">mu</span>
 </div>
 <div class="viewcode-block" id="var_np"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.var_np">[docs]</a><span class="k">def</span> <span class="nf">var_np</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="o">.</span><span class="mo">01</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;    </span>

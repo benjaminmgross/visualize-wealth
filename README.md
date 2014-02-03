@@ -299,10 +299,13 @@ Take a look at the portfolio series:
 * Best broad asset classes to determine "best fit portfolio"
 
 | Ticker | Name                         | Price Data Begins | 
-|:-------|:-----------------------------|:------------------|
+|:-------|:-----------------------------|:-------|
 |VTSMX   | Vanguard Total Stock Market  | 6/20/1996         |
 |VBMFX   |Vanguard Total Bond Market    | 6/4/1990          |
 |VGTSX   |Vanguard Total Intl Stock     | 6/28/1996         |
+
+* Change all the VaR & CVaR calculations to linear returns (some linear, some cc)
+
 
 * Rebuild Process:
 

@@ -1204,67 +1204,6 @@ def upside_deviation(series, freq = 'daily'):
     else:
         return _upside_deviation(series, freq)
 
-def var_norm(series, p = .01):
-    """
-    Value at Risk ("VaR") of the $$p = \\alpha$$ quantile, defines the loss, such
-    that there is an $$\\alpha$$ percent chance of a loss, greater than or equal to
-    $$\\textrm{VaR}_\\alpha$$. :meth:`var_norm` fits a normal distribution to the
-    log returns of the series, and then estimates the $$\\textrm{VaR}_\\alpha$$
-
-    :ARGS:
-
-        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of prices
-
-        p: :class:`float` of the $$\\alpha$$ quantile for which to estimate VaR
-
-    :RETURNS:
-
-        :class:`float` or :class:`pandas.Series` of VaR
-
-    .. note:: Derivation of Value at Risk
-
-        .. math::
-
-            Let Y \sim N(\mu, \sigma^2), we choose y_\alpha such that \\
-
-            \mathbb{P}(Y < y_\alpha) = \alpha \\
-
-            Then, \\
-
-            \mathbb{P}(Y < y_\alpha) &= \alpha \\
-            
-            \Rightarrow \mathbb{P}(\frac{Y - \mu}{\sigma} < \frac{y_\alpha -
-            \mu}{\sigma}) &= \alpha \\
-
-            \Rightarrow \mathbb{P}(Z < \frac{y_\alpha - \mu}{\sigma} &= \alpha \\
-
-            \Rightarrow \Phi(\frac{y_\alpha - \mu}{\sigma} ) &= \alpha, where \\
-
-            \Phi(.) is the standard normal cdf operator
-
-            Then using the inverse of the function \Phi, we have:
-
-            \Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} &= \Phi^{-1}(\alpha) \\
-
-            \Rightarrow \Phi^{-1}(\alpha)\cdot\sigma + \mu = y_\alpha, but
-            y_\alpha is \bold{negative} and VaR is always positive, so,
-
-            VaR_\alpha = -y_\alpha &= -\Phi{-1}(\alpha)\cdot\sigma - \mu \\
-            &= \Phi{-1}(1 - \alpha) - \mu
-
-    .. seealso:: :meth:var_cf :meth:var_np
-             
-    """
-    def _var_norm(series, p):
-        series_rets = log_returns(series)
-        mu, sigma = series_rets.mean(), series_rets.std()
-        v = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
-        return sigma * v(p) - mu
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _var_norm(x, p = p))
-    else:
-        return _var_norm(series, p = p)
-
 def var_cf(series, p = .01):
     """
     VaR (Value at Risk), using the Cornish Fisher Approximation
@@ -1273,7 +1212,7 @@ def var_cf(series, p = .01):
 
         series: :class:`pandas.Series` or :class:`pandas.DataFrame` of prices
 
-        p: :class:`float` of the $$\\alpha$$ percentile
+        p: :class:`float` of the :math:`\\alpha` percentile
 
     :RETURNS:
 
@@ -1289,6 +1228,68 @@ def var_cf(series, p = .01):
     V = v(p)+(1-v(p)**2)*skew/6+(5*v(p)-2*v(p)**3)*skew**2/36 + (
         v(p)**3-3*v(p))*kurt/24
     return sigma * V - mu
+
+def var_norm(series, p = .01):
+    """
+    Value at Risk ("VaR") of the :math:`p = \\alpha` quantile, defines the loss,
+    such that there is an :math:`\\alpha` percent chance of a loss, greater than or
+    equal to :math:`\\textrm{VaR}_\\alpha`. :meth:`var_norm` fits a normal
+    distribution to the log returns of the series, and then estimates the
+    :math:`\\textrm{VaR}_\\alpha`
+
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of prices
+
+        p: :class:`float` of the :math:`\\alpha` quantile for which to estimate VaR
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of VaR
+
+    .. note:: Derivation of Value at Risk
+
+        .. math::
+
+            Let Y \\sim N(\\mu, \\sigma^2) \\textrm{, we choose } y_\\alpha
+            \\textrm{ such that}
+            \\mathbb{P}(Y < y_\\alpha) = \\alpha,
+            \\textrm{Then,} \\\\
+
+            \\mathbb{P}(Y < y_\\alpha) &= \\alpha \\\\
+            \\Rightarrow \\mathbb{P}(\\frac{Y - \\mu}{\\sigma} < \\frac{y_\\alpha -
+            \\mu}{\\sigma}) &= \\alpha \\\\
+            \\Rightarrow \\mathbb{P}(Z < \\frac{y_\\alpha - \\mu}{\sigma} &= \\alpha
+            \\\\
+            \\Rightarrow \\Phi(\\frac{y_\\alpha - \\mu}{\\sigma} ) &= \\alpha,
+            \\textrm{ where}
+            \\\\
+            \\Phi(.) \\textrm{ is the standard normal cdf operator.
+            Then using the inverse of the function } \\Phi
+            \\textrm{ , we have:} \\\\
+
+            \\Phi^{-1}( \\Phi(\\frac{y_\\alpha - \\mu}{\\sigma} ) ) &=
+            \\Phi^{-1}(\\alpha) \\\\
+            \\Rightarrow \\Phi^{-1}(\\alpha)\\cdot\\sigma + \\mu = y_\\alpha
+            \\textrm{, but }
+            y_\\alpha \\textrm{ is negative and VaR is always positive, so,} \\\\
+
+            VaR_\\alpha = -y_\\alpha &= -\\Phi^{-1}(\\alpha)\\cdot\\sigma - \\mu
+            \\\\
+            &= \\Phi^{-1}(1 - \\alpha) - \\mu \\\\
+
+    .. seealso:: :meth:var_cf :meth:var_np
+             
+    """
+    def _var_norm(series, p):
+        series_rets = log_returns(series)
+        mu, sigma = series_rets.mean(), series_rets.std()
+        v = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
+        return sigma * v(p) - mu
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _var_norm(x, p = p))
+    else:
+        return _var_norm(series, p = p)
 
 def var_np(series, p = .01):
     """    

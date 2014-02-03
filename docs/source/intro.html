@@ -185,8 +185,8 @@ a Dividend Columns appended to it</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker: <tt class="xref py py-meth docutils literal"><span class="pre">str()</span></tt> of ticker</p>
-<p>start_date: <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a> or string of format &#8220;mm/dd/yyyy&#8221;</p>
-<p>end_date: a <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a> or string of format &#8220;mm/dd/yyyy&#8221;</p>
+<p>start_date: <tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt> or string of format &#8220;mm/dd/yyyy&#8221;</p>
+<p>end_date: a <tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt> or string of format &#8220;mm/dd/yyyy&#8221;</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">price_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns [&#8216;Close&#8217;, &#8216;Adj Close&#8217;,
@@ -256,8 +256,8 @@ blotter,  ticker, start_date, &amp; end_date are needed.</p>
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">blotter_series: a  <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with index of dates and values of
 quantity</p>
 <p>ticker: class:<cite>str</cite> the ticker for which the buys and sells occurs</p>
-<p>start_date: a <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a></p>
-<p>end_date: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a></p>
+<p>start_date: a <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></p>
+<p>end_date: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></p>
 <p>tol: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>  the tolerance to find the split dates (.1 recommended)</p>
 </td>
 </tr>
@@ -1782,39 +1782,24 @@ in that period</p>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.var_cf">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">var_cf</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#var_cf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.var_cf" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">var_cf</tt><big>(</big><em>price_series</em>, <em>p</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#var_cf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.var_cf" title="Permalink to this definition">¶</a></dt>
 <dd><p>VaR (Value at Risk), using the Cornish Fisher Approximation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the <span class="math">\(\alpha\)</span> percentile</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the VaR, where skew and
-kurtosis are used to adjust the tail density estimation (using the
-Cornish Fisher Approximation)</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.var_norm">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">var_norm</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#var_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.var_norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Value at Risk (&#8220;VaR&#8221;) of the <span class="math">\(p = \alpha\)</span> quantile, defines the loss,
-such that there is an <span class="math">\(\alpha\)</span> percent chance of a loss, greater than or
-equal to <span class="math">\(\textrm{VaR}_\alpha\)</span>. <tt class="xref py py-meth docutils literal"><span class="pre">var_norm()</span></tt> fits a normal
-distribution to the log returns of the series, and then estimates the
-<span class="math">\(\textrm{VaR}_\alpha\)</span></p>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">var_norm</tt><big>(</big><em>series</em>, <em>p</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#var_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.var_norm" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Value at Risk (&#8220;VaR&#8221;) of the $$p = alpha$$ quantile, defines the loss, such
+that there is an $$alpha$$ percent chance of a loss, greater than or equal to
+$$textrm{VaR}_alpha$$. <tt class="xref py py-meth docutils literal"><span class="pre">var_norm()</span></tt> fits a normal distribution to the
+log returns of the series, and then estimates the $$textrm{VaR}_alpha$$</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the <span class="math">\(\alpha\)</span> quantile for which to estimate VaR</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the $$alpha$$ quantile for which to estimate VaR</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of VaR</p>
@@ -1826,31 +1811,36 @@ distribution to the log returns of the series, and then estimates the
 <p class="first admonition-title">Note</p>
 <p>Derivation of Value at Risk</p>
 <div class="last math">
-\[\begin{split}Let Y \sim N(\mu, \sigma^2) \textrm{, we choose} y_\alpha
-\textrm{ such that} \\
-\mathbb{P}(Y &lt; y_\alpha) = \alpha,
-\textrm{Then,} \\\end{split}\]\[\begin{split}\mathbb{P}(Y &lt; y_\alpha) &amp;= \alpha \\
-\Rightarrow \mathbb{P}(\frac{Y - \mu}{\sigma} &lt; \frac{y_\alpha -
-\mu}{\sigma}) &amp;= \alpha \\
-\Rightarrow \mathbb{P}(Z &lt; \frac{y_\alpha - \mu}{\sigma} &amp;= \alpha
-\\
-\Rightarrow \Phi(\frac{y_\alpha - \mu}{\sigma} ) &amp;= \alpha,
-\textrm{ where}
-\\
-\Phi(.) \textrm{ is the standard normal cdf operator.
-Then using the inverse of the function} \Phi,
-\textrm{ we have:} \\\end{split}\]\[\begin{split}\Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} &amp;=
-\Phi^{-1}(\alpha) \\
-\Rightarrow \Phi^{-1}(\alpha)\cdot\sigma + \mu = y_\alpha
-\textrm{, but}
-y_\alpha \textrm{ is negative and VaR is always positive, so,} \\\end{split}\]\[\begin{split}VaR_\alpha = -y_\alpha &amp;= -\Phi^{-1}(\alpha)\cdot\sigma - \mu
-\\
-&amp;= \Phi^{-1}(1 - \alpha) - \mu \\\end{split}\]</div>
+\[Let Y \sim N(\mu, \sigma^2), we choose y_lpha such that \\]\[\begin{split}\mathbb{P}(Y &lt; y_lpha) = lpha \\end{split}\]\[Then, \\]\[\begin{split}\mathbb{P}(Y &lt; y_lpha) &amp;= lpha \\end{split}\]\[\Rightarrow \mathbb{P}(\]</div>
 </div>
+</div></blockquote>
+<p>rac{Y - mu}{sigma} &lt; 
+rac{y_lpha -</p>
+<blockquote>
+<div><p>mu}{sigma}) &amp;= lpha </p>
+<p>Rightarrow mathbb{P}(Z &lt;</p>
+</div></blockquote>
+<p>rac{y_lpha - mu}{sigma} &amp;= lpha </p>
+<blockquote>
+<div>Rightarrow Phi(</div></blockquote>
+<p>rac{y_lpha - mu}{sigma} ) &amp;= lpha, where </p>
+<blockquote>
+<div><p>Phi(.) is the standard normal cdf operator</p>
+<p>Then using the inverse of the function Phi, we have:</p>
+<p>Phi^{-1}( Phi(</p>
+</div></blockquote>
+<p>rac{y_lpha - mu}{sigma} &amp;= Phi^{-1}(lpha) </p>
+<blockquote>
+<div><blockquote>
+<div><p>Rightarrow Phi^{-1}(lpha)cdotsigma + mu = y_lpha, but
+y_lpha is old{negative} and VaR is always positive, so,</p>
+<p>VaR_lpha = -y_lpha &amp;= -Phi{-1}(lpha)cdotsigma - mu &amp;= Phi{-1}(1 - lpha) - mu</p>
+</div></blockquote>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">:meth:var_cf :meth:var_np</p>
 </div>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">

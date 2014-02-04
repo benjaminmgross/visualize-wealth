@@ -204,7 +204,7 @@ def cvar_cf(series, p = .01):
         y = lambda a: 1/a * pdf(v(a))
 
         Y = y(p)*(1-v(p)*skew/6+(1-2*v(p)**2)*skew**2/36+(-1+v(p)**2)*kurt/24)
-        return  sigma * Y - mu
+        return  numpy.exp(sigma * Y - mu) - 1.
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_cf(x, p = p))
@@ -232,7 +232,7 @@ def cvar_norm(series, p = .01):
         series_rets = log_returns(series)
         mu, sigma = series_rets.mean(), series_rets.std()
         var = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
-        return sigma/p * pdf(var(p)) - mu
+        return numpy.exp(sigma/p * pdf(var(p)) - mu) - 1.
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_norm(x, p = p))
@@ -1227,7 +1227,7 @@ def var_cf(series, p = .01):
     v = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
     V = v(p)+(1-v(p)**2)*skew/6+(5*v(p)-2*v(p)**3)*skew**2/36 + (
         v(p)**3-3*v(p))*kurt/24
-    return sigma * V - mu
+    return numpy.exp(sigma * V - mu) - 1
 
 def var_norm(series, p = .01):
     """
@@ -1285,7 +1285,7 @@ def var_norm(series, p = .01):
         series_rets = log_returns(series)
         mu, sigma = series_rets.mean(), series_rets.std()
         v = lambda alpha: scipy.stats.distributions.norm.ppf(1 - alpha)
-        return sigma * v(p) - mu
+        return numpy.exp(sigma * v(p) - mu) - 1
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _var_norm(x, p = p))
     else:
@@ -1325,9 +1325,9 @@ def var_np(series, p = .01):
         #transform to linear returns, and loss is always reported as positive
         return -1 * (numpy.percentile(series_rets, p*100.))
     if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _value_at_risk(x, p = p))
+        return series.apply(lambda x: _var_np(x, p = p))
     else:
-        return _value_at_risk(series, p = p)
+        return _var_np(series, p = p)
 
 
 def return_by_year(series):

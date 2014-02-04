@@ -304,7 +304,7 @@ Take a look at the portfolio series:
 |VBMFX   |Vanguard Total Bond Market    | 6/4/1990          |
 |VGTSX   |Vanguard Total Intl Stock     | 6/28/1996         |
 
-* Change all the VaR & CVaR calculations to linear returns (some linear, some cc)
+* ~~Change all the VaR & CVaR calculations to linear returns (some linear, some cc)~~
 
 
 * Rebuild Process:

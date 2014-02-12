@@ -199,8 +199,8 @@ def blotter_and_price_df_to_cum_shares(blotter_df, price_df):
     #now cumsum the buy/sell chunks and multiply by splits to get total shares
     bs_series = pandas.Series()
     start_dts = blotter_df.index
-    end_dts = pandas.to_datetime(numpy.append(blotter_df.index[1:],
-                                              price_df.index[-1]))
+    end_dts = blotter_df.index[1:].insert(-1, price_df.index[-1])
+
 
     dt_chunks = zip(start_dts, end_dts)
     end = 0.
@@ -340,8 +340,6 @@ def generate_random_asset_path(ticker, start_date, num_trades):
     Because the function calls the `Yahoo! API <http://www.finance.yahoo.com>`_
     internet connectivity is required for the function to work properly
     """
-    import pdb
-    pdb.set_trace()
     if isinstance(start_date, str):
         start_date = datetime.datetime.strptime(start_date, "%m/%d/%Y")
     end_date = datetime.datetime.today()
@@ -545,7 +543,7 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
                                index = index, columns = port_cols)
 
     a = weight_df.index
-    b = pandas.to_datetime(numpy.append(weight_df.index[1:], index[-1]))
+    b = weight_df.index[1:].insert(-1,  index[-1])
     dt_chunks = zip(a, b)
     
     #fill in the Adjusted Quantity values and the aggregate position values
@@ -562,9 +560,8 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
             numpy.tile(c0_ac0.values, [n, 1]).transpose())
         panel.loc[:, chunk[0]:chunk[1], 'n0'] = numpy.tile(
             n0.values, [n, 1]).transpose()
-        panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = (panel.loc[:,
-            chunk[0]:chunk[1], ['c0_ac0', 'ac_c', 'n0']].apply(numpy.product, 
-            axis = 2))
+        panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = panel.loc[:,
+            chunk[0]:chunk[1], ['c0_ac0', 'ac_c', 'n0']].product(axis = 2)
         p_val = panel.loc[:, chunk[1], 'Adj_Q'].mul(
               panel.loc[:, chunk[1], 'Close']).sum(axis = 1)
     return panel.loc[:, a[0]:, :]

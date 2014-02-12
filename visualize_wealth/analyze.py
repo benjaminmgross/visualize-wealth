@@ -181,7 +181,7 @@ def beta(series, benchmark):
 def cvar_cf(series, p = .01):
     """
     CVaR (Expected Shortfall), using the `Cornish Fisher Approximation 
-    <http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1997178>`_
+    <http://en.wikipedia.org/wiki/Cornish%E2%80%93Fisher_expansion>`_
 
     :ARGS:
 
@@ -196,20 +196,63 @@ def cvar_cf(series, p = .01):
     
     """
     def _cvar_cf(series, p):
+        ppf = scipy.stats.norm.ppf
         pdf = scipy.stats.norm.pdf
         series_rets = log_returns(series)
         mu, sigma = series_rets.mean(), series_rets.std()
         skew, kurt = series_rets.skew(), series_rets.kurtosis() - 3.
-        v = lambda a: scipy.stats.distributions.norm.ppf(1 - a)
-        y = lambda a: 1/a * pdf(v(a))
+        
+        f = lambda x, skew, kurt: x + skew/6.*(x**2 - 1) + kurt/24.* x * (
+            x**2 - 3.) - skew**2/36. * x * (2. * x**2  - 5.)
 
-        Y = y(p)*(1-v(p)*skew/6+(1-2*v(p)**2)*skew**2/36+(-1+v(p)**2)*kurt/24)
-        return  numpy.exp(sigma * Y - mu) - 1.
+        loss = f(x = 1/p*(pdf(ppf(p))), skew = skew, kurt = kurt) * sigma - mu
+
+        return  numpy.exp(loss) - 1.
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_cf(x, p = p))
     else:
         return _cvar_cf(series, p = p)
+
+def cvar_cf_ew(series, p = .01):
+    """
+    CVaR (Expected Shortfall), using the `Cornish Fisher Approximation 
+    <http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1997178>`_
+
+    :ARGS:
+
+        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of the
+        asset prices
+
+        p: :class:`float` of the desired percentile, defaults to .01 or the 1% CVaR
+
+    :RETURNS:
+
+        :class:`float` or :class:`pandas.Series` of the CVaR
+    
+    """
+    def _cvar_cf_ew(series, p):
+        ppf = scipy.stats.norm.ppf
+        pdf = scipy.stats.norm.pdf
+        series_rets = log_returns(series)
+        
+        skew, kurt = series_rets.skew(), series_rets.kurtosis() - 3.
+        m = len(series_rets.dropna())
+        mu = pandas.ewma(series_rets, span = m, min_periods = m - 1)[-1]
+        sigma = pandas.ewmstd(series_rets, span = m, min_periods = m - 1)[-1]
+        
+        f = lambda x, skew, kurt: x + skew/6.*(x**2 - 1) + kurt/24.* x * (
+            x**2 - 3.) - skew**2/36. * x * (2. * x**2  - 5.)
+
+        loss = f(x = 1/p*(pdf(ppf(p))), skew = skew, kurt = kurt) * sigma - mu
+
+        return  numpy.exp(loss) - 1.
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _cvar_cf_ew(x, p = p))
+    else:
+        return _cvar_cf_ew(series, p = p)
+
 
 def cvar_norm(series, p = .01):
     """
@@ -262,13 +305,13 @@ def cvar_median_np(series, p):
         return  series_rets[series_rets <= var].median()
 
     if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _cvar_mu_np(x, p = p))
+        return series.apply(lambda x: _cvar_median_np(x, p = p))
     else:
         return _cvar_median_np(series, p = p)
 
 def cvar_mu_np(series, p):
     """
-    Non-parametric CVaR or Expected Shortfall, solely based on the mean  of
+    Non-parametric CVaR or Expected Shortfall, solely based on the mean of
     historical values
 
     :ARGS:
@@ -284,9 +327,9 @@ def cvar_mu_np(series, p):
     
     """
     def _cvar_mu_np(series, p):
-        losses = (series.div(price_series.shift(1)) - 1)
+        series_rets = linear_returns(series)
         var = numpy.percentile(losses, p*100.)
-        return  losses[losses <= var].mean()
+        return  series_rets[series_rets <= var].mean()
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_mu_np(x, p = p))
@@ -315,7 +358,7 @@ def cumulative_turnover(alloc_df, asset_wt_df):
 
     .. note:: Calcluating Turnover
 
-    Let :math:`\\tau_j = `"Single Period period turnover for period :math:`j`,
+    Let :math:`\\tau_j = ` Single Period period turnover for period :math:`j`,
     and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is
     represented by :math:`\\omega_i`.
     
@@ -1206,7 +1249,8 @@ def upside_deviation(series, freq = 'daily'):
 
 def var_cf(series, p = .01):
     """
-    VaR (Value at Risk), using the Cornish Fisher Approximation
+    VaR (Value at Risk), using the `Cornish Fisher Approximation
+    <http://en.wikipedia.org/wiki/Cornish%E2%80%93Fisher_expansion>`_.
 
     :ARGS:
 

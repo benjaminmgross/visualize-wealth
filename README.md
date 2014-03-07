@@ -27,11 +27,11 @@ your desired folder of choice (say `Downloads`), and:
 1. Clone the repository
 
 	    $ cd ~/Downloads
-	    $ git clone https://github.com/benjaminmgross/grind-my-ass-ets
+	    $ git clone https://github.com/benjaminmgross/wealth-viz
 
-2. `cd` into the `grind-my-ass-ets` directory
+2. `cd` into the `wealth-via` directory
 
-        $ cd grind-my-ass-ets
+        $ cd wealth-viz
 
 3. Install the package
 

@@ -1507,9 +1507,9 @@ def test_funs():
     >>> alloc_df = f.parse('alloc_df', index_col = 0)
     >>> alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!='Daily TO']].dropna()
     >>> asset_wt_df = f.parse('asset_wt_df', index_col = 0)
-    >>> put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), 
-    ... stats.loc['cumulative_turnover', 'S&P 500'])
-    True
+    >>> numpy.testing.assert_almost_equal(
+    ...    cumulative_turnover(alloc_df, asset_wt_df), 
+    ...    stats.loc['cumulative_turnover', 'S&P 500'])
 
     marginal contributions to risk and risk contribution calcs
     >>> mctr_prices = f.parse('mctr', index_col = 0)

@@ -869,7 +869,7 @@ each asset</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Calcluating Turnover</p>
 </div>
-<p>Let <span class="math">\(\tau_j = `&quot;Single Period period turnover for period :math:`j\)</span>,
+<p>Let <span class="math">\(\tau_j = ` Single Period period turnover for period :math:`j\)</span>,
 and assets <span class="math">\(i = 1,:2,:...:,n\)</span>, each whose respective portfolio weight is
 represented by <span class="math">\(\omega_i\)</span>.</p>
 <dl class="docutils">
@@ -883,6 +883,26 @@ represented by <span class="math">\(\omega_i\)</span>.</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.cvar_cf">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cvar_cf</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cvar_cf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cvar_cf" title="Permalink to this definition">¶</a></dt>
+<dd><p>CVaR (Expected Shortfall), using the <a class="reference external" href="http://en.wikipedia.org/wiki/Cornish%E2%80%93Fisher_expansion">Cornish Fisher Approximation</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the
+asset prices</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or the 1% CVaR</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.cvar_cf_ew">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cvar_cf_ew</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cvar_cf_ew"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cvar_cf_ew" title="Permalink to this definition">¶</a></dt>
 <dd><p>CVaR (Expected Shortfall), using the <a class="reference external" href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1997178">Cornish Fisher Approximation</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -924,7 +944,7 @@ asset prices</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.cvar_mu_np">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cvar_mu_np</tt><big>(</big><em>series</em>, <em>p</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cvar_mu_np"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cvar_mu_np" title="Permalink to this definition">¶</a></dt>
-<dd><p>Non-parametric CVaR or Expected Shortfall, solely based on the mean  of
+<dd><p>Non-parametric CVaR or Expected Shortfall, solely based on the mean of
 historical values</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1635,7 +1655,8 @@ to the benchmark</p>
 &gt;&gt;&gt; alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!=&#8217;Daily TO&#8217;]].dropna()
 &gt;&gt;&gt; asset_wt_df = f.parse(&#8216;asset_wt_df&#8217;, index_col = 0)
 &gt;&gt;&gt; put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), 
-... stats.loc[&#8216;cumulative_turnover&#8217;, &#8216;S&amp;P 500&#8217;])</p>
+... stats.loc[&#8216;cumulative_turnover&#8217;, &#8216;S&amp;P 500&#8217;])
+&gt;&gt;&gt; True</p>
 <p>marginal contributions to risk and risk contribution calcs
 &gt;&gt;&gt; mctr_prices = f.parse(&#8216;mctr&#8217;, index_col = 0)
 &gt;&gt;&gt; mctr_manual = f.parse(&#8216;mctr_results&#8217;, index_col = 0)
@@ -1649,12 +1670,13 @@ to the benchmark</p>
 &gt;&gt;&gt; put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),
 ... mctr_manual.loc[&#8216;risk_contribution_as_proportion&#8217;])</p>
 <p>These functions are already calculated or aren&#8217;t calculated in the spreadsheet
-&gt;&gt;&gt; no_calc_list = [&#8216;value_at_risk&#8217;, &#8216;rolling_ui&#8217;, &#8216;active_returns&#8217;,
+&gt;&gt;&gt; no_calc_list = [&#8216;rolling_ui&#8217;, &#8216;active_returns&#8217;,
 ... &#8216;test_funs&#8217;, &#8216;linear_returns&#8217;, &#8216;log_returns&#8217;, &#8216;generate_all_metrics&#8217;,
 ... &#8216;return_by_year&#8217;, &#8216;cumulative_turnover&#8217;, &#8216;mctr&#8217;, &#8216;risk_contribution&#8217;,
-... &#8216;risk_contribution_as_proportion&#8217;]</p>
+... &#8216;risk_contribution_as_proportion&#8217;, &#8216;cvar_cf_ew&#8217;, &#8216;cvar_median_np&#8217;,&#8217;
+... &#8216;cvar_mu_np&#8217;, &#8216;var_np&#8217;]</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;series&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> <span class="s">&#39;benchmark&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span> 
-<span class="gp">... </span>   <span class="s">&#39;freq&#39;</span><span class="p">:</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="s">&#39;rfr&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+<span class="gp">... </span>   <span class="s">&#39;freq&#39;</span><span class="p">:</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="s">&#39;rfr&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s">&#39;p&#39;</span><span class="p">:</span> <span class="o">.</span><span class="mo">01</span> <span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">funs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">analyze</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1665,6 +1687,7 @@ the same as the statistic in the <tt class="docutils literal"><span class="pre">
 function and reference the manually calculated value in the <tt class="docutils literal"><span class="pre">stats</span></tt> frame.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">fun</span> <span class="ow">in</span> <span class="n">funs</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="k">if</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">no_calc_list</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="k">print</span> <span class="s">&quot;analyzing &quot;</span><span class="o">+</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">... </span>       <span class="n">arg_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">args</span>
 <span class="gp">... </span>       <span class="n">in_vals</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arg_list</span><span class="p">])</span>
 <span class="gp">... </span>       <span class="n">put</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="o">*</span><span class="n">in_vals</span><span class="p">),</span> <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">])</span>
@@ -1783,7 +1806,7 @@ in that period</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.var_cf">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">var_cf</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#var_cf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.var_cf" title="Permalink to this definition">¶</a></dt>
-<dd><p>VaR (Value at Risk), using the Cornish Fisher Approximation</p>
+<dd><p>VaR (Value at Risk), using the <a class="reference external" href="http://en.wikipedia.org/wiki/Cornish%E2%80%93Fisher_expansion">Cornish Fisher Approximation</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1826,8 +1849,8 @@ distribution to the log returns of the series, and then estimates the
 <p class="first admonition-title">Note</p>
 <p>Derivation of Value at Risk</p>
 <div class="last math">
-\[\begin{split}Let Y \sim N(\mu, \sigma^2) \textrm{, we choose} y_\alpha
-\textrm{ such that} \\
+\[\begin{split}Let Y \sim N(\mu, \sigma^2) \textrm{, we choose } y_\alpha
+\textrm{ such that}
 \mathbb{P}(Y &lt; y_\alpha) = \alpha,
 \textrm{Then,} \\\end{split}\]\[\begin{split}\mathbb{P}(Y &lt; y_\alpha) &amp;= \alpha \\
 \Rightarrow \mathbb{P}(\frac{Y - \mu}{\sigma} &lt; \frac{y_\alpha -
@@ -1838,11 +1861,11 @@ distribution to the log returns of the series, and then estimates the
 \textrm{ where}
 \\
 \Phi(.) \textrm{ is the standard normal cdf operator.
-Then using the inverse of the function} \Phi,
-\textrm{ we have:} \\\end{split}\]\[\begin{split}\Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} &amp;=
+Then using the inverse of the function } \Phi
+\textrm{ , we have:} \\\end{split}\]\[\begin{split}\Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} ) ) &amp;=
 \Phi^{-1}(\alpha) \\
 \Rightarrow \Phi^{-1}(\alpha)\cdot\sigma + \mu = y_\alpha
-\textrm{, but}
+\textrm{, but }
 y_\alpha \textrm{ is negative and VaR is always positive, so,} \\\end{split}\]\[\begin{split}VaR_\alpha = -y_\alpha &amp;= -\Phi^{-1}(\alpha)\cdot\sigma - \mu
 \\
 &amp;= \Phi^{-1}(1 - \alpha) - \mu \\\end{split}\]</div>
@@ -1901,7 +1924,7 @@ $ pandoc README.md -f markdown -t rst -o docs/source/readme.rst
 </div>
 </div>
 <div class="section" id="build-sphinx-documentation">
-<span id="id11"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
+<span id="id13"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-python"><div class="highlight"><pre>#rebuild the package
 $ cd visualize_wealth
 $ python setup.py install
@@ -1912,7 +1935,7 @@ $ sphinx-build -b html docs/source/ docs/build/
 </div>
 </div>
 <div class="section" id="sphinx-customizations-in-conf-py">
-<span id="id12"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
+<span id="id14"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
 <p>Current customizations I use in order to make the docs look like they
 currently do</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="c">#use the sphinxdoc theme</span>
@@ -1953,7 +1976,7 @@ currently do</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Benjamin M. Gross.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

@@ -1509,6 +1509,7 @@ def test_funs():
     >>> asset_wt_df = f.parse('asset_wt_df', index_col = 0)
     >>> put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), 
     ... stats.loc['cumulative_turnover', 'S&P 500'])
+    True
 
     marginal contributions to risk and risk contribution calcs
     >>> mctr_prices = f.parse('mctr', index_col = 0)
@@ -1524,13 +1525,14 @@ def test_funs():
     ... mctr_manual.loc['risk_contribution_as_proportion'])
     
     These functions are already calculated or aren't calculated in the spreadsheet
-    >>> no_calc_list = ['value_at_risk', 'rolling_ui', 'active_returns',
+    >>> no_calc_list = ['rolling_ui', 'active_returns',
     ... 'test_funs', 'linear_returns', 'log_returns', 'generate_all_metrics',
     ... 'return_by_year', 'cumulative_turnover', 'mctr', 'risk_contribution',
-    ... 'risk_contribution_as_proportion']
+    ... 'risk_contribution_as_proportion', 'cvar_cf_ew', 'cvar_median_np',
+    ... 'cvar_mu_np', 'var_np', 'var_cf', 'var_norm']
     
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
-    ...    'freq': 'daily', 'rfr': 0.0}
+    ...    'freq': 'daily', 'rfr': 0.0, 'p': .01 }
     >>> funs = inspect.getmembers(analyze, inspect.isfunction)
 
     Instead of writing out each function, I use the ``inspect module`` to determine
@@ -1538,11 +1540,12 @@ def test_funs():
     the same as the statistic in the ``results`` tab of
     ``../tests/test_analyze.xlsx`` I can use those key values to both call the
     function and reference the manually calculated value in the ``stats`` frame.
-
+    >>> trus = []
     >>> for fun in funs:
     ...    if (fun[0][0] != '_') and (fun[0] not in no_calc_list):
     ...        arg_list = inspect.getargspec(fun[1]).args
     ...        in_vals = tuple([d[arg] for arg in arg_list])
-    ...        put.assert_almost_equal(fun[1](*in_vals), stats.loc[fun[0], 'VGTSX'])
+    ...        numpy.testing.assert_almost_equal(fun[1](*in_vals),
+    ...                                  stats.loc[fun[0], 'VGTSX'])
     """
     return None

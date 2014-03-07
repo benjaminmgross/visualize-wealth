@@ -29,7 +29,7 @@ your desired folder of choice (say `Downloads`), and:
 	    $ cd ~/Downloads
 	    $ git clone https://github.com/benjaminmgross/wealth-viz
 
-2. `cd` into the `wealth-via` directory
+2. `cd` into the `wealth-viz` directory
 
         $ cd wealth-viz
 

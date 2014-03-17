@@ -178,6 +178,122 @@ def beta(series, benchmark):
     else:
         return _beta(series, benchmark)
 
+def consecutive(int_series):
+    """
+    Array logic (no for loops) and fast method to determine the number of
+    consecutive ones given a `pandas.Series` of integers Derived from `Stack Overflow
+    <http://stackoverflow.com/questions/18196811/cumsum-reset-at-nan>`_
+
+    :ARGS:
+
+        int_series: :class:`pandas.Series` of integers as 0s or 1s
+
+    :RETURNS:
+
+        :class:`pandas.Series` of the consecutive ones
+    """
+    n = int_series == 0
+    a = ~n
+    c = a.cumsum()
+    index = c[n].index
+    d = pandas.Series(numpy.diff(numpy.hstack(( [0.], c[n] ))) , index =index)
+    int_series[n] = -d
+    return int_series.cumsum()
+
+def consecutive_downtick_performance(series, benchmark):
+    """
+    Returns a two column :class:`pandas.DataFrame` with columns `['outperformance',
+    'num_downticks']` that shows the cumulative outperformance (in log returns) and
+    the `num_upticks` number of days the downtick lasted
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices
+
+        benchmark: :class:`pandas.Series` of prices to compare ``series`` against
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of ``['outperformance','num_upticks']``.
+        Outperformance is in log returns and `num_downticks` the number of
+        consecutive downticks for which the outperformance was generated
+    """
+    dnticks = consecutive_downticks(benchmark)
+    series_dn, bench_dn = series[dnticks.index],  benchmark[dnticks.index]
+    st, fin = dnticks == 0, (dnticks == 0).shift(-1).fillna(True)
+    n_per = dnticks[fin]
+    series_rets = numpy.log(numpy.divide(series_dn[fin], series_dn[st]))
+    bench_rets = numpy.log(numpy.divide(bench_dn[fin], bench_dn[st]))
+    return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
+                          'num_downticks':n_per, series.name: series_rets,
+                          benchmark.name: bench_rets})
+
+def consecutive_downticks(series):
+    """
+    Using the :func:`num_consecutive`, returns a :class:`pandas.Series` of the
+    consecutive downticks in the series
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of the asset prices
+
+    :RETURNS:
+
+        :class:`pandas.Series` of the consecutive downticks of the series
+    """
+    w = consecutive( (series < series.shift(1)).astype(int) )
+    agg_ind = w[w > 2].index.union_many(
+        [w[w.shift(-1) == 3].index, w[w.shift(-2) == 3].index,
+         w[w.shift(-3) == 3].index])
+    return w[agg_ind]
+
+def consecutive_uptick_performance(series, benchmark):
+    """
+    Returns a two column :class:`pandas.DataFrame` with columns `['outperformance',
+    'num_upticks']` that shows the cumulative outperformance (in log returns) and
+    the `num_upticks` number of days the uptick lasted
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices
+
+        benchmark: :class:`pandas.Series` of prices to compare ``series`` against
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of ``['outperformance','num_upticks']``.
+        Outperformance is in log returns and num_upticks the number of consecutive
+        upticks for which the outperformance was generated
+    """
+    upticks = consecutive_upticks(benchmark)
+    series_up, bench_up = series[upticks.index],  benchmark[upticks.index]
+    st, fin = upticks == 0, (upticks == 0).shift(-1).fillna(True)
+    n_per = upticks[fin]
+    series_rets = numpy.log(numpy.divide(series_up[fin], series_up[st]))
+    bench_rets = numpy.log(numpy.divide(bench_up[fin], bench_up[st]))
+    return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
+                          'num_upticks':n_per, series.name: series_rets,
+                          benchmark.name: bench_rets})
+
+def consecutive_upticks(series):
+    """
+    Using the :func:`num_consecutive`, returns a :class:`pandas.Series` of the
+    consecutive upticks in the series with greater than 3 consecutive upticks
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of the asset prices
+
+    :RETURNS:
+
+        :class:`pandas.Series` of the consecutive downticks of the series
+    """
+    w = consecutive( (series > series.shift(1)).astype(int) )
+    agg_ind = w[w > 2].index.union_many(
+        [w[w.shift(-1) == 3].index, w[w.shift(-2) == 3].index,
+         w[w.shift(-3) == 3].index])
+    return w[agg_ind]
+
 def cvar_cf(series, p = .01):
     """
     CVaR (Expected Shortfall), using the `Cornish Fisher Approximation 
@@ -358,7 +474,7 @@ def cumulative_turnover(alloc_df, asset_wt_df):
 
     .. note:: Calcluating Turnover
 
-    Let :math:`\\tau_j = ` Single Period period turnover for period :math:`j`,
+    Let :math:`\\tau_j =` Single Period period turnover for period :math:`j`,
     and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is
     represented by :math:`\\omega_i`.
     
@@ -663,14 +779,12 @@ def mctr(asset_df, portfolio_df):
 
         .. math::
 
-            MCTR_i = \\sigma_i \\cdot \\rho_{i, P} \\\\
-            
-            \\textrm{where, }
+            MCTR_i &= \\sigma_i \\cdot \\rho_{i, P} \\\\
 
-            \\sigma_i &= \\textrm{volatility of asset } i
+            \\textrm{where, } \\\\
             
-            \\rho_i &= \\texrm{correlation of asset } i 
-            
+            \\sigma_i &= \\textrm{volatility of asset } i, \\\\
+            \\rho_i &= \\textrm{correlation of asset } i
             \\textrm{ with the Portfolio}
 
     .. note:: Reference for Further Reading
@@ -1201,9 +1315,9 @@ def upcapture(series, benchmark):
 
     :ARGS:
 
-        series: ``pandas.Series`` of prices
+        series: :class:`pandas.Series` of prices
 
-        benchmark: ``pandas.Series`` of prices to compare ``series`` against
+        benchmark: :class:`pandas.Series` of prices to compare ``series`` against
 
     :RETURNS:
 
@@ -1228,7 +1342,7 @@ def upside_deviation(series, freq = 'daily'):
 
     :ARGS:
 
-        series: ``pandas.Series`` of prices
+        series: :class:`pandas.Series` of prices
 
         freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
         yearly``
@@ -1490,7 +1604,7 @@ def test_funs():
 
     >>> import pandas.util.testing as put
     >>> import inspect, analyze
-    
+
     >>> f = pandas.ExcelFile('../tests/test_analyze.xlsx')
     >>> man_calcs = f.parse('calcs', index_col = 0)
     >>> prices = man_calcs[['S&P 500', 'VGTSX']]
@@ -1500,10 +1614,11 @@ def test_funs():
     >>> put.assert_series_equal(man_calcs['VGTSX Lin Ret'], 
     ...    linear_returns(prices['VGTSX']))
     >>> put.assert_series_equal(man_calcs['Active Return'],
-    ...    analyze.active_returns(series = prices['VGTSX'], 
+    ...    analyze.active_returns(series = prices['VGTSX'],
     ...    benchmark = prices['S&P 500']))
 
-    cumulative turnover calculation
+    Cumulative Turnover Calculation
+
     >>> alloc_df = f.parse('alloc_df', index_col = 0)
     >>> alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!='Daily TO']].dropna()
     >>> asset_wt_df = f.parse('asset_wt_df', index_col = 0)
@@ -1512,6 +1627,7 @@ def test_funs():
     ...    stats.loc['cumulative_turnover', 'S&P 500'])
 
     marginal contributions to risk and risk contribution calcs
+
     >>> mctr_prices = f.parse('mctr', index_col = 0)
     >>> mctr_manual = f.parse('mctr_results', index_col = 0)
     >>> cols = ['BSV','VBK','VBR','VOE','VOT']
@@ -1523,14 +1639,15 @@ def test_funs():
     ... mctr_manual.loc['risk_contribution', :])
     >>> put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),
     ... mctr_manual.loc['risk_contribution_as_proportion'])
-    
+
     These functions are already calculated or aren't calculated in the spreadsheet
+
     >>> no_calc_list = ['rolling_ui', 'active_returns',
     ... 'test_funs', 'linear_returns', 'log_returns', 'generate_all_metrics',
     ... 'return_by_year', 'cumulative_turnover', 'mctr', 'risk_contribution',
     ... 'risk_contribution_as_proportion', 'cvar_cf_ew', 'cvar_median_np',
     ... 'cvar_mu_np', 'var_np', 'var_cf', 'var_norm']
-    
+
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
     ...    'freq': 'daily', 'rfr': 0.0, 'p': .01 }
     >>> funs = inspect.getmembers(analyze, inspect.isfunction)
@@ -1540,6 +1657,7 @@ def test_funs():
     the same as the statistic in the ``results`` tab of
     ``../tests/test_analyze.xlsx`` I can use those key values to both call the
     function and reference the manually calculated value in the ``stats`` frame.
+
     >>> trus = []
     >>> for fun in funs:
     ...    if (fun[0][0] != '_') and (fun[0] not in no_calc_list):
@@ -1547,5 +1665,6 @@ def test_funs():
     ...        in_vals = tuple([d[arg] for arg in arg_list])
     ...        numpy.testing.assert_almost_equal(fun[1](*in_vals),
     ...                                  stats.loc[fun[0], 'VGTSX'])
+
     """
     return None

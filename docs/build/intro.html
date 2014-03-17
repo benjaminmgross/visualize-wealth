@@ -106,7 +106,7 @@ expeditious calculation times possible, so most of the lag time the
 user experiences will be due to the <tt class="docutils literal"><span class="pre">Yahoo!</span></tt> API Calls.</p>
 <p><strong>Examples:</strong></p>
 <p>Fairly comprehensive examples can be found in the <tt class="docutils literal"><span class="pre">README</span></tt> section
-of this documentation, which also resides on the <a class="reference external" href="http://www.github.com/benjaminmgross/grind-my-ass-ets">Splash Page</a> of this
+of this documentation, which also resides on the <a class="reference external" href="http://www.github.com/benjaminmgross/wealth-viz">Splash Page</a> of this
 project&#8217;s GitHub Repository.</p>
 <p><strong>Testing</strong>:</p>
 <p>The folder under <tt class="docutils literal"><span class="pre">visualize_wealth/tests/</span></tt> has fairly significant
@@ -844,6 +844,103 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.consecutive">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive</tt><big>(</big><em>int_series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array logic (no for loops) and fast method to determine the number of
+consecutive ones given a <cite>pandas.Series</cite> of integers Derived from <a class="reference external" href="http://stackoverflow.com/questions/18196811/cumsum-reset-at-nan">Stack Overflow</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">int_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of integers as 0s or 1s</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the consecutive ones</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.consecutive_downtick_performance">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downtick_performance</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downtick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downtick_performance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns <cite>[&#8216;outperformance&#8217;,
+&#8216;num_downticks&#8217;]</cite> that shows the cumulative outperformance (in log returns) and
+the <cite>num_upticks</cite> number of days the downtick lasted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of <tt class="docutils literal"><span class="pre">['outperformance','num_upticks']</span></tt>.
+Outperformance is in log returns and <cite>num_downticks</cite> the number of
+consecutive downticks for which the outperformance was generated</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.consecutive_downticks">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downticks</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the
+consecutive downticks in the series</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the asset prices</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the consecutive downticks of the series</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.consecutive_uptick_performance">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_uptick_performance</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_uptick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_uptick_performance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns <cite>[&#8216;outperformance&#8217;,
+&#8216;num_upticks&#8217;]</cite> that shows the cumulative outperformance (in log returns) and
+the <cite>num_upticks</cite> number of days the uptick lasted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of <tt class="docutils literal"><span class="pre">['outperformance','num_upticks']</span></tt>.
+Outperformance is in log returns and num_upticks the number of consecutive
+upticks for which the outperformance was generated</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.consecutive_upticks">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_upticks</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_upticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_upticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the
+consecutive upticks in the series with greater than 3 consecutive upticks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the asset prices</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the consecutive downticks of the series</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.cumulative_turnover">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cumulative_turnover</tt><big>(</big><em>alloc_df</em>, <em>asset_wt_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cumulative_turnover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cumulative_turnover" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provided an allocation frame (i.e. the weights to which the portfolio was 
@@ -869,7 +966,7 @@ each asset</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Calcluating Turnover</p>
 </div>
-<p>Let <span class="math">\(\tau_j = ` Single Period period turnover for period :math:`j\)</span>,
+<p>Let <span class="math">\(\tau_j =\)</span> Single Period period turnover for period <span class="math">\(j\)</span>,
 and assets <span class="math">\(i = 1,:2,:...:,n\)</span>, each whose respective portfolio weight is
 represented by <span class="math">\(\omega_i\)</span>.</p>
 <dl class="docutils">
@@ -1246,7 +1343,9 @@ risk</p>
 <p>If we define, <span class="math">\(MCR_i\)</span> to be the Marginal Contribution to Risk for 
 asset <span class="math">\(i\)</span>, then,</p>
 <div class="last math">
-\[\begin{split}MCTR_i = \sigma_i \cdot \rho_{i, P} \\\end{split}\]\[\textrm{where, }\]\[\begin{split}\sigma_i &amp;= \textrm{volatility of asset } i\end{split}\]\[\begin{split}\rho_i &amp;= \texrm{correlation of asset } i \end{split}\]\[\textrm{ with the Portfolio}\]</div>
+\[\begin{split}MCTR_i &amp;= \sigma_i \cdot \rho_{i, P} \\\end{split}\]\[\begin{split}\textrm{where, } \\\end{split}\]\[\begin{split}\sigma_i &amp;= \textrm{volatility of asset } i, \\
+\rho_i &amp;= \textrm{correlation of asset } i
+\textrm{ with the Portfolio}\end{split}\]</div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1646,35 +1745,41 @@ to the benchmark</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;VGTSX Lin Ret&#39;</span><span class="p">],</span> 
 <span class="gp">... </span>   <span class="n">linear_returns</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;Active Return&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">analyze</span><span class="o">.</span><span class="n">active_returns</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> 
+<span class="gp">... </span>   <span class="n">analyze</span><span class="o">.</span><span class="n">active_returns</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span>
 <span class="gp">... </span>   <span class="n">benchmark</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
-<p>cumulative turnover calculation
-&gt;&gt;&gt; alloc_df = f.parse(&#8216;alloc_df&#8217;, index_col = 0)
-&gt;&gt;&gt; alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!=&#8217;Daily TO&#8217;]].dropna()
-&gt;&gt;&gt; asset_wt_df = f.parse(&#8216;asset_wt_df&#8217;, index_col = 0)
-&gt;&gt;&gt; put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), 
-... stats.loc[&#8216;cumulative_turnover&#8217;, &#8216;S&amp;P 500&#8217;])
-&gt;&gt;&gt; True</p>
-<p>marginal contributions to risk and risk contribution calcs
-&gt;&gt;&gt; mctr_prices = f.parse(&#8216;mctr&#8217;, index_col = 0)
-&gt;&gt;&gt; mctr_manual = f.parse(&#8216;mctr_results&#8217;, index_col = 0)
-&gt;&gt;&gt; cols = [&#8216;BSV&#8217;,&#8217;VBK&#8217;,&#8217;VBR&#8217;,&#8217;VOE&#8217;,&#8217;VOT&#8217;]
-&gt;&gt;&gt; mctr = mctr(mctr_prices[cols], mctr_prices[&#8216;Portfolio&#8217;])
-&gt;&gt;&gt; put.assert_series_equal(mctr, mctr_manual.loc[&#8216;mctr&#8217;, cols])
-&gt;&gt;&gt; weights = pandas.Series( [.2, .2, .2, .2, .2], index = cols, 
-... name = &#8216;risk_contribution&#8217;)
-&gt;&gt;&gt; put.assert_series_equal(risk_contribution(mctr, weights), 
-... mctr_manual.loc[&#8216;risk_contribution&#8217;, :])
-&gt;&gt;&gt; put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),
-... mctr_manual.loc[&#8216;risk_contribution_as_proportion&#8217;])</p>
-<p>These functions are already calculated or aren&#8217;t calculated in the spreadsheet
-&gt;&gt;&gt; no_calc_list = [&#8216;rolling_ui&#8217;, &#8216;active_returns&#8217;,
-... &#8216;test_funs&#8217;, &#8216;linear_returns&#8217;, &#8216;log_returns&#8217;, &#8216;generate_all_metrics&#8217;,
-... &#8216;return_by_year&#8217;, &#8216;cumulative_turnover&#8217;, &#8216;mctr&#8217;, &#8216;risk_contribution&#8217;,
-... &#8216;risk_contribution_as_proportion&#8217;, &#8216;cvar_cf_ew&#8217;, &#8216;cvar_median_np&#8217;,&#8217;
-... &#8216;cvar_mu_np&#8217;, &#8216;var_np&#8217;]</p>
+<p>Cumulative Turnover Calculation</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alloc_df</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;alloc_df&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alloc_df</span> <span class="o">=</span> <span class="n">alloc_df</span><span class="p">[</span><span class="n">alloc_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">alloc_df</span><span class="o">.</span><span class="n">columns</span><span class="o">!=</span><span class="s">&#39;Daily TO&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">asset_wt_df</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;asset_wt_df&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">cumulative_turnover</span><span class="p">(</span><span class="n">alloc_df</span><span class="p">,</span> <span class="n">asset_wt_df</span><span class="p">),</span> 
+<span class="gp">... </span>   <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;cumulative_turnover&#39;</span><span class="p">,</span> <span class="s">&#39;S&amp;P 500&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>marginal contributions to risk and risk contribution calcs</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mctr_prices</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mctr_manual</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;mctr_results&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;BSV&#39;</span><span class="p">,</span><span class="s">&#39;VBK&#39;</span><span class="p">,</span><span class="s">&#39;VBR&#39;</span><span class="p">,</span><span class="s">&#39;VOE&#39;</span><span class="p">,</span><span class="s">&#39;VOT&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mctr</span> <span class="o">=</span> <span class="n">mctr</span><span class="p">(</span><span class="n">mctr_prices</span><span class="p">[</span><span class="n">cols</span><span class="p">],</span> <span class="n">mctr_prices</span><span class="p">[</span><span class="s">&#39;Portfolio&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">mctr</span><span class="p">,</span> <span class="n">mctr_manual</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="n">cols</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span> <span class="p">[</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">],</span> <span class="n">index</span> <span class="o">=</span> <span class="n">cols</span><span class="p">,</span> 
+<span class="gp">... </span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;risk_contribution&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">risk_contribution</span><span class="p">(</span><span class="n">mctr</span><span class="p">,</span> <span class="n">weights</span><span class="p">),</span> 
+<span class="gp">... </span><span class="n">mctr_manual</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;risk_contribution&#39;</span><span class="p">,</span> <span class="p">:])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">risk_contribution_as_proportion</span><span class="p">(</span><span class="n">mctr</span><span class="p">,</span> <span class="n">weights</span><span class="p">),</span>
+<span class="gp">... </span><span class="n">mctr_manual</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;risk_contribution_as_proportion&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>These functions are already calculated or aren&#8217;t calculated in the spreadsheet</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">no_calc_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;rolling_ui&#39;</span><span class="p">,</span> <span class="s">&#39;active_returns&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;test_funs&#39;</span><span class="p">,</span> <span class="s">&#39;linear_returns&#39;</span><span class="p">,</span> <span class="s">&#39;log_returns&#39;</span><span class="p">,</span> <span class="s">&#39;generate_all_metrics&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;return_by_year&#39;</span><span class="p">,</span> <span class="s">&#39;cumulative_turnover&#39;</span><span class="p">,</span> <span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="s">&#39;risk_contribution&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;risk_contribution_as_proportion&#39;</span><span class="p">,</span> <span class="s">&#39;cvar_cf_ew&#39;</span><span class="p">,</span> <span class="s">&#39;cvar_median_np&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;cvar_mu_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_cf&#39;</span><span class="p">,</span> <span class="s">&#39;var_norm&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;series&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> <span class="s">&#39;benchmark&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span> 
 <span class="gp">... </span>   <span class="s">&#39;freq&#39;</span><span class="p">:</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="s">&#39;rfr&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s">&#39;p&#39;</span><span class="p">:</span> <span class="o">.</span><span class="mo">01</span> <span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">funs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">analyze</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">)</span>
@@ -1685,12 +1790,13 @@ Function names, and number of args.  Because the names of the functions are
 the same as the statistic in the <tt class="docutils literal"><span class="pre">results</span></tt> tab of
 <tt class="docutils literal"><span class="pre">../tests/test_analyze.xlsx</span></tt> I can use those key values to both call the
 function and reference the manually calculated value in the <tt class="docutils literal"><span class="pre">stats</span></tt> frame.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">fun</span> <span class="ow">in</span> <span class="n">funs</span><span class="p">:</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">trus</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">fun</span> <span class="ow">in</span> <span class="n">funs</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="k">if</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">no_calc_list</span><span class="p">):</span>
-<span class="gp">... </span>       <span class="k">print</span> <span class="s">&quot;analyzing &quot;</span><span class="o">+</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">... </span>       <span class="n">arg_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">args</span>
 <span class="gp">... </span>       <span class="n">in_vals</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arg_list</span><span class="p">])</span>
-<span class="gp">... </span>       <span class="n">put</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="o">*</span><span class="n">in_vals</span><span class="p">),</span> <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">])</span>
+<span class="gp">... </span>       <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="o">*</span><span class="n">in_vals</span><span class="p">),</span>
+<span class="gp">... </span>                                 <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1768,8 +1874,8 @@ in that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the upcapture of cumulative positive returns</p>
@@ -1791,7 +1897,7 @@ in that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
 <span class="pre">yearly</span></tt></p>
 </td>

@@ -245,6 +245,122 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="consecutive"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive">[docs]</a><span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="n">int_series</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Array logic (no for loops) and fast method to determine the number of</span>
+<span class="sd">    consecutive ones given a `pandas.Series` of integers Derived from `Stack Overflow</span>
+<span class="sd">    &lt;http://stackoverflow.com/questions/18196811/cumsum-reset-at-nan&gt;`_</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        int_series: :class:`pandas.Series` of integers as 0s or 1s</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.Series` of the consecutive ones</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">int_series</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="o">~</span><span class="n">n</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span> <span class="p">[</span><span class="mf">0.</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="p">)))</span> <span class="p">,</span> <span class="n">index</span> <span class="o">=</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">int_series</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">d</span>
+    <span class="k">return</span> <span class="n">int_series</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="consecutive_downtick_performance"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive_downtick_performance">[docs]</a><span class="k">def</span> <span class="nf">consecutive_downtick_performance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a two column :class:`pandas.DataFrame` with columns `[&#39;outperformance&#39;,</span>
+<span class="sd">    &#39;num_downticks&#39;]` that shows the cumulative outperformance (in log returns) and</span>
+<span class="sd">    the `num_upticks` number of days the downtick lasted</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        series: :class:`pandas.Series` of asset prices</span>
+
+<span class="sd">        benchmark: :class:`pandas.Series` of prices to compare ``series`` against</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.DataFrame` of ``[&#39;outperformance&#39;,&#39;num_upticks&#39;]``.</span>
+<span class="sd">        Outperformance is in log returns and `num_downticks` the number of</span>
+<span class="sd">        consecutive downticks for which the outperformance was generated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dnticks</span> <span class="o">=</span> <span class="n">consecutive_downticks</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
+    <span class="n">series_dn</span><span class="p">,</span> <span class="n">bench_dn</span> <span class="o">=</span> <span class="n">series</span><span class="p">[</span><span class="n">dnticks</span><span class="o">.</span><span class="n">index</span><span class="p">],</span>  <span class="n">benchmark</span><span class="p">[</span><span class="n">dnticks</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">st</span><span class="p">,</span> <span class="n">fin</span> <span class="o">=</span> <span class="n">dnticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">dnticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">n_per</span> <span class="o">=</span> <span class="n">dnticks</span><span class="p">[</span><span class="n">fin</span><span class="p">]</span>
+    <span class="n">series_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">series_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">series_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+    <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
+                          <span class="s">&#39;num_downticks&#39;</span><span class="p">:</span><span class="n">n_per</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">series_rets</span><span class="p">,</span>
+                          <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="consecutive_downticks"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive_downticks">[docs]</a><span class="k">def</span> <span class="nf">consecutive_downticks</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Using the :func:`num_consecutive`, returns a :class:`pandas.Series` of the</span>
+<span class="sd">    consecutive downticks in the series</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        series: :class:`pandas.Series` of the asset prices</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.Series` of the consecutive downticks of the series</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">consecutive</span><span class="p">(</span> <span class="p">(</span><span class="n">series</span> <span class="o">&lt;</span> <span class="n">series</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">agg_ind</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">w</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">union_many</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+         <span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">w</span><span class="p">[</span><span class="n">agg_ind</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="consecutive_uptick_performance"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive_uptick_performance">[docs]</a><span class="k">def</span> <span class="nf">consecutive_uptick_performance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a two column :class:`pandas.DataFrame` with columns `[&#39;outperformance&#39;,</span>
+<span class="sd">    &#39;num_upticks&#39;]` that shows the cumulative outperformance (in log returns) and</span>
+<span class="sd">    the `num_upticks` number of days the uptick lasted</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        series: :class:`pandas.Series` of asset prices</span>
+
+<span class="sd">        benchmark: :class:`pandas.Series` of prices to compare ``series`` against</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.DataFrame` of ``[&#39;outperformance&#39;,&#39;num_upticks&#39;]``.</span>
+<span class="sd">        Outperformance is in log returns and num_upticks the number of consecutive</span>
+<span class="sd">        upticks for which the outperformance was generated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">upticks</span> <span class="o">=</span> <span class="n">consecutive_upticks</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
+    <span class="n">series_up</span><span class="p">,</span> <span class="n">bench_up</span> <span class="o">=</span> <span class="n">series</span><span class="p">[</span><span class="n">upticks</span><span class="o">.</span><span class="n">index</span><span class="p">],</span>  <span class="n">benchmark</span><span class="p">[</span><span class="n">upticks</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">st</span><span class="p">,</span> <span class="n">fin</span> <span class="o">=</span> <span class="n">upticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">upticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">n_per</span> <span class="o">=</span> <span class="n">upticks</span><span class="p">[</span><span class="n">fin</span><span class="p">]</span>
+    <span class="n">series_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">series_up</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">series_up</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+    <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_up</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_up</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
+                          <span class="s">&#39;num_upticks&#39;</span><span class="p">:</span><span class="n">n_per</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">series_rets</span><span class="p">,</span>
+                          <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="consecutive_upticks"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive_upticks">[docs]</a><span class="k">def</span> <span class="nf">consecutive_upticks</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Using the :func:`num_consecutive`, returns a :class:`pandas.Series` of the</span>
+<span class="sd">    consecutive upticks in the series with greater than 3 consecutive upticks</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        series: :class:`pandas.Series` of the asset prices</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.Series` of the consecutive downticks of the series</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">consecutive</span><span class="p">(</span> <span class="p">(</span><span class="n">series</span> <span class="o">&gt;</span> <span class="n">series</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">agg_ind</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">w</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">union_many</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+         <span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">w</span><span class="p">[</span><span class="n">agg_ind</span><span class="p">]</span>
+</div>
 <div class="viewcode-block" id="cvar_cf"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.cvar_cf">[docs]</a><span class="k">def</span> <span class="nf">cvar_cf</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="o">.</span><span class="mo">01</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CVaR (Expected Shortfall), using the `Cornish Fisher Approximation </span>
@@ -425,7 +541,7 @@
 
 <span class="sd">    .. note:: Calcluating Turnover</span>
 
-<span class="sd">    Let :math:`\\tau_j = ` Single Period period turnover for period :math:`j`,</span>
+<span class="sd">    Let :math:`\\tau_j =` Single Period period turnover for period :math:`j`,</span>
 <span class="sd">    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is</span>
 <span class="sd">    represented by :math:`\\omega_i`.</span>
 <span class="sd">    </span>
@@ -730,14 +846,12 @@
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            MCTR_i = \\sigma_i \\cdot \\rho_{i, P} \\\\</span>
-<span class="sd">            </span>
-<span class="sd">            \\textrm{where, }</span>
+<span class="sd">            MCTR_i &amp;= \\sigma_i \\cdot \\rho_{i, P} \\\\</span>
 
-<span class="sd">            \\sigma_i &amp;= \\textrm{volatility of asset } i</span>
+<span class="sd">            \\textrm{where, } \\\\</span>
 <span class="sd">            </span>
-<span class="sd">            \\rho_i &amp;= \\texrm{correlation of asset } i </span>
-<span class="sd">            </span>
+<span class="sd">            \\sigma_i &amp;= \\textrm{volatility of asset } i, \\\\</span>
+<span class="sd">            \\rho_i &amp;= \\textrm{correlation of asset } i</span>
 <span class="sd">            \\textrm{ with the Portfolio}</span>
 
 <span class="sd">    .. note:: Reference for Further Reading</span>
@@ -1268,9 +1382,9 @@
 
 <span class="sd">    :ARGS:</span>
 
-<span class="sd">        series: ``pandas.Series`` of prices</span>
+<span class="sd">        series: :class:`pandas.Series` of prices</span>
 
-<span class="sd">        benchmark: ``pandas.Series`` of prices to compare ``series`` against</span>
+<span class="sd">        benchmark: :class:`pandas.Series` of prices to compare ``series`` against</span>
 
 <span class="sd">    :RETURNS:</span>
 
@@ -1295,7 +1409,7 @@
 
 <span class="sd">    :ARGS:</span>
 
-<span class="sd">        series: ``pandas.Series`` of prices</span>
+<span class="sd">        series: :class:`pandas.Series` of prices</span>
 
 <span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
 <span class="sd">        yearly``</span>
@@ -1557,7 +1671,7 @@
 
 <span class="sd">    &gt;&gt;&gt; import pandas.util.testing as put</span>
 <span class="sd">    &gt;&gt;&gt; import inspect, analyze</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; f = pandas.ExcelFile(&#39;../tests/test_analyze.xlsx&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; man_calcs = f.parse(&#39;calcs&#39;, index_col = 0)</span>
 <span class="sd">    &gt;&gt;&gt; prices = man_calcs[[&#39;S&amp;P 500&#39;, &#39;VGTSX&#39;]]</span>
@@ -1567,18 +1681,20 @@
 <span class="sd">    &gt;&gt;&gt; put.assert_series_equal(man_calcs[&#39;VGTSX Lin Ret&#39;], </span>
 <span class="sd">    ...    linear_returns(prices[&#39;VGTSX&#39;]))</span>
 <span class="sd">    &gt;&gt;&gt; put.assert_series_equal(man_calcs[&#39;Active Return&#39;],</span>
-<span class="sd">    ...    analyze.active_returns(series = prices[&#39;VGTSX&#39;], </span>
+<span class="sd">    ...    analyze.active_returns(series = prices[&#39;VGTSX&#39;],</span>
 <span class="sd">    ...    benchmark = prices[&#39;S&amp;P 500&#39;]))</span>
 
-<span class="sd">    cumulative turnover calculation</span>
+<span class="sd">    Cumulative Turnover Calculation</span>
+
 <span class="sd">    &gt;&gt;&gt; alloc_df = f.parse(&#39;alloc_df&#39;, index_col = 0)</span>
 <span class="sd">    &gt;&gt;&gt; alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!=&#39;Daily TO&#39;]].dropna()</span>
 <span class="sd">    &gt;&gt;&gt; asset_wt_df = f.parse(&#39;asset_wt_df&#39;, index_col = 0)</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_almost_equal(cumulative_turnover(alloc_df, asset_wt_df), </span>
-<span class="sd">    ... stats.loc[&#39;cumulative_turnover&#39;, &#39;S&amp;P 500&#39;])</span>
-<span class="sd">    &gt;&gt;&gt; True</span>
+<span class="sd">    &gt;&gt;&gt; numpy.testing.assert_almost_equal(</span>
+<span class="sd">    ...    cumulative_turnover(alloc_df, asset_wt_df), </span>
+<span class="sd">    ...    stats.loc[&#39;cumulative_turnover&#39;, &#39;S&amp;P 500&#39;])</span>
 
 <span class="sd">    marginal contributions to risk and risk contribution calcs</span>
+
 <span class="sd">    &gt;&gt;&gt; mctr_prices = f.parse(&#39;mctr&#39;, index_col = 0)</span>
 <span class="sd">    &gt;&gt;&gt; mctr_manual = f.parse(&#39;mctr_results&#39;, index_col = 0)</span>
 <span class="sd">    &gt;&gt;&gt; cols = [&#39;BSV&#39;,&#39;VBK&#39;,&#39;VBR&#39;,&#39;VOE&#39;,&#39;VOT&#39;]</span>
@@ -1590,14 +1706,15 @@
 <span class="sd">    ... mctr_manual.loc[&#39;risk_contribution&#39;, :])</span>
 <span class="sd">    &gt;&gt;&gt; put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),</span>
 <span class="sd">    ... mctr_manual.loc[&#39;risk_contribution_as_proportion&#39;])</span>
-<span class="sd">    </span>
+
 <span class="sd">    These functions are already calculated or aren&#39;t calculated in the spreadsheet</span>
+
 <span class="sd">    &gt;&gt;&gt; no_calc_list = [&#39;rolling_ui&#39;, &#39;active_returns&#39;,</span>
 <span class="sd">    ... &#39;test_funs&#39;, &#39;linear_returns&#39;, &#39;log_returns&#39;, &#39;generate_all_metrics&#39;,</span>
 <span class="sd">    ... &#39;return_by_year&#39;, &#39;cumulative_turnover&#39;, &#39;mctr&#39;, &#39;risk_contribution&#39;,</span>
-<span class="sd">    ... &#39;risk_contribution_as_proportion&#39;, &#39;cvar_cf_ew&#39;, &#39;cvar_median_np&#39;,&#39;</span>
-<span class="sd">    ... &#39;cvar_mu_np&#39;, &#39;var_np&#39;]</span>
-<span class="sd">    </span>
+<span class="sd">    ... &#39;risk_contribution_as_proportion&#39;, &#39;cvar_cf_ew&#39;, &#39;cvar_median_np&#39;,</span>
+<span class="sd">    ... &#39;cvar_mu_np&#39;, &#39;var_np&#39;, &#39;var_cf&#39;, &#39;var_norm&#39;]</span>
+
 <span class="sd">    &gt;&gt;&gt; d = {&#39;series&#39;: prices[&#39;VGTSX&#39;], &#39;benchmark&#39;:prices[&#39;S&amp;P 500&#39;], </span>
 <span class="sd">    ...    &#39;freq&#39;: &#39;daily&#39;, &#39;rfr&#39;: 0.0, &#39;p&#39;: .01 }</span>
 <span class="sd">    &gt;&gt;&gt; funs = inspect.getmembers(analyze, inspect.isfunction)</span>
@@ -1608,12 +1725,14 @@
 <span class="sd">    ``../tests/test_analyze.xlsx`` I can use those key values to both call the</span>
 <span class="sd">    function and reference the manually calculated value in the ``stats`` frame.</span>
 
+<span class="sd">    &gt;&gt;&gt; trus = []</span>
 <span class="sd">    &gt;&gt;&gt; for fun in funs:</span>
 <span class="sd">    ...    if (fun[0][0] != &#39;_&#39;) and (fun[0] not in no_calc_list):</span>
-<span class="sd">    ...        print &quot;analyzing &quot;+fun[0]</span>
 <span class="sd">    ...        arg_list = inspect.getargspec(fun[1]).args</span>
 <span class="sd">    ...        in_vals = tuple([d[arg] for arg in arg_list])</span>
-<span class="sd">    ...        put.assert_almost_equal(fun[1](*in_vals), stats.loc[fun[0], &#39;VGTSX&#39;])</span>
+<span class="sd">    ...        numpy.testing.assert_almost_equal(fun[1](*in_vals),</span>
+<span class="sd">    ...                                  stats.loc[fun[0], &#39;VGTSX&#39;])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">None</span></div>
 </pre></div>

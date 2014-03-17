@@ -15,7 +15,7 @@ user experiences will be due to the ``Yahoo!`` API Calls.
 
 Fairly comprehensive examples can be found in the ``README`` section
 of this documentation, which also resides on the `Splash Page
-<http://www.github.com/benjaminmgross/grind-my-ass-ets>`_ of this
+<http://www.github.com/benjaminmgross/wealth-viz>`_ of this
 project's GitHub Repository.
 
 

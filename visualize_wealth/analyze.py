@@ -218,20 +218,27 @@ def consecutive_downtick_performance(series, benchmark):
         Outperformance is in log returns and `num_downticks` the number of
         consecutive downticks for which the outperformance was generated
     """
-    dnticks = consecutive_downticks(benchmark)
-    series_dn, bench_dn = series[dnticks.index],  benchmark[dnticks.index]
-    st, fin = dnticks == 0, (dnticks == 0).shift(-1).fillna(True)
-    n_per = dnticks[fin]
-    series_rets = numpy.log(numpy.divide(series_dn[fin], series_dn[st]))
-    bench_rets = numpy.log(numpy.divide(bench_dn[fin], bench_dn[st]))
-    return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
+    def _consecutive_downtick_performance(series, benchmark):
+        dnticks = consecutive_downticks(benchmark)
+        series_dn, bench_dn = series[dnticks.index],  benchmark[dnticks.index]
+        st, fin = dnticks == 0, (dnticks == 0).shift(-1).fillna(True)
+        n_per = dnticks[fin]
+        series_rets = numpy.log(numpy.divide(series_dn[fin], series_dn[st]))
+        bench_rets = numpy.log(numpy.divide(bench_dn[fin], bench_dn[st]))
+        return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
                           'num_downticks':n_per, series.name: series_rets,
                           benchmark.name: bench_rets})
+    if isinstance(benchmark, pandas.DataFrame):
+        return map(lambda x: _consecutive_downtick_performance(
+            series = series, benchmark = benchmark[x]), benchmark.columns)
+    else:
+        return _consecutive_downtick_performance(series = series,
+                                                 benchmark = benchmark)
 
 def consecutive_downticks(series):
     """
     Using the :func:`num_consecutive`, returns a :class:`pandas.Series` of the
-    consecutive downticks in the series
+    consecutive downticks in the series greater than three downticks
 
     :ARGS:
 
@@ -249,9 +256,9 @@ def consecutive_downticks(series):
 
 def consecutive_uptick_performance(series, benchmark):
     """
-    Returns a two column :class:`pandas.DataFrame` with columns `['outperformance',
-    'num_upticks']` that shows the cumulative outperformance (in log returns) and
-    the `num_upticks` number of days the uptick lasted
+    Returns a two column :class:`pandas.DataFrame` with columns ``['outperformance',
+    'num_upticks']`` that shows the cumulative outperformance (in log returns) and
+    the ``num_upticks`` number of days the uptick lasted
 
     :ARGS:
 
@@ -265,15 +272,22 @@ def consecutive_uptick_performance(series, benchmark):
         Outperformance is in log returns and num_upticks the number of consecutive
         upticks for which the outperformance was generated
     """
-    upticks = consecutive_upticks(benchmark)
-    series_up, bench_up = series[upticks.index],  benchmark[upticks.index]
-    st, fin = upticks == 0, (upticks == 0).shift(-1).fillna(True)
-    n_per = upticks[fin]
-    series_rets = numpy.log(numpy.divide(series_up[fin], series_up[st]))
-    bench_rets = numpy.log(numpy.divide(bench_up[fin], bench_up[st]))
-    return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
+    def _consecutive_uptick_performance(series, benchmark):
+        upticks = consecutive_upticks(benchmark)
+        series_up, bench_up = series[upticks.index],  benchmark[upticks.index]
+        st, fin = upticks == 0, (upticks == 0).shift(-1).fillna(True)
+        n_per = upticks[fin]
+        series_rets = numpy.log(numpy.divide(series_up[fin], series_up[st]))
+        bench_rets = numpy.log(numpy.divide(bench_up[fin], bench_up[st]))
+        return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
                           'num_upticks':n_per, series.name: series_rets,
                           benchmark.name: bench_rets})
+    if isinstance(benchmark, pandas.DataFrame):
+        return map(lambda x: _consecutive_uptick_performance(
+            series = series, benchmark = benchmark[x]), benchmark.columns)
+    else:
+        return _consecutive_uptick_performance(series = series,
+                                               benchmark = benchmark)
 
 def consecutive_upticks(series):
     """

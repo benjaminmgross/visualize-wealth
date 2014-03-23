@@ -928,38 +928,67 @@ def median_upcapture(series, benchmark):
 
 def r_squared(series, benchmark):
     """
-    Returns the R-Squared or `Coefficient of Determination <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_ by squaring the
-    correlation coefficient of the returns of the two series
+    Returns the R-Squared or `Coefficient of Determination
+    <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_ for a univariate
+    regression (does not adjust for more independent variables
+    :seealso:`r_squared_adjusted`
 
     :ARGS:
 
-        series: ``pandas.Series`` of prices
+        series: :class`pandas.Series` of prices
 
-        benchmark: ``pandas.Series of prices to regress ``series`` against
+        benchmark: :class`pandas.Series` of prices to regress ``series`` against
 
     :RETURNS:
 
         float: of the coefficient of variation
-
-    .. note:: Calculating R-Squared
-
-        .. math:: 
-
-           R^2 = \\rho_{s, b}^2 \\: \\textrm{where},
-
-           \\rho_{s, b} = \\textrm{correlation between series and benchmark log
-           returns}
-
     """
     def _r_squared(series, benchmark):
         series_rets = log_returns(series)
         bench_rets = log_returns(benchmark)        
-        return series_rets.corr(bench_rets)**2
+        series_rets = series_rets.sub( series_rets.mean() )
+        bench_rets = bench_rets.sub( bench_rets.mean() )
+
+        sse = ( (series_rets - bench_rets)**2).sum()
+        sst = ( (series_rets - series_rets.mean() )**2 ).sum()
+        return 1 - sse/sst
 
     if isinstance(benchmark, pandas.DataFrame):
         return benchmark.apply(lambda x: _r_squared(series, x))
     else:
         return _r_squared(series, benchmark)
+
+def r_squared_adjusted(series, benchmark, weights):
+    """
+    The Adjusted R-Squared that incorporates the number of independent variates
+    using the `Formula Found of Wikipedia
+    <http://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2>_`
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices
+
+        benchmark: :class:`pandas.DataFrame` of benchmark prices to explain the
+        returns of the ``series``
+
+        weights: :class:`pandas.Series` of weights to weight each column of the
+        benchmark
+
+    :RETURNS:
+
+        :class:float of the adjusted r-squared
+    """
+    series_rets = series.pct_change()
+    bench_rets = benchmark.pct_change()
+    series_rets = series_rets.sub( series_rets.mean() )
+    bench_rets = bench_rets.sub( bench_rets.mean() )
+
+    estimate = numpy.dot(bench_rets, weights)
+    sse = ( (estimate - series_rets)**2 ).sum()
+    sst = ( (series_rets - series_rets.mean() )**2 ).sum()
+    rsq = 1 - sse/sst
+    p, n = weights.shape[0], asset_rets.dropna().shape[0]
+    return rsq - (1 - rsq)*(float(p)/(n - p - 1))
 
 def risk_adjusted_excess_return(series, benchmark, rfr = 0., freq = 'daily'):
     """

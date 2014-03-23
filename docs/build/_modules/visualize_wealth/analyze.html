@@ -285,20 +285,27 @@
 <span class="sd">        Outperformance is in log returns and `num_downticks` the number of</span>
 <span class="sd">        consecutive downticks for which the outperformance was generated</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dnticks</span> <span class="o">=</span> <span class="n">consecutive_downticks</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
-    <span class="n">series_dn</span><span class="p">,</span> <span class="n">bench_dn</span> <span class="o">=</span> <span class="n">series</span><span class="p">[</span><span class="n">dnticks</span><span class="o">.</span><span class="n">index</span><span class="p">],</span>  <span class="n">benchmark</span><span class="p">[</span><span class="n">dnticks</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
-    <span class="n">st</span><span class="p">,</span> <span class="n">fin</span> <span class="o">=</span> <span class="n">dnticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">dnticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">n_per</span> <span class="o">=</span> <span class="n">dnticks</span><span class="p">[</span><span class="n">fin</span><span class="p">]</span>
-    <span class="n">series_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">series_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">series_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
-    <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
+    <span class="k">def</span> <span class="nf">_consecutive_downtick_performance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+        <span class="n">dnticks</span> <span class="o">=</span> <span class="n">consecutive_downticks</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
+        <span class="n">series_dn</span><span class="p">,</span> <span class="n">bench_dn</span> <span class="o">=</span> <span class="n">series</span><span class="p">[</span><span class="n">dnticks</span><span class="o">.</span><span class="n">index</span><span class="p">],</span>  <span class="n">benchmark</span><span class="p">[</span><span class="n">dnticks</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">st</span><span class="p">,</span> <span class="n">fin</span> <span class="o">=</span> <span class="n">dnticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">dnticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">n_per</span> <span class="o">=</span> <span class="n">dnticks</span><span class="p">[</span><span class="n">fin</span><span class="p">]</span>
+        <span class="n">series_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">series_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">series_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+        <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
                           <span class="s">&#39;num_downticks&#39;</span><span class="p">:</span><span class="n">n_per</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">series_rets</span><span class="p">,</span>
                           <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">})</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_consecutive_downtick_performance</span><span class="p">(</span>
+            <span class="n">series</span> <span class="o">=</span> <span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_consecutive_downtick_performance</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">series</span><span class="p">,</span>
+                                                 <span class="n">benchmark</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="consecutive_downticks"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive_downticks">[docs]</a><span class="k">def</span> <span class="nf">consecutive_downticks</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Using the :func:`num_consecutive`, returns a :class:`pandas.Series` of the</span>
-<span class="sd">    consecutive downticks in the series</span>
+<span class="sd">    consecutive downticks in the series greater than three downticks</span>
 
 <span class="sd">    :ARGS:</span>
 
@@ -316,9 +323,9 @@
 </div>
 <div class="viewcode-block" id="consecutive_uptick_performance"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive_uptick_performance">[docs]</a><span class="k">def</span> <span class="nf">consecutive_uptick_performance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a two column :class:`pandas.DataFrame` with columns `[&#39;outperformance&#39;,</span>
-<span class="sd">    &#39;num_upticks&#39;]` that shows the cumulative outperformance (in log returns) and</span>
-<span class="sd">    the `num_upticks` number of days the uptick lasted</span>
+<span class="sd">    Returns a two column :class:`pandas.DataFrame` with columns ``[&#39;outperformance&#39;,</span>
+<span class="sd">    &#39;num_upticks&#39;]`` that shows the cumulative outperformance (in log returns) and</span>
+<span class="sd">    the ``num_upticks`` number of days the uptick lasted</span>
 
 <span class="sd">    :ARGS:</span>
 
@@ -332,15 +339,22 @@
 <span class="sd">        Outperformance is in log returns and num_upticks the number of consecutive</span>
 <span class="sd">        upticks for which the outperformance was generated</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">upticks</span> <span class="o">=</span> <span class="n">consecutive_upticks</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
-    <span class="n">series_up</span><span class="p">,</span> <span class="n">bench_up</span> <span class="o">=</span> <span class="n">series</span><span class="p">[</span><span class="n">upticks</span><span class="o">.</span><span class="n">index</span><span class="p">],</span>  <span class="n">benchmark</span><span class="p">[</span><span class="n">upticks</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
-    <span class="n">st</span><span class="p">,</span> <span class="n">fin</span> <span class="o">=</span> <span class="n">upticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">upticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">n_per</span> <span class="o">=</span> <span class="n">upticks</span><span class="p">[</span><span class="n">fin</span><span class="p">]</span>
-    <span class="n">series_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">series_up</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">series_up</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
-    <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_up</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_up</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
+    <span class="k">def</span> <span class="nf">_consecutive_uptick_performance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
+        <span class="n">upticks</span> <span class="o">=</span> <span class="n">consecutive_upticks</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>
+        <span class="n">series_up</span><span class="p">,</span> <span class="n">bench_up</span> <span class="o">=</span> <span class="n">series</span><span class="p">[</span><span class="n">upticks</span><span class="o">.</span><span class="n">index</span><span class="p">],</span>  <span class="n">benchmark</span><span class="p">[</span><span class="n">upticks</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">st</span><span class="p">,</span> <span class="n">fin</span> <span class="o">=</span> <span class="n">upticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">upticks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">n_per</span> <span class="o">=</span> <span class="n">upticks</span><span class="p">[</span><span class="n">fin</span><span class="p">]</span>
+        <span class="n">series_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">series_up</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">series_up</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+        <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_up</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_up</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
                           <span class="s">&#39;num_upticks&#39;</span><span class="p">:</span><span class="n">n_per</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">series_rets</span><span class="p">,</span>
                           <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">})</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_consecutive_uptick_performance</span><span class="p">(</span>
+            <span class="n">series</span> <span class="o">=</span> <span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_consecutive_uptick_performance</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">series</span><span class="p">,</span>
+                                               <span class="n">benchmark</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="consecutive_upticks"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.consecutive_upticks">[docs]</a><span class="k">def</span> <span class="nf">consecutive_upticks</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -981,8 +995,7 @@
 </div>
 <div class="viewcode-block" id="r_squared"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.r_squared">[docs]</a><span class="k">def</span> <span class="nf">r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the R-Squared or `Coefficient of Determination &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination&gt;`_ by squaring the</span>
-<span class="sd">    correlation coefficient of the returns of the two series</span>
+<span class="sd">    Returns the R-Squared or `Coefficient of Determination &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination&gt;`_ </span>
 
 <span class="sd">    :ARGS:</span>
 
@@ -993,21 +1006,16 @@
 <span class="sd">    :RETURNS:</span>
 
 <span class="sd">        float: of the coefficient of variation</span>
-
-<span class="sd">    .. note:: Calculating R-Squared</span>
-
-<span class="sd">        .. math:: </span>
-
-<span class="sd">           R^2 = \\rho_{s, b}^2 \\: \\textrm{where},</span>
-
-<span class="sd">           \\rho_{s, b} = \\textrm{correlation between series and benchmark log</span>
-<span class="sd">           returns}</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
         <span class="n">series_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
         <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">benchmark</span><span class="p">)</span>        
-        <span class="k">return</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">series_rets</span> <span class="o">=</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="p">)</span>
+        <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">bench_rets</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span> <span class="n">bench_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="p">)</span>
+
+        <span class="n">sse</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">series_rets</span> <span class="o">-</span> <span class="n">bench_rets</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">sst</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">series_rets</span> <span class="o">-</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sse</span><span class="o">/</span><span class="n">sst</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>

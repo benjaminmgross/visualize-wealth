@@ -887,7 +887,7 @@ consecutive downticks for which the outperformance was generated</p>
 <dt id="visualize_wealth.analyze.consecutive_downticks">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downticks</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downticks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the
-consecutive downticks in the series</p>
+consecutive downticks in the series greater than three downticks</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -903,9 +903,9 @@ consecutive downticks in the series</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_uptick_performance">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_uptick_performance</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_uptick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_uptick_performance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns <cite>[&#8216;outperformance&#8217;,
-&#8216;num_upticks&#8217;]</cite> that shows the cumulative outperformance (in log returns) and
-the <cite>num_upticks</cite> number of days the uptick lasted</p>
+<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns <tt class="docutils literal"><span class="pre">['outperformance',</span>
+<span class="pre">'num_upticks']</span></tt> that shows the cumulative outperformance (in log returns) and
+the <tt class="docutils literal"><span class="pre">num_upticks</span></tt> number of days the uptick lasted</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1450,8 +1450,7 @@ good to do a &#8220;sanity check&#8221; between <tt class="docutils literal"><sp
 <dl class="function">
 <dt id="visualize_wealth.analyze.r_squared">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r_squared</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r_squared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r_squared" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the R-Squared or <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a> by squaring the
-correlation coefficient of the returns of the two series</p>
+<dd><p>Returns the R-Squared or <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1465,13 +1464,6 @@ correlation coefficient of the returns of the two series</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>Calculating R-Squared</p>
-<div class="last math">
-\[R^2 = \rho_{s, b}^2 \: \textrm{where},\]\[\rho_{s, b} = \textrm{correlation between series and benchmark log
-returns}\]</div>
-</div>
 </dd></dl>
 
 <dl class="function">

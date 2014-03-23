@@ -976,7 +976,7 @@ def r_squared_adjusted(series, benchmark, weights):
 
     :RETURNS:
 
-        :class:float of the adjusted r-squared
+        :class:float of the adjusted r-squared`
     """
     series_rets = series.pct_change()
     bench_rets = benchmark.pct_change()

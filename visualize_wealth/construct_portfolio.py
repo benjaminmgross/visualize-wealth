@@ -458,21 +458,29 @@ def fetch_data_for_weight_allocation_method(weight_df):
     internet connectivity is required for the function to work properly
     """
     reader = pandas.io.data.DataReader
-    d_0 = weight_df.index.min()
+    beg_port = weight_df.index.min()
 
-    #dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls
+    #pull the data from Yahoo!
     d = {}
-    
     for ticker in weight_df.columns:
-        d[ticker] = reader(ticker, 'yahoo', start = d_0)
+        d[ticker] = reader(ticker, 'yahoo', start = beg_port)
 
-    return pandas.Panel(d)
+    #Check to make sure the earliest "full data date" is  before first trade
+    #beg_price = max(map(lambda x: price_panel.loc['Adj Close',
+    #    :, x].dropna().index.min(), price_panel.minor_axis))
 
-def fetch_data_for_initial_allocation_method(weight_df):
+    #if beg_port < beg_price:
+    #    print "WARNING: portfolio start date before first available price"
+
+    #filled_frame = price_panel.loc[:, beg_price:, :].ffill()
+
+    return pandas.Panel(d).ffill()
+
+def fetch_data_for_initial_allocation_method(initial_weights):
     """
     To be used with `The Initial Allocaiton Method 
-    <./readme.html#the-initial-allocation-rebalancing-method>`_ Given a weight_df
-    :class:`pandas.DataFrame` with index of tickers and values of initial allocation 
+    <./readme.html#the-initial-allocation-rebalancing-method>`_ Given initial_weights
+    :class:`pandas.Series` with index of tickers and values of initial allocation 
     percentages, fetch the data using Yahoo!'s API and return a panel of dimensions
     [tickers, dates, price data], where ``price_data`` has columns ``['Open', 
     'Close','Adj Close'].``
@@ -495,14 +503,13 @@ def fetch_data_for_initial_allocation_method(weight_df):
     """
     reader = pandas.io.data.DataReader
     d_0 = datetime.datetime(1990, 1, 1)
-
-    #dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls
     d = {}
-    
-    for ticker in weight_df.index:
-        d[ticker] = reader(ticker, 'yahoo', start = d_0)
+    #dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls
+    for ticker in initial_weights.index:
+        d[ticker]= reader(ticker, 'yahoo', start = d_0)
 
-    return pandas.Panel(d)
+    return  pandas.Panel(d).ffill()
+    
 
 def panel_from_weight_file(weight_df, price_panel, start_value):
     """

@@ -308,6 +308,43 @@ def consecutive_upticks(series):
          w[w.shift(-3) == 3].index])
     return w[agg_ind]
 
+def cumulative_turnover(alloc_df, asset_wt_df):
+    """
+    Provided an allocation frame (i.e. the weights to which the portfolio was 
+    rebalanced), and the historical asset weights,  return the cumulative turnover,
+    where turnover is defined below.  The first period is excluded of the
+    ``alloc_df`` is excluded as that represents the initial investment
+
+    :ARGS:
+
+        alloc_df: :class:`pandas.DataFrame` of the the weighting allocation that was
+        provided to construct the portfolio
+
+        asset_wt_df: :class:`pandas.DataFrame` of the actual historical weights of
+        each asset
+
+    :RETURNS:
+
+        cumulative turnover
+
+    .. note:: Calcluating Turnover
+
+    Let :math:`\\tau_j =` Single Period period turnover for period :math:`j`,
+    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is
+    represented by :math:`\\omega_i`.
+    
+    Then the single period :math:`j` turnover for all assets :math:`1,..,n` can be
+     calculated as:
+    
+    .. math::
+
+        \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}
+        
+    """
+    ind = alloc_df.index[1:]
+    return asset_wt_df.loc[ind, :].sub(
+        asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
+
 def cvar_cf(series, p = .01):
     """
     CVaR (Expected Shortfall), using the `Cornish Fisher Approximation 
@@ -465,44 +502,6 @@ def cvar_mu_np(series, p):
         return series.apply(lambda x: _cvar_mu_np(x, p = p))
     else:
         return _cvar_mu_np(series, p = p)
-
-
-def cumulative_turnover(alloc_df, asset_wt_df):
-    """
-    Provided an allocation frame (i.e. the weights to which the portfolio was 
-    rebalanced), and the historical asset weights,  return the cumulative turnover,
-    where turnover is defined below.  The first period is excluded of the
-    ``alloc_df`` is excluded as that represents the initial investment
-
-    :ARGS:
-
-        alloc_df: :class:`pandas.DataFrame` of the the weighting allocation that was
-        provided to construct the portfolio
-
-        asset_wt_df: :class:`pandas.DataFrame` of the actual historical weights of
-        each asset
-
-    :RETURNS:
-
-        cumulative turnover
-
-    .. note:: Calcluating Turnover
-
-    Let :math:`\\tau_j =` Single Period period turnover for period :math:`j`,
-    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is
-    represented by :math:`\\omega_i`.
-    
-    Then the single period :math:`j` turnover for all assets :math:`1,..,n` can be
-     calculated as:
-    
-    .. math::
-
-        \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}
-        
-    """
-    ind = alloc_df.index[1:]
-    return asset_wt_df.loc[ind, :].sub(
-        asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
 
 def downcapture(series, benchmark):
     """
@@ -769,7 +768,7 @@ def max_drawdown(series):
     else:
         return _max_drawdown(series)
 
-def mctr(asset_df, portfolio_df):
+def mctr(asset_df, portfolio_series):
     """
     Return a :class:`pandas.Series` of the marginal contribution for risk ("mctr") 
     for each of the assets that construct ``portfolio_df``
@@ -778,7 +777,7 @@ def mctr(asset_df, portfolio_df):
 
         asset_df: :class:`pandas.DataFrame` of asset prices
 
-        portfolio_df: :class:`pandas.Series` of the portfolio value that is 
+        portfolio_series: :class:`pandas.Series` of the portfolio value that is 
         consructed by ``asset_df``
 
     :RETURNS:
@@ -808,7 +807,7 @@ def mctr(asset_df, portfolio_df):
         the risk exposure calculation.
     """
     asset_rets = log_returns(asset_df)
-    port_rets = log_returns(portfolio_df)
+    port_rets = log_returns(portfolio_series)
     return asset_rets.corrwith(port_rets).mul(asset_rets.std())
 
 def mean_absolute_tracking_error(series, benchmark, freq = 'daily'):

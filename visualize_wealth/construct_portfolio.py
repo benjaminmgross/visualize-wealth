@@ -12,6 +12,7 @@ import numpy
 import pandas.io.data
 import datetime
 import urllib2
+import visualize_wealth.analyze as vwa
 
 def format_blotter(blotter_file):
     """
@@ -465,18 +466,21 @@ def fetch_data_for_weight_allocation_method(weight_df):
     for ticker in weight_df.columns:
         d[ticker] = reader(ticker, 'yahoo', start = beg_port)
 
+    panel = pandas.Panel(d)
+
     #Check to make sure the earliest "full data date" is  before first trade
-    #beg_price = max(map(lambda x: price_panel.loc['Adj Close',
-    #    :, x].dropna().index.min(), price_panel.minor_axis))
+    first_price = max(map(lambda x: panel.loc[x, :,
+        'Adj Close'].dropna().index.min(), panel.items))
 
-    #if beg_port < beg_price:
-    #    print "WARNING: portfolio start date before first available price"
+    #print the number of consectutive nans
+    for ticker in weight_df.columns:
+        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+            first_price:, 'Adj Close'].isnull().astype(int)).max())
 
-    #filled_frame = price_panel.loc[:, beg_price:, :].ffill()
+    return panel.ffill()
 
-    return pandas.Panel(d).ffill()
-
-def fetch_data_for_initial_allocation_method(initial_weights):
+def fetch_data_for_initial_allocation_method(initial_weights,
+                                             start_date = '01/01/2000'):
     """
     To be used with `The Initial Allocaiton Method 
     <./readme.html#the-initial-allocation-rebalancing-method>`_ Given initial_weights
@@ -502,13 +506,26 @@ def fetch_data_for_initial_allocation_method(initial_weights):
               ['Open', 'Close', 'Adj Close']
     """
     reader = pandas.io.data.DataReader
-    d_0 = datetime.datetime(1990, 1, 1)
+    d_0 = datetime.datetime.strptime(start_date, "%m/%d/%Y")
     d = {}
+
     #dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls
     for ticker in initial_weights.index:
         d[ticker]= reader(ticker, 'yahoo', start = d_0)
 
-    return  pandas.Panel(d).ffill()
+    panel = pandas.Panel(d)
+
+    #Check to make sure the earliest "full data date" is  before first trade
+    first_price = max(map(lambda x: panel.loc[x, :,
+        'Adj Close'].dropna().index.min(), panel.items))
+
+    #print the number of consectutive nans
+    for ticker in initial_weights.index:
+        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+            first_price:, 'Adj Close'].isnull().astype(int)).max())
+
+    return panel.ffill()
+ 
     
 
 def panel_from_weight_file(weight_df, price_panel, start_value):
@@ -540,6 +557,12 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 
     #these columns correspond to the columns in sheet 'value_calcs!' in "panel from
     #weight file test.xlsx"
+        #determine the first valid date and make it the start_date
+    first_valid = numpy.max(price_panel.loc[:, :, 'Close'].apply(
+            pandas.Series.first_valid_index))
+    
+    assert weight_df.index.min() >= first_valid, (
+            "first_valid index doesn't occur until after start_date")
     
     columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 'High', 'Low',
                'Close', 'Volume', 'Adj Close']

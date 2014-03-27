@@ -469,7 +469,7 @@ def cvar_median_np(series, p):
     def _cvar_median_np(series, p):
         series_rets = linear_returns(series)
         var = numpy.percentile(series_rets, p*100.)
-        return  series_rets[series_rets <= var].median()
+        return  -series_rets[series_rets <= var].median()
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_median_np(x, p = p))
@@ -495,8 +495,8 @@ def cvar_mu_np(series, p):
     """
     def _cvar_mu_np(series, p):
         series_rets = linear_returns(series)
-        var = numpy.percentile(losses, p*100.)
-        return  series_rets[series_rets <= var].mean()
+        var = numpy.percentile(series_rets, p*100.)
+        return  -series_rets[series_rets <= var].mean()
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _cvar_mu_np(x, p = p))

@@ -285,7 +285,7 @@ def consecutive_uptick_performance(series, benchmark):
                           'num_upticks':n_per, series.name: series_rets,
                           benchmark.name: bench_rets}, columns = [benchmark.name,
             series.name, 'outperformance', 'num_upticks'] )
-    
+
     if isinstance(benchmark, pandas.DataFrame):
         return map(lambda x: _consecutive_uptick_performance(
             series = series, benchmark = benchmark[x]), benchmark.columns)

@@ -226,8 +226,10 @@ def consecutive_downtick_performance(series, benchmark):
         series_rets = numpy.log(numpy.divide(series_dn[fin], series_dn[st]))
         bench_rets = numpy.log(numpy.divide(bench_dn[fin], bench_dn[st]))
         return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
-                          'num_downticks':n_per, series.name: series_rets,
-                          benchmark.name: bench_rets})
+            'num_downticks':n_per, series.name: series_rets,
+            benchmark.name: bench_rets}, columns = [benchmark.name,
+            series.name, 'outperformance', 'num_downticks'] )
+    
     if isinstance(benchmark, pandas.DataFrame):
         return map(lambda x: _consecutive_downtick_performance(
             series = series, benchmark = benchmark[x]), benchmark.columns)
@@ -281,7 +283,9 @@ def consecutive_uptick_performance(series, benchmark):
         bench_rets = numpy.log(numpy.divide(bench_up[fin], bench_up[st]))
         return pandas.DataFrame({'outperformance':series_rets.subtract(bench_rets),
                           'num_upticks':n_per, series.name: series_rets,
-                          benchmark.name: bench_rets})
+                          benchmark.name: bench_rets}, columns = [benchmark.name,
+            series.name, 'outperformance', 'num_upticks'] )
+    
     if isinstance(benchmark, pandas.DataFrame):
         return map(lambda x: _consecutive_uptick_performance(
             series = series, benchmark = benchmark[x]), benchmark.columns)

@@ -461,12 +461,10 @@ def fetch_data_for_weight_allocation_method(weight_df):
     reader = pandas.io.data.DataReader
     beg_port = weight_df.index.min()
 
+    
     #pull the data from Yahoo!
-    d = {}
-    for ticker in weight_df.columns:
-        d[ticker] = reader(ticker, 'yahoo', start = beg_port)
-
-    panel = pandas.Panel(d)
+    panel = reader(weight_df.columns, 'yahoo', start = beg_port).swapaxes(
+        axis1 = 0, axis2 = 2)
 
     #Check to make sure the earliest "full data date" is  before first trade
     first_price = max(map(lambda x: panel.loc[x, :,
@@ -507,13 +505,9 @@ def fetch_data_for_initial_allocation_method(initial_weights,
     """
     reader = pandas.io.data.DataReader
     d_0 = datetime.datetime.strptime(start_date, "%m/%d/%Y")
-    d = {}
-
-    #dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls
-    for ticker in initial_weights.index:
-        d[ticker]= reader(ticker, 'yahoo', start = d_0)
-
-    panel = pandas.Panel(d)
+    
+    panel = reader(initial_weights.index, 'yahoo', start = d_0).swapaxes(
+        axis1 = 0, axis2 = 2)
 
     #Check to make sure the earliest "full data date" is  before first trade
     first_price = max(map(lambda x: panel.loc[x, :,
@@ -525,8 +519,6 @@ def fetch_data_for_initial_allocation_method(initial_weights,
             first_price:, 'Adj Close'].isnull().astype(int)).max())
 
     return panel.ffill()
- 
-    
 
 def panel_from_weight_file(weight_df, price_panel, start_value):
     """

@@ -461,10 +461,16 @@ def fetch_data_for_weight_allocation_method(weight_df):
     reader = pandas.io.data.DataReader
     beg_port = weight_df.index.min()
 
+    d = {}
+    for ticker in weight_df.columns:
+        try:
+            d[ticker] = reader(ticker, 'yahoo', start = beg_port)
+        except:
+            print "didn't work for "+ticker+"!"
     
     #pull the data from Yahoo!
-    panel = reader(weight_df.columns, 'yahoo', start = beg_port).swapaxes(
-        axis1 = 0, axis2 = 2)
+    
+    panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is  before first trade
     first_price = max(map(lambda x: panel.loc[x, :,
@@ -489,8 +495,8 @@ def fetch_data_for_initial_allocation_method(initial_weights,
 
     :ARGS:
  
-        weight_df: a :class:`pandas.DataFrame` with dates as index and tickers as
-         columns
+        initial_weights :class:`pandas.Series` with tickers as index and weights as
+        values
 
     :RETURNS:
 
@@ -505,9 +511,15 @@ def fetch_data_for_initial_allocation_method(initial_weights,
     """
     reader = pandas.io.data.DataReader
     d_0 = datetime.datetime.strptime(start_date, "%m/%d/%Y")
+
+    d = {}
+    for ticker in initial_weights.index:
+        try:
+            d[ticker] = reader(ticker, 'yahoo', start  = d_0)
+        except:
+            print "Didn't work for "+ticker+"!"
     
-    panel = reader(initial_weights.index, 'yahoo', start = d_0).swapaxes(
-        axis1 = 0, axis2 = 2)
+    panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is  before first trade
     first_price = max(map(lambda x: panel.loc[x, :,

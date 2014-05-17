@@ -293,8 +293,10 @@
         <span class="n">series_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">series_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">series_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
         <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_dn</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_dn</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
-                          <span class="s">&#39;num_downticks&#39;</span><span class="p">:</span><span class="n">n_per</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">series_rets</span><span class="p">,</span>
-                          <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">})</span>
+            <span class="s">&#39;num_downticks&#39;</span><span class="p">:</span><span class="n">n_per</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">series_rets</span><span class="p">,</span>
+            <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">},</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;outperformance&#39;</span><span class="p">,</span> <span class="s">&#39;num_downticks&#39;</span><span class="p">]</span> <span class="p">)</span>
+    
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_consecutive_downtick_performance</span><span class="p">(</span>
             <span class="n">series</span> <span class="o">=</span> <span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -348,7 +350,9 @@
         <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">bench_up</span><span class="p">[</span><span class="n">fin</span><span class="p">],</span> <span class="n">bench_up</span><span class="p">[</span><span class="n">st</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;outperformance&#39;</span><span class="p">:</span><span class="n">series_rets</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">),</span>
                           <span class="s">&#39;num_upticks&#39;</span><span class="p">:</span><span class="n">n_per</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">series_rets</span><span class="p">,</span>
-                          <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">})</span>
+                          <span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">bench_rets</span><span class="p">},</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">benchmark</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;outperformance&#39;</span><span class="p">,</span> <span class="s">&#39;num_upticks&#39;</span><span class="p">]</span> <span class="p">)</span>
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_consecutive_uptick_performance</span><span class="p">(</span>
             <span class="n">series</span> <span class="o">=</span> <span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -374,6 +378,43 @@
         <span class="p">[</span><span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
          <span class="n">w</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">w</span><span class="p">[</span><span class="n">agg_ind</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="cumulative_turnover"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.cumulative_turnover">[docs]</a><span class="k">def</span> <span class="nf">cumulative_turnover</span><span class="p">(</span><span class="n">alloc_df</span><span class="p">,</span> <span class="n">asset_wt_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provided an allocation frame (i.e. the weights to which the portfolio was </span>
+<span class="sd">    rebalanced), and the historical asset weights,  return the cumulative turnover,</span>
+<span class="sd">    where turnover is defined below.  The first period is excluded of the</span>
+<span class="sd">    ``alloc_df`` is excluded as that represents the initial investment</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        alloc_df: :class:`pandas.DataFrame` of the the weighting allocation that was</span>
+<span class="sd">        provided to construct the portfolio</span>
+
+<span class="sd">        asset_wt_df: :class:`pandas.DataFrame` of the actual historical weights of</span>
+<span class="sd">        each asset</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        cumulative turnover</span>
+
+<span class="sd">    .. note:: Calcluating Turnover</span>
+
+<span class="sd">    Let :math:`\\tau_j =` Single Period period turnover for period :math:`j`,</span>
+<span class="sd">    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is</span>
+<span class="sd">    represented by :math:`\\omega_i`.</span>
+<span class="sd">    </span>
+<span class="sd">    Then the single period :math:`j` turnover for all assets :math:`1,..,n` can be</span>
+<span class="sd">     calculated as:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">alloc_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">asset_wt_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ind</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="n">asset_wt_df</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ind</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="cvar_cf"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.cvar_cf">[docs]</a><span class="k">def</span> <span class="nf">cvar_cf</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="o">.</span><span class="mo">01</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -499,7 +540,7 @@
     <span class="k">def</span> <span class="nf">_cvar_median_np</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="n">series_rets</span> <span class="o">=</span> <span class="n">linear_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
         <span class="n">var</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">series_rets</span><span class="p">,</span> <span class="n">p</span><span class="o">*</span><span class="mf">100.</span><span class="p">)</span>
-        <span class="k">return</span>  <span class="n">series_rets</span><span class="p">[</span><span class="n">series_rets</span> <span class="o">&lt;=</span> <span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+        <span class="k">return</span>  <span class="o">-</span><span class="n">series_rets</span><span class="p">[</span><span class="n">series_rets</span> <span class="o">&lt;=</span> <span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_cvar_median_np</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">))</span>
@@ -525,51 +566,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_cvar_mu_np</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="n">series_rets</span> <span class="o">=</span> <span class="n">linear_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
-        <span class="n">var</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">p</span><span class="o">*</span><span class="mf">100.</span><span class="p">)</span>
-        <span class="k">return</span>  <span class="n">series_rets</span><span class="p">[</span><span class="n">series_rets</span> <span class="o">&lt;=</span> <span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">series_rets</span><span class="p">,</span> <span class="n">p</span><span class="o">*</span><span class="mf">100.</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="o">-</span><span class="n">series_rets</span><span class="p">[</span><span class="n">series_rets</span> <span class="o">&lt;=</span> <span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_cvar_mu_np</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_cvar_mu_np</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">)</span>
-
-</div>
-<div class="viewcode-block" id="cumulative_turnover"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.cumulative_turnover">[docs]</a><span class="k">def</span> <span class="nf">cumulative_turnover</span><span class="p">(</span><span class="n">alloc_df</span><span class="p">,</span> <span class="n">asset_wt_df</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provided an allocation frame (i.e. the weights to which the portfolio was </span>
-<span class="sd">    rebalanced), and the historical asset weights,  return the cumulative turnover,</span>
-<span class="sd">    where turnover is defined below.  The first period is excluded of the</span>
-<span class="sd">    ``alloc_df`` is excluded as that represents the initial investment</span>
-
-<span class="sd">    :ARGS:</span>
-
-<span class="sd">        alloc_df: :class:`pandas.DataFrame` of the the weighting allocation that was</span>
-<span class="sd">        provided to construct the portfolio</span>
-
-<span class="sd">        asset_wt_df: :class:`pandas.DataFrame` of the actual historical weights of</span>
-<span class="sd">        each asset</span>
-
-<span class="sd">    :RETURNS:</span>
-
-<span class="sd">        cumulative turnover</span>
-
-<span class="sd">    .. note:: Calcluating Turnover</span>
-
-<span class="sd">    Let :math:`\\tau_j =` Single Period period turnover for period :math:`j`,</span>
-<span class="sd">    and assets :math:`i = 1,:2,:...:,n`, each whose respective portfolio weight is</span>
-<span class="sd">    represented by :math:`\\omega_i`.</span>
-<span class="sd">    </span>
-<span class="sd">    Then the single period :math:`j` turnover for all assets :math:`1,..,n` can be</span>
-<span class="sd">     calculated as:</span>
-<span class="sd">    </span>
-<span class="sd">    .. math::</span>
-
-<span class="sd">        \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}</span>
-<span class="sd">        </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ind</span> <span class="o">=</span> <span class="n">alloc_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="k">return</span> <span class="n">asset_wt_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ind</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
-        <span class="n">asset_wt_df</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ind</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="downcapture"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.downcapture">[docs]</a><span class="k">def</span> <span class="nf">downcapture</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -836,7 +839,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_max_drawdown</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="mctr"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.mctr">[docs]</a><span class="k">def</span> <span class="nf">mctr</span><span class="p">(</span><span class="n">asset_df</span><span class="p">,</span> <span class="n">portfolio_df</span><span class="p">):</span>
+<div class="viewcode-block" id="mctr"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.mctr">[docs]</a><span class="k">def</span> <span class="nf">mctr</span><span class="p">(</span><span class="n">asset_df</span><span class="p">,</span> <span class="n">portfolio_series</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a :class:`pandas.Series` of the marginal contribution for risk (&quot;mctr&quot;) </span>
 <span class="sd">    for each of the assets that construct ``portfolio_df``</span>
@@ -845,7 +848,7 @@
 
 <span class="sd">        asset_df: :class:`pandas.DataFrame` of asset prices</span>
 
-<span class="sd">        portfolio_df: :class:`pandas.Series` of the portfolio value that is </span>
+<span class="sd">        portfolio_series: :class:`pandas.Series` of the portfolio value that is </span>
 <span class="sd">        consructed by ``asset_df``</span>
 
 <span class="sd">    :RETURNS:</span>
@@ -875,7 +878,7 @@
 <span class="sd">        the risk exposure calculation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">asset_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">asset_df</span><span class="p">)</span>
-    <span class="n">port_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">portfolio_df</span><span class="p">)</span>
+    <span class="n">port_rets</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">portfolio_series</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">asset_rets</span><span class="o">.</span><span class="n">corrwith</span><span class="p">(</span><span class="n">port_rets</span><span class="p">)</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">asset_rets</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
 </div>
 <div class="viewcode-block" id="mean_absolute_tracking_error"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.mean_absolute_tracking_error">[docs]</a><span class="k">def</span> <span class="nf">mean_absolute_tracking_error</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
@@ -995,13 +998,16 @@
 </div>
 <div class="viewcode-block" id="r_squared"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.r_squared">[docs]</a><span class="k">def</span> <span class="nf">r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the R-Squared or `Coefficient of Determination &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination&gt;`_ </span>
+<span class="sd">    Returns the R-Squared or `Coefficient of Determination</span>
+<span class="sd">    &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination&gt;`_ for a univariate</span>
+<span class="sd">    regression (does not adjust for more independent variables</span>
+<span class="sd">    :seealso:`r_squared_adjusted`</span>
 
 <span class="sd">    :ARGS:</span>
 
-<span class="sd">        series: ``pandas.Series`` of prices</span>
+<span class="sd">        series: :class`pandas.Series` of prices</span>
 
-<span class="sd">        benchmark: ``pandas.Series of prices to regress ``series`` against</span>
+<span class="sd">        benchmark: :class`pandas.Series` of prices to regress ``series`` against</span>
 
 <span class="sd">    :RETURNS:</span>
 
@@ -1021,6 +1027,38 @@
         <span class="k">return</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_r_squared</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="r_squared_adjusted"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.r_squared_adjusted">[docs]</a><span class="k">def</span> <span class="nf">r_squared_adjusted</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Adjusted R-Squared that incorporates the number of independent variates</span>
+<span class="sd">    using the `Formula Found of Wikipedia</span>
+<span class="sd">    &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2&gt;_`</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        series: :class:`pandas.Series` of asset prices</span>
+
+<span class="sd">        benchmark: :class:`pandas.DataFrame` of benchmark prices to explain the</span>
+<span class="sd">        returns of the ``series``</span>
+
+<span class="sd">        weights: :class:`pandas.Series` of weights to weight each column of the</span>
+<span class="sd">        benchmark</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:float of the adjusted r-squared`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">series_rets</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+    <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+    <span class="n">series_rets</span> <span class="o">=</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="p">)</span>
+    <span class="n">bench_rets</span> <span class="o">=</span> <span class="n">bench_rets</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span> <span class="n">bench_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="p">)</span>
+
+    <span class="n">estimate</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">bench_rets</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+    <span class="n">sse</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">estimate</span> <span class="o">-</span> <span class="n">series_rets</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">sst</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">series_rets</span> <span class="o">-</span> <span class="n">series_rets</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">rsq</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sse</span><span class="o">/</span><span class="n">sst</span>
+    <span class="n">p</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">asset_rets</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">rsq</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rsq</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="risk_adjusted_excess_return"><a class="viewcode-back" href="../../intro.html#visualize_wealth.analyze.risk_adjusted_excess_return">[docs]</a><span class="k">def</span> <span class="nf">risk_adjusted_excess_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

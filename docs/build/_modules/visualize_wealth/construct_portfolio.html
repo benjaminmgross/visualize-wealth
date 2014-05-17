@@ -79,6 +79,7 @@
 <span class="kn">import</span> <span class="nn">pandas.io.data</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">import</span> <span class="nn">visualize_wealth.analyze</span> <span class="kn">as</span> <span class="nn">vwa</span>
 
 <div class="viewcode-block" id="format_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.format_blotter">[docs]</a><span class="k">def</span> <span class="nf">format_blotter</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -525,29 +526,44 @@
 <span class="sd">    internet connectivity is required for the function to work properly</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">reader</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataReader</span>
-    <span class="n">d_0</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">beg_port</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 
-    <span class="c">#dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    
     <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">d_0</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">beg_port</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;didn&#39;t work for &quot;</span><span class="o">+</span><span class="n">ticker</span><span class="o">+</span><span class="s">&quot;!&quot;</span>
+    
+    <span class="c">#pull the data from Yahoo!</span>
+    
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="c">#Check to make sure the earliest &quot;full data date&quot; is  before first trade</span>
+    <span class="n">first_price</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:,</span>
+        <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">panel</span><span class="o">.</span><span class="n">items</span><span class="p">))</span>
+
+    <span class="c">#print the number of consectutive nans</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vwa</span><span class="o">.</span><span class="n">consecutive</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ticker</span><span class="p">,</span>
+            <span class="n">first_price</span><span class="p">:,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="fetch_data_for_initial_allocation_method"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_initial_allocation_method</span><span class="p">(</span><span class="n">weight_df</span><span class="p">):</span>
+<div class="viewcode-block" id="fetch_data_for_initial_allocation_method"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_initial_allocation_method</span><span class="p">(</span><span class="n">initial_weights</span><span class="p">,</span>
+                                             <span class="n">start_date</span> <span class="o">=</span> <span class="s">&#39;01/01/2000&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    To be used with `The Initial Allocaiton Method </span>
-<span class="sd">    &lt;./readme.html#the-initial-allocation-rebalancing-method&gt;`_ Given a weight_df</span>
-<span class="sd">    :class:`pandas.DataFrame` with index of tickers and values of initial allocation </span>
+<span class="sd">    &lt;./readme.html#the-initial-allocation-rebalancing-method&gt;`_ Given initial_weights</span>
+<span class="sd">    :class:`pandas.Series` with index of tickers and values of initial allocation </span>
 <span class="sd">    percentages, fetch the data using Yahoo!&#39;s API and return a panel of dimensions</span>
 <span class="sd">    [tickers, dates, price data], where ``price_data`` has columns ``[&#39;Open&#39;, </span>
 <span class="sd">    &#39;Close&#39;,&#39;Adj Close&#39;].``</span>
 
 <span class="sd">    :ARGS:</span>
 <span class="sd"> </span>
-<span class="sd">        weight_df: a :class:`pandas.DataFrame` with dates as index and tickers as</span>
-<span class="sd">         columns</span>
+<span class="sd">        initial_weights :class:`pandas.Series` with tickers as index and weights as</span>
+<span class="sd">        values</span>
 
 <span class="sd">    :RETURNS:</span>
 
@@ -561,15 +577,27 @@
 <span class="sd">              [&#39;Open&#39;, &#39;Close&#39;, &#39;Adj Close&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">reader</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataReader</span>
-    <span class="n">d_0</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">d_0</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="s">&quot;%m/</span><span class="si">%d</span><span class="s">/%Y&quot;</span><span class="p">)</span>
 
-    <span class="c">#dictionary to hold the ``pandas.DataFrames`` from the Yahoo! calls</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span>  <span class="o">=</span> <span class="n">d_0</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Didn&#39;t work for &quot;</span><span class="o">+</span><span class="n">ticker</span><span class="o">+</span><span class="s">&quot;!&quot;</span>
     
-    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">d_0</span><span class="p">)</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="c">#Check to make sure the earliest &quot;full data date&quot; is  before first trade</span>
+    <span class="n">first_price</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:,</span>
+        <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">panel</span><span class="o">.</span><span class="n">items</span><span class="p">))</span>
+
+    <span class="c">#print the number of consectutive nans</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vwa</span><span class="o">.</span><span class="n">consecutive</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ticker</span><span class="p">,</span>
+            <span class="n">first_price</span><span class="p">:,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="panel_from_weight_file"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.panel_from_weight_file">[docs]</a><span class="k">def</span> <span class="nf">panel_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -600,6 +628,12 @@
 
     <span class="c">#these columns correspond to the columns in sheet &#39;value_calcs!&#39; in &quot;panel from</span>
     <span class="c">#weight file test.xlsx&quot;</span>
+        <span class="c">#determine the first valid date and make it the start_date</span>
+    <span class="n">first_valid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">price_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">first_valid_index</span><span class="p">))</span>
+    
+    <span class="k">assert</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">first_valid</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s">&quot;first_valid index doesn&#39;t occur until after start_date&quot;</span><span class="p">)</span>
     
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">,</span> <span class="s">&#39;Asset Value&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">,</span> <span class="s">&#39;High&#39;</span><span class="p">,</span> <span class="s">&#39;Low&#39;</span><span class="p">,</span>
                <span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Volume&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>

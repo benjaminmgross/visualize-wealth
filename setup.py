@@ -9,5 +9,4 @@ setup(name='Visualize Wealth Open Source',
       author='Benjamin M. Gross',
       author_email='benjaminMgross@gmail.com',
       url='https://github.com/benjaminmgross/wealth-viz',
-      packages=['visualize_wealth'],
-     )
+      packages=['visualize_wealth'])

@@ -1,7 +1,8 @@
 .. _index:
 
 **********************************************************************************
-Why `Grind-my-assets <https://github.com/benjaminmgross/grind-my-ass-ets>`_ Exists
+Why `The Visualize Wealth Library
+ <https://github.com/benjaminmgross/wealth-viz>`_ Exists
 **********************************************************************************
 
 If you’re anything like me, you sit at home waiting with baited breath... nervously 

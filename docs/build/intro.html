@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html" />
     <link rel="next" title="README.md" href="readme.html" />
-    <link rel="prev" title="Why Grind-my-assets Exists" href="index.html" /> 
+    <link rel="prev" title="Be the Change" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,7 +42,7 @@
           <a href="readme.html" title="README.md"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Why Grind-my-assets Exists"
+          <a href="index.html" title="Be the Change"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -68,7 +68,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">Why Grind-my-assets Exists</a></p>
+                        title="previous chapter">Be the Change</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="readme.html"
                         title="next chapter">README.md</a></p>
@@ -344,9 +344,9 @@ of having a portfolio to understand how to anaylze one.</p>
 
 <dl class="function">
 <dt id="visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method">
-<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_initial_allocation_method</tt><big>(</big><em>weight_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_for_initial_allocation_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>To be used with <a class="reference external" href="./readme.html#the-initial-allocation-rebalancing-method">The Initial Allocaiton Method</a> Given a weight_df
-<tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with index of tickers and values of initial allocation 
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_for_initial_allocation_method</tt><big>(</big><em>initial_weights</em>, <em>start_date='01/01/2000'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_for_initial_allocation_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be used with <a class="reference external" href="./readme.html#the-initial-allocation-rebalancing-method">The Initial Allocaiton Method</a> Given initial_weights
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with index of tickers and values of initial allocation 
 percentages, fetch the data using Yahoo!&#8217;s API and return a panel of dimensions
 [tickers, dates, price data], where <tt class="docutils literal"><span class="pre">price_data</span></tt> has columns <tt class="docutils literal"><span class="pre">['Open',</span> 
 <span class="pre">'Close','Adj</span> <span class="pre">Close'].</span></tt></p>
@@ -354,11 +354,8 @@ percentages, fetch the data using Yahoo!&#8217;s API and return a panel of dimen
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><dl class="first docutils">
-<dt>weight_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and tickers as</dt>
-<dd><p class="first last">columns</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">initial_weights <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with tickers as index and weights as
+values</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> where:</p>
@@ -1319,7 +1316,7 @@ a positive drawdown value</p>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.mctr">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">mctr</tt><big>(</big><em>asset_df</em>, <em>portfolio_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#mctr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.mctr" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">mctr</tt><big>(</big><em>asset_df</em>, <em>portfolio_series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#mctr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.mctr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal contribution for risk (&#8220;mctr&#8221;) 
 for each of the assets that construct <tt class="docutils literal"><span class="pre">portfolio_df</span></tt></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1327,7 +1324,7 @@ for each of the assets that construct <tt class="docutils literal"><span class="
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">asset_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset prices</p>
-<p>portfolio_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the portfolio value that is 
+<p>portfolio_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the portfolio value that is 
 consructed by <tt class="docutils literal"><span class="pre">asset_df</span></tt></p>
 </td>
 </tr>
@@ -1450,16 +1447,42 @@ good to do a &#8220;sanity check&#8221; between <tt class="docutils literal"><sp
 <dl class="function">
 <dt id="visualize_wealth.analyze.r_squared">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r_squared</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r_squared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r_squared" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the R-Squared or <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a></p>
+<dd><p>Returns the R-Squared or <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a> for a univariate
+regression (does not adjust for more independent variables
+<a href="#id8"><span class="problematic" id="id9">:seealso:`r_squared_adjusted`</span></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span> <span class="pre">of</span> <span class="pre">prices</span> <span class="pre">to</span> <span class="pre">regress</span> <span class="pre">``series</span></tt> against</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: :class`pandas.Series` of prices</p>
+<p>benchmark: :class`pandas.Series` of prices to regress <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the coefficient of variation</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.r_squared_adjusted">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r_squared_adjusted</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>weights</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r_squared_adjusted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r_squared_adjusted" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Adjusted R-Squared that incorporates the number of independent variates
+using the <cite>Formula Found of Wikipedia
+&lt;http://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2&gt;_</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of benchmark prices to explain the
+returns of the <tt class="docutils literal"><span class="pre">series</span></tt></p>
+<p>weights: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights to weight each column of the
+benchmark</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">:class:float of the adjusted r-squared`</p>
 </td>
 </tr>
 </tbody>
@@ -2022,7 +2045,7 @@ $ pandoc README.md -f markdown -t rst -o docs/source/readme.rst
 </div>
 </div>
 <div class="section" id="build-sphinx-documentation">
-<span id="id13"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
+<span id="id15"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-python"><div class="highlight"><pre>#rebuild the package
 $ cd visualize_wealth
 $ python setup.py install
@@ -2033,7 +2056,7 @@ $ sphinx-build -b html docs/source/ docs/build/
 </div>
 </div>
 <div class="section" id="sphinx-customizations-in-conf-py">
-<span id="id14"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
+<span id="id16"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
 <p>Current customizations I use in order to make the docs look like they
 currently do</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="c">#use the sphinxdoc theme</span>
@@ -2067,7 +2090,7 @@ currently do</p>
           <a href="readme.html" title="README.md"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Why Grind-my-assets Exists"
+          <a href="index.html" title="Be the Change"
              >previous</a> |</li>
         <li><a href="index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li> 
       </ul>

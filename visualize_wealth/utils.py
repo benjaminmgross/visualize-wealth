@@ -46,6 +46,37 @@ def zipped_time_chunks(index, interval):
     fdop = index[numpy.append(True, ind[:-1])]
     return zip(fdop, ldop)
 
+def normalized_price(price_df):
+    """
+    Return the normalized price of a series
+
+    :ARGS:
+
+        price_df: :class:`pandas.Series` or :class:`pandas.DataFrame`
+
+    :RETURNS:
+        
+        same as the input
+    """
+    if isinstance(price_df, pandas.Series):
+
+        if pandas.isnull(price_df).any():
+            print "This series contains null values"
+            return
+        else:
+            return price_df.div(price_df[0])
+    
+    elif isinstance(price_df, pandas.DataFrame):
+        if pandas.isnull(price_df).any().any():
+            print "This DataFrame contains null values"
+            return
+        else:
+            return price_df.div(price_df.iloc[0, :] )
+    else:
+        print "Input must be pandas.Series or pandas.DataFrame"
+        return
+        
+
 def scipt_function(arg_1, arg_2):
 	return None
 

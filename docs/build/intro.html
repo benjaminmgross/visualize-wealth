@@ -2026,6 +2026,94 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </div>
 </dd></dl>
 
+<p>Full documentation for each of the functions of <tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></p>
+<span class="target" id="module-visualize_wealth.utils"></span><p>utils.py</p>
+<p>Created by Benjamin Gross on 5/15/2014</p>
+<p>A myriad of different utility functions often useful in the manipulation
+construction, &amp; examination of useful financial data</p>
+<dl class="function">
+<dt id="visualize_wealth.utils.first_valid_date">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">first_valid_date</tt><big>(</big><em>prices</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#first_valid_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.first_valid_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to determine the first valid date from a set of 
+different prices Can take either a <a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></a> of 
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame`s</span> <span class="pre">where</span> <span class="pre">each</span> <span class="pre">key</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">ticker's</span> <span class="pre">'Open',</span> 
+<span class="pre">'High',</span> <span class="pre">'Low',</span> <span class="pre">'Close',</span> <span class="pre">'Adj</span> <span class="pre">Close'</span> <span class="pre">or</span> <span class="pre">a</span> <span class="pre">single</span> 
+<span class="pre">:class:`pandas.DataFrame</span></tt> where each column is a different ticker</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">prices: either <tt class="xref py py-class docutils literal"><span class="pre">dictionary</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt></td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Timestamp</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.normalized_price">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">normalized_price</tt><big>(</big><em>price_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#normalized_price"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.normalized_price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the normalized price of a series</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">price_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt></td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">same as the input</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.tickers_to_dict">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">tickers_to_dict</tt><big>(</big><em>ticker_list</em>, <em>api='yahoo'</em>, <em>start='01/01/1990'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#tickers_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.tickers_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to return ticker data where the input is either a 
+ticker, or a list of tickers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> in the case of multiple tickers or 
+<tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> in the case of one ticker</p>
+<p>api: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> identifying which api to call the data 
+from.  Either &#8216;yahoo&#8217; or &#8216;google&#8217;</p>
+<p>start: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the desired start date</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">dictionary</span></tt> of (ticker, price_df) mappings or a
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> when the <tt class="docutils literal"><span class="pre">ticker_list</span></tt> is 
+<tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.zipped_time_chunks">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">zipped_time_chunks</tt><big>(</big><em>index</em>, <em>interval</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#zipped_time_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.zipped_time_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given different period intervals, return a zipped list of tuples
+of length &#8216;period_interval&#8217;, containing only full periods</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The function assumes indexes are of &#8216;daily_frequency&#8217;</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">index: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DatetimeIndex</span></tt></p>
+<p class="last">per_interval: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> either &#8216;monthly&#8217;, &#8216;quarterly&#8217;,
+or &#8216;yearly&#8217;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="sphinx-customizations">
 <h2>Sphinx Customizations<a class="headerlink" href="#sphinx-customizations" title="Permalink to this headline">¶</a></h2>

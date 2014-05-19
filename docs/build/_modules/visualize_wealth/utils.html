@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>visualize_wealth.utils &mdash; Visualize Wealth 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for visualize_wealth.utils</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">utils.py</span>
+
+<span class="sd">Created by Benjamin Gross on 5/15/2014</span>
+
+<span class="sd">A myriad of different utility functions often useful in the manipulation</span>
+<span class="sd">construction, &amp; examination of useful financial data</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<div class="viewcode-block" id="first_valid_date"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.first_valid_date">[docs]</a><span class="k">def</span> <span class="nf">first_valid_date</span><span class="p">(</span><span class="n">prices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function to determine the first valid date from a set of </span>
+<span class="sd">    different prices Can take either a :class:`dict` of </span>
+<span class="sd">    :class:`pandas.DataFrame`s where each key is a ticker&#39;s &#39;Open&#39;, </span>
+<span class="sd">    &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;, &#39;Adj Close&#39; or a single </span>
+<span class="sd">    :class:`pandas.DataFrame` where each column is a different ticker</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        prices: either :class:`dictionary` or :class:`pandas.DataFrame`</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.Timestamp` </span>
+<span class="sd">   &quot;&quot;&quot;</span>
+    <span class="n">iter_dict</span> <span class="o">=</span> <span class="p">{</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                  <span class="nb">dict</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">}</span> 
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">each_first</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                         <span class="n">iter_dict</span><span class="p">[</span> <span class="nb">type</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span> <span class="p">](</span><span class="n">prices</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">each_first</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;prices must be a DataFrame or dictionary&quot;</span>
+        <span class="k">return</span>
+</div>
+<div class="viewcode-block" id="tickers_to_dict"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.tickers_to_dict">[docs]</a><span class="k">def</span> <span class="nf">tickers_to_dict</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/1990&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility function to return ticker data where the input is either a </span>
+<span class="sd">    ticker, or a list of tickers.</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        ticker_list: :class:`list` in the case of multiple tickers or </span>
+<span class="sd">        :class:`str` in the case of one ticker</span>
+
+<span class="sd">        api: :class:`string` identifying which api to call the data </span>
+<span class="sd">        from.  Either &#39;yahoo&#39; or &#39;google&#39;</span>
+
+<span class="sd">        start: :class:`string` of the desired start date</span>
+<span class="sd">                </span>
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`dictionary` of (ticker, price_df) mappings or a</span>
+<span class="sd">        :class:`pandas.DataFrame` when the ``ticker_list`` is </span>
+<span class="sd">        :class:`str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataReader</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&quot;worked for &quot;</span> <span class="o">+</span> <span class="n">ticker</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;failed for &quot;</span> <span class="o">+</span> <span class="n">ticker</span>
+            <span class="k">return</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">__get_data</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="n">api</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">ticker_list</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">__get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="n">api</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span>
+
+</div>
+<div class="viewcode-block" id="zipped_time_chunks"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.zipped_time_chunks">[docs]</a><span class="k">def</span> <span class="nf">zipped_time_chunks</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given different period intervals, return a zipped list of tuples</span>
+<span class="sd">    of length &#39;period_interval&#39;, containing only full periods</span>
+
+<span class="sd">    .. note:: </span>
+
+<span class="sd">        The function assumes indexes are of &#39;daily_frequency&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    :ARGS:</span>
+<span class="sd">    </span>
+<span class="sd">        index: :class:`pandas.DatetimeIndex`</span>
+
+<span class="sd">        per_interval: :class:`string` either &#39;monthly&#39;, &#39;quarterly&#39;,</span>
+<span class="sd">        or &#39;yearly&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#create the time chunks</span>
+    <span class="c">#calculate raer for each of the time chunks</span>
+    <span class="n">time_d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;monthly&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> 
+              <span class="s">&#39;quarterly&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">quarter</span><span class="p">,</span>
+              <span class="s">&#39;yearly&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">year</span><span class="p">}</span>
+
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    
+    
+    <span class="k">if</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span> <span class="c">#The series started on the last day of period</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span> <span class="c">#So we can&#39;t get a Period</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="n">ldop</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+    <span class="n">fdop</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="n">ind</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fdop</span><span class="p">,</span> <span class="n">ldop</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="normalized_price"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.normalized_price">[docs]</a><span class="k">def</span> <span class="nf">normalized_price</span><span class="p">(</span><span class="n">price_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the normalized price of a series</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        price_df: :class:`pandas.Series` or :class:`pandas.DataFrame`</span>
+
+<span class="sd">    :RETURNS:</span>
+<span class="sd">        </span>
+<span class="sd">        same as the input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">price_df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">pandas</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">print</span> <span class="s">&quot;This series contains null values&quot;</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">price_df</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">price_df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pandas</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">print</span> <span class="s">&quot;This DataFrame contains null values&quot;</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">price_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Input must be pandas.Series or pandas.DataFrame&quot;</span>
+        <span class="k">return</span>
+        
+</div>
+<span class="k">def</span> <span class="nf">scipt_function</span><span class="p">(</span><span class="n">arg_1</span><span class="p">,</span> <span class="n">arg_2</span><span class="p">):</span>
+	<span class="k">return</span> <span class="bp">None</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">usage</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;usage instructions&quot;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;describe the function&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span><span class="p">,</span> 
+                                     <span class="n">usage</span> <span class="o">=</span> <span class="n">usage</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;name_1&#39;</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span> 
+                        <span class="n">help</span> <span class="o">=</span> <span class="s">&#39;describe input 1&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;name_2&#39;</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">,</span> 
+                        <span class="n">help</span> <span class="o">=</span> <span class="s">&quot;describe input 2&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">script_function</span><span class="p">(</span><span class="n">input_1</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">name_1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">input_2</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">name_2</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Visualize Wealth 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Benjamin M. Gross.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

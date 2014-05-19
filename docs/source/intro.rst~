@@ -109,11 +109,6 @@ Full documentation for each of the functions of :mod:`analyze`
 .. automodule:: visualize_wealth.analyze
    :members:
 
-Full documentation for each of the functions of :mod:`utils`
-
-.. automodule:: visualize_wealth.utils
-   :members:
-
 
 Sphinx Customizations
 =====================

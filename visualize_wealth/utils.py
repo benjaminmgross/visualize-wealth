@@ -13,6 +13,72 @@ import argparse
 import pandas
 import numpy
 
+def first_valid_date(prices):
+    """
+    Helper function to determine the first valid date from a set of 
+    different prices Can take either a :class:`dict` of 
+    :class:`pandas.DataFrame`s where each key is a ticker's 'Open', 
+    'High', 'Low', 'Close', 'Adj Close' or a single 
+    :class:`pandas.DataFrame` where each column is a different ticker
+
+    :ARGS:
+
+        prices: either :class:`dictionary` or :class:`pandas.DataFrame`
+
+    :RETURNS:
+
+        :class:`pandas.Timestamp` 
+   """
+    iter_dict = { pandas.DataFrame: lambda x: x.columns,
+                  dict: lambda x: x.keys() } 
+
+    try:
+        each_first = map(lambda x: prices[x].dropna().index.min(),
+                         iter_dict[ type(prices) ](prices) )
+        return max(each_first)
+    except KeyError:
+        print "prices must be a DataFrame or dictionary"
+        return
+
+def tickers_to_dict(ticker_list, api = 'yahoo', start = '01/01/1990'):
+    """
+    Utility function to return ticker data where the input is either a 
+    ticker, or a list of tickers.
+
+    :ARGS:
+
+        ticker_list: :class:`list` in the case of multiple tickers or 
+        :class:`str` in the case of one ticker
+
+        api: :class:`string` identifying which api to call the data 
+        from.  Either 'yahoo' or 'google'
+
+        start: :class:`string` of the desired start date
+                
+    :RETURNS:
+
+        :class:`dictionary` of (ticker, price_df) mappings or a
+        :class:`pandas.DataFrame` when the ``ticker_list`` is 
+        :class:`str`
+    """
+    def __get_data(ticker, api, start):
+        reader = pandas.io.data.DataReader
+        try:
+            data = reader(ticker, api, start = start)
+            print "worked for " + ticker
+            return data
+        except:
+            print "failed for " + ticker
+            return
+    if isinstance(ticker_list, (str, unicode)):
+        return __get_data(ticker_list, api = api, start = start)
+    else:
+        d = {}
+        for ticker in ticker_list:
+            d[ticker] = __get_data(ticker, api = api, start = start)
+    return d
+
+
 def zipped_time_chunks(index, interval):
     """
     Given different period intervals, return a zipped list of tuples

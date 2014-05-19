@@ -8,5 +8,6 @@
 
 """
 import analyze
+import asset_class
 import construct_portfolio
 import utils

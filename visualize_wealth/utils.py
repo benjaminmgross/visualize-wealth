@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-utils.py
+.. module:: utils.py
+   :synopsis: Helper fuctions and knick knacks for portfolio analysis
 
-Created by Benjamin Gross on 5/15/2014
-
-A myriad of different utility functions often useful in the manipulation
-construction, & examination of useful financial data
+.. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 """
 
 import argparse

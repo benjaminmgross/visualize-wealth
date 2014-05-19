@@ -55,7 +55,9 @@
 <li><a class="reference internal" href="#constructing-portfolios">Constructing portfolios</a></li>
 <li><a class="reference internal" href="#analyzing-portfolio-performance">Analyzing portfolio performance</a></li>
 <li><a class="reference internal" href="#construct-portfolio-py-documentation"><tt class="docutils literal"><span class="pre">construct_portfolio.py</span></tt> documentation</a></li>
+<li><a class="reference internal" href="#asset-class-py-documentation"><tt class="docutils literal"><span class="pre">asset_class.py</span></tt> documentation</a></li>
 <li><a class="reference internal" href="#analyze-py-documentation"><tt class="docutils literal"><span class="pre">analyze.py</span></tt> documentation</a></li>
+<li><a class="reference internal" href="#utils-py-documentation"><tt class="docutils literal"><span class="pre">utils.py</span></tt> documentation</a></li>
 <li><a class="reference internal" href="#sphinx-customizations">Sphinx Customizations</a><ul>
 <li><a class="reference internal" href="#convert-readme-md-to-rst-format">Convert <cite>README.md</cite> to <cite>.rst</cite> format</a></li>
 <li><a class="reference internal" href="#build-sphinx-documentation">Build Sphinx Documentation</a></li>
@@ -707,6 +709,196 @@ your strategy first begins, up until today.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">manual_calcs</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">],</span> <span class="n">portfolio</span><span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
+</dd></dl>
+
+</div>
+<div class="section" id="asset-class-py-documentation">
+<span id="asset-class-documentation"></span><h2><tt class="docutils literal"><span class="pre">asset_class.py</span></tt> documentation<a class="headerlink" href="#asset-class-py-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Full documentation for each of the functions of <tt class="xref py py-mod docutils literal"><span class="pre">asset-class</span></tt></p>
+<span class="target" id="module-visualize_wealth.asset_class"></span><span class="target" id="module-asset_class.py"></span><dl class="function">
+<dt id="visualize_wealth.asset_class.asset_class_and_subclass_by_interval">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">asset_class_and_subclass_by_interval</tt><big>(</big><em>series</em>, <em>interval</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#asset_class_and_subclass_by_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.asset_class_and_subclass_by_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aggregator function to determine the asset class for the entire 
+period, followed by asset subclass over intervals of <tt class="docutils literal"><span class="pre">interval.</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
+<p>interval: :class:string of the interval, currently only accepts 
+<tt class="docutils literal"><span class="pre">quarterly</span></tt> or <tt class="docutils literal"><span class="pre">annual</span></tt></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the asset_subclasses over period 
+interval</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>In an effort to ensure spurious asset classes aren&#8217;t chosen (for 
+instance, &#8216;US Equity&#8217; to be chosen for one quarter and then 
+&#8216;Alternatives&#8217; to be chosen in a different quarter, simply 
+because of   &#8220;similar asset performance&#8221;), the process of the 
+algorithm is:</p>
+<p>1. Determine the &#8220;Overall Asset Class&#8221; for the entire period of 
+the asset&#8217;s returns</p>
+<p class="last">2. Determine the subclass attributions over the rolling 
+interval of time</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.asset_class.asset_class_dict">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">asset_class_dict</tt><big>(</big><em>asset_class</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#asset_class_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.asset_class_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>All of the ticker and asset class information stored in dictionary 
+form for use by other functions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">asset_class: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of <tt class="docutils literal"><span class="pre">US</span> <span class="pre">Equity</span></tt>, <tt class="docutils literal"><span class="pre">Foreign</span> <span class="pre">Equity</span></tt>,
+<tt class="docutils literal"><span class="pre">Alternative</span></tt> or <tt class="docutils literal"><span class="pre">Fixed</span> <span class="pre">Income</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">:class:dict of the asset subclasses and respective tickers</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.asset_class.asset_subclass_by_interval">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">asset_subclass_by_interval</tt><big>(</big><em>series</em>, <em>interval</em>, <em>asset_class</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#asset_subclass_by_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.asset_subclass_by_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return asset sub class weightings that explain the asset returns 
+over interval periods of &#8220;interval.&#8221;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">asset_prices: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the asset for which 
+attribution will be done</p>
+<p>asset_class_prices: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset class 
+prices</p>
+<p>interval :class:string of the frequency interval &#8216;quarterly&#8217; 
+or &#8216;annual&#8217;</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of proportions of each asset class 
+that most explain the returns of the individual security</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.asset_class.best_fitting_weights">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">best_fitting_weights</tt><big>(</big><em>series</em>, <em>asset_class_prices</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#best_fitting_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.best_fitting_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the best fitting weights given a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of 
+asset prices and a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset class prices.  
+Can be used with the <tt class="xref py py-func docutils literal"><span class="pre">clean_dates()</span></tt> function to ensure an 
+intersection of the two indexes is being passed to the function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">asset_prices: m x 1 <tt class="xref py py-class docutils literal"><span class="pre">pandas.TimeSeries</span></tt> of asset_prices</p>
+<p>ac_prices: m x n <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> asset class (&#8220;ac&#8221;) 
+prices</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.TimeSeries</span></tt> of nonnegative weights for each 
+asset such that the r_squared from the regression of 
+<span class="math">\(Y ~ Xw + e\)</span> is maximized</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.asset_class.clean_dates">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">clean_dates</tt><big>(</big><em>arr_a</em>, <em>arr_b</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#clean_dates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.clean_dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intersection of two <tt class="xref py py-class docutils literal"><span class="pre">pandas</span></tt> objects, either a
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">arr_a: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt>
+arr_b: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt></td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DatetimeIndex</span></tt> of the intersection of the two 
+<tt class="xref py py-class docutils literal"><span class="pre">pandas</span></tt> objects</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.asset_class.get_asset_and_subclasses">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">get_asset_and_subclasses</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#get_asset_and_subclasses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.get_asset_and_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aggregator function that returns the overall asset class, and 
+proportion of subclasses attributed to the returns of <tt class="docutils literal"><span class="pre">series.</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the subclasses and asset class for 
+the entire time period</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.asset_class.get_asset_class">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">get_asset_class</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#get_asset_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.get_asset_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given as series of prices, find the most likely asset class of the 
+asset, based on r-squared attribution of return variance (i.e. 
+maximizing r-squared).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Functionality for Asset Allocation Funds</p>
+<p class="last">Current functionality only allows for a single asset class to 
+be chosen in an effort not to overfit the attribution of asset 
+returns.  This logic works well for &#8220;single asset class ETFs 
+and Mutual Funds&#8221; but not for multi-asset class strategies</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.asset_class.get_sub_classes">
+<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">get_sub_classes</tt><big>(</big><em>series</em>, <em>asset_class</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#get_sub_classes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.get_sub_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an the prices of a single asset an its overall asset class, 
+return the proportion of returns attribute to each asset class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
+<p>asset_class: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of either <tt class="docutils literal"><span class="pre">US</span> <span class="pre">Equity</span></tt>, 
+<tt class="docutils literal"><span class="pre">Foreign</span> <span class="pre">Equity</span></tt>, <tt class="docutils literal"><span class="pre">Alternative</span></tt>, or  <tt class="docutils literal"><span class="pre">Fixed</span> <span class="pre">Income</span></tt></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the subclasses and their 
+optimized proportion to explain the <tt class="docutils literal"><span class="pre">series</span></tt> returns over 
+the entire period.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -2026,12 +2218,11 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </div>
 </dd></dl>
 
+</div>
+<div class="section" id="utils-py-documentation">
+<span id="utils-documentation"></span><h2><tt class="docutils literal"><span class="pre">utils.py</span></tt> documentation<a class="headerlink" href="#utils-py-documentation" title="Permalink to this headline">¶</a></h2>
 <p>Full documentation for each of the functions of <tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></p>
-<span class="target" id="module-visualize_wealth.utils"></span><p>utils.py</p>
-<p>Created by Benjamin Gross on 5/15/2014</p>
-<p>A myriad of different utility functions often useful in the manipulation
-construction, &amp; examination of useful financial data</p>
-<dl class="function">
+<span class="target" id="module-visualize_wealth.utils"></span><span class="target" id="module-utils.py"></span><dl class="function">
 <dt id="visualize_wealth.utils.first_valid_date">
 <tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">first_valid_date</tt><big>(</big><em>prices</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#first_valid_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.first_valid_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function to determine the first valid date from a set of 

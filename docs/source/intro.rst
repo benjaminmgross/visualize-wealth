@@ -99,6 +99,16 @@ Full documentation for each of the functions of :mod:`construct-portfolio`
 .. automodule:: visualize_wealth.construct_portfolio
    :members:
 
+.. _asset-class-documentation:
+
+``asset_class.py`` documentation
+=================================
+
+Full documentation for each of the functions of :mod:`asset-class`
+
+.. automodule:: visualize_wealth.asset_class
+   :members:
+
 .. _analyze-documentation:
 
 ``analyze.py`` documentation
@@ -108,6 +118,11 @@ Full documentation for each of the functions of :mod:`analyze`
 
 .. automodule:: visualize_wealth.analyze
    :members:
+
+.. _utils-documentation:
+
+``utils.py`` documentation
+===========================
 
 Full documentation for each of the functions of :mod:`utils`
 

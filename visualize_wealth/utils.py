@@ -59,6 +59,39 @@ def tickers_to_dict(ticker_list, api = 'yahoo', start = '01/01/1990'):
         :class:`pandas.DataFrame` when the ``ticker_list`` is 
         :class:`str`
     """
+    if isinstance(ticker_list, (str, unicode)):
+        return __get_data(ticker_list, api = api, start = start)
+    else:
+        d = {}
+        for ticker in ticker_list:
+            d[ticker] = __get_data(ticker, api = api, start = start)
+    return d
+
+def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990', 
+                     join_col = 'Adj Close'):
+    """
+    Utility function to return ticker data where the input is either a 
+    ticker, or a list of tickers.
+
+    :ARGS:
+
+        ticker_list: :class:`list` in the case of multiple tickers or 
+        :class:`str` in the case of one ticker
+
+        api: :class:`string` identifying which api to call the data 
+        from.  Either 'yahoo' or 'google'
+
+        start: :class:`string` of the desired start date
+
+        join_col: :class:`string` to aggregate the 
+        :class:`pandas.DataFrame`
+                
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of (ticker, price_df) mappings or a
+        :class:`pandas.DataFrame` when the ``ticker_list`` is 
+        :class:`str`
+    """
     def __get_data(ticker, api, start):
         reader = pandas.io.data.DataReader
         try:
@@ -69,12 +102,13 @@ def tickers_to_dict(ticker_list, api = 'yahoo', start = '01/01/1990'):
             print "failed for " + ticker
             return
     if isinstance(ticker_list, (str, unicode)):
-        return __get_data(ticker_list, api = api, start = start)
+        return __get_data(ticker_list, api = api, start = start)[join_col]
     else:
         d = {}
         for ticker in ticker_list:
-            d[ticker] = __get_data(ticker, api = api, start = start)
-    return d
+            d[ticker] = __get_data(ticker, api = api, 
+                                   start = start)[join_col]
+    return pandas.DataFrame(d)
 
 
 def zipped_time_chunks(index, interval):
@@ -140,6 +174,31 @@ def normalized_price(price_df):
         print "Input must be pandas.Series or pandas.DataFrame"
         return
         
+def __get_data(ticker, api, start):
+    """
+    Helper function to get Yahoo! Data with exceptions built in and 
+    messages that confirm success for given tickers
+
+    ARGS:
+        
+        ticker: either a :class:`string` of a ticker or a :class:`list`
+        of tickers
+
+        api: :class:`string` the api from which to get the data, 
+        'yahoo'or 'google'
+
+        start: :class:`string` the start date to start the data 
+        series
+
+    """
+    reader = pandas.io.data.DataReader
+    try:
+        data = reader(ticker, api, start = start)
+        print "worked for " + ticker
+        return data
+    except:
+        print "failed for " + ticker
+        return
 
 def scipt_function(arg_1, arg_2):
 	return None

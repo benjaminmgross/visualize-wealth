@@ -288,6 +288,8 @@ Take a look at the portfolio series:
 
 ##ToDo List:
 
+###`construct_portfolio.py` ToDo
+
 * occassionally `generate_random_asset_path` will return with an Assertion Error
 
 * Add the following statistics to the `analyze.py` library:
@@ -295,6 +297,16 @@ Take a look at the portfolio series:
    - Treynor ratio: $$\\textrm{T.R.}\\triangleq \\frac{r_i - r_f}{\\beta{i}}$$
    - Information Ratio or Appraisal Ratio: $$\\textrm{I.R.} \\triangleq \\frac{\\alpha}{\\omega}$$, or absolute alpha / tracking error.  Other formulations include Jensens's Alpha / Idiosyncratic Vol
    - Up / Down beta (or [Dual-Beta](http://en.wikipedia.org/wiki/Dual-beta))
+
+###`asset_class.py` ToDo
+
+* Before there was no way to "determine if a fund was a multi-asset class fund"
+  and therefore the algorithm only worked with funds that were of one specific
+  broad asset class (US Equity, Int'l Equity, Fixed Income, Alternatives, etc.)
+
+    - Consider training a classification algorithm on multi-asset class portfolio
+	  strategies to determine when a fund is "multi-asset class" vs. single
+	  broad asset class
 
 * Best broad asset classes to determine "best fit portfolio"
 
@@ -304,7 +316,6 @@ Take a look at the portfolio series:
 |VBMFX   |Vanguard Total Bond Market    | 6/4/1990          |
 |VGTSX   |Vanguard Total Intl Stock     | 6/28/1996         |
 
-* ~~Change all the VaR & CVaR calculations to linear returns (some linear, some cc)~~
 
 
 * Rebuild Process:
@@ -317,3 +328,9 @@ Take a look at the portfolio series:
   
 	     $ sphinx-build -b html docs/source/ docs/build/
 
+* Sphinx will not reload changes made in `intro.rst` or the like
+
+  1. Go into `docs/source/_source` and delete all of the `*.txt` files
+  (currently, `intro.txt`, `readme.txt`, `index.txt`) and then re-run
+  the build
+  

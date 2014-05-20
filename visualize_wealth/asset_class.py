@@ -10,10 +10,10 @@
 import pandas
 import numpy
 import scipy.optimize as sopt
-import pandas.io.data as web
+import visualize_wealth.utils as utils
 import visualize_wealth.analyze as vwa
 
-def asset_class_and_subclass_by_interval(series, interval):
+def subclass_by_interval(series, interval):
     """
     Aggregator function to determine the asset class for the entire 
     period, followed by asset subclass over intervals of ``interval.``
@@ -38,20 +38,25 @@ def asset_class_and_subclass_by_interval(series, interval):
         because of   "similar asset performance"), the process of the 
         algorithm is:
 
-        1. Determine the "Overall Asset Class" for the entire period of 
-        the asset's returns
+            1. Determine the "Overall Asset Class" for the entire 
+            period of the asset's returns
 
-        2. Determine the subclass attributions over the rolling 
-        interval of time
+            2. Determine the subclass attributions over the rolling 
+            interval of time
 
     """
     asset_class = get_asset_class(series)
-    return asset_subclass_by_interval(series, interval, asset_class)
+    d_o = utils.first_valid_date(series)
+    ac_dict = asset_class_dict(asset_class)
+    benchmarks = utils.tickers_to_frame(ac_dict.values(), api ='yahoo',
+        start = d_o, join_col = 'Adj Close')
+    return subclass_helper_fn(series, benchmarks,  
+        interval, asset_class)
     
-def asset_subclass_by_interval(series, interval, asset_class):
+def subclass_helper_fn(series, benchmarks, interval, asset_class):
     """
-    Return asset sub class weightings that explain the asset returns 
-    over interval periods of "interval."
+    Return asset su class weightings that explain the asset returns 
+    over periods of "interval."
 
     :ARGS:
 
@@ -68,18 +73,11 @@ def asset_subclass_by_interval(series, interval, asset_class):
 
         :class:`pandas.DataFrame` of proportions of each asset class 
         that most explain the returns of the individual security
-    """
-    ac_dict = asset_class_dict(asset_class)
-    benchmark = web.DataReader(ac_dict.values(), 'yahoo',
-                               start = '01/01/2000')['Adj Close']
-    
+    """    
     ind = clean_dates(series, benchmark)
-    dt_dict = {'quarterly': lambda x: x.quarter, 
-               'annually': lambda x: x.year}
-    dts = numpy.append(
-        True, dt_dict[interval](ind[1:]) != dt_dict[interval](ind[:-1]) )
+    dts = utils.zipped_time_chunks(index = ind, interval = interval)
     weight_d  = {}
-    for beg, fin in zip(ind[dts][:-1], ind[dts][1:]):
+    for beg, fin in dts:
         weight_d[beg] = best_fitting_weights(
             series[beg:fin], benchmark.loc[beg:fin, :]).rename(
             index = {v:k for k, v in ac_dict.iteritems()})
@@ -187,31 +185,7 @@ def best_fitting_weights(series, asset_class_prices):
 
     return pandas.TimeSeries(normed, index = ac_rets.columns)
 
-def clean_dates(arr_a, arr_b):
-    """
-    Return the intersection of two :class:`pandas` objects, either a
-    :class:`pandas.Series` or a :class:`pandas.DataFrame`
-
-    :ARGS:
-
-        arr_a: :class:`pandas.DataFrame` or :class:`pandas.Series`
-        arr_b: :class:`pandas.DataFrame` or :class:`pandas.Series`
-
-    :RETURNS:
-
-        :class:`pandas.DatetimeIndex` of the intersection of the two 
-        :class:`pandas` objects
-    """
-    arr_a = arr_a.sort_index()
-    arr_a.dropna(inplace = True)
-    arr_b = arr_b.sort_index()
-    arr_b.dropna(inplace = True)
-    if arr_a.index.equals(arr_b.index) == False:
-        return arr_a.index & arr_b.index
-    else:
-        return arr_a.index
-
-def get_asset_and_subclasses(series):
+def get_asset_and_subclass(series):
     """
     Aggregator function that returns the overall asset class, and 
     proportion of subclasses attributed to the returns of ``series.``
@@ -226,7 +200,7 @@ def get_asset_and_subclasses(series):
         the entire time period
     """
     asset_class = get_asset_class(series)
-    sub_classes = get_sub_classes(series, asset_class)
+    sub_classes = get_subclass_helper_fn(series, asset_class)
     return sub_classes.append(
         pandas.Series([asset_class], ['Asset Class']))
 
@@ -252,7 +226,9 @@ def get_asset_class(series):
                'VGTSX':'Intl Equity', 'IYR':'Alternative', 
                'GLD':'Alternative', 'GSG':'Alternative',
                'WPS':'Alternative'}
-    data = web.DataReader(ac_dict.keys(), 'yahoo')['Adj Close']
+
+    data = utils.tickers_to_frame(ac_dict.keys(), api = 'yahoo',
+                                 join_col = 'Adj Close')
     rsq_d = {}
     for ticker in data.columns:
         ind = clean_dates(series, data[ticker])
@@ -260,7 +236,7 @@ def get_asset_class(series):
     rsq = pandas.Series(rsq_d)
     return ac_dict[rsq.argmax()]
     
-def get_sub_classes(series, asset_class):
+def get_subclass_helper_fn(series, asset_class):
     """
     Given an the prices of a single asset an its overall asset class, 
     return the proportion of returns attribute to each asset class
@@ -279,8 +255,9 @@ def get_sub_classes(series, asset_class):
         the entire period.
     """
     pairs = asset_class_dict(asset_class)
-    asset_class_prices = web.DataReader(pairs.values(), 'yahoo',
-                               start = '01/01/2000')['Adj Close']
+    d_o = utils.first_valid_date(series)
+    asset_class_prices = utils.tickers_to_frame(pairs.values(),
+        api = 'yahoo', start = d_o, join_col = 'Adj Close')
     ind = clean_dates(series, asset_class_prices)
     ret_series = best_fitting_weights(series[ind], 
                                       asset_class_prices.loc[ind, :])

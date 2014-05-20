@@ -11,6 +11,30 @@ import argparse
 import pandas
 import numpy
 
+def clean_date_intersection(arr_a, arr_b):
+    """
+    Return the intersection of two :class:`pandas` objects, either a
+    :class:`pandas.Series` or a :class:`pandas.DataFrame`
+
+    :ARGS:
+
+        arr_a: :class:`pandas.DataFrame` or :class:`pandas.Series`
+        arr_b: :class:`pandas.DataFrame` or :class:`pandas.Series`
+
+    :RETURNS:
+
+        :class:`pandas.DatetimeIndex` of the intersection of the two 
+        :class:`pandas` objects
+    """
+    arr_a = arr_a.sort_index()
+    arr_a.dropna(inplace = True)
+    arr_b = arr_b.sort_index()
+    arr_b.dropna(inplace = True)
+    if arr_a.index.equals(arr_b.index) == False:
+        return arr_a.index & arr_b.index
+    else:
+        return arr_a.index
+
 def first_valid_date(prices):
     """
     Helper function to determine the first valid date from a set of 
@@ -36,6 +60,36 @@ def first_valid_date(prices):
         return max(each_first)
     except KeyError:
         print "prices must be a DataFrame or dictionary"
+        return
+
+def normalized_price(price_df):
+    """
+    Return the normalized price of a series
+
+    :ARGS:
+
+        price_df: :class:`pandas.Series` or :class:`pandas.DataFrame`
+
+    :RETURNS:
+        
+        same as the input
+    """
+    if isinstance(price_df, pandas.Series):
+
+        if pandas.isnull(price_df).any():
+            print "This series contains null values"
+            return
+        else:
+            return price_df.div(price_df[0])
+    
+    elif isinstance(price_df, pandas.DataFrame):
+        if pandas.isnull(price_df).any().any():
+            print "This DataFrame contains null values"
+            return
+        else:
+            return price_df.div(price_df.iloc[0, :] )
+    else:
+        print "Input must be pandas.Series or pandas.DataFrame"
         return
 
 def tickers_to_dict(ticker_list, api = 'yahoo', start = '01/01/1990'):
@@ -144,35 +198,6 @@ def zipped_time_chunks(index, interval):
     fdop = index[numpy.append(True, ind[:-1])]
     return zip(fdop, ldop)
 
-def normalized_price(price_df):
-    """
-    Return the normalized price of a series
-
-    :ARGS:
-
-        price_df: :class:`pandas.Series` or :class:`pandas.DataFrame`
-
-    :RETURNS:
-        
-        same as the input
-    """
-    if isinstance(price_df, pandas.Series):
-
-        if pandas.isnull(price_df).any():
-            print "This series contains null values"
-            return
-        else:
-            return price_df.div(price_df[0])
-    
-    elif isinstance(price_df, pandas.DataFrame):
-        if pandas.isnull(price_df).any().any():
-            print "This DataFrame contains null values"
-            return
-        else:
-            return price_df.div(price_df.iloc[0, :] )
-    else:
-        print "Input must be pandas.Series or pandas.DataFrame"
-        return
         
 def __get_data(ticker, api, start):
     """

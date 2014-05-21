@@ -13,12 +13,33 @@ import scipy.optimize as sopt
 import visualize_wealth.utils as utils
 import visualize_wealth.analyze as vwa
 
-def multi_asset_asset_class():
+def multi_asset_class(frame, weights):
+    """
+    Returns the asset class weightings given a :class:`pandas.DataFrame`
+    of asset prices and the weights of each of the assets
+    
+    :ARGS:
+
+        frame: :class:`pandas.DataFrame` of asset prices
+    
+        weights: a vector of asset weights
+
+    RETURNS:
+
+        :class:`pandas.Series` with values of the percentage of each
+        asset class and index of asset class weights                                                                                         
+    """
+    
     return None
 
-def multi_asset_subclass():
+def multi_subclass(frame, weights):
     return None
 
+def multi_asset_class_by_interval(frame, interval, weights):
+    return None
+
+def mulit_subclass_by_interval(frame, interval, weights):
+    return None
 
 def asset_class(series):
     """
@@ -51,6 +72,9 @@ def asset_class(series):
         rsq_d[ticker] = vwa.r_squared(series[ind], data[ticker][ind])
     rsq = pandas.Series(rsq_d)
     return ac_dict[rsq.argmax()]
+
+def asset_class_helper_fn(series, ac_prices):
+    
 
 def asset_class_dict(asset_class):
     """

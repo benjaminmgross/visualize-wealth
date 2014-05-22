@@ -15,11 +15,13 @@ import visualize_wealth.analyze as vwa
 
 
 AC_DICT = {'VTSMX':'US Equity', 'VBMFX':'Fixed Income', 
-           'VGTSX':'Intl Equity', 'IYR':'Alternative', 
+           'VGTSX':'Foreign Equity', 'IYR':'Alternative', 
            'GLD':'Alternative', 'GSG':'Alternative',
            'WPS':'Alternative'}
 
-def multi_subclass(frame, weights):
+def multicol_subclass(frame, weights):
+    class_frame = multicol_asset_class(frame, weights)
+    
     return None
 
 def multi_asset_class_by_interval(frame, interval, weights):
@@ -48,7 +50,6 @@ def asset_class_helper_fn(series, benchmarks):
         and Mutual Funds" but not for multi-asset class strategies
 
     """
-
     rsq_d = {}
     for ticker in benchmarks.columns:
         ind = utils.clean_date_intersection(
@@ -58,7 +59,7 @@ def asset_class_helper_fn(series, benchmarks):
     rsq = pandas.Series(rsq_d)
     return AC_DICT[rsq.argmax()]
 
-def multi_asset_class(frame, weights = None):
+def multicol_asset_class(frame, weights = None):
     """
     Returns the asset class weightings given a :class:`pandas.DataFrame`
     of asset prices and the weights of each of the assets
@@ -86,7 +87,22 @@ def multi_asset_class(frame, weights = None):
     return pandas.DataFrame( d )
 
 def asset_class(series):
+    """
+    Returns the asset class for a given price series, where asset class
+    is either 'US Equity', 'Foreign Equity' or 'Fixed Income' or '
+    Alternative'
 
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices
+
+    :RETURNS:
+
+        :class:`string` of the broad asset class, either ['US Equity',
+        'Foreign Equity', 'Fixed Income', 'Alternative']
+
+
+    """
     return asset_class_helper_fn(series, 
         utils.tickers_to_frame(AC_DICT.keys(), join_col = 'Adj Close'))
 
@@ -206,7 +222,12 @@ def subclass(series):
         the entire time period
     """
     a_class = asset_class(series)
-    sub_classes = subclass_helper_fn(series, a_class)
+    pairs = asset_class_dict(a_class)
+    d_o = utils.first_valid_date(series)
+    benchmarks = utils.tickers_to_frame(pairs.values(), start = d_o,
+                                        join_col = 'Adj Close')
+    
+    sub_classes = subclass_helper_fn(series,benchmarks,  a_class)
     return sub_classes.append(
         pandas.Series([a_class], ['Asset Class']))
 
@@ -282,7 +303,7 @@ def subclass_by_interval_helper_fn(series, benchmarks,
 
     return pandas.DataFrame(weight_d).transpose()
     
-def subclass_helper_fn(series, asset_class):
+def subclass_helper_fn(series, benchmarks, asset_class):
     """
     Given an the prices of a single asset an its overall asset class, 
     return the proportion of returns attribute to each asset class
@@ -300,14 +321,10 @@ def subclass_helper_fn(series, asset_class):
         optimized proportion to explain the ``series`` returns over 
         the entire period.
     """
-    pairs = asset_class_dict(asset_class)
-    d_o = utils.first_valid_date(series)
-    asset_class_prices = utils.tickers_to_frame(pairs.values(),
-        api = 'yahoo', start = d_o, join_col = 'Adj Close')
-    ind = utils.clean_date_intersection(series, asset_class_prices)
+    ind = utils.clean_date_intersection(series, benchmarks)
     ret_series = best_fitting_weights(series[ind], 
-                                      asset_class_prices.loc[ind, :])
-    
+                benchmarks.loc[ind, :])
+    pairs = asset_class_dict(asset_class)
     #change the column names to asset classes instead of tickers
     return ret_series.rename(index = {v:k for k, v in pairs.iteritems()})
 

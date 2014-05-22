@@ -11,7 +11,7 @@ import argparse
 import pandas
 import numpy
 
-def clean_date_intersection(arr_a, arr_b):
+def dtindex_clean_intersect(arr_a, arr_b):
     """
     Return the intersection of two :class:`pandas` objects, either a
     :class:`pandas.Series` or a :class:`pandas.DataFrame`
@@ -35,7 +35,7 @@ def clean_date_intersection(arr_a, arr_b):
     else:
         return arr_a.index
 
-def multi_intersection(frame_list):
+def dtindex_multi_intersect(frame_list):
     """
     Returns the index intersection of multiple 
     :class:`pandas.DataFrame`'s or :class:`pandas.Series`
@@ -49,7 +49,7 @@ def multi_intersection(frame_list):
 
         :class:`pandas.DatetimeIndex` of the objects' intersection
     """
-
+    #check to make sure all objects are Series or DataFrames
     if not all(map(lambda x: isinstance(x, (
             pandas.Series, pandas.DataFrame) ), frame_list)):
         print "All objects must be Series or DataFrame's"

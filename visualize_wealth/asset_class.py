@@ -52,7 +52,7 @@ def asset_class_helper_fn(series, benchmarks):
     """
     rsq_d = {}
     for ticker in benchmarks.columns:
-        ind = utils.clean_date_intersection(
+        ind = utils.dtindex_clean_intersect(
             series, benchmarks[ticker])
         rsq_d[ticker] = vwa.r_squared(
             series[ind], benchmarks[ticker][ind])
@@ -293,7 +293,7 @@ def subclass_by_interval_helper_fn(series, benchmarks,
         :class:`pandas.DataFrame` of proportions of each asset class 
         that most explain the returns of the individual security
     """    
-    ind = utils.clean_date_intersection(series, benchmark)
+    ind = utils.dtindex_clean_intersect(series, benchmark)
     dts = utils.zipped_time_chunks(index = ind, interval = interval)
     weight_d  = {}
     for beg, fin in dts:
@@ -321,7 +321,7 @@ def subclass_helper_fn(series, benchmarks, asset_class):
         optimized proportion to explain the ``series`` returns over 
         the entire period.
     """
-    ind = utils.clean_date_intersection(series, benchmarks)
+    ind = utils.dtindex_clean_intersect(series, benchmarks)
     ret_series = best_fitting_weights(series[ind], 
                 benchmarks.loc[ind, :])
     pairs = asset_class_dict(asset_class)

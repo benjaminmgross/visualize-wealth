@@ -19,10 +19,22 @@ AC_DICT = {'VTSMX':'US Equity', 'VBMFX':'Fixed Income',
            'GLD':'Alternative', 'GSG':'Alternative',
            'WPS':'Alternative'}
 
-def multicol_subclass(frame, weights):
-    class_frame = multicol_asset_class(frame, weights)
+def multicol_subclass(frame, weights = None):
+    if not weights:
+        n = len(frame.columns)
+        weights = pandas.Series([1./n for col in numpy.arange(n)],
+            index = frame.columns)
+    d = {}
+    for col in frame.columns:
+        d[col] = subclass(frame[col])
     
-    return None
+    #create a union index, b/c pandas takes interse
+    ind = reduce(lambda x, y: x | y, 
+                 map(lambda x: x.index, d.values()) )
+    
+    sc = pandas.DataFrame(d, index = ind)
+    return sc.loc[sc.index != 'Asset Class'].mul(
+        weights).sum(axis = 1)
 
 def multi_asset_class_by_interval(frame, interval, weights):
     return None

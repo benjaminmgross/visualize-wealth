@@ -263,9 +263,9 @@ def subclass_by_interval(series, interval):
             interval of time
 
     """
-    asset_class = get_asset_class(series)
+    a_class = asset_class(series)
     d_o = utils.first_valid_date(series)
-    ac_dict = asset_class_dict(asset_class)
+    ac_dict = asset_class_dict(a_class)
     benchmarks = utils.tickers_to_frame(ac_dict.values(), api ='yahoo',
         start = d_o, join_col = 'Adj Close')
     return subclass_by_interval_helper_fn(series, benchmarks,  
@@ -293,13 +293,13 @@ def subclass_by_interval_helper_fn(series, benchmarks,
         :class:`pandas.DataFrame` of proportions of each asset class 
         that most explain the returns of the individual security
     """    
-    ind = utils.dtindex_clean_intersect(series, benchmark)
+    ind = utils.dtindex_clean_intersect(series, benchmarks)
     dts = utils.zipped_time_chunks(index = ind, interval = interval)
     weight_d  = {}
     for beg, fin in dts:
         weight_d[beg] = best_fitting_weights(
-            series[beg:fin], benchmark.loc[beg:fin, :]).rename(
-            index = {v:k for k, v in ac_dict.iteritems()})
+            series[beg:fin], benchmarks.loc[beg:fin, :]).rename(
+            index = {v:k for k, v in AC_DICT.iteritems()})
 
     return pandas.DataFrame(weight_d).transpose()
     

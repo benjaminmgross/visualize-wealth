@@ -80,9 +80,10 @@ def multi_asset_class(frame, weights = None):
 
     benchmarks = utils.tickers_to_frame(AC_DICT.keys(),
         join_col = 'Adj Close')
-    wts = zip(map(lambda x: asset_class_helper_fn(frame[x], 
-        benchmarks), frame.columns), weights)
-    return pandas.DataFrame( dict(zip(frame.columns, wts) ) )
+    d = dict(zip(
+        frame.columns, zip(map(lambda x: asset_class_helper_fn(frame[x], 
+        benchmarks), frame.columns), weights)))
+    return pandas.DataFrame( d )
 
 def asset_class(series):
 

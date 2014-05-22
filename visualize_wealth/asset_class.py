@@ -80,7 +80,7 @@ def multicol_asset_class(frame, weights = None):
 
         frame: :class:`pandas.DataFrame` of asset prices
     
-        weights: a vector of asset weights
+        weights: :class:`pandas.Series` of asset weights
 
     RETURNS:
 
@@ -89,14 +89,16 @@ def multicol_asset_class(frame, weights = None):
     """
     if not weights:
         n = len(frame.columns)
-        weights = [1./n for col in numpy.arange(n)]
+        weights = pandas.Series([1./n for col in numpy.arange(n)],
+            index = frame.columns)
 
     benchmarks = utils.tickers_to_frame(AC_DICT.keys(),
         join_col = 'Adj Close')
-    d = dict(zip(
-        frame.columns, zip(map(lambda x: asset_class_helper_fn(frame[x], 
-        benchmarks), frame.columns), weights)))
-    return pandas.DataFrame( d )
+    d = {}
+    for col in frame.columns:
+        d[col] = [asset_class_helper_fn(frame[col], benchmarks),
+                  weights[col]]
+    return pandas.DataFrame(d, index = ['asset class', 'weight'])
 
 def asset_class(series):
     """

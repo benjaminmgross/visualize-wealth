@@ -13,7 +13,52 @@ import scipy.optimize as sopt
 import visualize_wealth.utils as utils
 import visualize_wealth.analyze as vwa
 
-def multi_asset_class(frame, weights):
+
+AC_DICT = {'VTSMX':'US Equity', 'VBMFX':'Fixed Income', 
+           'VGTSX':'Intl Equity', 'IYR':'Alternative', 
+           'GLD':'Alternative', 'GSG':'Alternative',
+           'WPS':'Alternative'}
+
+def multi_subclass(frame, weights):
+    return None
+
+def multi_asset_class_by_interval(frame, interval, weights):
+    return None
+
+def mulit_subclass_by_interval(frame, interval, weights):
+    return None
+
+def asset_class_helper_fn(series, benchmarks):
+    """
+    Given as series of prices, find the most likely asset class of the 
+    asset, based on r-squared attribution of return variance (i.e. 
+    maximizing r-squared).
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices
+    
+    
+
+    .. note:: Functionality for Asset Allocation Funds
+
+        Current functionality only allows for a single asset class to 
+        be chosen in an effort not to overfit the attribution of asset 
+        returns.  This logic works well for "single asset class ETFs 
+        and Mutual Funds" but not for multi-asset class strategies
+
+    """
+
+    rsq_d = {}
+    for ticker in benchmarks.columns:
+        ind = utils.clean_date_intersection(
+            series, benchmarks[ticker])
+        rsq_d[ticker] = vwa.r_squared(
+            series[ind], benchmarks[ticker][ind])
+    rsq = pandas.Series(rsq_d)
+    return AC_DICT[rsq.argmax()]
+
+def multi_asset_class(frame, weights = None):
     """
     Returns the asset class weightings given a :class:`pandas.DataFrame`
     of asset prices and the weights of each of the assets
@@ -29,52 +74,21 @@ def multi_asset_class(frame, weights):
         :class:`pandas.Series` with values of the percentage of each
         asset class and index of asset class weights                                                                                         
     """
-    
-    return None
+    if not weights:
+        n = len(frame.columns)
+        weights = [1./n for col in numpy.arange(n)]
 
-def multi_subclass(frame, weights):
-    return None
-
-def multi_asset_class_by_interval(frame, interval, weights):
-    return None
-
-def mulit_subclass_by_interval(frame, interval, weights):
-    return None
+    benchmarks = utils.tickers_to_frame(AC_DICT.keys(),
+        join_col = 'Adj Close')
+    d = dict(zip(
+        frame.columns, zip(map(lambda x: asset_class_helper_fn(frame[x], 
+        benchmarks), frame.columns), weights)))
+    return pandas.DataFrame( d )
 
 def asset_class(series):
-    """
-    Given as series of prices, find the most likely asset class of the 
-    asset, based on r-squared attribution of return variance (i.e. 
-    maximizing r-squared).
 
-    :ARGS:
-
-        series: :class:`pandas.Series` of asset prices
-
-    .. note:: Functionality for Asset Allocation Funds
-
-        Current functionality only allows for a single asset class to 
-        be chosen in an effort not to overfit the attribution of asset 
-        returns.  This logic works well for "single asset class ETFs 
-        and Mutual Funds" but not for multi-asset class strategies
-
-    """
-    ac_dict = {'VTSMX':'US Equity', 'VBMFX':'Fixed Income', 
-               'VGTSX':'Intl Equity', 'IYR':'Alternative', 
-               'GLD':'Alternative', 'GSG':'Alternative',
-               'WPS':'Alternative'}
-
-    data = utils.tickers_to_frame(ac_dict.keys(), api = 'yahoo',
-                                 join_col = 'Adj Close')
-    rsq_d = {}
-    for ticker in data.columns:
-        ind = utils.clean_date_intersection(series, data[ticker])
-        rsq_d[ticker] = vwa.r_squared(series[ind], data[ticker][ind])
-    rsq = pandas.Series(rsq_d)
-    return ac_dict[rsq.argmax()]
-
-def asset_class_helper_fn(series, ac_prices):
-    
+    return asset_class_helper_fn(series, 
+        utils.tickers_to_frame(AC_DICT.keys(), join_col = 'Adj Close'))
 
 def asset_class_dict(asset_class):
     """
@@ -83,8 +97,8 @@ def asset_class_dict(asset_class):
 
     :ARGS:
 
-        asset_class: :class:`string` of ``US Equity``, ``Foreign Equity``,
-        ``Alternative`` or ``Fixed Income``.
+        asset_class: :class:`string` of 'US Equity', 'Foreign Equity',
+        'Alternative' or 'Fixed Income'.
 
     :RETURNS:
 

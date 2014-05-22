@@ -155,6 +155,10 @@ def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990',
         except:
             print "failed for " + ticker
             return
+    if not isinstance(join_col, str):
+        print "join_col must be a string"
+        return
+
     if isinstance(ticker_list, (str, unicode)):
         return __get_data(ticker_list, api = api, start = start)[join_col]
     else:

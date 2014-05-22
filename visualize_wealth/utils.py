@@ -35,6 +35,29 @@ def clean_date_intersection(arr_a, arr_b):
     else:
         return arr_a.index
 
+def multi_intersection(frame_list):
+    """
+    Returns the index intersection of multiple 
+    :class:`pandas.DataFrame`'s or :class:`pandas.Series`
+
+    :ARGS:
+
+        frame_list: :class:`list` containing either ``DataFrame``'s or
+        ``Series``
+    
+    :RETURNS:
+
+        :class:`pandas.DatetimeIndex` of the objects' intersection
+    """
+
+    if not all(map(lambda x: isinstance(x, (
+            pandas.Series, pandas.DataFrame) ), frame_list)):
+        print "All objects must be Series or DataFrame's"
+        return
+        
+    return reduce(lambda x, y: x & y, 
+           map(lambda x: x.dropna().index, frame_list) )
+
 def first_valid_date(prices):
     """
     Helper function to determine the first valid date from a set of 

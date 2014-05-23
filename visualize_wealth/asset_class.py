@@ -20,7 +20,7 @@ AC_DICT = {'VTSMX':'US Equity', 'VBMFX':'Fixed Income',
            'WPS':'Alternative'}
 
 def multicol_subclass(frame, weights = None):
-    if not weights:
+    if not isinstance(weights, pandas.Series):
         n = len(frame.columns)
         weights = pandas.Series([1./n for col in numpy.arange(n)],
             index = frame.columns)
@@ -87,7 +87,7 @@ def multicol_asset_class(frame, weights = None):
         :class:`pandas.Series` with values of the percentage of each
         asset class and index of asset class weights                                                                                         
     """
-    if not weights:
+    if not isinstance(weights, pandas.Series):
         n = len(frame.columns)
         weights = pandas.Series([1./n for col in numpy.arange(n)],
             index = frame.columns)

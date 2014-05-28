@@ -14,6 +14,7 @@ import pandas.io.data
 import datetime
 import urllib2
 import visualize_wealth.analyze as vwa
+import visualize_wealth.utils as vwu
 
 def format_blotter(blotter_file):
     """
@@ -608,8 +609,7 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
     #"panel from weight file test.xlsx"
         
     #determine the first valid date and make it the start_date
-    first_valid = numpy.max(price_panel.loc[:, :, 'Close'].apply(
-            pandas.Series.first_valid_index))
+    first_valid = vwu.first_valid_date(price_panel.loc[:, :, 'Close'])
     
     assert weight_df.index.min() >= first_valid, (
             "first_valid index doesn't occur until after start_date")
@@ -623,7 +623,13 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
                                index = index, columns = port_cols)
 
     a = weight_df.index
-    b = weight_df.index[1:].insert(-1,  index[-1])
+    #DatetimeIndex.insert seems to not function properly
+    #b = weight_df.index[1:].insert(-1,  index[-1])
+    
+    #numpy and Timestamp workaround for now
+    b = map(lambda x: pandas.Timestamp(x), numpy.append(
+        weight_df.index[1:], index[-1]))
+
     dt_chunks = zip(a, b)
     
     #fill in the Adj Qty  values and the aggregate position values

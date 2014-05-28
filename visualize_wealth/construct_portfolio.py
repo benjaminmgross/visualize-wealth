@@ -623,13 +623,9 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
                                index = index, columns = port_cols)
 
     a = weight_df.index
-    #DatetimeIndex.insert seems to not function properly
-    #b = weight_df.index[1:].insert(-1,  index[-1])
+    #Make the last of the zip, the last date of the prices
+    b = a[1:].append(pandas.DatetimeIndex([index[-1]]))
     
-    #numpy and Timestamp workaround for now
-    b = map(lambda x: pandas.Timestamp(x), numpy.append(
-        weight_df.index[1:], index[-1]))
-
     dt_chunks = zip(a, b)
     
     #fill in the Adj Qty  values and the aggregate position values

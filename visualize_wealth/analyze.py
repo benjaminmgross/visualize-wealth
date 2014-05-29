@@ -599,6 +599,37 @@ def downside_deviation(series, freq = 'daily'):
     else:
         return _downside_deviation(series, freq = freq)
 
+def drawdown(series):
+    """
+    Returns a :class:`pandas.Series` or :class:`pandas.DataFrame` 
+    (same as input) of the drawdown, i.e. distance from rolling 
+    cumulative maximum.  Values are negative specifically to be used
+    in plots
+
+    :ARGS:
+    
+        series: :class:`pandas.Series` or :class:`pandas.DatFrame` of 
+        prices
+
+    :RETURNS:
+    
+        same type as input
+
+    .. code::
+
+        drawdown = vwp.drawdown(price_df)
+        """
+
+    def _drawdown(series):
+        dd = (series/series.cummax() - 1.)
+        dd[0] = numpy.nan
+        return dd
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(_drawdown)
+    else:
+        return _drawdown(series)
+
 def idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
     """
     Returns the idiosyncratic risk as proportion of total volatility
@@ -1674,8 +1705,10 @@ def test_funs():
     >>> put.assert_series_equal(man_calcs['VGTSX Lin Ret'], 
     ...    linear_returns(prices['VGTSX']))
     >>> put.assert_series_equal(man_calcs['Active Return'],
-    ...    analyze.active_returns(series = prices['VGTSX'],
+    ...    active_returns(series = prices['VGTSX'], 
     ...    benchmark = prices['S&P 500']))
+    >>> put.assert_series_equal(man_calcs['VGTSX Drawdown'],
+    ...    drawdown(prices['VGTSX']))
 
     Cumulative Turnover Calculation
 
@@ -1709,7 +1742,7 @@ def test_funs():
     ... 'cvar_mu_np', 'var_np', 'var_cf', 'var_norm', 'consecutive',
     ... 'consecutive_downticks', 'consecutive_upticks', 
     ... 'consecutive_downtick_performance', 'consecutive_uptick_performance',
-    ... 'r_squared', 'r_squared_adjusted']
+    ... 'r_squared', 'r_squared_adjusted', 'drawdown']
 
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
     ...    'freq': 'daily', 'rfr': 0.0, 'p': .01 }

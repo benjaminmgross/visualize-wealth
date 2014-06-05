@@ -214,8 +214,8 @@ def blotter_and_price_df_to_cum_shares(blotter_df, price_df):
     #now cumsum the buy/sell chunks and mul by splits for total shares
     bs_series = pandas.Series()
     start_dts = blotter_df.index
-    end_dts = blotter_df.index[1:].insert(-1, price_df.index[-1])
-
+    end_dts = blotter_df.index[1:].append(
+        pandas.DatetimeIndex([price_df.index[-1]]))
 
     dt_chunks = zip(start_dts, end_dts)
     end = 0.

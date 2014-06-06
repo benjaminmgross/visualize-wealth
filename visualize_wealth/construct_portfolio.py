@@ -851,7 +851,7 @@ def test_funs():
     ...     'share_balance', index_col = 0)['cum_shares']
     >>> put.assert_series_equal(shares_owned['cum_shares'].dropna(), 
     ...     test_vals)
-    >>> f = ''../tests/panel from weight file test.xlsx')
+    >>> f = '../tests/panel from weight file test.xlsx'
     >>> xl_file = pandas.ExcelFile(f)
     >>> weight_df = xl_file.parse('rebal_weights', index_col = 0)
     >>> tickers = ['EEM', 'EFA', 'IYR', 'IWV', 'IEF', 'IYR', 'SHY']

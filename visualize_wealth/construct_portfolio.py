@@ -208,8 +208,7 @@ def blotter_and_price_df_to_cum_shares(blotter_df, price_df):
     #"closest date" value
     
     msg = "Buy/Sell Dates not in Price File"
-    assert numpy.all(map(lambda x: numpy.any(price_df.index == x), 
-                        blotter_df.index)), msg
+    assert blotter_df.index.isin(price_df.index).all(), msg
 
     #now cumsum the buy/sell chunks and mul by splits for total shares
     bs_series = pandas.Series()
@@ -228,8 +227,8 @@ def blotter_and_price_df_to_cum_shares(blotter_df, price_df):
         splits = tmp[pandas.notnull(tmp['Splits'])]
         vals = numpy.append(blotter_df['Buy/Sell'][chunk[0]] + end,
                             splits['Splits'].values)
-        dts = pandas.to_datetime(numpy.append(chunk[0], 
-                                              splits['Splits'].index))
+        dts = pandas.DatetimeIndex([chunk[0]]).append(
+            splits['Splits'].index)
         tmp_series = pandas.Series(vals, index = dts)
         tmp_series = tmp_series.cumprod()
         tmp_series = tmp_series[tmp.index].ffill()
@@ -614,8 +613,9 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
     assert weight_df.index.min() >= first_valid, (
             "first_valid index doesn't occur until after start_date")
     
-    columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Asset Value', 'Open', 
-               'High', 'Low', 'Close', 'Volume', 'Adj Close']
+    columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Value at Open', 
+               'Value at Close', 'Open', 'High', 'Low', 'Close', 
+               'Volume', 'Adj Close']
     panel = price_panel.reindex(minor_axis = columns)
     port_cols = ['Close', 'Open']
     index = panel.major_axis
@@ -628,7 +628,7 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
     
     dt_chunks = zip(a, b)
     
-    #fill in the Adj Qty  values and the aggregate position values
+    #fill in the Adj Qty values and the aggregate position values
     p_val = start_value
     for chunk in dt_chunks:
         n = len(panel.loc[:, chunk[0]:chunk[1], 'Close'])
@@ -648,7 +648,29 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
             ['c0_ac0', 'ac_c', 'n0']].product(axis = 2)
         p_val = panel.loc[:, chunk[1], 'Adj_Q'].mul(
               panel.loc[:, chunk[1], 'Close']).sum(axis = 1)
-    return panel.loc[:, a[0]:, :]
+    tmp_panel = panel.loc[:, a[0]:, :]
+    
+    #quick fix for error in panel Adj_Q, c0_ac0, and n0
+    chg_cols = ['c0_ac0', 'n0']
+    for date in b:
+        loc = panel.major_axis.get_loc(date)
+        prev = panel.major_axis[loc - 1]
+        tmp_panel.loc[:, date, chg_cols] = (
+            tmp_panel.loc[:, prev, chg_cols])
+        tmp_panel.loc[:, :, 'Adj_Q'] = tmp_panel.loc[:, :, 'ac_c'].mul(
+            tmp_panel.loc[:, :, 'c0_ac0']).mul(
+            tmp_panel.loc[:, :, 'n0'])
+        tmp_panel.loc[:, :, 'Value at Open'] = (
+            tmp_panel.loc[:, :, 'Adj_Q'].mul(
+            tmp_panel.loc[:, :, 'Open']))
+        tmp_panel.loc[:, :, 'Value at Close'] = (
+            tmp_panel.loc[:, :, 'Adj_Q'].mul(
+            tmp_panel.loc[:, :, 'Close']))
+    
+    return tmp_panel
+
+        
+    
 
 def panel_from_initial_weights(weight_series, price_panel, 
     rebal_frequency, start_value = 1000, start_date = None):
@@ -849,8 +871,9 @@ def test_funs():
     ...     split_frame)
     >>> test_vals = xl_file.parse(
     ...     'share_balance', index_col = 0)['cum_shares']
-    >>> put.assert_series_equal(shares_owned['cum_shares'].dropna(), 
+    >>> put.assert_almost_equal(shares_owned['cum_shares'].dropna(), 
     ...     test_vals)
+    True
     >>> f = '../tests/panel from weight file test.xlsx'
     >>> xl_file = pandas.ExcelFile(f)
     >>> weight_df = xl_file.parse('rebal_weights', index_col = 0)

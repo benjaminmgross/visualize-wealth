@@ -142,9 +142,10 @@
 <span class="sd">        &#39;Adj Close&#39;, &#39;Dividends&#39;]</span>
 
 <span class="sd">    .. code:: python</span>
+
 <span class="sd">        import visualze_wealth.construct portfolio as vwcp</span>
 <span class="sd">        frame_with_divs = vwcp.append_price_frame_with_dividends(&#39;EEM&#39;, </span>
-<span class="sd">        &#39;01/01/2000&#39;, &#39;01/01/2013&#39;)</span>
+<span class="sd">            &#39;01/01/2000&#39;, &#39;01/01/2013&#39;)</span>
 
 <span class="sd">    .. warning:: Requires Internet Connectivity</span>
 
@@ -275,14 +276,13 @@
     <span class="c">#&quot;closest date&quot; value</span>
     
     <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Buy/Sell Dates not in Price File&quot;</span>
-    <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">price_df</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">x</span><span class="p">),</span> 
-                        <span class="n">blotter_df</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">msg</span>
+    <span class="k">assert</span> <span class="n">blotter_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">price_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">msg</span>
 
     <span class="c">#now cumsum the buy/sell chunks and mul by splits for total shares</span>
     <span class="n">bs_series</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">()</span>
     <span class="n">start_dts</span> <span class="o">=</span> <span class="n">blotter_df</span><span class="o">.</span><span class="n">index</span>
-    <span class="n">end_dts</span> <span class="o">=</span> <span class="n">blotter_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">price_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
+    <span class="n">end_dts</span> <span class="o">=</span> <span class="n">blotter_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">pandas</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">([</span><span class="n">price_df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
 
     <span class="n">dt_chunks</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start_dts</span><span class="p">,</span> <span class="n">end_dts</span><span class="p">)</span>
     <span class="n">end</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -295,8 +295,8 @@
         <span class="n">splits</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">pandas</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s">&#39;Splits&#39;</span><span class="p">])]</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blotter_df</span><span class="p">[</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">][</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">end</span><span class="p">,</span>
                             <span class="n">splits</span><span class="p">[</span><span class="s">&#39;Splits&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-        <span class="n">dts</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
-                                              <span class="n">splits</span><span class="p">[</span><span class="s">&#39;Splits&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">dts</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">([</span><span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">splits</span><span class="p">[</span><span class="s">&#39;Splits&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
         <span class="n">tmp_series</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">dts</span><span class="p">)</span>
         <span class="n">tmp_series</span> <span class="o">=</span> <span class="n">tmp_series</span><span class="o">.</span><span class="n">cumprod</span><span class="p">()</span>
         <span class="n">tmp_series</span> <span class="o">=</span> <span class="n">tmp_series</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
@@ -681,8 +681,9 @@
     <span class="k">assert</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">first_valid</span><span class="p">,</span> <span class="p">(</span>
             <span class="s">&quot;first_valid index doesn&#39;t occur until after start_date&quot;</span><span class="p">)</span>
     
-    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">,</span> <span class="s">&#39;Asset Value&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">,</span> 
-               <span class="s">&#39;High&#39;</span><span class="p">,</span> <span class="s">&#39;Low&#39;</span><span class="p">,</span> <span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Volume&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">,</span> <span class="s">&#39;Value at Open&#39;</span><span class="p">,</span> 
+               <span class="s">&#39;Value at Close&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">,</span> <span class="s">&#39;High&#39;</span><span class="p">,</span> <span class="s">&#39;Low&#39;</span><span class="p">,</span> <span class="s">&#39;Close&#39;</span><span class="p">,</span> 
+               <span class="s">&#39;Volume&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">price_panel</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">minor_axis</span> <span class="o">=</span> <span class="n">columns</span><span class="p">)</span>
     <span class="n">port_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Close&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">]</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">major_axis</span>
@@ -695,7 +696,7 @@
     
     <span class="n">dt_chunks</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
     
-    <span class="c">#fill in the Adj Qty  values and the aggregate position values</span>
+    <span class="c">#fill in the Adj Qty values and the aggregate position values</span>
     <span class="n">p_val</span> <span class="o">=</span> <span class="n">start_value</span>
     <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">dt_chunks</span><span class="p">:</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">])</span>
@@ -715,7 +716,29 @@
             <span class="p">[</span><span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">p_val</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span>
               <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;Close&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]:,</span> <span class="p">:]</span>
+    <span class="n">tmp_panel</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]:,</span> <span class="p">:]</span>
+    
+    <span class="c">#quick fix for error in panel Adj_Q, c0_ac0, and n0</span>
+    <span class="n">chg_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">major_axis</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">major_axis</span><span class="p">[</span><span class="n">loc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">date</span><span class="p">,</span> <span class="n">chg_cols</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">prev</span><span class="p">,</span> <span class="n">chg_cols</span><span class="p">])</span>
+        <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;ac_c&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span>
+            <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span>
+            <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;n0&#39;</span><span class="p">])</span>
+        <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Value at Open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span>
+            <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Open&#39;</span><span class="p">]))</span>
+        <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Value at Close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span>
+            <span class="n">tmp_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">]))</span>
+    
+    <span class="k">return</span> <span class="n">tmp_panel</span>
+
+        
+    
 </div>
 <div class="viewcode-block" id="panel_from_initial_weights"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.panel_from_initial_weights">[docs]</a><span class="k">def</span> <span class="nf">panel_from_initial_weights</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> 
     <span class="n">rebal_frequency</span><span class="p">,</span> <span class="n">start_value</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">start_date</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
@@ -916,9 +939,10 @@
 <span class="sd">    ...     split_frame)</span>
 <span class="sd">    &gt;&gt;&gt; test_vals = xl_file.parse(</span>
 <span class="sd">    ...     &#39;share_balance&#39;, index_col = 0)[&#39;cum_shares&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(shares_owned[&#39;cum_shares&#39;].dropna(), </span>
+<span class="sd">    &gt;&gt;&gt; put.assert_almost_equal(shares_owned[&#39;cum_shares&#39;].dropna(), </span>
 <span class="sd">    ...     test_vals)</span>
-<span class="sd">    &gt;&gt;&gt; f = &#39;&#39;../tests/panel from weight file test.xlsx&#39;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; f = &#39;../tests/panel from weight file test.xlsx&#39;</span>
 <span class="sd">    &gt;&gt;&gt; xl_file = pandas.ExcelFile(f)</span>
 <span class="sd">    &gt;&gt;&gt; weight_df = xl_file.parse(&#39;rebal_weights&#39;, index_col = 0)</span>
 <span class="sd">    &gt;&gt;&gt; tickers = [&#39;EEM&#39;, &#39;EFA&#39;, &#39;IYR&#39;, &#39;IWV&#39;, &#39;IEF&#39;, &#39;IYR&#39;, &#39;SHY&#39;]</span>

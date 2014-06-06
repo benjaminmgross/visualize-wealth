@@ -1027,7 +1027,7 @@ def r_squared(series, benchmark):
     for a univariate regression (does not adjust for more independent 
     variables
     
-    :seealso:`r_squared_adjusted`
+    .. seealso:: :meth:`r_squared_adjusted`
 
     :ARGS:
 

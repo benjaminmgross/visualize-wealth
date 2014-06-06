@@ -39,6 +39,7 @@ Contents:
 
    intro
    readme
+   asset_class
 
 Indices and tables
 ==================

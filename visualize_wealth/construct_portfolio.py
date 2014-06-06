@@ -75,9 +75,10 @@ def append_price_frame_with_dividends(ticker, start_date, end_date=None):
         'Adj Close', 'Dividends']
 
     .. code:: python
+
         import visualze_wealth.construct portfolio as vwcp
         frame_with_divs = vwcp.append_price_frame_with_dividends('EEM', 
-        '01/01/2000', '01/01/2013')
+            '01/01/2000', '01/01/2013')
 
     .. warning:: Requires Internet Connectivity
 

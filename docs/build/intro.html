@@ -199,6 +199,11 @@ inside of the <tt class="xref py py-mod docutils literal"><span class="pre">anal
 </tr>
 </tbody>
 </table>
+<div class="code python highlight-python"><div class="highlight"><pre>import visualze_wealth.construct portfolio as vwcp
+frame_with_divs = vwcp.append_price_frame_with_dividends(&#39;EEM&#39;, 
+    &#39;01/01/2000&#39;, &#39;01/01/2013&#39;)
+</pre></div>
+</div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p>Requires Internet Connectivity</p>
@@ -701,9 +706,10 @@ first begins, up until today.</p>
 <span class="gp">... </span>    <span class="n">split_frame</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">test_vals</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s">&#39;share_balance&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">shares_owned</span><span class="p">[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">shares_owned</span><span class="p">[</span><span class="s">&#39;cum_shares&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> 
 <span class="gp">... </span>    <span class="n">test_vals</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">../</span><span class="n">tests</span><span class="o">/</span><span class="n">panel</span> <span class="kn">from</span> <span class="nn">weight</span> <span class="nn">file</span> <span class="nn">test.xlsx</span><span class="s">&#39;)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="s">&#39;../tests/panel from weight file test.xlsx&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xl_file</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weight_df</span> <span class="o">=</span> <span class="n">xl_file</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;rebal_weights&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tickers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;EEM&#39;</span><span class="p">,</span> <span class="s">&#39;EFA&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;IWV&#39;</span><span class="p">,</span> <span class="s">&#39;IEF&#39;</span><span class="p">,</span> <span class="s">&#39;IYR&#39;</span><span class="p">,</span> <span class="s">&#39;SHY&#39;</span><span class="p">]</span>
@@ -940,7 +946,8 @@ the entire period.</p>
 <span class="target" id="module-visualize_wealth.analyze"></span><span class="target" id="module-analyze.py"></span><dl class="function">
 <dt id="visualize_wealth.analyze.active_returns">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">active_returns</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#active_returns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.active_returns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Active returns is defined as the compound difference between linear returns i.e.</p>
+<dd><p>Active returns is defined as the compound difference between linear 
+returns</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -957,19 +964,19 @@ the entire period.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Compound Linear Returns</p>
-<blockquote>
-<div>Linear returns are not simply subtracted, but rather the compound
-difference is taken such that</div></blockquote>
+<p>Linear returns are not simply subtracted, but rather the 
+compound difference is taken such that</p>
 <div class="last math">
-\[r_a = (1 + r_p)/(1 + r_b) - 1\]</div>
+\[r_a = \frac{1 + r_p}{1 + r_b} - 1\]</div>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.alpha">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">alpha</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.alpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alpha is defined as simply the geometric difference between the return of a 
-portfolio and a benchmark, less the risk free rate or:</p>
+<dd><p>Alpha is defined as simply the geometric difference between 
+the return of a portfolio and a benchmark, less the risk free 
+rate or:</p>
 <div class="math">
 \[\begin{split}\alpha = \frac{(1 + R_p - r_f)}{(1 + R_b - r_f)}  - 1 \\\end{split}\]\[\textrm{where},\]\[\begin{split}    R_p &amp;= \textrm{Portfolio Annualized Return} \\
     R_b &amp;= \textrm{Benchmark Annualized Return} \\
@@ -979,15 +986,15 @@ portfolio and a benchmark, less the risk free rate or:</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.annualized_return">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">annualized_return</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#annualized_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.annualized_return" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the annualized linear return of a series, i.e. the linear compounding
-rate that would have been necessary, given the initial investment, to arrive at
-the final value</p>
+<dd><p>Returns the annualized linear return of a series, i.e. the linear 
+compounding rate that would have been necessary, given the initial 
+investment, to arrive at the final value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>    
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt>
 indicating the frequency of the data <tt class="docutils literal"><span class="pre">default=</span></tt> daily</p>
 </td>
 </tr>
@@ -998,7 +1005,8 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </table>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
 
-<span class="n">linear_return</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">annualized_return</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
+<span class="n">linear_return</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">annualized_return</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> 
+    <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1006,9 +1014,9 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 <dl class="function">
 <dt id="visualize_wealth.analyze.annualized_vol">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">annualized_vol</tt><big>(</big><em>series</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#annualized_vol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.annualized_vol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the annlualized volatility of the log changes of the price series, by
-calculating the volatility of the series, and then applying the square root of 
-time rule</p>
+<dd><p>Returns the annlualized volatility of the log changes of the price 
+series, by calculating the volatility of the series, and then 
+applying the square root of time rule</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1032,7 +1040,8 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </div>
 <div class="code highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
 
-<span class="n">ann_vol</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">annualized_vol</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
+<span class="n">ann_vol</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">annualized_vol</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> 
+    <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1046,7 +1055,8 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of a benchmark to calculate the sensitivity</p>
+<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of a benchmark to calculate the 
+sensitivity</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: the sensitivity of the series to the benchmark</p>
@@ -1068,7 +1078,8 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 <dt id="visualize_wealth.analyze.consecutive">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive</tt><big>(</big><em>int_series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array logic (no for loops) and fast method to determine the number of
-consecutive ones given a <cite>pandas.Series</cite> of integers Derived from <a class="reference external" href="http://stackoverflow.com/questions/18196811/cumsum-reset-at-nan">Stack Overflow</a></p>
+consecutive ones given a <cite>pandas.Series</cite> of integers Derived from 
+<a class="reference external" href="http://stackoverflow.com/questions/18196811/cumsum-reset-at-nan">Stack Overflow</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1084,20 +1095,23 @@ consecutive ones given a <cite>pandas.Series</cite> of integers Derived from <a 
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_downtick_performance">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downtick_performance</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downtick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downtick_performance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns <cite>[&#8216;outperformance&#8217;,
-&#8216;num_downticks&#8217;]</cite> that shows the cumulative outperformance (in log returns) and
-the <cite>num_upticks</cite> number of days the downtick lasted</p>
+<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns 
+<cite>[&#8216;outperformance&#8217;,&#8217;num_downticks&#8217;]</cite> that shows the cumulative 
+outperformance (in log returns) and the <cite>num_upticks</cite> number of 
+days the downtick lasted</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
-<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare 
+<tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of <tt class="docutils literal"><span class="pre">['outperformance','num_upticks']</span></tt>.
-Outperformance is in log returns and <cite>num_downticks</cite> the number of
-consecutive downticks for which the outperformance was generated</p>
+Outperformance is in log returns and <cite>num_downticks</cite> the number 
+of consecutive downticks for which the outperformance was 
+generated</p>
 </td>
 </tr>
 </tbody>
@@ -1107,8 +1121,9 @@ consecutive downticks for which the outperformance was generated</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_downticks">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downticks</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downticks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the
-consecutive downticks in the series greater than three downticks</p>
+<dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> 
+of the consecutive downticks in the series greater than three 
+downticks</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1124,20 +1139,23 @@ consecutive downticks in the series greater than three downticks</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_uptick_performance">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_uptick_performance</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_uptick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_uptick_performance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns <tt class="docutils literal"><span class="pre">['outperformance',</span>
-<span class="pre">'num_upticks']</span></tt> that shows the cumulative outperformance (in log returns) and
-the <tt class="docutils literal"><span class="pre">num_upticks</span></tt> number of days the uptick lasted</p>
+<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns 
+<tt class="docutils literal"><span class="pre">['outperformance',</span> <span class="pre">'num_upticks']</span></tt> that shows the cumulative 
+outperformance (in log returns) and the <tt class="docutils literal"><span class="pre">num_upticks</span></tt> number of 
+days the uptick lasted</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
-<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare 
+<tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of <tt class="docutils literal"><span class="pre">['outperformance','num_upticks']</span></tt>.
-Outperformance is in log returns and num_upticks the number of consecutive
-upticks for which the outperformance was generated</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of <tt class="docutils literal"><span class="pre">['outperformance',</span>
+<span class="pre">'num_upticks']</span></tt>. Outperformance is in log returns and 
+num_upticks the number of consecutive upticks for which the 
+outperformance was generated</p>
 </td>
 </tr>
 </tbody>
@@ -1147,8 +1165,9 @@ upticks for which the outperformance was generated</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_upticks">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_upticks</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_upticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_upticks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the
-consecutive upticks in the series with greater than 3 consecutive upticks</p>
+<dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> 
+of the consecutive upticks in the series with greater than 3 
+consecutive upticks</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1164,18 +1183,19 @@ consecutive upticks in the series with greater than 3 consecutive upticks</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.cumulative_turnover">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cumulative_turnover</tt><big>(</big><em>alloc_df</em>, <em>asset_wt_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cumulative_turnover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cumulative_turnover" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provided an allocation frame (i.e. the weights to which the portfolio was 
-rebalanced), and the historical asset weights,  return the cumulative turnover,
-where turnover is defined below.  The first period is excluded of the
-<tt class="docutils literal"><span class="pre">alloc_df</span></tt> is excluded as that represents the initial investment</p>
+<dd><p>Provided an allocation frame (i.e. the weights to which the portfolio 
+was rebalanced), and the historical asset weights,  return the 
+cumulative turnover, where turnover is defined below.  The first 
+period is excluded of the <tt class="docutils literal"><span class="pre">alloc_df</span></tt> is excluded as that represents 
+the initial investment</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">alloc_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the the weighting allocation that was
-provided to construct the portfolio</p>
-<p>asset_wt_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the actual historical weights of
-each asset</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">alloc_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the the weighting allocation 
+that was provided to construct the portfolio</p>
+<p>asset_wt_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the actual historical 
+weights of each asset</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">cumulative turnover</p>
@@ -1187,13 +1207,11 @@ each asset</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Calcluating Turnover</p>
 </div>
-<p>Let <span class="math">\(\tau_j =\)</span> Single Period period turnover for period <span class="math">\(j\)</span>,
-and assets <span class="math">\(i = 1,:2,:...:,n\)</span>, each whose respective portfolio weight is
-represented by <span class="math">\(\omega_i\)</span>.</p>
-<dl class="docutils">
-<dt>Then the single period <span class="math">\(j\)</span> turnover for all assets <span class="math">\(1,..,n\)</span> can be</dt>
-<dd>calculated as:</dd>
-</dl>
+<p>Let <span class="math">\(\tau_j =\)</span> Single Period period turnover for period 
+<span class="math">\(j\)</span>, and assets <span class="math">\(i = 1,:2,:...:,n\)</span>, each whose respective 
+portfolio weight is represented by <span class="math">\(\omega_i\)</span>.</p>
+<p>Then the single period <span class="math">\(j\)</span> turnover for all assets 
+<span class="math">\(1,..,n\)</span> can be calculated as:</p>
 <div class="math">
 \[\tau_j = \frac{\sum_{i=1}^n|\omega_i - \omega_{i+1}|  }{2}\]</div>
 </dd></dl>
@@ -1206,9 +1224,10 @@ represented by <span class="math">\(\omega_i\)</span>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the
-asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or the 1% CVaR</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
+of the asset prices</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+or the 1% CVaR</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
@@ -1226,9 +1245,10 @@ asset prices</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the
-asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or the 1% CVaR</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of 
+the asset prices</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+or the 1% CVaR</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
@@ -1241,15 +1261,17 @@ asset prices</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.cvar_median_np">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cvar_median_np</tt><big>(</big><em>series</em>, <em>p</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cvar_median_np"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cvar_median_np" title="Permalink to this definition">¶</a></dt>
-<dd><p>Non-parametric CVaR or Expected Shortfall, solely based on the median  of
-historical values (because the median will provide a more unbiased estimate)</p>
+<dd><p>Non-parametric CVaR or Expected Shortfall, solely based on the 
+median  of historical values (because the median will provide a 
+more unbiased estimate)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the
-asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or the 1% CVaR</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
+of the asset prices</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+or the 1% CVaR</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
@@ -1262,15 +1284,16 @@ asset prices</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.cvar_mu_np">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cvar_mu_np</tt><big>(</big><em>series</em>, <em>p</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cvar_mu_np"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cvar_mu_np" title="Permalink to this definition">¶</a></dt>
-<dd><p>Non-parametric CVaR or Expected Shortfall, solely based on the mean of
-historical values</p>
+<dd><p>Non-parametric CVaR or Expected Shortfall, solely based on the 
+mean of historical values</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the
-asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or the 1% CVaR</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of 
+the asset prices</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or 
+the 1% CVaR</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
@@ -1283,15 +1306,16 @@ asset prices</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.cvar_norm">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">cvar_norm</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#cvar_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.cvar_norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>CVaR (Conditional Value at Risk), fitting the normal distribution to the
-historical time series using</p>
+<dd><p>CVaR (Conditional Value at Risk), fitting the normal distribution 
+to the historical time series using</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the
-asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or the 1% CVaR</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of 
+the asset prices</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+or the 1% CVaR</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
@@ -1304,15 +1328,16 @@ asset prices</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.downcapture">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">downcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#downcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.downcapture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the proportion of <tt class="docutils literal"><span class="pre">series</span></tt>&#8216;s cumulative negative returns to
-<tt class="docutils literal"><span class="pre">benchmark</span></tt>&#8216;s cumulative  returns, given benchmark&#8217;s returns were negative in
-that period</p>
+<dd><p>Returns the proportion of <tt class="docutils literal"><span class="pre">series</span></tt>&#8216;s cumulative negative returns 
+to <tt class="docutils literal"><span class="pre">benchmark</span></tt>&#8216;s cumulative  returns, given benchmark&#8217;s returns 
+were negative in that period</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> 
+against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the downcapture of cumulative positive ret</p>
@@ -1335,8 +1360,8 @@ that period</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series:<tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
-<span class="pre">yearly</span></tt></p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> 
+<span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the downside standard deviation</p>
@@ -1347,34 +1372,26 @@ that period</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.analyze.generate_all_metrics">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">generate_all_metrics</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#generate_all_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.generate_all_metrics" title="Permalink to this definition">¶</a></dt>
-<dd><p>cumulative values of relevant statistics is calculated for the <tt class="docutils literal"><span class="pre">series</span></tt> and 
-<tt class="docutils literal"><span class="pre">benchmark</span></tt> for a given <tt class="docutils literal"><span class="pre">frequency</span></tt> and risk free rate</p>
+<dt id="visualize_wealth.analyze.drawdown">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">drawdown</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#drawdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.drawdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
+(same as input) of the drawdown, i.e. distance from rolling 
+cumulative maximum.  Values are negative specifically to be used
+in plots</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><dl class="first docutils">
-<dt>series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="docutils literal"><span class="pre">Pandas.DataFrame</span></tt> of prices to compare</dt>
-<dd><p class="first">against benchmark</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare series against</p>
-<dl class="last docutils">
-<dt>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of the frequency of prices.  &#8216;daily&#8217;, &#8216;weekly&#8217;,</dt>
-<dd><p class="first last">&#8216;monthly&#8217;, &#8216;quarterly&#8217;,&#8217;yearly&#8217;</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DatFrame</span></tt> of 
+prices</td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> of columns [&#8216;series&#8217;,&#8217;benchmark&#8217;] with statistics 
-(index) of [&#8216;annualized_return&#8217;, annualized_vol&#8217;,&#8217;sharpe&#8217;,&#8217;max DD&#8217;,&#8217;ulcer
-index&#8217;,&#8217;beta&#8217;,&#8217;alpha&#8217;, &#8216;upcapture&#8217;,&#8217;downcapture&#8217;,&#8217;tracking error&#8217;]</p>
-</td>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">same type as input</td>
 </tr>
 </tbody>
 </table>
+<div class="code highlight-python"><div class="highlight"><pre><span class="n">drawdown</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">drawdown</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1387,12 +1404,12 @@ index&#8217;,&#8217;beta&#8217;,&#8217;alpha&#8217;, &#8216;upcapture&#8217;,&#8
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
-<span class="pre">yearly</span></tt></p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> 
+<span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> between (0, 1) representing the proportion of  volatility
-represented by idiosycratic risk</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> between (0, 1) representing the proportion of  
+volatility represented by idiosycratic risk</p>
 </td>
 </tr>
 </tbody>
@@ -1402,15 +1419,16 @@ represented by idiosycratic risk</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.idiosyncratic_risk">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">idiosyncratic_risk</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#idiosyncratic_risk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.idiosyncratic_risk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the idiosyncratic risk, i.e. unexplained variation between a price series
-and a chosen benchmark</p>
+<dd><p>Returns the idiosyncratic risk, i.e. unexplained variation between 
+a price series and a chosen benchmark</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> <span class="pre">yearly</span></tt></p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> 
+<span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: the idiosyncratic volatility (not variance)</p>
@@ -1422,19 +1440,23 @@ and a chosen benchmark</p>
 <p class="first admonition-title">Note</p>
 <p>Additivity of an asset&#8217;s Variance</p>
 <blockquote>
-<div><p>An asset&#8217;s variance can be broken down into systematic risk, i.e. that 
-proportion of risk that can be attributed to some benchmark or risk factor
-and idiosyncratic risk, or the unexplained variation between the series and 
-the chosen benchmark / factor.</p>
-<p>Therefore, using the additivity of variances, we can calculate idiosyncratic
-risk as follows:</p>
+<div><p>An asset&#8217;s variance can be broken down into systematic risk, 
+i.e. that proportion of risk that can be attributed to some 
+benchmark or risk factor and idiosyncratic risk, or the 
+unexplained variation between the series and the chosen 
+benchmark / factor.</p>
+<p>Therefore, using the additivity of variances, we can calculate 
+idiosyncratic risk as follows:</p>
 </div></blockquote>
 <div class="last math">
-\[\sigma^2_{\textrm{total}} = \sigma^2_{\beta} + \sigma^2_{\epsilon} +
-\sigma^2_{\epsilon, \beta}, \: \textrm{where}, \]\[\begin{split}\sigma^2_{\beta} &amp;= \textrm{variance attributable to systematic risk}
+\[\sigma^2_{\textrm{total}} = \sigma^2_{\beta} + 
+\sigma^2_{\epsilon} + \sigma^2_{\epsilon, \beta}, 
+\: \textrm{where}, \]\[\begin{split}\sigma^2_{\beta} &amp;= \textrm{variance attributable to 
+systematic risk}
 \\
 \sigma^2_{\epsilon} &amp;= \textrm{idiosyncratic risk} \\
-\sigma^2_{\epsilon, \beta} &amp;= \textrm{covariance between idiosyncratic
+\sigma^2_{\epsilon, \beta} &amp;= \textrm{covariance 
+between idiosyncratic
 and systematic risk, which by definition} = 0 \\\end{split}\]\[\Rightarrow \sigma_{\epsilon} = \sqrt{\sigma^2_{\beta} + 
 \sigma^2_{\epsilon, \beta}}\]</div>
 </div>
@@ -1443,17 +1465,19 @@ and systematic risk, which by definition} = 0 \\\end{split}\]\[\Rightarrow \sigm
 <dl class="function">
 <dt id="visualize_wealth.analyze.jensens_alpha">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">jensens_alpha</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#jensens_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.jensens_alpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Jensen's_alpha">Jensen&#8217;s Alpha</a> or 
-the excess return based on the systematic risk of the <tt class="docutils literal"><span class="pre">series</span></tt> relative to
+<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Jensen's_alpha">Jensen&#8217;s Alpha</a> or the excess 
+return based on the systematic risk of the <tt class="docutils literal"><span class="pre">series</span></tt> relative to
 the <tt class="docutils literal"><span class="pre">benchmark</span></tt></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of the prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of the prices to compare 
+<tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 <p>rfr: <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either daily, monthly, quarterly, or yearly</p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either daily, monthly, quarterly, 
+or yearly</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> representing the Jensen&#8217;s Alpha</p>
@@ -1466,7 +1490,8 @@ the <tt class="docutils literal"><span class="pre">benchmark</span></tt></p>
 <p>Calculating Jensen&#8217;s Alpha</p>
 <div class="last math">
 \[\alpha_{\textrm{Jensen}} = r_p - \beta \cdot r_b 
-\: \textrm{where}\]\[\begin{split}r_p &amp;= \textrm{annualized linear return of the portfolio} \\
+\: \textrm{where}\]\[\begin{split}r_p &amp;= \textrm{annualized linear return of the portfolio} 
+\\
 \beta &amp;= \frac{\sigma_{s, b}}{\sigma^2_{b}} \\
 r_b &amp;= \textrm{annualized linear return of the benchmark}\end{split}\]</div>
 </div>
@@ -1519,15 +1544,16 @@ r_b &amp;= \textrm{annualized linear return of the benchmark}\end{split}\]</div>
 <dl class="function">
 <dt id="visualize_wealth.analyze.max_drawdown">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">max_drawdown</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#max_drawdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.max_drawdown" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the maximum drawdown, or the maximum peak to trough linear distance, as 
-a positive drawdown value</p>
+<dd><p>Returns the maximum drawdown, or the maximum peak to trough linear 
+distance, as a positive drawdown value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">float: the maximum drawdown of the period, expressed as a positive number</td>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">float: the maximum drawdown of the period, expressed as a 
+positive number</td>
 </tr>
 </tbody>
 </table>
@@ -1541,19 +1567,19 @@ a positive drawdown value</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.mctr">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">mctr</tt><big>(</big><em>asset_df</em>, <em>portfolio_series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#mctr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.mctr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal contribution for risk (&#8220;mctr&#8221;) 
-for each of the assets that construct <tt class="docutils literal"><span class="pre">portfolio_df</span></tt></p>
+<dd><p>Return a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal contribution for 
+risk (&#8220;mctr&#8221;) for each of the assets that construct <tt class="docutils literal"><span class="pre">portfolio_df</span></tt></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">asset_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset prices</p>
-<p>portfolio_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the portfolio value that is 
-consructed by <tt class="docutils literal"><span class="pre">asset_df</span></tt></p>
+<p>portfolio_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the portfolio value 
+that is consructed by <tt class="docutils literal"><span class="pre">asset_df</span></tt></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of each of the asset&#8217;s marginal contribution to
-risk</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of each of the asset&#8217;s marginal 
+contribution to risk</p>
 </td>
 </tr>
 </tbody>
@@ -1561,8 +1587,8 @@ risk</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Calculating Marginal Contribution to Risk</p>
-<p>If we define, <span class="math">\(MCR_i\)</span> to be the Marginal Contribution to Risk for 
-asset <span class="math">\(i\)</span>, then,</p>
+<p>If we define, <span class="math">\(MCR_i\)</span> to be the Marginal Contribution to 
+Risk for asset <span class="math">\(i\)</span>, then,</p>
 <div class="last math">
 \[\begin{split}MCTR_i &amp;= \sigma_i \cdot \rho_{i, P} \\\end{split}\]\[\begin{split}\textrm{where, } \\\end{split}\]\[\begin{split}\sigma_i &amp;= \textrm{volatility of asset } i, \\
 \rho_i &amp;= \textrm{correlation of asset } i
@@ -1571,25 +1597,25 @@ asset <span class="math">\(i\)</span>, then,</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Reference for Further Reading</p>
-<p class="last">MSCI Barra did an extensive (and easy to read) white paper entitled 
-<a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> that explicitly details 
-the risk exposure calculation.</p>
+<p class="last">MSCI Barra did an extensive (and easy to read) white paper 
+entitled <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> that 
+explicitly details the risk exposure calculation.</p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.mean_absolute_tracking_error">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">mean_absolute_tracking_error</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#mean_absolute_tracking_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.mean_absolute_tracking_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns Carol Alexander&#8217;s calculation for Mean Absolute Tracking Error
-(&#8220;MATE&#8221;).</p>
+<dd><p>Returns Carol Alexander&#8217;s calculation for Mean Absolute Tracking 
+Error (&#8220;MATE&#8221;).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
-<span class="pre">yearly</span></tt></p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> 
+<span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the mean absolute tracking error</p>
@@ -1601,11 +1627,12 @@ the risk exposure calculation.</p>
 <p class="first admonition-title">Note</p>
 <p>Why Mean Absolute Tracking Error</p>
 <p>One of the downfalls of 
-<a class="reference external" href="http://en.wikipedia.org/wiki/Tracking_error">Tracking Error</a> (&#8220;TE&#8221;) is
-that diverging price series that diverge at a constant rate <strong>may</strong> have low 
-TE.  MATE addresses this issue.</p>
+<a class="reference external" href="http://en.wikipedia.org/wiki/Tracking_error">Tracking Error</a> 
+(&#8220;TE&#8221;) is that diverging price series that diverge at a constant 
+rate <strong>may</strong> have low TE.  MATE addresses this issue.</p>
 <div class="last math">
-\[\sqrt{\frac{(T-1)}{T}\cdot \tau^2 + \bar{R}} \: \textrm{where}\]\[\begin{split}\tau &amp;= \textrm{Tracking Error} \\
+\[\sqrt{\frac{(T-1)}{T}\cdot \tau^2 + \bar{R}} \: 
+\textrm{where}\]\[\begin{split}\tau &amp;= \textrm{Tracking Error} \\
 \bar{R} &amp;= \textrm{mean of the active returns}\end{split}\]</div>
 </div>
 </dd></dl>
@@ -1613,14 +1640,16 @@ TE.  MATE addresses this issue.</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.median_downcapture">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">median_downcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#median_downcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.median_downcapture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the median downcapture of a <tt class="docutils literal"><span class="pre">series</span></tt> of prices against a <tt class="docutils literal"><span class="pre">benchmark</span></tt> 
-prices, given that the <tt class="docutils literal"><span class="pre">benchmark</span></tt> achieved negative returns in a given period</p>
+<dd><p>Returns the median downcapture of a <tt class="docutils literal"><span class="pre">series</span></tt> of prices against a 
+<tt class="docutils literal"><span class="pre">benchmark</span></tt> prices, given that the <tt class="docutils literal"><span class="pre">benchmark</span></tt> achieved negative 
+returns in a given period</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> 
+against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the median downcapture</p>
@@ -1631,25 +1660,28 @@ prices, given that the <tt class="docutils literal"><span class="pre">benchmark<
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p>About Downcapture</p>
-<p class="last">Upcapture can be a difficult statistic to ensure validity.  As upcapture
-is <span class="math">\(\frac{\sum{r_{\textrm{series}}}}{\sum{r_{b|r_i \geq 0}}}\)</span> or 
-the median values (in this case), dividing by small numbers can have 
-asymptotic effects to the overall value of this statistic.  Therefore, it&#8217;s 
-good to do a &#8220;sanity check&#8221; between <tt class="docutils literal"><span class="pre">median_upcapture</span></tt> and <tt class="docutils literal"><span class="pre">upcapture</span></tt></p>
+<p class="last">Upcapture can be a difficult statistic to ensure validity.  As 
+upcapture is <span class="math">\(\frac{\sum{r_{\textrm{series}}}}
+{\sum{r_{b|r_i \geq 0}}}\)</span> or the median values (in this case), 
+dividing by small numbers can have asymptotic effects to the 
+overall value of this statistic.  Therefore, it&#8217;s good to do a 
+&#8220;sanity check&#8221; between <tt class="docutils literal"><span class="pre">median_upcapture</span></tt> and <tt class="docutils literal"><span class="pre">upcapture</span></tt></p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.median_upcapture">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">median_upcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#median_upcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.median_upcapture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the median upcapture of a <tt class="docutils literal"><span class="pre">series</span></tt> of prices against a <tt class="docutils literal"><span class="pre">benchmark</span></tt> 
-prices, given that the <tt class="docutils literal"><span class="pre">benchmark</span></tt> achieved positive returns in a given period</p>
+<dd><p>Returns the median upcapture of a <tt class="docutils literal"><span class="pre">series</span></tt> of prices against a 
+<tt class="docutils literal"><span class="pre">benchmark</span></tt> prices, given that the <tt class="docutils literal"><span class="pre">benchmark</span></tt> achieved 
+positive returns in a given period</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> 
+against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the median upcapture</p>
@@ -1660,26 +1692,32 @@ prices, given that the <tt class="docutils literal"><span class="pre">benchmark<
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p>About Upcapture</p>
-<p class="last">Upcapture can be a difficult statistic to ensure validity.  As upcapture
-is <span class="math">\(\frac{\sum{r_{\textrm{series}}}}{\sum{r_{b|r_i \geq 0}}}\)</span> or 
-the median values (in this case), dividing by small numbers can have 
-asymptotic effects to the overall value of this statistic.  Therefore, it&#8217;s 
-good to do a &#8220;sanity check&#8221; between <tt class="docutils literal"><span class="pre">median_upcapture</span></tt> and <tt class="docutils literal"><span class="pre">upcapture</span></tt></p>
+<p class="last">Upcapture can be a difficult statistic to ensure validity.  As 
+upcapture is <span class="math">\(\frac{\sum{r_{\textrm{series}}}}
+{\sum{r_{b|r_i \geq 0}}}\)</span> or the median values (in this case), 
+dividing by small numbers can have asymptotic effects to the 
+overall value of this statistic.  Therefore, it&#8217;s good to do a 
+&#8220;sanity check&#8221; between <tt class="docutils literal"><span class="pre">median_upcapture</span></tt> and <tt class="docutils literal"><span class="pre">upcapture</span></tt></p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.r_squared">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r_squared</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r_squared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r_squared" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the R-Squared or <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a> for a univariate
-regression (does not adjust for more independent variables
-<a href="#id8"><span class="problematic" id="id9">:seealso:`r_squared_adjusted`</span></a></p>
+<dd><p>Returns the R-Squared or <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a> 
+for a univariate regression (does not adjust for more independent 
+variables</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">r_squared_adjusted()</span></tt></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: :class`pandas.Series` of prices</p>
-<p>benchmark: :class`pandas.Series` of prices to regress <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: :class`pandas.Series` of prices to regress 
+<tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the coefficient of variation</p>
@@ -1692,18 +1730,18 @@ regression (does not adjust for more independent variables
 <dl class="function">
 <dt id="visualize_wealth.analyze.r_squared_adjusted">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r_squared_adjusted</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>weights</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r_squared_adjusted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r_squared_adjusted" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Adjusted R-Squared that incorporates the number of independent variates
-using the <cite>Formula Found of Wikipedia
+<dd><p>The Adjusted R-Squared that incorporates the number of 
+independent variates using the <cite>Formula Found of Wikipedia
 &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2&gt;_</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
-<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of benchmark prices to explain the
-returns of the <tt class="docutils literal"><span class="pre">series</span></tt></p>
-<p>weights: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights to weight each column of the
-benchmark</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of benchmark prices to 
+explain the returns of the <tt class="docutils literal"><span class="pre">series</span></tt></p>
+<p>weights: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights to weight each column 
+of the benchmark</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">:class:float of the adjusted r-squared`</p>
@@ -1714,29 +1752,11 @@ benchmark</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.analyze.return_by_year">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">return_by_year</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#return_by_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.return_by_year" title="Permalink to this definition">¶</a></dt>
-<dd><p>the annualized returns for each of the years</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt> where <tt class="docutils literal"><span class="pre">index</span> <span class="pre">is</span> <span class="pre">years</span> <span class="pre">and</span> <span class="pre">``values</span></tt> are linear 
-annual returns for that year</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="visualize_wealth.analyze.risk_adjusted_excess_return">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_adjusted_excess_return</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#risk_adjusted_excess_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.risk_adjusted_excess_return" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the MMRAP or the <a class="reference external" href="http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance">Modigliani Risk Adjusted Performance</a> that
-calculates the excess return from the <a class="reference external" href="http://en.wikipedia.org/wiki/Capital_allocation_line">Capital
-Allocation Line</a>,
-at the same level of risk (or volatility), specificaly,</p>
+<dd><p>Returns the MMRAP or the <a class="reference external" href="http://en.wikipedia.org/wiki/Modigliani_risk-adjusted_performance">Modigliani Risk Adjusted Performance</a> 
+that calculates the excess return from the <a class="reference external" href="http://en.wikipedia.org/wiki/Capital_allocation_line">Capital Allocation Line</a>, at the 
+same level of risk (or volatility), specificaly,</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1744,8 +1764,8 @@ at the same level of risk (or volatility), specificaly,</p>
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> from which to compare <tt class="docutils literal"><span class="pre">series</span></tt></p>
 <p>rfr: <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
-<span class="pre">yearly</span></tt></p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> 
+<span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the risk adjusted excess performance</p>
@@ -1757,10 +1777,13 @@ at the same level of risk (or volatility), specificaly,</p>
 <p class="first admonition-title">Note</p>
 <p>Calculating Risk Adjusted Excess Returns</p>
 <div class="last math">
-\[raer = r_p - \left(\textrm{SR}_b \cdot \sigma_p + r_f\right), \:
-\textrm{where},\]\[\begin{split}r_p &amp;= \textrm{annualized linear return} \\
-\textrm{SR}_b &amp;= \textrm{Sharpe Ratio of the benchmark} \\
-\sigma_p &amp;= \textrm{volatility of the portfolio} \\
+\[raer = r_p - \left(\textrm{SR}_b \cdot \sigma_p + 
+r_f\right), \: \textrm{where},\]\[\begin{split}r_p &amp;= \textrm{annualized linear return} 
+\\
+\textrm{SR}_b &amp;= \textrm{Sharpe Ratio of the benchmark} 
+\\
+\sigma_p &amp;= \textrm{volatility of the portfolio}
+\\
 r_f &amp;= \textrm{Risk free rate}\end{split}\]</div>
 </div>
 </dd></dl>
@@ -1768,17 +1791,19 @@ r_f &amp;= \textrm{Risk free rate}\end{split}\]</div>
 <dl class="function">
 <dt id="visualize_wealth.analyze.risk_contribution">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_contribution</tt><big>(</big><em>mctr_series</em>, <em>weight_series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#risk_contribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.risk_contribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the risk contribution for each asset, given the marginal contribution
-to risk (&#8220;mctr&#8221;) and the <tt class="docutils literal"><span class="pre">weight_series</span></tt> of asset weights</p>
+<dd><p>Returns the risk contribution for each asset, given the marginal 
+contribution to risk (&#8220;mctr&#8221;) and the <tt class="docutils literal"><span class="pre">weight_series</span></tt> of asset 
+weights</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">mctr_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal risk contribution</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">mctr_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal risk 
+contribution</p>
 <p>weight_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights of each asset</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the risk contribution of each asset</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the risk contribution of each asset</p>
 </td>
 </tr>
 </tbody>
@@ -1793,34 +1818,38 @@ to risk (&#8220;mctr&#8221;) and the <tt class="docutils literal"><span class="p
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">mctr()</span></tt> for Marginal Contribution to Risk (&#8220;mctr&#8221;) as well as
-the <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> paper from MSCI Barra</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">mctr()</span></tt> for Marginal Contribution to Risk (&#8220;mctr&#8221;) 
+as well as the <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> 
+paper from MSCI Barra</p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.risk_contribution_as_proportion">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">risk_contribution_as_proportion</tt><big>(</big><em>mctr_series</em>, <em>weight_series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#risk_contribution_as_proportion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.risk_contribution_as_proportion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the proprtion of the risk contribution for each asset, given the 
-marginal contribution to risk (&#8220;mctr&#8221;) and the <tt class="docutils literal"><span class="pre">weight_series</span></tt> of asset
-weights</p>
+<dd><p>Returns the proprtion of the risk contribution for each asset, given 
+the marginal contribution to risk (&#8220;mctr&#8221;) and the <tt class="docutils literal"><span class="pre">weight_series</span></tt> 
+of asset weights</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">mctr_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal risk contribution</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">mctr_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the marginal risk 
+contribution</p>
 <p>weight_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights of each asset</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the proportional risk contribution of each asset</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the proportional risk contribution 
+of each asset</p>
 </td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">mctr()</span></tt> for Marginal Contribution to Risk (&#8220;mctr&#8221;) as well as
-the <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> paper from MSCI Barra</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">mctr()</span></tt> for Marginal Contribution to Risk (&#8220;mctr&#8221;) 
+as well as the <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution</a> 
+paper from MSCI Barra</p>
 </div>
 </dd></dl>
 
@@ -1852,8 +1881,9 @@ the <a class="reference external" href="http://bit.ly/1eGmxJG">Risk Contribution
 <dl class="function">
 <dt id="visualize_wealth.analyze.sharpe_ratio">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">sharpe_ratio</tt><big>(</big><em>series</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#sharpe_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.sharpe_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Sharpe_ratio">Sharpe Ratio</a> of an 
-asset, given a price series, risk free rate of <tt class="docutils literal"><span class="pre">rfr</span></tt>, and <tt class="docutils literal"><span class="pre">frequency</span></tt> of the 
+<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Sharpe_ratio">Sharpe Ratio</a> 
+of an asset, given a price series, risk free rate of <tt class="docutils literal"><span class="pre">rfr</span></tt>, and 
+<tt class="docutils literal"><span class="pre">frequency</span></tt> of the 
 time series</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1874,7 +1904,8 @@ time series</p>
 <p class="first admonition-title">Note</p>
 <p>Calculating Sharpe</p>
 <div class="last math">
-\[\textrm{SR} = \frac{(R_p - r_f)}{\sigma} \: \textrm{where},\]\[\begin{split}R_p &amp;= \textrm{series annualized return} \\
+\[\textrm{SR} = \frac{(R_p - r_f)}{\sigma} \: 
+\textrm{where},\]\[\begin{split}R_p &amp;= \textrm{series annualized return} \\
 r_f &amp;= \textrm{Risk free rate} \\
 \sigma &amp;= \textrm{Portfolio annualized volatility}\end{split}\]</div>
 </div>
@@ -1883,8 +1914,8 @@ r_f &amp;= \textrm{Risk free rate} \\
 <dl class="function">
 <dt id="visualize_wealth.analyze.sortino_ratio">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">sortino_ratio</tt><big>(</big><em>series</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#sortino_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.sortino_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Sortino_ratio">Sortino Ratio</a>, or
-excess returns per unit downside volatility</p>
+<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Sortino_ratio">Sortino Ratio</a>, or excess returns 
+per unit downside volatility</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1902,14 +1933,16 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Calculating the Sortino Ratio</p>
-<p>There are several calculation methodologies for the Sortino Ratio, this
-method using downside volatility, where</p>
+<p>There are several calculation methodologies for the Sortino 
+Ratio, this method using downside volatility, where</p>
 <div class="last math">
-\[\textrm{Sortino Ratio} = \frac{(R-r_f)}{\sigma_\textrm{downside}}\]</div>
+\[\textrm{Sortino Ratio} = \frac{(R-r_f)}
+{\sigma_\textrm{downside}}\]</div>
 </div>
 <div class="code highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
 
-<span class="n">sortino_ratio</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">sortino_ratio</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
+<span class="n">sortino_ratio</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">sortino_ratio</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> 
+    <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1924,8 +1957,8 @@ method using downside volatility, where</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
-<span class="pre">yearly</span></tt></p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> 
+<span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> between (0, 1) representing the proportion of  volatility
@@ -1939,8 +1972,8 @@ represented by systematic risk</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.systematic_risk">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">systematic_risk</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#systematic_risk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.systematic_risk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the systematic risk, or the volatility that is directly attributable
-to the benchmark</p>
+<dd><p>Returns the systematic risk, or the volatility that is directly 
+attributable to the benchmark</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1962,7 +1995,8 @@ to the benchmark</p>
 <div class="last math">
 \[\begin{split}\sigma_b &amp;= \textrm{Volatility of the Benchmark} \\
 \sigma^2_{\beta} &amp;= \textrm{Systematic Risk} \\
-\beta &amp;= \frac{\sigma^2_{s, b}}{\sigma^2_{b}} \: \textrm{then,}\end{split}\]\[\begin{split}\sigma^2_{\beta} &amp;= \beta^2 \cdot \sigma^2_{b}
+\beta &amp;= \frac{\sigma^2_{s, b}}{\sigma^2_{b}} \: 
+\textrm{then,}\end{split}\]\[\begin{split}\sigma^2_{\beta} &amp;= \beta^2 \cdot \sigma^2_{b}
 \Rightarrow \sigma_{\beta} &amp;= \beta \cdot \sigma_{b}\end{split}\]</div>
 </div>
 </dd></dl>
@@ -1984,8 +2018,10 @@ to the benchmark</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;VGTSX Lin Ret&#39;</span><span class="p">],</span> 
 <span class="gp">... </span>   <span class="n">linear_returns</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;Active Return&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">analyze</span><span class="o">.</span><span class="n">active_returns</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">active_returns</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> 
 <span class="gp">... </span>   <span class="n">benchmark</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;VGTSX Drawdown&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">drawdown</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p>Cumulative Turnover Calculation</p>
@@ -2013,10 +2049,13 @@ to the benchmark</p>
 </div>
 <p>These functions are already calculated or aren&#8217;t calculated in the spreadsheet</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">no_calc_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;rolling_ui&#39;</span><span class="p">,</span> <span class="s">&#39;active_returns&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;test_funs&#39;</span><span class="p">,</span> <span class="s">&#39;linear_returns&#39;</span><span class="p">,</span> <span class="s">&#39;log_returns&#39;</span><span class="p">,</span> <span class="s">&#39;generate_all_metrics&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;return_by_year&#39;</span><span class="p">,</span> <span class="s">&#39;cumulative_turnover&#39;</span><span class="p">,</span> <span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="s">&#39;risk_contribution&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;test_funs&#39;</span><span class="p">,</span> <span class="s">&#39;linear_returns&#39;</span><span class="p">,</span> <span class="s">&#39;log_returns&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;cumulative_turnover&#39;</span><span class="p">,</span> <span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="s">&#39;risk_contribution&#39;</span><span class="p">,</span>
 <span class="gp">... </span><span class="s">&#39;risk_contribution_as_proportion&#39;</span><span class="p">,</span> <span class="s">&#39;cvar_cf_ew&#39;</span><span class="p">,</span> <span class="s">&#39;cvar_median_np&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;cvar_mu_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_cf&#39;</span><span class="p">,</span> <span class="s">&#39;var_norm&#39;</span><span class="p">]</span>
+<span class="gp">... </span><span class="s">&#39;cvar_mu_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_cf&#39;</span><span class="p">,</span> <span class="s">&#39;var_norm&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;consecutive_downticks&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive_upticks&#39;</span><span class="p">,</span> 
+<span class="gp">... </span><span class="s">&#39;consecutive_downtick_performance&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive_uptick_performance&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;r_squared&#39;</span><span class="p">,</span> <span class="s">&#39;r_squared_adjusted&#39;</span><span class="p">,</span> <span class="s">&#39;drawdown&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;series&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> <span class="s">&#39;benchmark&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span> 
@@ -2043,16 +2082,16 @@ function and reference the manually calculated value in the <tt class="docutils 
 <dl class="function">
 <dt id="visualize_wealth.analyze.tracking_error">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">tracking_error</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#tracking_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.tracking_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a <tt class="docutils literal"><span class="pre">float</span></tt> of the <a class="reference external" href="http://en.wikipedia.org/wiki/Tracking_error">Tracking Error</a> or standard deviation of the 
-active returns</p>
+<dd><p>Returns a <tt class="docutils literal"><span class="pre">float</span></tt> of the <a class="reference external" href="http://en.wikipedia.org/wiki/Tracking_error">Tracking Error</a> or standard 
+deviation of the active returns</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 <p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
-<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
-<span class="pre">yearly</span></tt></p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> 
+<span class="pre">or</span> <span class="pre">yearly</span></tt></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the tracking error</p>
@@ -2063,10 +2102,12 @@ active returns</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Calculating Tracking Error</p>
-<p>Let <span class="math">\(r_{a_i} =\)</span> &#8220;Active Return&#8221; for period <span class="math">\(i\)</span>, to calculate the
-compound linear difference between <span class="math">\(r_s\)</span> and <span class="math">\(r_b\)</span> is,</p>
+<p>Let <span class="math">\(r_{a_i} =\)</span> &#8220;Active Return&#8221; for period <span class="math">\(i\)</span>, to 
+calculate the compound linear difference between <span class="math">\(r_s\)</span> 
+and <span class="math">\(r_b\)</span> is,</p>
 <div class="last math">
-\[r_{a_i} = \frac{(1+r_{s_i})}{(1+r_{b_i})}-1\]\[\begin{split}\textrm{then, } \textrm{TE} &amp;= \sigma_a \cdot \sqrt{k} \\
+\[r_{a_i} = \frac{(1+r_{s_i})}{(1+r_{b_i})}-1\]\[\begin{split}\textrm{then, } \textrm{TE} &amp;= \sigma_a \cdot \sqrt{k} 
+\\
 k &amp;= \textrm{Annualization factor}\end{split}\]</div>
 </div>
 </dd></dl>
@@ -2074,9 +2115,9 @@ k &amp;= \textrm{Annualization factor}\end{split}\]</div>
 <dl class="function">
 <dt id="visualize_wealth.analyze.ulcer_index">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">ulcer_index</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#ulcer_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.ulcer_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the ulcer index of  the series, which is defined as the squared drawdowns
-(instead of the squared deviations from the mean).  Further explanation can be 
-found at <a class="reference external" href="http://www.tangotools.com/ui/ui.htm">Tanger Tools</a></p>
+<dd><p>Returns the ulcer index of  the series, which is defined as the 
+squared drawdowns (instead of the squared deviations from the mean).  
+Further explanation can be found at <a class="reference external" href="http://www.tangotools.com/ui/ui.htm">Tanger Tools</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2084,14 +2125,15 @@ found at <a class="reference external" href="http://www.tangotools.com/ui/ui.htm
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">float:</th><td class="field-body">the maximum drawdown of the period, expressed as a positive number</td>
+<tr class="field-odd field"><th class="field-name">float:</th><td class="field-body">the maximum drawdown of the period, expressed as a</td>
 </tr>
 </tbody>
 </table>
+<p class="last">positive number</p>
 </td>
 </tr>
 </tbody>
@@ -2106,15 +2148,16 @@ found at <a class="reference external" href="http://www.tangotools.com/ui/ui.htm
 <dl class="function">
 <dt id="visualize_wealth.analyze.upcapture">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">upcapture</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#upcapture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.upcapture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the proportion of <tt class="docutils literal"><span class="pre">series</span></tt>&#8216;s cumulative positive returns to
-<tt class="docutils literal"><span class="pre">benchmark</span></tt>&#8216;s cumulative  returns, given benchmark&#8217;s returns were positive 
-in that period</p>
+<dd><p>Returns the proportion of <tt class="docutils literal"><span class="pre">series</span></tt>&#8216;s cumulative positive returns 
+to <tt class="docutils literal"><span class="pre">benchmark</span></tt>&#8216;s cumulative  returns, given benchmark&#8217;s returns 
+were positive in that period</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
-<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to compare <tt class="docutils literal"><span class="pre">series</span></tt> 
+against</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">float: of the upcapture of cumulative positive returns</p>
@@ -2156,13 +2199,14 @@ in that period</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
+of prices</p>
 <p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the <span class="math">\(\alpha\)</span> percentile</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the VaR, where skew and
-kurtosis are used to adjust the tail density estimation (using the
-Cornish Fisher Approximation)</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the VaR, where skew 
+and kurtosis are used to adjust the tail density estimation 
+(using the Cornish Fisher Approximation)</p>
 </td>
 </tr>
 </tbody>
@@ -2172,17 +2216,19 @@ Cornish Fisher Approximation)</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.var_norm">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">var_norm</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#var_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.var_norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Value at Risk (&#8220;VaR&#8221;) of the <span class="math">\(p = \alpha\)</span> quantile, defines the loss,
-such that there is an <span class="math">\(\alpha\)</span> percent chance of a loss, greater than or
-equal to <span class="math">\(\textrm{VaR}_\alpha\)</span>. <tt class="xref py py-meth docutils literal"><span class="pre">var_norm()</span></tt> fits a normal
-distribution to the log returns of the series, and then estimates the
-<span class="math">\(\textrm{VaR}_\alpha\)</span></p>
+<dd><p>Value at Risk (&#8220;VaR&#8221;) of the <span class="math">\(p = \alpha\)</span> quantile, defines 
+the loss, such that there is an <span class="math">\(\alpha\)</span> percent chance of 
+a loss, greater than or equal to <span class="math">\(\textrm{VaR}_\alpha\)</span>. 
+<tt class="xref py py-meth docutils literal"><span class="pre">var_norm()</span></tt> fits a normal distribution to the log returns of 
+the series, and then estimates the <span class="math">\(\textrm{VaR}_\alpha\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the <span class="math">\(\alpha\)</span> quantile for which to estimate VaR</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
+of prices</p>
+<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the <span class="math">\(\alpha\)</span> quantile for which to 
+estimate VaR</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of VaR</p>
@@ -2198,20 +2244,26 @@ distribution to the log returns of the series, and then estimates the
 \textrm{ such that}
 \mathbb{P}(Y &lt; y_\alpha) = \alpha,
 \textrm{Then,} \\\end{split}\]\[\begin{split}\mathbb{P}(Y &lt; y_\alpha) &amp;= \alpha \\
-\Rightarrow \mathbb{P}(\frac{Y - \mu}{\sigma} &lt; \frac{y_\alpha -
-\mu}{\sigma}) &amp;= \alpha \\
-\Rightarrow \mathbb{P}(Z &lt; \frac{y_\alpha - \mu}{\sigma} &amp;= \alpha
+\Rightarrow \mathbb{P}(\frac{Y - \mu}{\sigma} &lt; 
+\frac{y_\alpha - \mu}{\sigma}) &amp;= \alpha 
 \\
-\Rightarrow \Phi(\frac{y_\alpha - \mu}{\sigma} ) &amp;= \alpha,
-\textrm{ where}
+\Rightarrow \mathbb{P}(Z &lt; \frac{y_\alpha - 
+\mu}{\sigma} &amp;= \alpha
+\\
+\Rightarrow \Phi(\frac{y_\alpha - \mu}{\sigma} ) 
+&amp;= \alpha, \textrm{ where}
 \\
 \Phi(.) \textrm{ is the standard normal cdf operator.
 Then using the inverse of the function } \Phi
-\textrm{ , we have:} \\\end{split}\]\[\begin{split}\Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} ) ) &amp;=
-\Phi^{-1}(\alpha) \\
-\Rightarrow \Phi^{-1}(\alpha)\cdot\sigma + \mu = y_\alpha
-\textrm{, but }
-y_\alpha \textrm{ is negative and VaR is always positive, so,} \\\end{split}\]\[\begin{split}VaR_\alpha = -y_\alpha &amp;= -\Phi^{-1}(\alpha)\cdot\sigma - \mu
+\textrm{ , we have:} \\\end{split}\]\[\begin{split}\Phi^{-1}( \Phi(\frac{y_\alpha - \mu}{\sigma} ) ) 
+&amp;= \Phi^{-1}(\alpha) 
+\\
+\Rightarrow \Phi^{-1}(\alpha)\cdot\sigma + \mu 
+= y_\alpha \textrm{, but } y_\alpha \textrm{ 
+is negative and VaR is always positive, so,} 
+\\
+VaR_\alpha = -y_\alpha &amp;= -\Phi^{-1}
+(\alpha)\cdot\sigma - \mu
 \\
 &amp;= \Phi^{-1}(1 - \alpha) - \mu \\\end{split}\]</div>
 </div>
@@ -2224,9 +2276,9 @@ y_\alpha \textrm{ is negative and VaR is always positive, so,} \\\end{split}\]\[
 <dl class="function">
 <dt id="visualize_wealth.analyze.var_np">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">var_np</tt><big>(</big><em>series</em>, <em>p=0.01</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#var_np"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.var_np" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the non-parametric VaR (non-parametric estimate) for a given percentile,
-i.e. the loss for which there is less than a <tt class="docutils literal"><span class="pre">percentile</span></tt> chance of exceeding
-in a period of <cite>freq</cite>.</p>
+<dd><p>Return the non-parametric VaR (non-parametric estimate) for a given 
+percentile, i.e. the loss for which there is less than a 
+<tt class="docutils literal"><span class="pre">percentile</span></tt> chance of exceeding in a period of <cite>freq</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2244,8 +2296,8 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </table>
 <div class="code highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">visualize_wealth.performance</span> <span class="kn">as</span> <span class="nn">vwp</span>
 
-<span class="n">var</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">value_at_risk</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">,</span> <span class="n">percentile</span> <span class="o">=</span>
-<span class="mf">0.1</span><span class="p">)</span>
+<span class="n">var</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">value_at_risk</span><span class="p">(</span><span class="n">price_series</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="s">&#39;monthly&#39;</span><span class="p">,</span> 
+<span class="n">percentile</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2420,7 +2472,7 @@ $ pandoc README.md -f markdown -t rst -o docs/source/readme.rst
 </div>
 </div>
 <div class="section" id="build-sphinx-documentation">
-<span id="id15"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
+<span id="id13"></span><h3>Build Sphinx Documentation<a class="headerlink" href="#build-sphinx-documentation" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-python"><div class="highlight"><pre>#rebuild the package
 $ cd visualize_wealth
 $ python setup.py install
@@ -2431,7 +2483,7 @@ $ sphinx-build -b html docs/source/ docs/build/
 </div>
 </div>
 <div class="section" id="sphinx-customizations-in-conf-py">
-<span id="id16"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
+<span id="id14"></span><h3>Sphinx Customizations in <tt class="docutils literal"><span class="pre">conf.py</span></tt><a class="headerlink" href="#sphinx-customizations-in-conf-py" title="Permalink to this headline">¶</a></h3>
 <p>Current customizations I use in order to make the docs look like they
 currently do</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="c">#use the sphinxdoc theme</span>

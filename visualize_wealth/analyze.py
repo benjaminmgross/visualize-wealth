@@ -1020,7 +1020,7 @@ def median_upcapture(series, benchmark):
     else:
         return _median_upcapture(series, benchmark)
 
-def r_squared(series, benchmark):
+def r2(series, benchmark):
     """
     Returns the R-Squared or `Coefficient of Determination
     <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_ 
@@ -1040,15 +1040,16 @@ def r_squared(series, benchmark):
 
         float: of the coefficient of variation
     """
-    def _r_squared(series, benchmark):
-        series_rets = log_returns(series)
-        bench_rets = log_returns(benchmark)        
-        series_rets = series_rets.sub( series_rets.mean() )
-        bench_rets = bench_rets.sub( bench_rets.mean() )
+    def _r_squared(x, y):
+        X = pandas.DataFrame({'ones': numpy.ones(len(x)),
+            'xs': x})
+        beta = numpy.linalg.inv(X.transpose().dot(X)).dot(
+        X.transpose().dot(y) )
+        y_est = beta[0] + beta[1]*x
+        ss_res = ((y_est - y)**2).sum()
+        ss_tot = ((y - y.mean())**2).sum()
+        return 1 - ss_res/ss_tot
 
-        sse = ( (series_rets - bench_rets)**2).sum()
-        sst = ( (series_rets - series_rets.mean() )**2 ).sum()
-        return 1 - sse/sst
 
     if isinstance(benchmark, pandas.DataFrame):
         return benchmark.apply(lambda x: _r_squared(series, x))

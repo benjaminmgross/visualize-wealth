@@ -1044,7 +1044,7 @@ def r2(series, benchmark):
         X = pandas.DataFrame({'ones': numpy.ones(len(x)),
             'xs': x})
         beta = numpy.linalg.inv(X.transpose().dot(X)).dot(
-        X.transpose().dot(y) )
+            X.transpose().dot(y) )
         y_est = beta[0] + beta[1]*x
         ss_res = ((y_est - y)**2).sum()
         ss_tot = ((y - y.mean())**2).sum()
@@ -1056,7 +1056,28 @@ def r2(series, benchmark):
     else:
         return _r_squared(series, benchmark)
 
-def r_squared_adjusted(series, benchmark, weights):
+def r2_prices(series, benchmark):
+    """
+    Returns the R-Squared when the inputs provided are prices instead
+    of returns
+    
+    :ARGS:
+
+        series: :class:`pandas.Series` of prices to regress
+
+        benchmark: :class:`pandas.Series` of prices to regress
+        ``series`` against
+
+    :RETURNS:
+
+        :class:`float` of the coefficient of determination, not 
+        adjusted for number of variates 
+    """
+    x = series.apply(numpy.log).diff()
+    y = benchmark.apply(nump.log).diff()
+    return r2(x, y)
+
+def r2_adjusted(series, benchmark):
     """
     The Adjusted R-Squared that incorporates the number of 
     independent variates using the `Formula Found of Wikipedia

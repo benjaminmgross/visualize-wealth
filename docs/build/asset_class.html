@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>asset_class &mdash; Visualize Wealth 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Visualize Wealth 0.0.1 documentation" href="index.html"/>
+        <link rel="prev" title="README.md" href="readme.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> Visualize Wealth</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Modules Explained</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#constructing-portfolios">Constructing portfolios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#analyzing-portfolio-performance">Analyzing portfolio performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#construct-portfolio-py-documentation"><tt class="docutils literal"><span class="pre">construct_portfolio.py</span></tt> documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#asset-class-py-documentation"><tt class="docutils literal"><span class="pre">asset_class.py</span></tt> documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#analyze-py-documentation"><tt class="docutils literal"><span class="pre">analyze.py</span></tt> documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#utils-py-documentation"><tt class="docutils literal"><span class="pre">utils.py</span></tt> documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#sphinx-customizations">Sphinx Customizations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">README.md</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#portfolio-construction-examples">Portfolio Construction Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#todo-list">ToDo List:</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">asset_class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#status">Status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#to-do">To Do:</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Visualize Wealth</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>asset_class</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/asset_class.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="asset-class">
+<h1>asset_class<a class="headerlink" href="#asset-class" title="Permalink to this headline">¶</a></h1>
+<p>A simple library that uses r-squared maximization techniques and asset
+sub class ETFs (that I personally chose) to determine asset class
+information, as well as historical asset subclass information for a
+given asset</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre>$git clone https://github.com/benjaminmgross/asset_class
+$ cd asset_class
+$python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s say we had some fund, for instance the <a class="reference external" href="http://finance.yahoo.com/q/pr?s=FGTIX+Profile">Franklin Templeton Growth
+Allocation Fund A</a> &#8211;
+ticker FGTIX &#8211; against which we we wanted to do historical attribution.</p>
+<p>In just a couple of key strokes, we can come up with quarterly
+attribution analysis to see where returns were coming from</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pandas.io.data</span> <span class="kn">as</span> <span class="nn">web</span>
+<span class="kn">import</span> <span class="nn">asset_class</span>
+
+<span class="n">fgtix</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">DataReader</span><span class="p">(</span><span class="s">&#39;FGTIX&#39;</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/2000&#39;</span><span class="p">)[</span><span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>
+<span class="n">rolling_weights</span> <span class="o">=</span> <span class="n">asset_class</span><span class="o">.</span><span class="n">asset_class_and_subclass_by_interval</span><span class="p">(</span><span class="n">fgtix</span><span class="p">,</span> <span class="s">&#39;quarterly&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And that&#8217;s it. Let&#8217;s see the subclass attributions that the adjusted
+r-squared optimization algorithm came up with.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c">#create the stacked area graph</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">stack_coll</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">stackplot</span><span class="p">(</span><span class="n">rolling_attr</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">rolling_attr</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">proxy_rects</span> <span class="o">=</span> <span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">get_facecolor</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">pc</span> <span class="ow">in</span> <span class="n">stack_coll</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">proxy_rects</span><span class="p">,</span> <span class="n">rolling_attr</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">ncol</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">loc</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">bbox_to_anchor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.15</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Asset Subclass Attribution Over Time&quot;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure">
+<img alt="sub\_classes" src="_images/subclass_overtime.png" />
+<p class="caption">sub_classes</p>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="obvious-ones">
+<h3>Obvious Ones:<a class="headerlink" href="#obvious-ones" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">pandas</span></tt> <tt class="docutils literal"><span class="pre">numpy</span></tt> <tt class="docutils literal"><span class="pre">scipy.optimize</span></tt> (uses the <tt class="docutils literal"><span class="pre">TNC</span></tt> method to
+optimize the objective function of r-squared)</p>
+</div>
+<div class="section" id="not-so-obvious">
+<h3>Not So Obvious:<a class="headerlink" href="#not-so-obvious" title="Permalink to this headline">¶</a></h3>
+<p>Another one of my open source repositories
+<tt class="docutils literal"><span class="pre">`visualize_wealth</span></tt> &lt;<a class="reference external" href="https://github.com/benjaminmgross/wealth-viz">https://github.com/benjaminmgross/wealth-viz</a>&gt;`__
+&gt; But that&#8217;s just for adjusted r-squared functionality, you could easily
+clone and hack it yourself without that library</p>
+</div>
+</div>
+<div class="section" id="status">
+<h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<p>Still very much a WIP, although I&#8217;ve added
+[Sphinx]http://sphinx-doc.org/) docstrings to auto generate
+documentation</p>
+</div>
+<div class="section" id="to-do">
+<h2>To Do:<a class="headerlink" href="#to-do" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Given a <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset prices, and asset price
+weights, return an aggregated asset class <tt class="docutils literal"><span class="pre">pandas.DataFrame</span></tt> on a
+quarterly basis</li>
+<li>Write the <tt class="docutils literal"><span class="pre">Best</span> <span class="pre">Fitting</span> <span class="pre">Benchmark</span></tt> algorithm, either for use in
+this library or from the private <tt class="docutils literal"><span class="pre">strat_check</span></tt> repository that uses
+this module</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="readme.html" class="btn btn-neutral" title="README.md"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Benjamin M. Gross.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

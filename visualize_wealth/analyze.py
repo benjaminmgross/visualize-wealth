@@ -1764,7 +1764,8 @@ def test_funs():
     ... 'cvar_mu_np', 'var_np', 'var_cf', 'var_norm', 'consecutive',
     ... 'consecutive_downticks', 'consecutive_upticks', 
     ... 'consecutive_downtick_performance', 'consecutive_uptick_performance',
-    ... 'r_squared', 'r_squared_adjusted', 'drawdown']
+    ... 'r_squared', 'r_squared_adjusted', 'drawdown', 'r2', 'r2_adjusted',
+    ... 'r2_prices']
 
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
     ...    'freq': 'daily', 'rfr': 0.0, 'p': .01 }

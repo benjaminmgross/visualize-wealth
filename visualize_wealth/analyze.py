@@ -1025,9 +1025,9 @@ def r2(series, benchmark):
     Returns the R-Squared or `Coefficient of Determination
     <http://en.wikipedia.org/wiki/Coefficient_of_determination>`_ 
     for a univariate regression (does not adjust for more independent 
-    variables
+    variables)
     
-    .. seealso:: :meth:`r_squared_adjusted`
+    .. seealso:: :meth:`r2_adjusted`
 
     :ARGS:
 
@@ -1056,28 +1056,9 @@ def r2(series, benchmark):
     else:
         return _r_squared(series, benchmark)
 
-def r2_prices(series, benchmark):
-    """
-    Returns the R-Squared when the inputs provided are prices instead
-    of returns
-    
-    :ARGS:
 
-        series: :class:`pandas.Series` of prices to regress
 
-        benchmark: :class:`pandas.Series` of prices to regress
-        ``series`` against
-
-    :RETURNS:
-
-        :class:`float` of the coefficient of determination, not 
-        adjusted for number of variates 
-    """
-    x = series.apply(numpy.log).diff()
-    y = benchmark.apply(nump.log).diff()
-    return r2(x, y)
-
-def r2_adjusted(series, benchmark):
+def r2_adj(series, benchmark):
     """
     The Adjusted R-Squared that incorporates the number of 
     independent variates using the `Formula Found of Wikipedia
@@ -1097,17 +1078,34 @@ def r2_adjusted(series, benchmark):
 
         :class:float of the adjusted r-squared`
     """
-    series_rets = series.pct_change()
-    bench_rets = benchmark.pct_change()
-    series_rets = series_rets.sub( series_rets.mean() )
-    bench_rets = bench_rets.sub( bench_rets.mean() )
+    n = len(y)
+    p = 1
+    return 1 - (1 - r2_uv(x, y))*(n - 1)/(n - p - 1)  
 
-    estimate = numpy.dot(bench_rets, weights)
-    sse = ( (estimate - series_rets)**2 ).sum()
-    sst = ( (series_rets - series_rets.mean() )**2 ).sum()
-    rsq = 1 - sse/sst
-    p, n = weights.shape[0], asset_rets.dropna().shape[0]
-    return rsq - (1 - rsq)*(float(p)/(n - p - 1))
+def r2_mv_adj(x, y):
+    """
+    Returns the adjusted R-Squared for multivariate regression
+    """
+    n = len(y)
+    p = x.shape[1]
+    return 1 - (1 - r2_mv(x, y))*(n - 1)/(n - p - 1)
+
+def r2_mv(x, y):   
+    """
+    Multivariate r-squared
+    """
+    ones = pandas.Series(numpy.ones(len(y)), name = 'ones')
+    d = x.to_dict()
+    d['ones'] = ones
+    cols = ['ones']
+    cols.extend(x.columns)
+    X = pandas.DataFrame(d, columns = cols)
+    beta = numpy.linalg.inv(X.transpose().dot(X)).dot(
+        X.transpose().dot(y) )
+    y_est = beta[0] + x.dot(beta[1:])
+    ss_res = ((y_est - y)**2).sum()
+    ss_tot = ((y - y.mean())**2).sum()
+    return 1 - ss_res/ss_tot
 
 def risk_adjusted_excess_return(series, benchmark, rfr = 0., 
                                 freq = 'daily'):
@@ -1721,6 +1719,7 @@ def test_funs():
     >>> f = pandas.ExcelFile('../tests/test_analyze.xlsx')
     >>> man_calcs = f.parse('calcs', index_col = 0)
     >>> prices = man_calcs[['S&P 500', 'VGTSX']]
+    >>> log_rets = prices.apply(numpy.log).diff().dropna()
     >>> stats = f.parse('results', index_col = 0)
     >>> put.assert_series_equal(man_calcs['S&P 500 Log Ret'], 
     ...    log_returns(prices['S&P 500']))
@@ -1731,6 +1730,12 @@ def test_funs():
     ...    benchmark = prices['S&P 500']))
     >>> put.assert_series_equal(man_calcs['VGTSX Drawdown'],
     ...    drawdown(prices['VGTSX']))
+    >>> numpy.testing.assert_almost_equal(pandas.ols(x = log_rets['S&P 500'],
+    ...    y = log_rets['VGTSX']).r2, r2(benchmark = log_rets['S&P 500'],
+    ...    series = log_rets['VGTSX']))
+    >>> numpy.testing.assert_almost_equal(pandas.ols(x = log_rets['S&P 500'],
+    ...    y = log_rets['VGTSX']).r2_adj, r2_adj(benchmark = log_rets['S&P 500'],
+    ...    series = log_rets['VGTSX']))
 
     Cumulative Turnover Calculation
 
@@ -1764,8 +1769,8 @@ def test_funs():
     ... 'cvar_mu_np', 'var_np', 'var_cf', 'var_norm', 'consecutive',
     ... 'consecutive_downticks', 'consecutive_upticks', 
     ... 'consecutive_downtick_performance', 'consecutive_uptick_performance',
-    ... 'r_squared', 'r_squared_adjusted', 'drawdown', 'r2', 'r2_adjusted',
-    ... 'r2_prices']
+    ... 'r_squared', 'r_squared_adjusted', 'drawdown', 'r2', 'r2_adj',
+    ... 'r2_mv', 'r2_mv_adj']
 
     >>> d = {'series': prices['VGTSX'], 'benchmark':prices['S&P 500'], 
     ...    'freq': 'daily', 'rfr': 0.0, 'p': .01 }

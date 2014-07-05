@@ -671,7 +671,36 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
     return tmp_panel
 
         
+def weight_df_from_initial_weights(weight_series, price_panel,
+    rebal_frequency, start_value = 1000., start_date = None):
+    """
+    Returns a :class:`pandas.DataFrame` of weights that are used 
+    to construct the portfolio.  Useful in determining tactical 
+    over / under weightings relative to other portfolios
+
+    :ARGS:
     
+        weight_series of :class:`pandas.Series` of a weight allocation 
+        with an index of tickers, and a name of the initial allocation
+
+        price_panel of type :class:`pandas.Panel` with dimensions 
+        [tickers, index, price data]
+
+        start_value: of type :class:`float` of the value to start the 
+        index
+
+        rebal_frequency: :class:`string` of 'weekly', 'monthly', 
+        'quarterly', 'yearly'
+
+    :RETURNS:
+    
+        price: of type :class:`pandas.DataFrame` with portfolio 
+        'Close' and 'Open'
+    """
+    
+    return initial_weight_help_fn(weight_series, price_panel, 
+        rebal_frequency, start_value, start_date, ret_val = 'weights')
+
 
 def panel_from_initial_weights(weight_series, price_panel, 
     rebal_frequency, start_value = 1000, start_date = None):
@@ -699,10 +728,15 @@ def panel_from_initial_weights(weight_series, price_panel,
 
     :RETURNS:
     
-        price: of type :class:`pandas.DataFrame` with portfolio 
-        'Close' and 'Open'
+        weight_df: of type :class:`pandas.DataFrame` of the rebalance
+        weights and dates
     """
+    return initial_weight_help_fn(weight_series, price_panel, 
+        rebal_frequency, start_value, start_date, ret_val = 'panel')
 
+def initial_weight_help_fn(weight_series, price_panel,
+    rebal_frequency, start_value = 1000., start_date = None, ret_val = 'panel'):
+    
     #determine the first valid date and make it the start_date
     first_valid = numpy.max(price_panel.loc[:, :, 'Close'].apply(
             pandas.Series.first_valid_index))
@@ -738,7 +772,7 @@ def panel_from_initial_weights(weight_series, price_panel,
     weight_df = pandas.DataFrame(numpy.tile(weight_series.values, 
         [len(index[ind]), 1]), index = index[ind], 
         columns = weight_series.index)
-                    
+    
     return panel_from_weight_file(weight_df, price_panel, start_value)
 
 

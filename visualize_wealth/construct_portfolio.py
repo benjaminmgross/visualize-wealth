@@ -773,7 +773,10 @@ def initial_weight_help_fn(weight_series, price_panel,
         [len(index[ind]), 1]), index = index[ind], 
         columns = weight_series.index)
     
-    return panel_from_weight_file(weight_df, price_panel, start_value)
+    if ret_val == 'panel':
+        return panel_from_weight_file(weight_df, price_panel, start_value)
+    else:
+        return weight_df
 
 
 

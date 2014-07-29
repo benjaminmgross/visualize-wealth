@@ -257,6 +257,15 @@ def consecutive_downtick_performance(series, benchmark):
         return _consecutive_downtick_performance(series = series,
                                                  benchmark = benchmark)
 
+def test_consecutive_downticks(series, n_ticks = 3):
+    w = consecutive( (series < series.shift(1)).astype(int) )
+    agg_ind = w[w > n_ticks - 1].index.union_many(
+        map(lambda x: w[w.shift(-x) == n_ticks].index,
+            numpy.arange(n_ticks + 1) ))
+
+    return w[agg_ind]
+    
+
 def consecutive_downticks(series):
     """
     Using the :func:`num_consecutive`, returns a :class:`pandas.Series` 

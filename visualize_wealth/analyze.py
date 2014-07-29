@@ -215,7 +215,7 @@ def consecutive(int_series):
     int_series[n] = -d
     return int_series.cumsum()
 
-def consecutive_downtick_performance(series, benchmark):
+def consecutive_downtick_performance(series, benchmark, n_ticks = 3):
     """
     Returns a two column :class:`pandas.DataFrame` with columns 
     `['outperformance','num_downticks']` that shows the cumulative 
@@ -236,8 +236,8 @@ def consecutive_downtick_performance(series, benchmark):
         of consecutive downticks for which the outperformance was 
         generated
     """
-    def _consecutive_downtick_performance(series, benchmark):
-        dnticks = consecutive_downticks(benchmark)
+    def _consecutive_downtick_performance(series, benchmark, n_ticks):
+        dnticks = consecutive_downticks(benchmark, n_ticks = n_ticks)
         series_dn = series[dnticks.index]
         bench_dn = benchmark[dnticks.index]
         st, fin = dnticks == 0, (dnticks == 0).shift(-1).fillna(True)
@@ -252,21 +252,13 @@ def consecutive_downtick_performance(series, benchmark):
     
     if isinstance(benchmark, pandas.DataFrame):
         return map(lambda x: _consecutive_downtick_performance(
-            series = series, benchmark = benchmark[x]), benchmark.columns)
+               series = series, benchmark = benchmark[x],n_ticks = n_ticks),
+               benchmark.columns)
     else:
         return _consecutive_downtick_performance(series = series,
-                                                 benchmark = benchmark)
+               benchmark = benchmark, n_ticks = n_ticks)
 
-def test_consecutive_downticks(series, n_ticks = 3):
-    w = consecutive( (series < series.shift(1)).astype(int) )
-    agg_ind = w[w > n_ticks - 1].index.union_many(
-        map(lambda x: w[w.shift(-x) == n_ticks].index,
-            numpy.arange(n_ticks + 1) ))
-
-    return w[agg_ind]
-    
-
-def consecutive_downticks(series):
+def consecutive_downticks(series, n_ticks = 3):
     """
     Using the :func:`num_consecutive`, returns a :class:`pandas.Series` 
     of the consecutive downticks in the series greater than three 
@@ -281,12 +273,13 @@ def consecutive_downticks(series):
         :class:`pandas.Series` of the consecutive downticks of the series
     """
     w = consecutive( (series < series.shift(1)).astype(int) )
-    agg_ind = w[w > 2].index.union_many(
-        [w[w.shift(-1) == 3].index, w[w.shift(-2) == 3].index,
-         w[w.shift(-3) == 3].index])
+    agg_ind = w[w > n_ticks - 1].index.union_many(
+              map(lambda x: w[w.shift(-x) == n_ticks].index,
+              numpy.arange(n_ticks + 1) ))
+
     return w[agg_ind]
 
-def consecutive_uptick_performance(series, benchmark):
+def consecutive_uptick_performance(series, benchmark, n_ticks = 3):
     """
     Returns a two column :class:`pandas.DataFrame` with columns 
     ``['outperformance', 'num_upticks']`` that shows the cumulative 
@@ -307,8 +300,8 @@ def consecutive_uptick_performance(series, benchmark):
         num_upticks the number of consecutive upticks for which the 
         outperformance was generated
     """
-    def _consecutive_uptick_performance(series, benchmark):
-        upticks = consecutive_upticks(benchmark)
+    def _consecutive_uptick_performance(series, benchmark, n_ticks):
+        upticks = consecutive_upticks(benchmark, n_ticks = n_ticks)
         series_up  = series[upticks.index]
         bench_up = benchmark[upticks.index]
         st, fin = upticks == 0, (upticks == 0).shift(-1).fillna(True)
@@ -323,12 +316,13 @@ def consecutive_uptick_performance(series, benchmark):
 
     if isinstance(benchmark, pandas.DataFrame):
         return map(lambda x: _consecutive_uptick_performance(
-            series = series, benchmark = benchmark[x]), benchmark.columns)
+               series = series, benchmark = benchmark[x], n_ticks = n_ticks),
+               benchmark.columns)
     else:
-        return _consecutive_uptick_performance(series = series,
-                                               benchmark = benchmark)
+        return _consecutive_uptick_performance(
+               series = series, benchmark = benchmark, n_ticks = n_ticks)
 
-def consecutive_upticks(series):
+def consecutive_upticks(series, n_ticks = 3):
     """
     Using the :func:`num_consecutive`, returns a :class:`pandas.Series` 
     of the consecutive upticks in the series with greater than 3 
@@ -343,9 +337,10 @@ def consecutive_upticks(series):
         :class:`pandas.Series` of the consecutive downticks of the series
     """
     w = consecutive( (series > series.shift(1)).astype(int) )
-    agg_ind = w[w > 2].index.union_many(
-        [w[w.shift(-1) == 3].index, w[w.shift(-2) == 3].index,
-         w[w.shift(-3) == 3].index])
+    agg_ind = w[w > n_ticks - 1].index.union_many(
+              map(lambda x: w[w.shift(-x) == n_ticks].index,
+              numpy.arange(n_ticks + 1) ))
+
     return w[agg_ind]
 
 def cumulative_turnover(alloc_df, asset_wt_df):

@@ -215,7 +215,43 @@ def consecutive(int_series):
     int_series[n] = -d
     return int_series.cumsum()
 
-def consecutive_downtick_performance(series, benchmark, n_ticks = 3):
+def consecutive_downtick_performance(series, n_ticks = 3):
+    """
+    Returns a two column :class:`pandas.DataFrame` with columns 
+    `['performance','num_downticks']` that shows the cumulative 
+    performance (in log returns) and the `num_upticks` number of 
+    days the downtick lasted
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of ``['performance','num_upticks']``.
+        Performance is in log returns and `num_downticks` the number 
+        of consecutive downticks for which the performance was 
+        generated
+    """
+    def _consecutive_downtick_performance(series, n_ticks):
+        dnticks = consecutive_downticks(series, n_ticks = n_ticks)
+        series_dn = series[dnticks.index]
+        st, fin = dnticks == 0, (dnticks == 0).shift(-1).fillna(True)
+        n_per = dnticks[fin]
+        series_rets = numpy.log(numpy.divide(series_dn[fin], 
+                                             series_dn[st]))
+
+        return pandas.DataFrame({'num_downticks':n_per,
+                                 series.name: series_rets})
+    
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _consecutive_downtick_performance(
+            x, n_ticks = n_ticks))
+    else:
+        return _consecutive_downtick_performance(series = series,
+            n_ticks = n_ticks)
+    
+def consecutive_downtick_relative_performance(series, benchmark, n_ticks = 3):
     """
     Returns a two column :class:`pandas.DataFrame` with columns 
     `['outperformance','num_downticks']` that shows the cumulative 
@@ -236,7 +272,7 @@ def consecutive_downtick_performance(series, benchmark, n_ticks = 3):
         of consecutive downticks for which the outperformance was 
         generated
     """
-    def _consecutive_downtick_performance(series, benchmark, n_ticks):
+    def _consecutive_downtick_relative_performance(series, benchmark, n_ticks):
         dnticks = consecutive_downticks(benchmark, n_ticks = n_ticks)
         series_dn = series[dnticks.index]
         bench_dn = benchmark[dnticks.index]
@@ -251,11 +287,11 @@ def consecutive_downtick_performance(series, benchmark, n_ticks = 3):
             series.name, 'outperformance', 'num_downticks'] )
     
     if isinstance(benchmark, pandas.DataFrame):
-        return map(lambda x: _consecutive_downtick_performance(
+        return map(lambda x: _consecutive_downtick_relative_performance(
                series = series, benchmark = benchmark[x],n_ticks = n_ticks),
                benchmark.columns)
     else:
-        return _consecutive_downtick_performance(series = series,
+        return _consecutive_downtick_relative_performance(series = series,
                benchmark = benchmark, n_ticks = n_ticks)
 
 def consecutive_downticks(series, n_ticks = 3):
@@ -279,7 +315,7 @@ def consecutive_downticks(series, n_ticks = 3):
 
     return w[agg_ind]
 
-def consecutive_uptick_performance(series, benchmark, n_ticks = 3):
+def consecutive_uptick_relative_performance(series, benchmark, n_ticks = 3):
     """
     Returns a two column :class:`pandas.DataFrame` with columns 
     ``['outperformance', 'num_upticks']`` that shows the cumulative 
@@ -300,7 +336,7 @@ def consecutive_uptick_performance(series, benchmark, n_ticks = 3):
         num_upticks the number of consecutive upticks for which the 
         outperformance was generated
     """
-    def _consecutive_uptick_performance(series, benchmark, n_ticks):
+    def _consecutive_uptick_relative_performance(series, benchmark, n_ticks):
         upticks = consecutive_upticks(benchmark, n_ticks = n_ticks)
         series_up  = series[upticks.index]
         bench_up = benchmark[upticks.index]
@@ -315,12 +351,48 @@ def consecutive_uptick_performance(series, benchmark, n_ticks = 3):
             series.name, 'outperformance', 'num_upticks'] )
 
     if isinstance(benchmark, pandas.DataFrame):
-        return map(lambda x: _consecutive_uptick_performance(
+        return map(lambda x: _consecutive_uptick_relative_performance(
                series = series, benchmark = benchmark[x], n_ticks = n_ticks),
                benchmark.columns)
     else:
-        return _consecutive_uptick_performance(
+        return _consecutive_uptick_relative_performance(
                series = series, benchmark = benchmark, n_ticks = n_ticks)
+
+def consecutive_uptick_performance(series, n_ticks = 3):
+    """
+    Returns a two column :class:`pandas.DataFrame` with columns 
+    ``['performance', 'num_upticks']`` that shows the cumulative 
+    performance (in log returns) and the ``num_upticks`` number of 
+    days the uptick lasted
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of ``['outperformance',
+        'num_upticks']``. Outperformance is in log returns and 
+        num_upticks the number of consecutive upticks for which the 
+        outperformance was generated
+    """
+    def _consecutive_uptick_performance(series, n_ticks):
+        upticks = consecutive_upticks(series, n_ticks = n_ticks)
+        series_up  = series[upticks.index]
+        st, fin = upticks == 0, (upticks == 0).shift(-1).fillna(True)
+        n_per = upticks[fin]
+        series_rets = numpy.log(numpy.divide(series_up[fin], 
+                                             series_up[st]))
+        return pandas.DataFrame({'num_upticks':n_per,
+            series.name: series_rets}] )
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _consecutive_uptick_performance(x,
+            n_ticks = n_ticks))
+
+    else:
+        return _consecutive_uptick_performance(
+               series = series, n_ticks = n_ticks)
 
 def consecutive_upticks(series, n_ticks = 3):
     """

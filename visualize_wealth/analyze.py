@@ -384,7 +384,7 @@ def consecutive_uptick_performance(series, n_ticks = 3):
         series_rets = numpy.log(numpy.divide(series_up[fin], 
                                              series_up[st]))
         return pandas.DataFrame({'num_upticks':n_per,
-            series.name: series_rets}] )
+            series.name: series_rets} )
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _consecutive_uptick_performance(x,

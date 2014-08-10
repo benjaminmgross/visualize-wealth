@@ -1117,8 +1117,7 @@ def r2(series, benchmark):
         float: of the coefficient of variation
     """
     def _r_squared(x, y):
-        X = pandas.DataFrame({'ones': numpy.ones(len(x)),
-            'xs': x})
+        X = pandas.DataFrame({'ones': 1., 'xs': x})
         beta = numpy.linalg.inv(X.transpose().dot(X)).dot(
             X.transpose().dot(y) )
         y_est = beta[0] + beta[1]*x
@@ -1128,8 +1127,15 @@ def r2(series, benchmark):
 
 
     if isinstance(benchmark, pandas.DataFrame):
+        #remove the numpy.nan's if they're there
+        if (benchmark.iloc[0, :].isnull().all()) & (numpy.isnan(series[0])):
+            benchmark = benchmark.dropna()
+            series = series.dropna()
         return benchmark.apply(lambda x: _r_squared(x = x, y = series))
     else:
+        if (numpy.isnan(benchmark[0])) & (numpy.isnan(series[0])):
+            benchmark = benchmark.dropna()
+            series = series.dropna()
         return _r_squared(y = series, x = benchmark)
 
 
@@ -1154,9 +1160,9 @@ def r2_adj(series, benchmark):
 
         :class:float of the adjusted r-squared`
     """
-    n = len(y)
+    n = len(series)
     p = 1
-    return 1 - (1 - r2(, y))*(n - 1)/(n - p - 1)  
+    return 1 - (1 - r2(series, benchmark))*(n - 1)/(n - p - 1)  
 
 def r2_mv_adj(x, y):
     """

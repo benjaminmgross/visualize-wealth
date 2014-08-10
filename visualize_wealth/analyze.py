@@ -1128,9 +1128,9 @@ def r2(series, benchmark):
 
 
     if isinstance(benchmark, pandas.DataFrame):
-        return benchmark.apply(lambda x: _r_squared(series, x))
+        return benchmark.apply(lambda x: _r_squared(x = x, y = series))
     else:
-        return _r_squared(series, benchmark)
+        return _r_squared(y = series, x = benchmark)
 
 
 
@@ -1156,7 +1156,7 @@ def r2_adj(series, benchmark):
     """
     n = len(y)
     p = 1
-    return 1 - (1 - r2_uv(x, y))*(n - 1)/(n - p - 1)  
+    return 1 - (1 - r2(, y))*(n - 1)/(n - p - 1)  
 
 def r2_mv_adj(x, y):
     """

@@ -7,7 +7,7 @@
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 
 """
-import analyze
-import asset_class
-import construct_portfolio
-import utils
+import visualize_wealth.analyze
+import visualize_wealth.asset_class
+import visualize_wealth.construct_portfolio
+import visualize_wealth.utils

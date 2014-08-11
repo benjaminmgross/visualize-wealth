@@ -1851,6 +1851,8 @@ def test_funs():
     ... 'cvar_mu_np', 'var_np', 'var_cf', 'var_norm', 'consecutive',
     ... 'consecutive_downticks', 'consecutive_upticks', 
     ... 'consecutive_downtick_performance', 'consecutive_uptick_performance',
+    ... 'consecutive_downtick_relative_performance', 
+    ... 'consecutive_uptick_relative_performance',
     ... 'r_squared', 'r_squared_adjusted', 'drawdown', 'r2', 'r2_adj',
     ... 'r2_mv', 'r2_mv_adj']
 

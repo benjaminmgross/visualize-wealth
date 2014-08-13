@@ -468,6 +468,56 @@ def panel_from_blotter(blotter_df):
 
     return pandas.Panel(val_d)
 
+def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
+    """
+    To speed up calculation time and allow for off-line functionality,
+    provide a :class:`pandas.DataFrame` weight_df and point the function
+    to an HDFStore
+
+    :ARGS:
+    
+        weight_df: a :class:`pandas.DataFrame` with dates as index and 
+        tickers as columns
+
+        store_path: :class:`string` of the location to an HDFStore
+
+    :RETURNS:
+    
+        :class:`pandas.Panel` where:
+
+            * :meth:`panel.items` are tickers
+
+            * :meth:`panel.major_axis` dates
+
+            * :meth:`panel.minor_axis:` price information, specifically: 
+               ['Open', 'Close', 'Adj Close']
+
+    """
+    msg = "Not all tickers in HDFStore"
+    assert check_for_keys(weight_df.columns, store_path), msg
+    store = pandas.HDFStore(store_path)
+    beg_port = weight_df.index.min()
+
+    d = {}
+    for ticker in weight_df.columns:
+        try:
+            d[ticker] = store.get(ticker)
+        except:
+            print "didn't work for "+ticker+"!"
+
+    panel = pandas.Panel(d)
+
+    #Check to make sure the earliest "full data date" is  b/f first trade
+    first_price = max(map(lambda x: panel.loc[x, :,
+        'Adj Close'].dropna().index.min(), panel.items))
+
+    #print the number of consectutive nans
+    for ticker in weight_df.columns:
+        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+            first_price:, 'Adj Close'].isnull().astype(int)).max())
+
+    return panel.ffill()
+        
 def fetch_data_for_weight_allocation_method(weight_df):
     """
     To be used with `The Weight Allocation Method 
@@ -510,7 +560,57 @@ def fetch_data_for_weight_allocation_method(weight_df):
             print "didn't work for "+ticker+"!"
     
     #pull the data from Yahoo!
+    panel = pandas.Panel(d)
+
+    #Check to make sure the earliest "full data date" is  b/f first trade
+    first_price = max(map(lambda x: panel.loc[x, :,
+        'Adj Close'].dropna().index.min(), panel.items))
+
+    #print the number of consectutive nans
+    for ticker in weight_df.columns:
+        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+            first_price:, 'Adj Close'].isnull().astype(int)).max())
+
+    return panel.ffill()
+
+def fetch_data_from_store_initial_alloc_method(
+               initial_weights, store_path, start_date = '01/01/2000'):
+    """
+    To speed up calculation time and allow for off-line functionality,
+    provide a :class:`pandas.DataFrame` weight_df and point the function
+    to an HDFStore
+
+    :ARGS:
     
+        weight_df: a :class:`pandas.DataFrame` with dates as index and 
+        tickers as columns
+
+        store_path: :class:`string` of the location to an HDFStore
+
+    :RETURNS:
+    
+        :class:`pandas.Panel` where:
+
+            * :meth:`panel.items` are tickers
+
+            * :meth:`panel.major_axis` dates
+
+            * :meth:`panel.minor_axis:` price information, specifically: 
+               ['Open', 'Close', 'Adj Close']
+
+    """
+    msg = "Not all tickers in HDFStore"
+    assert check_for_keys(weight_df.columns, store_path), msg
+    store = pandas.HDFStore(store_path)
+    beg_port = weight_df.index.min()
+
+    d = {}
+    for ticker in weight_df.columns:
+        try:
+            d[ticker] = store.get(ticker)
+        except:
+            print "didn't work for "+ticker+"!"
+
     panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is  b/f first trade
@@ -559,7 +659,7 @@ def fetch_data_for_initial_allocation_method(initial_weights,
         try:
             d[ticker] = reader(ticker, 'yahoo', start  = d_0)
         except:
-            print "Didn't work for "+ticker+"!"
+            print "Didn't work for " + ticker + "!"
     
     panel = pandas.Panel(d)
 
@@ -570,7 +670,7 @@ def fetch_data_for_initial_allocation_method(initial_weights,
     #print the number of consectutive nans
     for ticker in initial_weights.index:
         print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
-            first_price:, 'Adj Close'].isnull().astype(int)).max())
+            first_price: , 'Adj Close'].isnull().astype(int)).max())
 
     return panel.ffill()
 

@@ -494,7 +494,7 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
 
     """
     msg = "Not all tickers in HDFStore"
-    assert check_for_keys(weight_df.columns, store_path), msg
+    assert vwu.all_tickers_in_store(weight_df.columns, store_path), msg
     store = pandas.HDFStore(store_path)
     beg_port = weight_df.index.min()
 
@@ -558,7 +558,8 @@ def fetch_data_for_weight_allocation_method(weight_df):
             d[ticker] = reader(ticker, 'yahoo', start = beg_port)
         except:
             print "didn't work for "+ticker+"!"
-    
+
+    store.close()
     #pull the data from Yahoo!
     panel = pandas.Panel(d)
 
@@ -600,17 +601,18 @@ def fetch_data_from_store_initial_alloc_method(
 
     """
     msg = "Not all tickers in HDFStore"
-    assert check_for_keys(weight_df.columns, store_path), msg
+    assert vwu.all_tickers_in_store(initial_weights.index, store_path), msg
     store = pandas.HDFStore(store_path)
-    beg_port = weight_df.index.min()
+    #beg_port = datetime.sdat
 
     d = {}
-    for ticker in weight_df.columns:
+    for ticker in initial_weights.index:
         try:
             d[ticker] = store.get(ticker)
         except:
-            print "didn't work for "+ticker+"!"
+            print "didn't work for "+ ticker + "!"
 
+    store.close()
     panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is  b/f first trade
@@ -618,7 +620,7 @@ def fetch_data_from_store_initial_alloc_method(
         'Adj Close'].dropna().index.min(), panel.items))
 
     #print the number of consectutive nans
-    for ticker in weight_df.columns:
+    for ticker in initial_weights.index:
         print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
             first_price:, 'Adj Close'].isnull().astype(int)).max())
 

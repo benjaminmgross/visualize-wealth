@@ -11,7 +11,47 @@ import argparse
 import pandas
 import numpy
 
-def all_tickers_in_store(ticker_list, store_path):
+def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
+    """
+    Given an existing store located at ``path``, check to make sure
+    the tickers in ``ticker_list`` are not already in the data
+    set, and then insert the tickers into the store.
+
+    :ARGS:
+
+        ticker_list: :class:`list` of tickers to add to the
+        :class:`pandas.HDStore`
+
+        store_path: :class:`string` of the path to the     
+        :class:`pandas.HDStore`
+
+        start: :class:`string` of the date to begin the price data
+
+    :RETURNS:
+
+        :class:`NoneType` but appends the store and comments the
+         successes ands failures
+    """
+    try:
+        store = pandas.HDFStore(path = store_path,  mode = 'a')
+    except IOError:
+        print  path + " is not a valid path to an HDFStore Object"
+        return
+    store_keys = map(lambda x: x.strip('/'), store.keys())
+    not_in_store = numpy.setdiff1d(ticker_list, store_keys )
+    new_prices = tickers_to_dict(not_in_store, start = start)
+
+    #attempt to add the new values to the store
+    for val in new_prices.keys():
+        try:
+            store.put(val, new_prices[val])
+            print val + " has been stored"
+        except:
+            print val + " couldn't store"
+    store.close()
+    return None
+
+def check_store_for_tickers(ticker_list, store_path):
     """
     Determine which, if any of the :class:`list` `ticker_list` are
     inside of the HDFStore.  If all tickers are located in the store
@@ -54,7 +94,41 @@ def all_tickers_in_store(ticker_list, store_path):
         ret_val = False
     return ret_val
 
-def dtindex_clean_intersect(arr_a, arr_b):
+def create_data_store(ticker_list, store_path):
+    """
+    Creates the ETF store to run the training of the logistic 
+    classificaiton tree
+
+    :ARGS:
+    
+        ticker_list: iterable of tickers
+
+        store_path: :class:`str` of path to ``HDFStore``
+    """
+    #check to make sure the store doesn't already exist
+    if os.path.isfile(store_path):
+        print "File " + store_path + " already exists"
+        return
+    
+    store = pandas.HDFStore(store_path, 'w')
+    success = 0
+    for ticker in ticker_list:
+        try:
+            tmp = tickers_to_dict(ticker, 'yahoo', start = '01/01/2000')
+            store.put(ticker, tmp)
+            print ticker + " added to store"
+            success += 1
+        except:
+            print "unable to add " + ticker + " to store"
+    store.close()
+
+    if success == 0: #none of it worked, delete the store
+        print "Creation Failed"
+        os.remove(path)
+    print 
+    return None
+
+def index_intersect(arr_a, arr_b):
     """
     Return the intersection of two :class:`pandas` objects, either a
     :class:`pandas.Series` or a :class:`pandas.DataFrame`
@@ -70,15 +144,15 @@ def dtindex_clean_intersect(arr_a, arr_b):
         :class:`pandas` objects
     """
     arr_a = arr_a.sort_index()
-    arr_a.dropna(inplace = True)
+    arr_a = arr_a.dropna()
     arr_b = arr_b.sort_index()
-    arr_b.dropna(inplace = True)
+    arr_b = arr_b.dropna()
     if arr_a.index.equals(arr_b.index) == False:
         return arr_a.index & arr_b.index
     else:
         return arr_a.index
 
-def dtindex_multi_intersect(frame_list):
+def index_multi_intersect(frame_list):
     """
     Returns the index intersection of multiple 
     :class:`pandas.DataFrame`'s or :class:`pandas.Series`
@@ -158,6 +232,23 @@ def normalized_price(price_df):
         print "Input must be pandas.Series or pandas.DataFrame"
         return
 
+def setup_trained_hdfstore(trained_data, store_path):
+    """
+    The ``HDFStore`` doesn't work properly when it's compiled by different
+    versions, so the appropriate thing to do is to setup the trained data
+    locally (and not store the ``.h5`` file on GitHub).
+
+    :ARGS:
+
+        trained_data: :class:`pandas.Series` with tickers in the index and
+        asset  classes for values 
+
+        store_path: :class:`str` of where to create the ``HDFStore``
+    """
+    
+    create_data_store(trained_data.index, store_path)
+    return None
+
 def tickers_to_dict(ticker_list, api = 'yahoo', start = '01/01/1990'):
     """
     Utility function to return ticker data where the input is either a 
@@ -212,15 +303,6 @@ def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990',
         :class:`pandas.DataFrame` when the ``ticker_list`` is 
         :class:`str`
     """
-    def __get_data(ticker, api, start):
-        reader = pandas.io.data.DataReader
-        try:
-            data = reader(ticker, api, start = start)
-            print "worked for " + ticker
-            return data
-        except:
-            print "failed for " + ticker
-            return
     if not isinstance(join_col, str):
         print "join_col must be a string"
         return
@@ -230,9 +312,55 @@ def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990',
     else:
         d = {}
         for ticker in ticker_list:
-            d[ticker] = __get_data(ticker, api = api, 
+            d[ticker] = __get_data(ticker, api = api,
                                    start = start)[join_col]
     return pandas.DataFrame(d)
+
+def update_store_prices(store_path):
+    """
+    Update to the most recent prices for all keys of an existing store, 
+    located at path ``path``.
+
+    :ARGS:
+
+        store_path: :class:`string` the location of the ``HDFStore`` file
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file, and prints to 
+        screen which values would not update
+
+    """
+    reader = pandas.io.data.DataReader
+    strftime = datetime.datetime.strftime
+    today_str = strftime(datetime.datetime.today(), format = '%m/%d/%Y')
+    try:
+        store = pandas.HDFStore(path = store_path, mode = 'r+')
+    except IOError:
+        print  store_path + " is not a valid path to an HDFStore Object"
+        return
+
+    for key in store.keys():
+        stored_data = store.get(key)
+        last_stored_date = stored_data.dropna().index.max()
+        today = datetime.datetime.date(datetime.datetime.today())
+        if last_stored_date < pandas.Timestamp(today):
+            try:
+                tmp = reader(key.strip('/'), 'yahoo', start = strftime(
+                    last_stored_date, format = '%m/%d/%Y'))
+
+                #need to drop duplicates because there's 1 row of 
+                #overlap
+                tmp = stored_data.append(tmp)
+                tmp["index"] = tmp.index
+                tmp.drop_duplicates(cols = "index", inplace = True)
+                tmp = tmp[tmp.columns[tmp.columns != "index"]]
+                store.put(key, tmp)
+            except IOError:
+                print "could not update " + key
+
+    store.close()
+    return None
 
 
 def zipped_time_chunks(index, interval):
@@ -260,7 +388,7 @@ def zipped_time_chunks(index, interval):
     ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
     
     
-    if ind[0] == True: #The series started on the last day of period
+    if ind[0]: #The series started on the last day of period
         index = index.copy()[1:] #So we can't get a Period
         ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
 
@@ -295,8 +423,7 @@ def __get_data(ticker, api, start):
         print "failed for " + ticker
         return
 
-def scipt_function(arg_1, arg_2):
-	return None
+
 
 if __name__ == '__main__':
     usage = sys.argv[0] + "usage instructions"

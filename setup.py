@@ -3,7 +3,7 @@
 
 from setuptools import setup
 
-setup(name='Visualize Wealth Open Source',
+setup(name='visualize_wealth',
       version='0.1',
       description='Portfolio Construction and Analysis',
       author='Benjamin M. Gross',

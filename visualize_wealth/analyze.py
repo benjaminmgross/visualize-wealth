@@ -153,6 +153,53 @@ def annualized_vol(series, freq = 'daily'):
     else:
         return _annualized_vol(series, freq = freq)
 
+def attribution_weights(series, factor_df):
+    """
+    Given a price series and explanatory factors factor_df, determine
+    the weights of attribution to each factor or asset
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of asset prices to explain given
+        the factors or sub_classes in factor_df
+
+        factor_df: :class:`pandas.DataFrame` of the prices of the
+        factors or sub_classes to to which the asset prices can be
+        attributed
+
+    :RETURNS:
+
+        given an optimal solution, a :class:`pandas.Series` of asset
+        factor weights (summing to one) which best explain the
+        series.  If an optimal solution is not found, None type is
+        returned (with accompanying message)
+    """
+    def obj_fun(weights):
+        tol = 1.e-5
+        est = factor_df.apply(lambda x: numpy.multiply(weights, x),
+                              axis = 1).sum(axis = 1)
+        n = len(series)
+        
+        #when a variable is "excluded" reduce p for higher adj-r2
+        p = len(weights[weights > tol])
+        rsq = r2(series = series, benchmark = est)
+        adj_rsq = 1 - (1 - rsq)*(n - 1)/(n - p - 1)
+        return -1.*adj_rsq
+
+    #linear returns
+    series = linear_returns(series).dropna()
+    factor_df = linear_returns(factor_df).dropna()
+
+    guess = numpy.random.rand(factor_df.shape[1])
+    guess = pandas.Series(guess/guess.sum(), index = factor_df.columns)
+    bounds = [(0., 1.) for i in numpy.arange(len(guess))]
+    opt_fun = scipy.optimize.minimize(fun = obj_fun, x0 = guess,
+                                      bounds = bounds)
+    opt_wts = pandas.Series(opt_fun.x, index = guess.index)
+    opt_wts = opt_wts.div(opt_wts.sum())
+    return opt_wts
+    
+    
 def beta(series, benchmark):
     """
     Returns the sensitivity of one price series to a chosen benchmark:
@@ -1107,9 +1154,9 @@ def r2(series, benchmark):
 
     :ARGS:
 
-        series: :class`pandas.Series` of prices
+        series: :class`pandas.Series` of of log returns
 
-        benchmark: :class`pandas.Series` of prices to regress 
+        benchmark: :class`pandas.Series` of log returns to regress 
         ``series`` against
 
     :RETURNS:
@@ -1133,7 +1180,7 @@ def r2(series, benchmark):
             series = series.dropna()
         return benchmark.apply(lambda x: _r_squared(x = x, y = series))
     else:
-        if (numpy.isnan(benchmark[0])) & (numpy.isnan(series[0])):
+        if (numpy.isnan(benchmark.iloc[0])) & (numpy.isnan(series.iloc[0])):
             benchmark = benchmark.dropna()
             series = series.dropna()
         return _r_squared(y = series, x = benchmark)
@@ -1148,9 +1195,9 @@ def r2_adj(series, benchmark):
 
     :ARGS:
 
-        series: :class:`pandas.Series` of asset prices
+        series: :class:`pandas.Series` of asset returns
 
-        benchmark: :class:`pandas.DataFrame` of benchmark prices to 
+        benchmark: :class:`pandas.DataFrame` of benchmark returns to 
         explain the returns of the ``series``
 
         weights: :class:`pandas.Series` of weights to weight each column 

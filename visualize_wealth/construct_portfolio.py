@@ -709,13 +709,13 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 
     #these columns correspond to the columns in sheet 'value_calcs!' in 
     #"panel from weight file test.xlsx"
-        
+ 
     #determine the first valid date and make it the start_date
     first_valid = vwu.first_valid_date(price_panel.loc[:, :, 'Close'])
-    
+
     assert weight_df.index.min() >= first_valid, (
             "first_valid index doesn't occur until after start_date")
-    
+
     columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Value at Open', 
                'Value at Close', 'Open', 'High', 'Low', 'Close', 
                'Volume', 'Adj Close']

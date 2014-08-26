@@ -94,19 +94,19 @@ inside of the :mod:`analyze`.  Formulas were inserted using the
 ``construct_portfolio.py`` documentation
 ========================================    
 
-Full documentation for each of the functions of :mod:`construct-portfolio`
+Full documentation for each of the functions of :mod:`visualize_wealth.construct_portfolio`
 
 .. automodule:: visualize_wealth.construct_portfolio
    :members:
 
 .. _asset-class-documentation:
 
-``asset_class.py`` documentation
+``classify.py`` documentation
 =================================
 
-Full documentation for each of the functions of :mod:`asset-class`
+Full documentation for each of the functions of :mod:`visualize_wealth.classify`
 
-.. automodule:: visualize_wealth.asset_class
+.. automodule:: visualize_wealth.classify
    :members:
 
 .. _analyze-documentation:
@@ -114,7 +114,7 @@ Full documentation for each of the functions of :mod:`asset-class`
 ``analyze.py`` documentation
 ============================
 
-Full documentation for each of the functions of :mod:`analyze`
+Full documentation for each of the functions of :mod:`visualize_wealth.analyze`
 
 .. automodule:: visualize_wealth.analyze
    :members:
@@ -124,7 +124,7 @@ Full documentation for each of the functions of :mod:`analyze`
 ``utils.py`` documentation
 ===========================
 
-Full documentation for each of the functions of :mod:`utils`
+Full documentation for each of the functions of :mod:`visualize_wealth.utils`
 
 .. automodule:: visualize_wealth.utils
    :members:

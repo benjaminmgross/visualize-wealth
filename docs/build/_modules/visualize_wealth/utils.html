@@ -61,7 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#constructing-portfolios">Constructing portfolios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#analyzing-portfolio-performance">Analyzing portfolio performance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#construct-portfolio-py-documentation"><tt class="docutils literal"><span class="pre">construct_portfolio.py</span></tt> documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../intro.html#asset-class-py-documentation"><tt class="docutils literal"><span class="pre">asset_class.py</span></tt> documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../intro.html#classify-py-documentation"><tt class="docutils literal"><span class="pre">classify.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#analyze-py-documentation"><tt class="docutils literal"><span class="pre">analyze.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#utils-py-documentation"><tt class="docutils literal"><span class="pre">utils.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#sphinx-customizations">Sphinx Customizations</a></li>
@@ -82,6 +82,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../asset_class.html#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset_class.html#status">Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset_class.html#to-do">To Do:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualize_wealth.html">visualize_wealth package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.analyze">visualize_wealth.analyze module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.classify">visualize_wealth.classify module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.construct_portfolio">visualize_wealth.construct_portfolio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.utils">visualize_wealth.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -122,7 +131,7 @@
 <span class="c">#!/usr/bin/env python</span>
 <span class="c"># encoding: utf-8</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">.. module:: utils.py</span>
+<span class="sd">.. module:: visualize_wealth.utils.py</span>
 <span class="sd">   :synopsis: Helper fuctions and knick knacks for portfolio analysis</span>
 
 <span class="sd">.. moduleauthor:: Benjamin M. Gross &lt;benjaminMgross@gmail.com&gt;</span>
@@ -132,7 +141,124 @@
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<div class="viewcode-block" id="dtindex_clean_intersect"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.dtindex_clean_intersect">[docs]</a><span class="k">def</span> <span class="nf">dtindex_clean_intersect</span><span class="p">(</span><span class="n">arr_a</span><span class="p">,</span> <span class="n">arr_b</span><span class="p">):</span>
+<div class="viewcode-block" id="append_store_prices"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.append_store_prices">[docs]</a><span class="k">def</span> <span class="nf">append_store_prices</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/1990&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given an existing store located at ``path``, check to make sure</span>
+<span class="sd">    the tickers in ``ticker_list`` are not already in the data</span>
+<span class="sd">    set, and then insert the tickers into the store.</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        ticker_list: :class:`list` of tickers to add to the</span>
+<span class="sd">        :class:`pandas.HDStore`</span>
+
+<span class="sd">        store_path: :class:`string` of the path to the     </span>
+<span class="sd">        :class:`pandas.HDStore`</span>
+
+<span class="sd">        start: :class:`string` of the date to begin the price data</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`NoneType` but appends the store and comments the</span>
+<span class="sd">         successes ands failures</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="n">store_path</span><span class="p">,</span>  <span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">print</span>  <span class="n">path</span> <span class="o">+</span> <span class="s">&quot; is not a valid path to an HDFStore Object&quot;</span>
+        <span class="k">return</span>
+    <span class="n">store_keys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="n">store</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">not_in_store</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_keys</span> <span class="p">)</span>
+    <span class="n">new_prices</span> <span class="o">=</span> <span class="n">tickers_to_dict</span><span class="p">(</span><span class="n">not_in_store</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)</span>
+
+    <span class="c">#attempt to add the new values to the store</span>
+    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">new_prices</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">new_prices</span><span class="p">[</span><span class="n">val</span><span class="p">])</span>
+            <span class="k">print</span> <span class="n">val</span> <span class="o">+</span> <span class="s">&quot; has been stored&quot;</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">val</span> <span class="o">+</span> <span class="s">&quot; couldn&#39;t store&quot;</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="check_store_for_tickers"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.check_store_for_tickers">[docs]</a><span class="k">def</span> <span class="nf">check_store_for_tickers</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine which, if any of the :class:`list` `ticker_list` are</span>
+<span class="sd">    inside of the HDFStore.  If all tickers are located in the store</span>
+<span class="sd">    returns 1, otherwise returns 0 (provides a &quot;check&quot; to see if</span>
+<span class="sd">    other functions can be run)</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        ticker_list: iterable of tickers to be found in the store located</span>
+<span class="sd">        at :class:`string` store_path</span>
+
+<span class="sd">        store_path: :class:`string` of the location to the HDFStore</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`bool` True if all tickers are found in the store and</span>
+<span class="sd">        False if not all the tickers are found in the HDFStore</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="n">store_path</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;r+&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">print</span>  <span class="n">store_path</span> <span class="o">+</span> <span class="s">&quot; is not a valid path to an HDFStore Object&quot;</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
+        <span class="c">#pandas.Index is not sortable, so much tolist() it</span>
+        <span class="n">ticker_list</span> <span class="o">=</span> <span class="n">ticker_list</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="n">store_keys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="n">store</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">not_in_store</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_keys</span><span class="p">)</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c">#if len(not_in_store) == 0, all tickers are present</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_in_store</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;All tickers in store&quot;</span>
+        <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">not_in_store</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;store does not contain &quot;</span> <span class="o">+</span> <span class="n">ticker</span>
+        <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">ret_val</span>
+</div>
+<div class="viewcode-block" id="create_data_store"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.create_data_store">[docs]</a><span class="k">def</span> <span class="nf">create_data_store</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the ETF store to run the training of the logistic </span>
+<span class="sd">    classificaiton tree</span>
+
+<span class="sd">    :ARGS:</span>
+<span class="sd">    </span>
+<span class="sd">        ticker_list: iterable of tickers</span>
+
+<span class="sd">        store_path: :class:`str` of path to ``HDFStore``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#check to make sure the store doesn&#39;t already exist</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">store_path</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;File &quot;</span> <span class="o">+</span> <span class="n">store_path</span> <span class="o">+</span> <span class="s">&quot; already exists&quot;</span>
+        <span class="k">return</span>
+    
+    <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">store_path</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">ticker_list</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tickers_to_dict</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/2000&#39;</span><span class="p">)</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="k">print</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; added to store&quot;</span>
+            <span class="n">success</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;unable to add &quot;</span> <span class="o">+</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; to store&quot;</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">success</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c">#none of it worked, delete the store</span>
+        <span class="k">print</span> <span class="s">&quot;Creation Failed&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">print</span> 
+    <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="index_intersect"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.index_intersect">[docs]</a><span class="k">def</span> <span class="nf">index_intersect</span><span class="p">(</span><span class="n">arr_a</span><span class="p">,</span> <span class="n">arr_b</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the intersection of two :class:`pandas` objects, either a</span>
 <span class="sd">    :class:`pandas.Series` or a :class:`pandas.DataFrame`</span>
@@ -148,15 +274,15 @@
 <span class="sd">        :class:`pandas` objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">arr_a</span> <span class="o">=</span> <span class="n">arr_a</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
-    <span class="n">arr_a</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+    <span class="n">arr_a</span> <span class="o">=</span> <span class="n">arr_a</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="n">arr_b</span> <span class="o">=</span> <span class="n">arr_b</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
-    <span class="n">arr_b</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+    <span class="n">arr_b</span> <span class="o">=</span> <span class="n">arr_b</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">arr_a</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">arr_b</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">arr_a</span><span class="o">.</span><span class="n">index</span> <span class="o">&amp;</span> <span class="n">arr_b</span><span class="o">.</span><span class="n">index</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">arr_a</span><span class="o">.</span><span class="n">index</span>
 </div>
-<div class="viewcode-block" id="dtindex_multi_intersect"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.dtindex_multi_intersect">[docs]</a><span class="k">def</span> <span class="nf">dtindex_multi_intersect</span><span class="p">(</span><span class="n">frame_list</span><span class="p">):</span>
+<div class="viewcode-block" id="index_multi_intersect"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.index_multi_intersect">[docs]</a><span class="k">def</span> <span class="nf">index_multi_intersect</span><span class="p">(</span><span class="n">frame_list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the index intersection of multiple </span>
 <span class="sd">    :class:`pandas.DataFrame`&#39;s or :class:`pandas.Series`</span>
@@ -179,7 +305,7 @@
     <span class="k">return</span> <span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">,</span> 
            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">frame_list</span><span class="p">)</span> <span class="p">)</span>
 </div>
-<div class="viewcode-block" id="first_valid_date"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.first_valid_date">[docs]</a><span class="k">def</span> <span class="nf">first_valid_date</span><span class="p">(</span><span class="n">prices</span><span class="p">):</span>
+<div class="viewcode-block" id="first_valid_date"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.first_valid_date">[docs]</a><span class="k">def</span> <span class="nf">first_valid_date</span><span class="p">(</span><span class="n">prices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to determine the first valid date from a set of </span>
 <span class="sd">    different prices Can take either a :class:`dict` of </span>
@@ -206,7 +332,7 @@
         <span class="k">print</span> <span class="s">&quot;prices must be a DataFrame or dictionary&quot;</span>
         <span class="k">return</span>
 </div>
-<div class="viewcode-block" id="normalized_price"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.normalized_price">[docs]</a><span class="k">def</span> <span class="nf">normalized_price</span><span class="p">(</span><span class="n">price_df</span><span class="p">):</span>
+<div class="viewcode-block" id="normalized_price"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.normalized_price">[docs]</a><span class="k">def</span> <span class="nf">normalized_price</span><span class="p">(</span><span class="n">price_df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the normalized price of a series</span>
 
@@ -236,7 +362,24 @@
         <span class="k">print</span> <span class="s">&quot;Input must be pandas.Series or pandas.DataFrame&quot;</span>
         <span class="k">return</span>
 </div>
-<div class="viewcode-block" id="tickers_to_dict"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.tickers_to_dict">[docs]</a><span class="k">def</span> <span class="nf">tickers_to_dict</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/1990&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="setup_trained_hdfstore"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.setup_trained_hdfstore">[docs]</a><span class="k">def</span> <span class="nf">setup_trained_hdfstore</span><span class="p">(</span><span class="n">trained_data</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ``HDFStore`` doesn&#39;t work properly when it&#39;s compiled by different</span>
+<span class="sd">    versions, so the appropriate thing to do is to setup the trained data</span>
+<span class="sd">    locally (and not store the ``.h5`` file on GitHub).</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        trained_data: :class:`pandas.Series` with tickers in the index and</span>
+<span class="sd">        asset  classes for values </span>
+
+<span class="sd">        store_path: :class:`str` of where to create the ``HDFStore``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">create_data_store</span><span class="p">(</span><span class="n">trained_data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">store_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="tickers_to_dict"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.tickers_to_dict">[docs]</a><span class="k">def</span> <span class="nf">tickers_to_dict</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/1990&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to return ticker data where the input is either a </span>
 <span class="sd">    ticker, or a list of tickers.</span>
@@ -265,7 +408,7 @@
             <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">__get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="n">api</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">d</span>
 </div>
-<div class="viewcode-block" id="tickers_to_frame"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.tickers_to_frame">[docs]</a><span class="k">def</span> <span class="nf">tickers_to_frame</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/1990&#39;</span><span class="p">,</span> 
+<div class="viewcode-block" id="tickers_to_frame"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.tickers_to_frame">[docs]</a><span class="k">def</span> <span class="nf">tickers_to_frame</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/1990&#39;</span><span class="p">,</span> 
                      <span class="n">join_col</span> <span class="o">=</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility function to return ticker data where the input is either a </span>
@@ -290,15 +433,6 @@
 <span class="sd">        :class:`pandas.DataFrame` when the ``ticker_list`` is </span>
 <span class="sd">        :class:`str`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
-        <span class="n">reader</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataReader</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)</span>
-            <span class="k">print</span> <span class="s">&quot;worked for &quot;</span> <span class="o">+</span> <span class="n">ticker</span>
-            <span class="k">return</span> <span class="n">data</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot;failed for &quot;</span> <span class="o">+</span> <span class="n">ticker</span>
-            <span class="k">return</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">join_col</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">print</span> <span class="s">&quot;join_col must be a string&quot;</span>
         <span class="k">return</span>
@@ -308,12 +442,58 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">ticker_list</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">__get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="n">api</span><span class="p">,</span> 
+            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">__get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="n">api</span><span class="p">,</span>
                                    <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)[</span><span class="n">join_col</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="update_store_prices"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.update_store_prices">[docs]</a><span class="k">def</span> <span class="nf">update_store_prices</span><span class="p">(</span><span class="n">store_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update to the most recent prices for all keys of an existing store, </span>
+<span class="sd">    located at path ``path``.</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        store_path: :class:`string` the location of the ``HDFStore`` file</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`NoneType` but updates the ``HDF5`` file, and prints to </span>
+<span class="sd">        screen which values would not update</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataReader</span>
+    <span class="n">strftime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span>
+    <span class="n">today_str</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;%m/</span><span class="si">%d</span><span class="s">/%Y&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="n">store_path</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;r+&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">print</span>  <span class="n">store_path</span> <span class="o">+</span> <span class="s">&quot; is not a valid path to an HDFStore Object&quot;</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">stored_data</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">last_stored_date</span> <span class="o">=</span> <span class="n">stored_data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">last_stored_date</span> <span class="o">&lt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">today</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span>
+                    <span class="n">last_stored_date</span><span class="p">,</span> <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;%m/</span><span class="si">%d</span><span class="s">/%Y&#39;</span><span class="p">))</span>
+
+                <span class="c">#need to drop duplicates because there&#39;s 1 row of </span>
+                <span class="c">#overlap</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">stored_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="s">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">index</span>
+                <span class="n">tmp</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">cols</span> <span class="o">=</span> <span class="s">&quot;index&quot;</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="s">&quot;index&quot;</span><span class="p">]]</span>
+                <span class="n">store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;could not update &quot;</span> <span class="o">+</span> <span class="n">key</span>
+
+    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">None</span>
 
 </div>
-<div class="viewcode-block" id="zipped_time_chunks"><a class="viewcode-back" href="../../intro.html#visualize_wealth.utils.zipped_time_chunks">[docs]</a><span class="k">def</span> <span class="nf">zipped_time_chunks</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+<div class="viewcode-block" id="zipped_time_chunks"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.zipped_time_chunks">[docs]</a><span class="k">def</span> <span class="nf">zipped_time_chunks</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given different period intervals, return a zipped list of tuples</span>
 <span class="sd">    of length &#39;period_interval&#39;, containing only full periods</span>
@@ -338,7 +518,7 @@
     <span class="n">ind</span> <span class="o">=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
     
     
-    <span class="k">if</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span> <span class="c">#The series started on the last day of period</span>
+    <span class="k">if</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="c">#The series started on the last day of period</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span> <span class="c">#So we can&#39;t get a Period</span>
         <span class="n">ind</span> <span class="o">=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="n">time_d</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
@@ -373,8 +553,7 @@
         <span class="k">print</span> <span class="s">&quot;failed for &quot;</span> <span class="o">+</span> <span class="n">ticker</span>
         <span class="k">return</span>
 
-<span class="k">def</span> <span class="nf">scipt_function</span><span class="p">(</span><span class="n">arg_1</span><span class="p">,</span> <span class="n">arg_2</span><span class="p">):</span>
-	<span class="k">return</span> <span class="bp">None</span>
+
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">usage</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;usage instructions&quot;</span>

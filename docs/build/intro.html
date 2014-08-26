@@ -62,7 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#constructing-portfolios">Constructing portfolios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analyzing-portfolio-performance">Analyzing portfolio performance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#construct-portfolio-py-documentation"><tt class="docutils literal"><span class="pre">construct_portfolio.py</span></tt> documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#asset-class-py-documentation"><tt class="docutils literal"><span class="pre">asset_class.py</span></tt> documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#classify-py-documentation"><tt class="docutils literal"><span class="pre">classify.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analyze-py-documentation"><tt class="docutils literal"><span class="pre">analyze.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#utils-py-documentation"><tt class="docutils literal"><span class="pre">utils.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sphinx-customizations">Sphinx Customizations</a></li>
@@ -83,6 +83,15 @@
 <li class="toctree-l2"><a class="reference internal" href="asset_class.html#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_class.html#status">Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_class.html#to-do">To Do:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualize_wealth.html">visualize_wealth package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visualize_wealth.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.analyze">visualize_wealth.analyze module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.classify">visualize_wealth.classify module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.construct_portfolio">visualize_wealth.construct_portfolio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.utils">visualize_wealth.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_wealth.html#module-visualize_wealth">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -195,8 +204,8 @@ inside of the <tt class="xref py py-mod docutils literal"><span class="pre">anal
 </div>
 <div class="section" id="construct-portfolio-py-documentation">
 <span id="construct-portfolio-documentation"></span><h2><tt class="docutils literal"><span class="pre">construct_portfolio.py</span></tt> documentation<a class="headerlink" href="#construct-portfolio-py-documentation" title="Permalink to this headline">¶</a></h2>
-<p>Full documentation for each of the functions of <tt class="xref py py-mod docutils literal"><span class="pre">construct-portfolio</span></tt></p>
-<span class="target" id="module-visualize_wealth.construct_portfolio"></span><dl class="function">
+<p>Full documentation for each of the functions of <a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.construct_portfolio" title="visualize_wealth.construct_portfolio"><tt class="xref py py-mod docutils literal"><span class="pre">visualize_wealth.construct_portfolio</span></tt></a></p>
+<span class="target" id="module-visualize_wealth.construct_portfolio"></span><span class="target" id="module-visualize_wealth.construct_portfolio.py"></span><dl class="function">
 <dt id="visualize_wealth.construct_portfolio.append_price_frame_with_dividends">
 <tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">append_price_frame_with_dividends</tt><big>(</big><em>ticker</em>, <em>start_date</em>, <em>end_date=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#append_price_frame_with_dividends"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.append_price_frame_with_dividends" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a ticker, start_date, &amp; end_date, return a 
@@ -273,7 +282,7 @@ aggregate position value for any given day</p>
 <dt id="visualize_wealth.construct_portfolio.blotter_to_cum_shares">
 <tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">blotter_to_cum_shares</tt><big>(</big><em>blotter_series</em>, <em>ticker</em>, <em>start_date</em>, <em>end_date</em>, <em>tol</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#blotter_to_cum_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.blotter_to_cum_shares" title="Permalink to this definition">¶</a></dt>
 <dd><p>Aggregation function for <tt class="xref py py-meth docutils literal"><span class="pre">append_price_frame_with_dividend()</span></tt>, 
-<a class="reference internal" href="#visualize_wealth.construct_portfolio.calculate_splits" title="visualize_wealth.construct_portfolio.calculate_splits"><tt class="xref py py-meth docutils literal"><span class="pre">calculate_splits()</span></tt></a>, and 
+<tt class="xref py py-meth docutils literal"><span class="pre">calculate_splits()</span></tt>, and 
 <cite>:meth:`blotter_and_price_df_to_cum_shares</cite>. Only blotter, ticker, 
 start_date, &amp; end_date are needed.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -308,7 +317,7 @@ for the function to work properly</p>
 <dt id="visualize_wealth.construct_portfolio.calculate_splits">
 <tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">calculate_splits</tt><big>(</big><em>price_df</em>, <em>tol=0.1</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#calculate_splits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.calculate_splits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a <tt class="docutils literal"><span class="pre">price_df</span></tt> of the format 
-<a class="reference internal" href="#visualize_wealth.construct_portfolio.append_price_frame_with_dividends" title="visualize_wealth.construct_portfolio.append_price_frame_with_dividends"><tt class="xref py py-meth docutils literal"><span class="pre">append_price_frame_with_dividends()</span></tt></a>, return a 
+<tt class="xref py py-meth docutils literal"><span class="pre">append_price_frame_with_dividends()</span></tt>, return a 
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with a split factor columns named &#8216;Splits&#8217;</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -449,6 +458,78 @@ for the function to work properly</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.construct_portfolio.fetch_data_from_store_initial_alloc_method">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_from_store_initial_alloc_method</tt><big>(</big><em>initial_weights</em>, <em>store_path</em>, <em>start_date='01/01/2000'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_from_store_initial_alloc_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_from_store_initial_alloc_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>To speed up calculation time and allow for off-line functionality,
+provide a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> weight_df and point the function
+to an HDFStore</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">weight_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and 
+tickers as columns</p>
+<p>store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the location to an HDFStore</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> where:</p>
+<blockquote class="last">
+<div><ul>
+<li><p class="first"><tt class="xref py py-meth docutils literal"><span class="pre">panel.items()</span></tt> are tickers</p>
+</li>
+<li><p class="first"><tt class="xref py py-meth docutils literal"><span class="pre">panel.major_axis()</span></tt> dates</p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="xref py py-meth docutils literal"><span class="pre">panel.minor_axis:()</span></tt> price information, specifically: </dt>
+<dd><p class="first last">[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.fetch_data_from_store_weight_alloc_method">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">fetch_data_from_store_weight_alloc_method</tt><big>(</big><em>weight_df</em>, <em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#fetch_data_from_store_weight_alloc_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.fetch_data_from_store_weight_alloc_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>To speed up calculation time and allow for off-line functionality,
+provide a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> weight_df and point the function
+to an HDFStore</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">weight_df: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with dates as index and 
+tickers as columns</p>
+<p>store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the location to an HDFStore</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> where:</p>
+<blockquote class="last">
+<div><ul>
+<li><p class="first"><tt class="xref py py-meth docutils literal"><span class="pre">panel.items()</span></tt> are tickers</p>
+</li>
+<li><p class="first"><tt class="xref py py-meth docutils literal"><span class="pre">panel.major_axis()</span></tt> dates</p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="xref py py-meth docutils literal"><span class="pre">panel.minor_axis:()</span></tt> price information, specifically: </dt>
+<dd><p class="first last">[&#8216;Open&#8217;, &#8216;Close&#8217;, &#8216;Adj Close&#8217;]</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.construct_portfolio.format_blotter">
 <tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">format_blotter</tt><big>(</big><em>blotter_file</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#format_blotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.format_blotter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass in either a location of a blotter file (in <tt class="docutils literal"><span class="pre">.csv</span></tt> format) or 
@@ -477,7 +558,7 @@ have been made negative</td>
 generate a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns &#8216;Open&#8217;, &#8216;Close&#8217;, 
 cum_withdrawals&#8217;, &#8216;cum_shares&#8217; (i.e. bypasses the need for a price 
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> to generate an asset path, as is required 
-in <a class="reference internal" href="#visualize_wealth.construct_portfolio.construct_random_trades" title="visualize_wealth.construct_portfolio.construct_random_trades"><tt class="xref py py-meth docutils literal"><span class="pre">construct_random_trades()</span></tt></a></p>
+in <tt class="xref py py-meth docutils literal"><span class="pre">construct_random_trades()</span></tt></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -585,8 +666,8 @@ index</p>
 &#8216;quarterly&#8217;, &#8216;yearly&#8217;</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">price: of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with portfolio 
-&#8216;Close&#8217; and &#8216;Open&#8217;</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">weight_df: of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the rebalance
+weights and dates</p>
 </td>
 </tr>
 </tbody>
@@ -745,90 +826,60 @@ first begins, up until today.</p>
 </div>
 </dd></dl>
 
+<dl class="function">
+<dt id="visualize_wealth.construct_portfolio.weight_df_from_initial_weights">
+<tt class="descclassname">visualize_wealth.construct_portfolio.</tt><tt class="descname">weight_df_from_initial_weights</tt><big>(</big><em>weight_series</em>, <em>price_panel</em>, <em>rebal_frequency</em>, <em>start_value=1000.0</em>, <em>start_date=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/construct_portfolio.html#weight_df_from_initial_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.construct_portfolio.weight_df_from_initial_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of weights that are used 
+to construct the portfolio.  Useful in determining tactical 
+over / under weightings relative to other portfolios</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">weight_series of <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of a weight allocation 
+with an index of tickers, and a name of the initial allocation</p>
+<p>price_panel of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions 
+[tickers, index, price data]</p>
+<p>start_value: of type <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the value to start the 
+index</p>
+<p>rebal_frequency: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of &#8216;weekly&#8217;, &#8216;monthly&#8217;, 
+&#8216;quarterly&#8217;, &#8216;yearly&#8217;</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">price: of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with portfolio 
+&#8216;Close&#8217; and &#8216;Open&#8217;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="asset-class-py-documentation">
-<span id="asset-class-documentation"></span><h2><tt class="docutils literal"><span class="pre">asset_class.py</span></tt> documentation<a class="headerlink" href="#asset-class-py-documentation" title="Permalink to this headline">¶</a></h2>
-<p>Full documentation for each of the functions of <tt class="xref py py-mod docutils literal"><span class="pre">asset-class</span></tt></p>
-<span class="target" id="module-visualize_wealth.asset_class"></span><span class="target" id="module-asset_class.py"></span><dl class="function">
-<dt id="visualize_wealth.asset_class.asset_class">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">asset_class</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#asset_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.asset_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the asset class for a given price series, where asset class
-is either &#8216;US Equity&#8217;, &#8216;Foreign Equity&#8217; or &#8216;Fixed Income&#8217; or &#8216;
-Alternative&#8217;</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the broad asset class, either [&#8216;US Equity&#8217;,
-&#8216;Foreign Equity&#8217;, &#8216;Fixed Income&#8217;, &#8216;Alternative&#8217;]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<div class="section" id="classify-py-documentation">
+<span id="asset-class-documentation"></span><h2><tt class="docutils literal"><span class="pre">classify.py</span></tt> documentation<a class="headerlink" href="#classify-py-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Full documentation for each of the functions of <a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.classify" title="visualize_wealth.classify"><tt class="xref py py-mod docutils literal"><span class="pre">visualize_wealth.classify</span></tt></a></p>
+<span class="target" id="module-visualize_wealth.classify"></span><span class="target" id="module-visualize_wealth.classify.py"></span><p>Created by Benjamin M. Gross</p>
 <dl class="function">
-<dt id="visualize_wealth.asset_class.asset_class_dict">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">asset_class_dict</tt><big>(</big><em>asset_class</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#asset_class_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.asset_class_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>All of the ticker and asset class information stored in dictionary 
-form for use by other functions</p>
+<dt id="visualize_wealth.classify.classify_series_with_online">
+<tt class="descclassname">visualize_wealth.classify.</tt><tt class="descname">classify_series_with_online</tt><big>(</big><em>series</em>, <em>trained_series</em>, <em>calc_meth='x-inv-x'</em>, <em>n=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/classify.html#classify_series_with_online"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.classify.classify_series_with_online" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the asset class of price series from an existing
+HDFStore with prices</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">asset_class: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of &#8216;US Equity&#8217;, &#8216;Foreign Equity&#8217;,
-&#8216;Alternative&#8217; or &#8216;Fixed Income&#8217;.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">:class:dict of the asset subclasses and respective tickers</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.asset_class.asset_class_helper_fn">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">asset_class_helper_fn</tt><big>(</big><em>series</em>, <em>benchmarks</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#asset_class_helper_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.asset_class_helper_fn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given as series of prices, find the most likely asset class of the 
-asset, based on r-squared attribution of return variance (i.e. 
-maximizing r-squared).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>Functionality for Asset Allocation Funds</p>
-<p class="last">Current functionality only allows for a single asset class to 
-be chosen in an effort not to overfit the attribution of asset 
-returns.  This logic works well for &#8220;single asset class ETFs 
-and Mutual Funds&#8221; but not for multi-asset class strategies</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.asset_class.best_fitting_weights">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">best_fitting_weights</tt><big>(</big><em>series</em>, <em>asset_class_prices</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#best_fitting_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.best_fitting_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the best fitting weights given a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of 
-asset prices and a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset class prices.  
-Can be used with the <tt class="xref py py-func docutils literal"><span class="pre">clean_dates()</span></tt> function to ensure an 
-intersection of the two indexes is being passed to the function</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">asset_prices: m x 1 <tt class="xref py py-class docutils literal"><span class="pre">pandas.TimeSeries</span></tt> of asset_prices</p>
-<p>ac_prices: m x n <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> asset class (&#8220;ac&#8221;) 
-prices</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <cite>pandas.DataFrame</cite> of the
+price series to determine the asset class of</p>
+<p>trained_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of tickers
+and their respective asset classes</p>
+<p>calc_meth: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of either [&#8216;x-inv-x&#8217;, &#8216;inv-x&#8217;, &#8216;exp-x&#8217;]
+to determine which calculation method is used</p>
+<p>n: <tt class="xref py py-class docutils literal"><span class="pre">integer</span></tt> of the number of highest r-squared assets
+to include when classifying a new asset</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.TimeSeries</span></tt> of nonnegative weights for each 
-asset such that the r_squared from the regression of 
-<span class="math">\(Y ~ Xw + e\)</span> is maximized</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the tickers that have been estimated
+based on the method provided</p>
 </td>
 </tr>
 </tbody>
@@ -836,99 +887,28 @@ asset such that the r_squared from the regression of
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.asset_class.multicol_asset_class">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">multicol_asset_class</tt><big>(</big><em>frame</em>, <em>weights=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#multicol_asset_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.multicol_asset_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the asset class weightings given a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt>
-of asset prices and the weights of each of the assets</p>
+<dt id="visualize_wealth.classify.classify_series_with_store">
+<tt class="descclassname">visualize_wealth.classify.</tt><tt class="descname">classify_series_with_store</tt><big>(</big><em>series</em>, <em>trained_series</em>, <em>store_path</em>, <em>calc_meth='x-inv-x'</em>, <em>n=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/classify.html#classify_series_with_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.classify.classify_series_with_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the asset class of price series from an existing
+HDFStore with prices</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">frame: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset prices</p>
-<p class="last">weights: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset weights</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <cite>pandas.DataFrame</cite> of the
+price series to determine the asset class of</p>
+<p>trained_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of tickers
+and their respective asset classes</p>
+<p>store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the location of the HDFStore
+to find asset prices</p>
+<p>calc_meth: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of either [&#8216;x-inv-x&#8217;, &#8216;inv-x&#8217;, &#8216;exp-x&#8217;]
+to determine which calculation method is used</p>
+<p>n: <tt class="xref py py-class docutils literal"><span class="pre">integer</span></tt> of the number of highest r-squared assets
+to include when classifying a new asset</p>
 </td>
 </tr>
-</tbody>
-</table>
-<p>RETURNS:</p>
-<blockquote>
-<div><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with values of the percentage of each
-asset class and index of asset class weights</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.asset_class.subclass">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">subclass</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#subclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.subclass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Aggregator function that returns the overall asset class, and 
-proportion of subclasses attributed to the returns of <tt class="docutils literal"><span class="pre">series.</span></tt></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the subclasses and asset class for 
-the entire time period</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.asset_class.subclass_by_interval">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">subclass_by_interval</tt><big>(</big><em>series</em>, <em>interval</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#subclass_by_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.subclass_by_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Aggregator function to determine the asset class for the entire 
-period, followed by asset subclass over intervals of <tt class="docutils literal"><span class="pre">interval.</span></tt></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
-<p>interval: :class:string of the interval, currently only accepts 
-<tt class="docutils literal"><span class="pre">quarterly</span></tt> or <tt class="docutils literal"><span class="pre">annual</span></tt></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the asset_subclasses over period 
-interval</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>In an effort to ensure spurious asset classes aren&#8217;t chosen (for 
-instance, &#8216;US Equity&#8217; to be chosen for one quarter and then 
-&#8216;Alternatives&#8217; to be chosen in a different quarter, simply 
-because of   &#8220;similar asset performance&#8221;), the process of the 
-algorithm is:</p>
-<blockquote class="last">
-<div><p>1. Determine the &#8220;Overall Asset Class&#8221; for the entire 
-period of the asset&#8217;s returns</p>
-<p>2. Determine the subclass attributions over the rolling 
-interval of time</p>
-</div></blockquote>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.asset_class.subclass_by_interval_helper_fn">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">subclass_by_interval_helper_fn</tt><big>(</big><em>series</em>, <em>benchmarks</em>, <em>interval</em>, <em>asset_class</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#subclass_by_interval_helper_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.subclass_by_interval_helper_fn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return asset su class weightings that explain the asset returns 
-over periods of &#8220;interval.&#8221;</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">asset_prices: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the asset for which 
-attribution will be done</p>
-<p>asset_class_prices: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset class 
-prices</p>
-<p>interval :class:string of the frequency interval &#8216;quarterly&#8217; 
-or &#8216;annual&#8217;</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of proportions of each asset class 
-that most explain the returns of the individual security</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the tickers that have been estimated
+based on the method provided</p>
 </td>
 </tr>
 </tbody>
@@ -936,22 +916,77 @@ that most explain the returns of the individual security</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.asset_class.subclass_helper_fn">
-<tt class="descclassname">visualize_wealth.asset_class.</tt><tt class="descname">subclass_helper_fn</tt><big>(</big><em>series</em>, <em>benchmarks</em>, <em>asset_class</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/asset_class.html#subclass_helper_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.asset_class.subclass_helper_fn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given an the prices of a single asset an its overall asset class, 
-return the proportion of returns attribute to each asset class</p>
+<dt id="visualize_wealth.classify.knn_exp_weighted">
+<tt class="descclassname">visualize_wealth.classify.</tt><tt class="descname">knn_exp_weighted</tt><big>(</big><em>series</em>, <em>trained_series</em>, <em>n=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/classify.html#knn_exp_weighted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.classify.knn_exp_weighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Training data is a m x n matrix with &#8216;training_tickers&#8217; as columns
+and rows of r-squared for different tickers and asset_class is a
+n x 1 result of the asset class</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
-<p>asset_class: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of either <tt class="docutils literal"><span class="pre">US</span> <span class="pre">Equity</span></tt>, 
-<tt class="docutils literal"><span class="pre">Foreign</span> <span class="pre">Equity</span></tt>, <tt class="docutils literal"><span class="pre">Alternative</span></tt>, or  <tt class="docutils literal"><span class="pre">Fixed</span> <span class="pre">Income</span></tt></p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of
+r-squared values</p>
+<p>trained_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the columns
+and their respective asset classes</p>
+<p>n: <tt class="xref py py-class docutils literal"><span class="pre">integer</span></tt> of the number of highest r-squared assets
+to include when classifying a new asset</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the subclasses and their 
-optimized proportion to explain the <tt class="docutils literal"><span class="pre">series</span></tt> returns over 
-the entire period.</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the tickers that have been estimated
+based on the n closest neighbors</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.classify.knn_inverse_weighted">
+<tt class="descclassname">visualize_wealth.classify.</tt><tt class="descname">knn_inverse_weighted</tt><big>(</big><em>series</em>, <em>trained_series</em>, <em>n=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/classify.html#knn_inverse_weighted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.classify.knn_inverse_weighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Training data is a m x n matrix with &#8216;training_tickers&#8217; as columns
+and rows of r-squared for different tickers and asset_class is a
+n x 1 result of the asset class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of
+r-squared values</p>
+<p>trained_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the columns
+and their respective asset clasnses</p>
+<p>n: <tt class="xref py py-class docutils literal"><span class="pre">integer</span></tt> of the number of highest r-squared assets
+to include when classifying a new asset</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the tickers that have been estimated
+based on the n closest neighbors</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.classify.knn_wt_inv_weighted">
+<tt class="descclassname">visualize_wealth.classify.</tt><tt class="descname">knn_wt_inv_weighted</tt><big>(</big><em>series</em>, <em>trained_series</em>, <em>n=None</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/classify.html#knn_wt_inv_weighted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.classify.knn_wt_inv_weighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Training data is a m x n matrix with &#8216;training_tickers&#8217; as columns
+and rows of r-squared for different tickers and asset_class is a
+n x 1 result of the asset class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of
+r-squared values</p>
+<p>trained_series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the columns
+and their respective asset clasnses</p>
+<p>n: <tt class="xref py py-class docutils literal"><span class="pre">integer</span></tt> of the number of highest r-squared assets
+to include when classifying a new asset</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the tickers that have been estimated
+based on the n closest neighbors</p>
 </td>
 </tr>
 </tbody>
@@ -961,8 +996,8 @@ the entire period.</p>
 </div>
 <div class="section" id="analyze-py-documentation">
 <span id="analyze-documentation"></span><h2><tt class="docutils literal"><span class="pre">analyze.py</span></tt> documentation<a class="headerlink" href="#analyze-py-documentation" title="Permalink to this headline">¶</a></h2>
-<p>Full documentation for each of the functions of <tt class="xref py py-mod docutils literal"><span class="pre">analyze</span></tt></p>
-<span class="target" id="module-visualize_wealth.analyze"></span><span class="target" id="module-analyze.py"></span><dl class="function">
+<p>Full documentation for each of the functions of <a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.analyze" title="visualize_wealth.analyze"><tt class="xref py py-mod docutils literal"><span class="pre">visualize_wealth.analyze</span></tt></a></p>
+<span class="target" id="module-visualize_wealth.analyze"></span><span class="target" id="module-visualize_wealth.analyze.py"></span><dl class="function">
 <dt id="visualize_wealth.analyze.active_returns">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">active_returns</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#active_returns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.active_returns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Active returns is defined as the compound difference between linear 
@@ -1066,6 +1101,32 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.attribution_weights">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">attribution_weights</tt><big>(</big><em>series</em>, <em>factor_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#attribution_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.attribution_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a price series and explanatory factors factor_df, determine
+the weights of attribution to each factor or asset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices to explain given
+the factors or sub_classes in factor_df</p>
+<p>factor_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the prices of the
+factors or sub_classes to to which the asset prices can be
+attributed</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">given an optimal solution, a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset
+factor weights (summing to one) which best explain the
+series.  If an optimal solution is not found, None type is
+returned (with accompanying message)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.beta">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">beta</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#beta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.beta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the sensitivity of one price series to a chosen benchmark:</p>
@@ -1113,7 +1174,29 @@ consecutive ones given a <cite>pandas.Series</cite> of integers Derived from
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_downtick_performance">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downtick_performance</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downtick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downtick_performance" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downtick_performance</tt><big>(</big><em>series</em>, <em>n_ticks=3</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downtick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downtick_performance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns 
+<cite>[&#8216;performance&#8217;,&#8217;num_downticks&#8217;]</cite> that shows the cumulative 
+performance (in log returns) and the <cite>num_upticks</cite> number of 
+days the downtick lasted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of <tt class="docutils literal"><span class="pre">['performance','num_upticks']</span></tt>.
+Performance is in log returns and <cite>num_downticks</cite> the number 
+of consecutive downticks for which the performance was 
+generated</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.consecutive_downtick_relative_performance">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downtick_relative_performance</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>n_ticks=3</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downtick_relative_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downtick_relative_performance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns 
 <cite>[&#8216;outperformance&#8217;,&#8217;num_downticks&#8217;]</cite> that shows the cumulative 
 outperformance (in log returns) and the <cite>num_upticks</cite> number of 
@@ -1139,7 +1222,7 @@ generated</p>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_downticks">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downticks</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downticks" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_downticks</tt><big>(</big><em>series</em>, <em>n_ticks=3</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_downticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_downticks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> 
 of the consecutive downticks in the series greater than three 
 downticks</p>
@@ -1157,7 +1240,29 @@ downticks</p>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_uptick_performance">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_uptick_performance</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_uptick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_uptick_performance" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_uptick_performance</tt><big>(</big><em>series</em>, <em>n_ticks=3</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_uptick_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_uptick_performance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns 
+<tt class="docutils literal"><span class="pre">['performance',</span> <span class="pre">'num_upticks']</span></tt> that shows the cumulative 
+performance (in log returns) and the <tt class="docutils literal"><span class="pre">num_upticks</span></tt> number of 
+days the uptick lasted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of <tt class="docutils literal"><span class="pre">['outperformance',</span>
+<span class="pre">'num_upticks']</span></tt>. Outperformance is in log returns and 
+num_upticks the number of consecutive upticks for which the 
+outperformance was generated</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.consecutive_uptick_relative_performance">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_uptick_relative_performance</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>n_ticks=3</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_uptick_relative_performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_uptick_relative_performance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a two column <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns 
 <tt class="docutils literal"><span class="pre">['outperformance',</span> <span class="pre">'num_upticks']</span></tt> that shows the cumulative 
 outperformance (in log returns) and the <tt class="docutils literal"><span class="pre">num_upticks</span></tt> number of 
@@ -1183,7 +1288,7 @@ outperformance was generated</p>
 
 <dl class="function">
 <dt id="visualize_wealth.analyze.consecutive_upticks">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_upticks</tt><big>(</big><em>series</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_upticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_upticks" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">consecutive_upticks</tt><big>(</big><em>series</em>, <em>n_ticks=3</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#consecutive_upticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.consecutive_upticks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using the <tt class="xref py py-func docutils literal"><span class="pre">num_consecutive()</span></tt>, returns a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> 
 of the consecutive upticks in the series with greater than 3 
 consecutive upticks</p>
@@ -1725,17 +1830,17 @@ overall value of this statistic.  Therefore, it&#8217;s good to do a
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r2</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the R-Squared or <a class="reference external" href="http://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of Determination</a> 
 for a univariate regression (does not adjust for more independent 
-variables</p>
+variables)</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">r_squared_adjusted()</span></tt></p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">r2_adjusted()</span></tt></p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: :class`pandas.Series` of prices</p>
-<p>benchmark: :class`pandas.Series` of prices to regress 
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: :class`pandas.Series` of of log returns</p>
+<p>benchmark: :class`pandas.Series` of log returns to regress 
 <tt class="docutils literal"><span class="pre">series</span></tt> against</p>
 </td>
 </tr>
@@ -1747,8 +1852,8 @@ variables</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.analyze.r2_adjusted">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r2_adjusted</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r2_adjusted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r2_adjusted" title="Permalink to this definition">¶</a></dt>
+<dt id="visualize_wealth.analyze.r2_adj">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r2_adj</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r2_adj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r2_adj" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Adjusted R-Squared that incorporates the number of 
 independent variates using the <cite>Formula Found of Wikipedia
 &lt;http://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2&gt;_</cite></p>
@@ -1756,8 +1861,8 @@ independent variates using the <cite>Formula Found of Wikipedia
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices</p>
-<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of benchmark prices to 
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset returns</p>
+<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of benchmark returns to 
 explain the returns of the <tt class="docutils literal"><span class="pre">series</span></tt></p>
 <p>weights: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of weights to weight each column 
 of the benchmark</p>
@@ -1771,25 +1876,15 @@ of the benchmark</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.analyze.r2_prices">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r2_prices</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r2_prices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r2_prices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the R-Squared when the inputs provided are prices instead
-of returns</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to regress</p>
-<p>benchmark: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices to regress
-<tt class="docutils literal"><span class="pre">series</span></tt> against</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the coefficient of determination, not 
-adjusted for number of variates</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="visualize_wealth.analyze.r2_mv">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r2_mv</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r2_mv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r2_mv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multivariate r-squared</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.r2_mv_adj">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">r2_mv_adj</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#r2_mv_adj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.r2_mv_adj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the adjusted R-Squared for multivariate regression</p>
 </dd></dl>
 
 <dl class="function">
@@ -2053,6 +2148,7 @@ attributable to the benchmark</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/test_analyze.xlsx&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">man_calcs</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;calcs&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">prices</span> <span class="o">=</span> <span class="n">man_calcs</span><span class="p">[[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">,</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_rets</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stats</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;results&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;S&amp;P 500 Log Ret&#39;</span><span class="p">],</span> 
 <span class="gp">... </span>   <span class="n">log_returns</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
@@ -2063,6 +2159,12 @@ attributable to the benchmark</p>
 <span class="gp">... </span>   <span class="n">benchmark</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;VGTSX Drawdown&#39;</span><span class="p">],</span>
 <span class="gp">... </span>   <span class="n">drawdown</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">y</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span> <span class="n">r2</span><span class="p">(</span><span class="n">benchmark</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">series</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">y</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">r2_adj</span><span class="p">,</span> <span class="n">r2_adj</span><span class="p">(</span><span class="n">benchmark</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">series</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p>Cumulative Turnover Calculation</p>
@@ -2096,8 +2198,10 @@ attributable to the benchmark</p>
 <span class="gp">... </span><span class="s">&#39;cvar_mu_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_cf&#39;</span><span class="p">,</span> <span class="s">&#39;var_norm&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive&#39;</span><span class="p">,</span>
 <span class="gp">... </span><span class="s">&#39;consecutive_downticks&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive_upticks&#39;</span><span class="p">,</span> 
 <span class="gp">... </span><span class="s">&#39;consecutive_downtick_performance&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive_uptick_performance&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;r_squared&#39;</span><span class="p">,</span> <span class="s">&#39;r_squared_adjusted&#39;</span><span class="p">,</span> <span class="s">&#39;drawdown&#39;</span><span class="p">,</span> <span class="s">&#39;r2&#39;</span><span class="p">,</span> <span class="s">&#39;r2_adjusted&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;r2_prices&#39;</span><span class="p">]</span>
+<span class="gp">... </span><span class="s">&#39;consecutive_downtick_relative_performance&#39;</span><span class="p">,</span> 
+<span class="gp">... </span><span class="s">&#39;consecutive_uptick_relative_performance&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;r_squared&#39;</span><span class="p">,</span> <span class="s">&#39;r_squared_adjusted&#39;</span><span class="p">,</span> <span class="s">&#39;drawdown&#39;</span><span class="p">,</span> <span class="s">&#39;r2&#39;</span><span class="p">,</span> <span class="s">&#39;r2_adj&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s">&#39;r2_mv&#39;</span><span class="p">,</span> <span class="s">&#39;r2_mv_adj&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;series&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> <span class="s">&#39;benchmark&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span> 
@@ -2347,39 +2451,71 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </div>
 <div class="section" id="utils-py-documentation">
 <span id="utils-documentation"></span><h2><tt class="docutils literal"><span class="pre">utils.py</span></tt> documentation<a class="headerlink" href="#utils-py-documentation" title="Permalink to this headline">¶</a></h2>
-<p>Full documentation for each of the functions of <tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt></p>
-<span class="target" id="module-visualize_wealth.utils"></span><span class="target" id="module-utils.py"></span><dl class="function">
-<dt id="visualize_wealth.utils.dtindex_clean_intersect">
-<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">dtindex_clean_intersect</tt><big>(</big><em>arr_a</em>, <em>arr_b</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#dtindex_clean_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.dtindex_clean_intersect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the intersection of two <tt class="xref py py-class docutils literal"><span class="pre">pandas</span></tt> objects, either a
-<tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt></p>
+<p>Full documentation for each of the functions of <a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.utils" title="visualize_wealth.utils"><tt class="xref py py-mod docutils literal"><span class="pre">visualize_wealth.utils</span></tt></a></p>
+<span class="target" id="module-visualize_wealth.utils"></span><span class="target" id="module-visualize_wealth.utils.py"></span><dl class="function">
+<dt id="visualize_wealth.utils.append_store_prices">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">append_store_prices</tt><big>(</big><em>ticker_list</em>, <em>store_path</em>, <em>start='01/01/1990'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#append_store_prices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.append_store_prices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an existing store located at <tt class="docutils literal"><span class="pre">path</span></tt>, check to make sure
+the tickers in <tt class="docutils literal"><span class="pre">ticker_list</span></tt> are not already in the data
+set, and then insert the tickers into the store.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">arr_a: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt>
-arr_b: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt></td>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> of tickers to add to the
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.HDStore</span></tt></p>
+<p>store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the path to the     
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.HDStore</span></tt></p>
+<p>start: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the date to begin the price data</p>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DatetimeIndex</span></tt> of the intersection of the two 
-<tt class="xref py py-class docutils literal"><span class="pre">pandas</span></tt> objects</td>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><dl class="first last docutils">
+<dt><tt class="xref py py-class docutils literal"><span class="pre">NoneType</span></tt> but appends the store and comments the</dt>
+<dd><p class="first last">successes ands failures</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="visualize_wealth.utils.dtindex_multi_intersect">
-<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">dtindex_multi_intersect</tt><big>(</big><em>frame_list</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#dtindex_multi_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.dtindex_multi_intersect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the index intersection of multiple 
-<tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt>&#8216;s or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt></p>
+<dt id="visualize_wealth.utils.check_store_for_tickers">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">check_store_for_tickers</tt><big>(</big><em>ticker_list</em>, <em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#check_store_for_tickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.check_store_for_tickers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine which, if any of the <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> <cite>ticker_list</cite> are
+inside of the HDFStore.  If all tickers are located in the store
+returns 1, otherwise returns 0 (provides a &#8220;check&#8221; to see if
+other functions can be run)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">frame_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> containing either <tt class="docutils literal"><span class="pre">DataFrame</span></tt>&#8216;s or
-<tt class="docutils literal"><span class="pre">Series</span></tt></td>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: iterable of tickers to be found in the store located
+at <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> store_path</p>
+<p>store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the location to the HDFStore</p>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DatetimeIndex</span></tt> of the objects&#8217; intersection</td>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">bool</span></tt> True if all tickers are found in the store and
+False if not all the tickers are found in the HDFStore</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.create_data_store">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">create_data_store</tt><big>(</big><em>ticker_list</em>, <em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#create_data_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.create_data_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the ETF store to run the training of the logistic 
+classificaiton tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: iterable of tickers</p>
+<p class="last">store_path: <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> of path to <tt class="docutils literal"><span class="pre">HDFStore</span></tt></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -2406,6 +2542,43 @@ different prices Can take either a <a class="reference external" href="http://do
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.utils.index_intersect">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">index_intersect</tt><big>(</big><em>arr_a</em>, <em>arr_b</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#index_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.index_intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intersection of two <tt class="xref py py-class docutils literal"><span class="pre">pandas</span></tt> objects, either a
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">arr_a: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt>
+arr_b: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt></td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DatetimeIndex</span></tt> of the intersection of the two 
+<tt class="xref py py-class docutils literal"><span class="pre">pandas</span></tt> objects</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.index_multi_intersect">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">index_multi_intersect</tt><big>(</big><em>frame_list</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#index_multi_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.index_multi_intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index intersection of multiple 
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt>&#8216;s or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">frame_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> containing either <tt class="docutils literal"><span class="pre">DataFrame</span></tt>&#8216;s or
+<tt class="docutils literal"><span class="pre">Series</span></tt></td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DatetimeIndex</span></tt> of the objects&#8217; intersection</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.utils.normalized_price">
 <tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">normalized_price</tt><big>(</big><em>price_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#normalized_price"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.normalized_price" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the normalized price of a series</p>
@@ -2416,6 +2589,25 @@ different prices Can take either a <a class="reference external" href="http://do
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">price_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt></td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">same as the input</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.setup_trained_hdfstore">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">setup_trained_hdfstore</tt><big>(</big><em>trained_data</em>, <em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#setup_trained_hdfstore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.setup_trained_hdfstore" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <tt class="docutils literal"><span class="pre">HDFStore</span></tt> doesn&#8217;t work properly when it&#8217;s compiled by different
+versions, so the appropriate thing to do is to setup the trained data
+locally (and not store the <tt class="docutils literal"><span class="pre">.h5</span></tt> file on GitHub).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">trained_data: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with tickers in the index and
+asset  classes for values</p>
+<p class="last">store_path: <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> of where to create the <tt class="docutils literal"><span class="pre">HDFStore</span></tt></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -2468,6 +2660,24 @@ from.  Either &#8216;yahoo&#8217; or &#8216;google&#8217;</p>
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> when the <tt class="docutils literal"><span class="pre">ticker_list</span></tt> is 
 <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.update_store_prices">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">update_store_prices</tt><big>(</big><em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#update_store_prices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.update_store_prices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update to the most recent prices for all keys of an existing store, 
+located at path <tt class="docutils literal"><span class="pre">path</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> the location of the <tt class="docutils literal"><span class="pre">HDFStore</span></tt> file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">NoneType</span></tt> but updates the <tt class="docutils literal"><span class="pre">HDF5</span></tt> file, and prints to 
+screen which values would not update</td>
 </tr>
 </tbody>
 </table>

@@ -40,6 +40,9 @@ Contents:
    intro
    readme
    asset_class
+   modules
+   setup
+   visualize_wealth
 
 Indices and tables
 ==================

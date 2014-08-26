@@ -61,7 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#constructing-portfolios">Constructing portfolios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#analyzing-portfolio-performance">Analyzing portfolio performance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#construct-portfolio-py-documentation"><tt class="docutils literal"><span class="pre">construct_portfolio.py</span></tt> documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../intro.html#asset-class-py-documentation"><tt class="docutils literal"><span class="pre">asset_class.py</span></tt> documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../intro.html#classify-py-documentation"><tt class="docutils literal"><span class="pre">classify.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#analyze-py-documentation"><tt class="docutils literal"><span class="pre">analyze.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#utils-py-documentation"><tt class="docutils literal"><span class="pre">utils.py</span></tt> documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../intro.html#sphinx-customizations">Sphinx Customizations</a></li>
@@ -82,6 +82,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../asset_class.html#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset_class.html#status">Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset_class.html#to-do">To Do:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualize_wealth.html">visualize_wealth package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.analyze">visualize_wealth.analyze module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.classify">visualize_wealth.classify module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.construct_portfolio">visualize_wealth.construct_portfolio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth.utils">visualize_wealth.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../visualize_wealth.html#module-visualize_wealth">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -122,9 +131,8 @@
 <span class="c">#!/usr/bin/env python</span>
 <span class="c"># encoding: utf-8</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">.. module:: construct_portfolio.py</span>
-<span class="sd">   :synopsis: Engine to construct portfolios using three general </span>
-<span class="sd">   methodologies</span>
+<span class="sd">.. module:: visualize_wealth.construct_portfolio.py</span>
+<span class="sd">   :synopsis: Engine to construct portfolios using three general methodologies</span>
 
 <span class="sd">.. moduleauthor:: Benjamin M. Gross &lt;benjaminMgross@gmail.com&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -137,7 +145,7 @@
 <span class="kn">import</span> <span class="nn">visualize_wealth.analyze</span> <span class="kn">as</span> <span class="nn">vwa</span>
 <span class="kn">import</span> <span class="nn">visualize_wealth.utils</span> <span class="kn">as</span> <span class="nn">vwu</span>
 
-<div class="viewcode-block" id="format_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.format_blotter">[docs]</a><span class="k">def</span> <span class="nf">format_blotter</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">):</span>
+<div class="viewcode-block" id="format_blotter"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.format_blotter">[docs]</a><span class="k">def</span> <span class="nf">format_blotter</span><span class="p">(</span><span class="n">blotter_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pass in either a location of a blotter file (in ``.csv`` format) or </span>
 <span class="sd">    blotter :class:`pandas.DataFrame` with all positive values and </span>
@@ -175,7 +183,7 @@
 
     <span class="k">return</span> <span class="n">blot</span>
 </div>
-<div class="viewcode-block" id="append_price_frame_with_dividends"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.append_price_frame_with_dividends">[docs]</a><span class="k">def</span> <span class="nf">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="append_price_frame_with_dividends"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.append_price_frame_with_dividends">[docs]</a><span class="k">def</span> <span class="nf">append_price_frame_with_dividends</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a ticker, start_date, &amp; end_date, return a </span>
 <span class="sd">    :class:`pandas.DataFrame` with a Dividend Columns appended to it</span>
@@ -241,7 +249,7 @@
 
     <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">div_df</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="calculate_splits"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.calculate_splits">[docs]</a><span class="k">def</span> <span class="nf">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_splits"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.calculate_splits">[docs]</a><span class="k">def</span> <span class="nf">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a ``price_df`` of the format </span>
 <span class="sd">    :meth:`append_price_frame_with_dividends`, return a </span>
@@ -290,7 +298,7 @@
     <span class="n">splits</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Splits&#39;</span>
     <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="blotter_and_price_df_to_cum_shares"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.blotter_and_price_df_to_cum_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_and_price_df_to_cum_shares</span><span class="p">(</span><span class="n">blotter_df</span><span class="p">,</span> <span class="n">price_df</span><span class="p">):</span>
+<div class="viewcode-block" id="blotter_and_price_df_to_cum_shares"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.blotter_and_price_df_to_cum_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_and_price_df_to_cum_shares</span><span class="p">(</span><span class="n">blotter_df</span><span class="p">,</span> <span class="n">price_df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a blotter :class:`pandas.DataFrame` of dates, purchases (+/-),</span>
 <span class="sd">    and price :class:`pandas.DataFrame` with Close Adj Close, Dividends, </span>
@@ -375,7 +383,7 @@
     
     <span class="k">return</span> <span class="n">price_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         </div>
-<div class="viewcode-block" id="construct_random_trades"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.construct_random_trades">[docs]</a><span class="k">def</span> <span class="nf">construct_random_trades</span><span class="p">(</span><span class="n">split_df</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+<div class="viewcode-block" id="construct_random_trades"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.construct_random_trades">[docs]</a><span class="k">def</span> <span class="nf">construct_random_trades</span><span class="p">(</span><span class="n">split_df</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create random trades on random trade dates, but never allow </span>
 <span class="sd">    shares to go negative</span>
@@ -424,7 +432,7 @@
     <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">&#39;Buy/Sell&#39;</span><span class="p">:</span><span class="n">trades</span><span class="p">,</span> <span class="s">&#39;Price&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">},</span> 
                             <span class="n">index</span> <span class="o">=</span> <span class="n">dates</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="blotter_to_cum_shares"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.blotter_to_cum_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> 
+<div class="viewcode-block" id="blotter_to_cum_shares"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.blotter_to_cum_shares">[docs]</a><span class="k">def</span> <span class="nf">blotter_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> 
                           <span class="n">end_date</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Aggregation function for :meth:`append_price_frame_with_dividend`, </span>
@@ -466,7 +474,7 @@
     <span class="n">split_df</span> <span class="o">=</span> <span class="n">calculate_splits</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">blotter_and_price_df_to_cum_shares</span><span class="p">(</span><span class="n">blotter_series</span><span class="p">,</span> <span class="n">split_df</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="generate_random_asset_path"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.generate_random_asset_path">[docs]</a><span class="k">def</span> <span class="nf">generate_random_asset_path</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_random_asset_path"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.generate_random_asset_path">[docs]</a><span class="k">def</span> <span class="nf">generate_random_asset_path</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allows the user to input a ticker, start date, and num_trades to </span>
 <span class="sd">    generate a :class:`pandas.DataFrame` with columns &#39;Open&#39;, &#39;Close&#39;, </span>
@@ -504,7 +512,7 @@
         <span class="n">ticker</span> <span class="o">=</span> <span class="n">ticker</span><span class="p">,</span>  <span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span><span class="p">,</span> 
         <span class="n">end_date</span> <span class="o">=</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="generate_random_portfolio_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">[docs]</a><span class="k">def</span> <span class="nf">generate_random_portfolio_blotter</span><span class="p">(</span><span class="n">tickers</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_random_portfolio_blotter"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.generate_random_portfolio_blotter">[docs]</a><span class="k">def</span> <span class="nf">generate_random_portfolio_blotter</span><span class="p">(</span><span class="n">tickers</span><span class="p">,</span> <span class="n">num_trades</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :meth:`construct_random_asset_path`, for multiple assets, given a </span>
 <span class="sd">    list of tickers and a number of trades (to be used for all tickers). </span>
@@ -552,7 +560,7 @@
 
     <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">agg_d</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">ind</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="panel_from_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.panel_from_blotter">[docs]</a><span class="k">def</span> <span class="nf">panel_from_blotter</span><span class="p">(</span><span class="n">blotter_df</span><span class="p">):</span>
+<div class="viewcode-block" id="panel_from_blotter"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.panel_from_blotter">[docs]</a><span class="k">def</span> <span class="nf">panel_from_blotter</span><span class="p">(</span><span class="n">blotter_df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The aggregation function to construct a portfolio given a blotter </span>
 <span class="sd">    of tickers, trades, and number of shares.  </span>
@@ -589,7 +597,57 @@
 
     <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">val_d</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="fetch_data_for_weight_allocation_method"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.fetch_data_for_weight_allocation_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_weight_allocation_method</span><span class="p">(</span><span class="n">weight_df</span><span class="p">):</span>
+<div class="viewcode-block" id="fetch_data_from_store_weight_alloc_method"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.fetch_data_from_store_weight_alloc_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_from_store_weight_alloc_method</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    To speed up calculation time and allow for off-line functionality,</span>
+<span class="sd">    provide a :class:`pandas.DataFrame` weight_df and point the function</span>
+<span class="sd">    to an HDFStore</span>
+
+<span class="sd">    :ARGS:</span>
+<span class="sd">    </span>
+<span class="sd">        weight_df: a :class:`pandas.DataFrame` with dates as index and </span>
+<span class="sd">        tickers as columns</span>
+
+<span class="sd">        store_path: :class:`string` of the location to an HDFStore</span>
+
+<span class="sd">    :RETURNS:</span>
+<span class="sd">    </span>
+<span class="sd">        :class:`pandas.Panel` where:</span>
+
+<span class="sd">            * :meth:`panel.items` are tickers</span>
+
+<span class="sd">            * :meth:`panel.major_axis` dates</span>
+
+<span class="sd">            * :meth:`panel.minor_axis:` price information, specifically: </span>
+<span class="sd">               [&#39;Open&#39;, &#39;Close&#39;, &#39;Adj Close&#39;]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Not all tickers in HDFStore&quot;</span>
+    <span class="k">assert</span> <span class="n">vwu</span><span class="o">.</span><span class="n">all_tickers_in_store</span><span class="p">(</span><span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">store_path</span><span class="p">),</span> <span class="n">msg</span>
+    <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">store_path</span><span class="p">)</span>
+    <span class="n">beg_port</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;didn&#39;t work for &quot;</span><span class="o">+</span><span class="n">ticker</span><span class="o">+</span><span class="s">&quot;!&quot;</span>
+
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="c">#Check to make sure the earliest &quot;full data date&quot; is  b/f first trade</span>
+    <span class="n">first_price</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:,</span>
+        <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">panel</span><span class="o">.</span><span class="n">items</span><span class="p">))</span>
+
+    <span class="c">#print the number of consectutive nans</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vwa</span><span class="o">.</span><span class="n">consecutive</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ticker</span><span class="p">,</span>
+            <span class="n">first_price</span><span class="p">:,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+        </div>
+<div class="viewcode-block" id="fetch_data_for_weight_allocation_method"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.fetch_data_for_weight_allocation_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_weight_allocation_method</span><span class="p">(</span><span class="n">weight_df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    To be used with `The Weight Allocation Method </span>
 <span class="sd">    &lt;./readme.html#the-weight-allocation-method&gt;_` Given a weight_df</span>
@@ -629,9 +687,9 @@
             <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">beg_port</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">print</span> <span class="s">&quot;didn&#39;t work for &quot;</span><span class="o">+</span><span class="n">ticker</span><span class="o">+</span><span class="s">&quot;!&quot;</span>
-    
+
+    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="c">#pull the data from Yahoo!</span>
-    
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
     <span class="c">#Check to make sure the earliest &quot;full data date&quot; is  b/f first trade</span>
@@ -645,7 +703,59 @@
 
     <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="fetch_data_for_initial_allocation_method"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_initial_allocation_method</span><span class="p">(</span><span class="n">initial_weights</span><span class="p">,</span> 
+<div class="viewcode-block" id="fetch_data_from_store_initial_alloc_method"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.fetch_data_from_store_initial_alloc_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_from_store_initial_alloc_method</span><span class="p">(</span>
+               <span class="n">initial_weights</span><span class="p">,</span> <span class="n">store_path</span><span class="p">,</span> <span class="n">start_date</span> <span class="o">=</span> <span class="s">&#39;01/01/2000&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    To speed up calculation time and allow for off-line functionality,</span>
+<span class="sd">    provide a :class:`pandas.DataFrame` weight_df and point the function</span>
+<span class="sd">    to an HDFStore</span>
+
+<span class="sd">    :ARGS:</span>
+<span class="sd">    </span>
+<span class="sd">        weight_df: a :class:`pandas.DataFrame` with dates as index and </span>
+<span class="sd">        tickers as columns</span>
+
+<span class="sd">        store_path: :class:`string` of the location to an HDFStore</span>
+
+<span class="sd">    :RETURNS:</span>
+<span class="sd">    </span>
+<span class="sd">        :class:`pandas.Panel` where:</span>
+
+<span class="sd">            * :meth:`panel.items` are tickers</span>
+
+<span class="sd">            * :meth:`panel.major_axis` dates</span>
+
+<span class="sd">            * :meth:`panel.minor_axis:` price information, specifically: </span>
+<span class="sd">               [&#39;Open&#39;, &#39;Close&#39;, &#39;Adj Close&#39;]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Not all tickers in HDFStore&quot;</span>
+    <span class="k">assert</span> <span class="n">vwu</span><span class="o">.</span><span class="n">all_tickers_in_store</span><span class="p">(</span><span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">store_path</span><span class="p">),</span> <span class="n">msg</span>
+    <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">store_path</span><span class="p">)</span>
+    <span class="c">#beg_port = datetime.sdat</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;didn&#39;t work for &quot;</span><span class="o">+</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot;!&quot;</span>
+
+    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="c">#Check to make sure the earliest &quot;full data date&quot; is  b/f first trade</span>
+    <span class="n">first_price</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:,</span>
+        <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">panel</span><span class="o">.</span><span class="n">items</span><span class="p">))</span>
+
+    <span class="c">#print the number of consectutive nans</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vwa</span><span class="o">.</span><span class="n">consecutive</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ticker</span><span class="p">,</span>
+            <span class="n">first_price</span><span class="p">:,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="fetch_data_for_initial_allocation_method"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.fetch_data_for_initial_allocation_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_initial_allocation_method</span><span class="p">(</span><span class="n">initial_weights</span><span class="p">,</span> 
                                              <span class="n">start_date</span> <span class="o">=</span> <span class="s">&#39;01/01/2000&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    To be used with `The Initial Allocaiton Method </span>
@@ -680,7 +790,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span>  <span class="o">=</span> <span class="n">d_0</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot;Didn&#39;t work for &quot;</span><span class="o">+</span><span class="n">ticker</span><span class="o">+</span><span class="s">&quot;!&quot;</span>
+            <span class="k">print</span> <span class="s">&quot;Didn&#39;t work for &quot;</span> <span class="o">+</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot;!&quot;</span>
     
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
@@ -691,11 +801,11 @@
     <span class="c">#print the number of consectutive nans</span>
     <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
         <span class="k">print</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vwa</span><span class="o">.</span><span class="n">consecutive</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ticker</span><span class="p">,</span>
-            <span class="n">first_price</span><span class="p">:,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+            <span class="n">first_price</span><span class="p">:</span> <span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 
     <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="panel_from_weight_file"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.panel_from_weight_file">[docs]</a><span class="k">def</span> <span class="nf">panel_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">):</span>
+<div class="viewcode-block" id="panel_from_weight_file"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.panel_from_weight_file">[docs]</a><span class="k">def</span> <span class="nf">panel_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a :class:`pandas.Panel` with columns [&#39;Close&#39;, &#39;Open&#39;] </span>
 <span class="sd">    when provided a pandas.DataFrame of weight allocations and a </span>
@@ -728,13 +838,13 @@
 
     <span class="c">#these columns correspond to the columns in sheet &#39;value_calcs!&#39; in </span>
     <span class="c">#&quot;panel from weight file test.xlsx&quot;</span>
-        
+ 
     <span class="c">#determine the first valid date and make it the start_date</span>
     <span class="n">first_valid</span> <span class="o">=</span> <span class="n">vwu</span><span class="o">.</span><span class="n">first_valid_date</span><span class="p">(</span><span class="n">price_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">])</span>
-    
+
     <span class="k">assert</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">first_valid</span><span class="p">,</span> <span class="p">(</span>
             <span class="s">&quot;first_valid index doesn&#39;t occur until after start_date&quot;</span><span class="p">)</span>
-    
+
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">,</span> <span class="s">&#39;Value at Open&#39;</span><span class="p">,</span> 
                <span class="s">&#39;Value at Close&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">,</span> <span class="s">&#39;High&#39;</span><span class="p">,</span> <span class="s">&#39;Low&#39;</span><span class="p">,</span> <span class="s">&#39;Close&#39;</span><span class="p">,</span> 
                <span class="s">&#39;Volume&#39;</span><span class="p">,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span>
@@ -791,10 +901,39 @@
     
     <span class="k">return</span> <span class="n">tmp_panel</span>
 
-        
+        </div>
+<div class="viewcode-block" id="weight_df_from_initial_weights"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.weight_df_from_initial_weights">[docs]</a><span class="k">def</span> <span class="nf">weight_df_from_initial_weights</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span>
+    <span class="n">rebal_frequency</span><span class="p">,</span> <span class="n">start_value</span> <span class="o">=</span> <span class="mf">1000.</span><span class="p">,</span> <span class="n">start_date</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a :class:`pandas.DataFrame` of weights that are used </span>
+<span class="sd">    to construct the portfolio.  Useful in determining tactical </span>
+<span class="sd">    over / under weightings relative to other portfolios</span>
+
+<span class="sd">    :ARGS:</span>
+<span class="sd">    </span>
+<span class="sd">        weight_series of :class:`pandas.Series` of a weight allocation </span>
+<span class="sd">        with an index of tickers, and a name of the initial allocation</span>
+
+<span class="sd">        price_panel of type :class:`pandas.Panel` with dimensions </span>
+<span class="sd">        [tickers, index, price data]</span>
+
+<span class="sd">        start_value: of type :class:`float` of the value to start the </span>
+<span class="sd">        index</span>
+
+<span class="sd">        rebal_frequency: :class:`string` of &#39;weekly&#39;, &#39;monthly&#39;, </span>
+<span class="sd">        &#39;quarterly&#39;, &#39;yearly&#39;</span>
+
+<span class="sd">    :RETURNS:</span>
+<span class="sd">    </span>
+<span class="sd">        price: of type :class:`pandas.DataFrame` with portfolio </span>
+<span class="sd">        &#39;Close&#39; and &#39;Open&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     
+    <span class="k">return</span> <span class="n">initial_weight_help_fn</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> 
+        <span class="n">rebal_frequency</span><span class="p">,</span> <span class="n">start_value</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">ret_val</span> <span class="o">=</span> <span class="s">&#39;weights&#39;</span><span class="p">)</span>
+
 </div>
-<div class="viewcode-block" id="panel_from_initial_weights"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.panel_from_initial_weights">[docs]</a><span class="k">def</span> <span class="nf">panel_from_initial_weights</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> 
+<div class="viewcode-block" id="panel_from_initial_weights"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.panel_from_initial_weights">[docs]</a><span class="k">def</span> <span class="nf">panel_from_initial_weights</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> 
     <span class="n">rebal_frequency</span><span class="p">,</span> <span class="n">start_value</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">start_date</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a pandas.DataFrame with columns [&#39;Close&#39;, &#39;Open&#39;] when </span>
@@ -820,10 +959,15 @@
 
 <span class="sd">    :RETURNS:</span>
 <span class="sd">    </span>
-<span class="sd">        price: of type :class:`pandas.DataFrame` with portfolio </span>
-<span class="sd">        &#39;Close&#39; and &#39;Open&#39;</span>
+<span class="sd">        weight_df: of type :class:`pandas.DataFrame` of the rebalance</span>
+<span class="sd">        weights and dates</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    <span class="k">return</span> <span class="n">initial_weight_help_fn</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> 
+        <span class="n">rebal_frequency</span><span class="p">,</span> <span class="n">start_value</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">ret_val</span> <span class="o">=</span> <span class="s">&#39;panel&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="initial_weight_help_fn"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.initial_weight_help_fn">[docs]</a><span class="k">def</span> <span class="nf">initial_weight_help_fn</span><span class="p">(</span><span class="n">weight_series</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span>
+    <span class="n">rebal_frequency</span><span class="p">,</span> <span class="n">start_value</span> <span class="o">=</span> <span class="mf">1000.</span><span class="p">,</span> <span class="n">start_date</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ret_val</span> <span class="o">=</span> <span class="s">&#39;panel&#39;</span><span class="p">):</span>
+    
     <span class="c">#determine the first valid date and make it the start_date</span>
     <span class="n">first_valid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">price_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
             <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">first_valid_index</span><span class="p">))</span>
@@ -859,12 +1003,15 @@
     <span class="n">weight_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">weight_series</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> 
         <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> 
         <span class="n">columns</span> <span class="o">=</span> <span class="n">weight_series</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-                    
-    <span class="k">return</span> <span class="n">panel_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">ret_val</span> <span class="o">==</span> <span class="s">&#39;panel&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">panel_from_weight_file</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_panel</span><span class="p">,</span> <span class="n">start_value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">weight_df</span>
 
 
 </div>
-<div class="viewcode-block" id="pfp_from_weight_file"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.pfp_from_weight_file">[docs]</a><span class="k">def</span> <span class="nf">pfp_from_weight_file</span><span class="p">(</span><span class="n">panel_from_weight_file</span><span class="p">):</span>
+<div class="viewcode-block" id="pfp_from_weight_file"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.pfp_from_weight_file">[docs]</a><span class="k">def</span> <span class="nf">pfp_from_weight_file</span><span class="p">(</span><span class="n">panel_from_weight_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    pfp stands for &quot;Portfolio from Panel&quot;, so this takes the final </span>
 <span class="sd">    ``pandas.Panel`` that is created in the portfolio construction </span>
@@ -912,7 +1059,7 @@
 
     <span class="k">return</span> <span class="n">port_df</span>
 </div>
-<div class="viewcode-block" id="pfp_from_blotter"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.pfp_from_blotter">[docs]</a><span class="k">def</span> <span class="nf">pfp_from_blotter</span><span class="p">(</span><span class="n">panel_from_blotter</span><span class="p">,</span> <span class="n">start_value</span> <span class="o">=</span> <span class="mf">1000.</span><span class="p">):</span>
+<div class="viewcode-block" id="pfp_from_blotter"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.pfp_from_blotter">[docs]</a><span class="k">def</span> <span class="nf">pfp_from_blotter</span><span class="p">(</span><span class="n">panel_from_blotter</span><span class="p">,</span> <span class="n">start_value</span> <span class="o">=</span> <span class="mf">1000.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    pfp stands for &quot;Portfolio from Panel&quot;, so this takes the final</span>
 <span class="sd">    :class`pandas.Panel` that is created in the portfolio construction </span>
@@ -979,7 +1126,7 @@
     
     <span class="k">return</span> <span class="n">price_df</span>
 </div>
-<div class="viewcode-block" id="test_funs"><a class="viewcode-back" href="../../intro.html#visualize_wealth.construct_portfolio.test_funs">[docs]</a><span class="k">def</span> <span class="nf">test_funs</span><span class="p">():</span>
+<div class="viewcode-block" id="test_funs"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.test_funs">[docs]</a><span class="k">def</span> <span class="nf">test_funs</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &gt;&gt;&gt; import pandas.util.testing as put</span>
 <span class="sd">    &gt;&gt;&gt; xl_file = pandas.ExcelFile(&#39;../tests/test_splits.xlsx&#39;)</span>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-.. module:: classify.py
+.. module:: visualize_wealth.classify.py
 
 Created by Benjamin M. Gross
 

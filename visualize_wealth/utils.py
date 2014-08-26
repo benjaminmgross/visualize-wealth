@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-.. module:: utils.py
+.. module:: visualize_wealth.utils.py
    :synopsis: Helper fuctions and knick knacks for portfolio analysis
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>

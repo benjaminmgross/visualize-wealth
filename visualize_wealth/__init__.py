@@ -8,7 +8,6 @@
 
 """
 import visualize_wealth.analyze
-import visualize_wealth.asset_class
 import visualize_wealth.construct_portfolio
 import visualize_wealth.utils
 import visualize_wealth.classify

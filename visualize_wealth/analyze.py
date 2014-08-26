@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-.. module:: analyze.py
+.. module:: visualize_wealth.analyze.py
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 

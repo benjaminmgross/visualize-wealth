@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-.. module:: construct_portfolio.py
-   :synopsis: Engine to construct portfolios using three general 
-   methodologies
+.. module:: visualize_wealth.construct_portfolio.py
+   :synopsis: Engine to construct portfolios using three general methodologies
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 """

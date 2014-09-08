@@ -493,7 +493,7 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
 
     """
     msg = "Not all tickers in HDFStore"
-    assert vwu.all_tickers_in_store(weight_df.columns, store_path), msg
+    assert vwu.check_store_for_tickers(weight_df.columns, store_path), msg
     store = pandas.HDFStore(store_path)
     beg_port = weight_df.index.min()
 
@@ -600,7 +600,7 @@ def fetch_data_from_store_initial_alloc_method(
 
     """
     msg = "Not all tickers in HDFStore"
-    assert vwu.all_tickers_in_store(initial_weights.index, store_path), msg
+    assert vwu.check_store_for_tickers(initial_weights.index, store_path), msg
     store = pandas.HDFStore(store_path)
     #beg_port = datetime.sdat
 

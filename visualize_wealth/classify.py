@@ -58,11 +58,11 @@ def classify_series_with_store(series, trained_series, store_path,
         for key in store.keys():
             key = key.strip('/')
             p = store.get(key)
-            xs = utils.log_returns(p['Adj Close'])
+            xs = analyze.log_returns(p['Adj Close'])
             ind = utils.index_intersect(xs, ys)
             rsq_d[key] = analyze.r2_adj(benchmark = ys[ind], series = xs[ind])
         rsq_df = pandas.Series(rsq_d)
-
+        store.close()
         if not n:
             n = len(trained_series.unique()) + 1
         

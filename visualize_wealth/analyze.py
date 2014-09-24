@@ -10,6 +10,7 @@ import collections
 import numpy
 import pandas
 import scipy.stats
+from . import utils
 
 
 def active_returns(series, benchmark):
@@ -152,6 +153,38 @@ def annualized_vol(series, freq = 'daily'):
         return series.apply(lambda x: _annualized_vol(x, freq = freq))
     else:
         return _annualized_vol(series, freq = freq)
+
+def attribution_weights_by_interval(series, factor_df, interval):
+	"""
+	Create attribution weights over time
+
+	:ARGS:
+
+        series: :class:`pandas.Series` of asset prices to explain given
+        the factors or sub_classes in factor_df
+
+        factor_df: :class:`pandas.DataFrame` of the prices of the
+        factors or sub_classes to to which the asset prices can be
+        attributed
+
+        interval: interval of the amount of time 
+
+    :RETURNS:
+
+        given an optimal solution, a :class:`pandas.Series` of asset
+        factor weights (summing to one) which best explain the
+        series.  If an optimal solution is not found, None type is
+        returned (with accompanying message)
+
+	"""
+	chunks = utils.zipped_time_chunks(series.index, interval)
+	wt_dict = {}
+	for beg, fin in chunks:
+		wt_dict[beg] = attribution_weights(series[beg: fin], 
+			                           factor_df.loc[beg: fin, :])
+
+	return pandas.DataFrame(wt_dict).transpose()
+
 
 def attribution_weights(series, factor_df):
     """

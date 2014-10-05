@@ -52,7 +52,44 @@ def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     store.close()
     return None
 
-def check_store_for_tickers(ticker_list, store_path):
+def check_store_for_tickers(ticker_list, store):
+    """
+    Determine which, if any of the :class:`list` `ticker_list` are
+    inside of the HDFStore.  If all tickers are located in the store
+    returns 1, otherwise returns 0 (provides a "check" to see if
+    other functions can be run)
+
+    :ARGS:
+
+        ticker_list: iterable of tickers to be found in the store located
+        at :class:`string` store_path
+
+        store: :class:`HDFStore` of the location to the HDFStore
+
+    :RETURNS:
+
+        :class:`bool` True if all tickers are found in the store and
+        False if not all the tickers are found in the HDFStore
+
+    """
+    if isinstance(ticker_list, pandas.Index):
+        #pandas.Index is not sortable, so much tolist() it
+        ticker_list = ticker_list.tolist()
+
+    store_keys = map(lambda x: x.strip('/'), store.keys())
+    not_in_store = numpy.setdiff1d(ticker_list, store_keys)
+
+    #if len(not_in_store) == 0, all tickers are present
+    if not len(not_in_store):
+        print "All tickers in store"
+        ret_val = True
+    else:
+        for ticker in not_in_store:
+            print "store does not contain " + ticker
+        ret_val = False
+    return ret_val
+
+def check_store_path_for_tickers(ticker_list, store_path):
     """
     Determine which, if any of the :class:`list` `ticker_list` are
     inside of the HDFStore.  If all tickers are located in the store

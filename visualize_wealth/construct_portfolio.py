@@ -492,9 +492,9 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
                ['Open', 'Close', 'Adj Close']
 
     """
-    msg = "Not all tickers in HDFStore"
-    assert vwu.check_store_for_tickers(weight_df.columns, store_path), msg
+    msg = "Not all tickers in HDFStore"    
     store = pandas.HDFStore(store_path)
+    assert vwu.check_store_for_tickers(weight_df.columns, store), msg
     beg_port = weight_df.index.min()
 
     d = {}
@@ -502,7 +502,7 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
         try:
             d[ticker] = store.get(ticker)
         except:
-            print "didn't work for "+ticker+"!"
+            print "didn't work for " + ticker + "!"
 
     panel = pandas.Panel(d)
 
@@ -558,7 +558,6 @@ def fetch_data_for_weight_allocation_method(weight_df):
         except:
             print "didn't work for "+ticker+"!"
 
-    store.close()
     #pull the data from Yahoo!
     panel = pandas.Panel(d)
 
@@ -600,8 +599,9 @@ def fetch_data_from_store_initial_alloc_method(
 
     """
     msg = "Not all tickers in HDFStore"
-    assert vwu.check_store_for_tickers(initial_weights.index, store_path), msg
     store = pandas.HDFStore(store_path)
+    assert vwu.check_store_for_tickers(initial_weights.index, store), msg
+
     #beg_port = datetime.sdat
 
     d = {}
@@ -712,8 +712,10 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
     #determine the first valid date and make it the start_date
     first_valid = vwu.first_valid_date(price_panel.loc[:, :, 'Close'])
 
-    assert weight_df.index.min() >= first_valid, (
-            "first_valid index doesn't occur until after start_date")
+    #this needs to check to ensure that weights weren't assigned before
+    #the ticker exists, not the current assert statement
+    #assert weight_df.index.min() >= first_valid, (
+    #        "first_valid index doesn't occur until after start_date")
 
     columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Value at Open', 
                'Value at Close', 'Open', 'High', 'Low', 'Close', 

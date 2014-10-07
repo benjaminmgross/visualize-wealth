@@ -1420,6 +1420,50 @@ def rolling_ui(series, window = 21):
     else:
         return _rolling_ui(series)
 
+def adj_sharpe_ratio(series, rfr = 0., freq = 'daily'):
+    """
+    Returns the `Ajusted Sharpe Ratio <http://en.wikipedia.org/wiki/Sharpe_ratio>`_ 
+    of an asset, given a price series, risk free rate of ``rfr``, and 
+    ``frequency`` of the 
+    time series
+    
+    :ARGS:
+
+        series: ``pandas.Series`` of prices
+
+        rfr: ``float`` of the risk free rate
+
+        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or 
+        yearly``
+
+    :RETURN:
+
+        ``float`` of the Adjusted Sharpe Ratio
+
+    .. note:: Calculating Sharpe 
+
+        .. math::
+
+            \\textrm{SR_{adj}} = \\textrm{SR} \\cdot (1 + \\frac{S}{6}\\cdot 
+            \\textrm{SR} - \\frac{K - 3}{24} \\cdot \\textrm{SR}^2)
+            \\textrm{where},
+
+            R_p &= \\textrm{series annualized return} \\\\
+            r_f &= \\textrm{Risk free rate} \\\\
+            \\sigma &= \\textrm{Portfolio annualized volatility}
+
+    """
+    def _adj_sharpe_ratio(series, rfr = 0., freq = 'daily'):
+        sr = sharpe_ratio(series, rfr = rfr, freq = freq)
+        skew = log_returns(series).skew()
+        kurt = log_returns(series).kurt()
+        return sr * (1 + skew/6. * sr - (kurt - 3)/24 * sr**2)
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(lambda x: _adj_sharpe_ratio(x, rfr = rfr, freq = freq))
+    else:
+        return _adj_sharpe_ratio(series, rfr = rfr, freq = freq)
+
 def sharpe_ratio(series, rfr = 0., freq = 'daily'):
     """
     Returns the `Sharpe Ratio <http://en.wikipedia.org/wiki/Sharpe_ratio>`_ 

@@ -132,6 +132,36 @@ def check_store_path_for_tickers(ticker_list, store_path):
         ret_val = False
     return ret_val
 
+def check_trade_price_start(weight_df, price_df):
+    """
+    Check to ensure that initial weights / trade dates are after
+    the first available price for the same ticker
+
+    :ARGS:
+
+        weight_df: :class:`pandas.DataFrame` of the weights to 
+        rebalance the portfolio
+
+        price_df: :class:`pandas.DataFrame` of the prices for each
+        of the tickers
+
+    :RETURNS:
+
+        :class:`pandas.Series` of boolean values for each ticker
+        where True indicates the first allocation takes place 
+        after the first price (as desired) and False the converse
+    """
+    msg = "tickers in the weight_df and price_df must be the same"
+    assert set(weight_df.columns) == set(price_df.columns), msg
+
+    ret_d = {}
+    for ticker in weight_df.columns:
+        first_alloc = (weight_df[ticker] > 0).argmin()
+        first_price = price_df[ticker].notnull().argmin()
+        ret_d[ticker] = first_alloc > first_price
+
+    return pandas.Series(ret_d)
+
 def create_data_store(ticker_list, store_path):
     """
     Creates the ETF store to run the training of the logistic 

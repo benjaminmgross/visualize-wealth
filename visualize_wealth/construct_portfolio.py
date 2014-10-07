@@ -709,13 +709,11 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
     #these columns correspond to the columns in sheet 'value_calcs!' in 
     #"panel from weight file test.xlsx"
  
-    #determine the first valid date and make it the start_date
-    first_valid = vwu.first_valid_date(price_panel.loc[:, :, 'Close'])
-
-    #this needs to check to ensure that weights weren't assigned before
-    #the ticker exists, not the current assert statement
-    #assert weight_df.index.min() >= first_valid, (
-    #        "first_valid index doesn't occur until after start_date")
+    #ensure that the first allocation for each ticker is after first price
+    price_df = price_panel.loc[:, :, 'Close']
+    is_valid = vwu.check_trade_price_start(weight_df, price_df)
+    msg = "first allocation precedes first price"
+    assert all(is_valid), msg
 
     columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Value at Open', 
                'Value at Close', 'Open', 'High', 'Low', 'Close', 

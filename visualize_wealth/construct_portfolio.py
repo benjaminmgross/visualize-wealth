@@ -515,6 +515,7 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
         print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
             first_price:, 'Adj Close'].isnull().astype(int)).max())
 
+    store.close()
     return panel.ffill()
         
 def fetch_data_for_weight_allocation_method(weight_df):

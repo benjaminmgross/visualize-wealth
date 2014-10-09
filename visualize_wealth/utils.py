@@ -300,6 +300,33 @@ def normalized_price(price_df):
         print "Input must be pandas.Series or pandas.DataFrame"
         return
 
+def perturbate_asset(weight_df, key, eps):
+    """
+    Perturbate an asset within a weight allocation frame in the amount eps
+
+    :ARGS:
+
+        weight_df: :class:`pandas.DataFrame` of a weight_allocation frame
+
+        key: :class:`string` of the asset to perturbate_asset
+
+        eps: :class:`float` of the amount to perturbate in relative terms
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of the perturbed weight_df
+    """
+    assert key in weight_df.columns, "key not in weight_df"
+    ret_df = weight_df.copy()
+    comp_sum = ret_df[ret_df != ret_df[key]].sum(axis = 1)
+    ret_df = ret_df*(1. - eps/comp_sum)
+    ret_df[key] = weight_df[key] + eps
+    if any(ret_df < 0.):
+        print "Warning, some values fell below zero in the reweighting"
+    return ret_df
+
+
+
 def setup_trained_hdfstore(trained_data, store_path):
     """
     The ``HDFStore`` doesn't work properly when it's compiled by different

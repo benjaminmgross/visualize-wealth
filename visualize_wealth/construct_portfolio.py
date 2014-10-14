@@ -494,7 +494,10 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
     """
     msg = "Not all tickers in HDFStore"    
     store = pandas.HDFStore(store_path)
-    assert vwu.check_store_for_tickers(weight_df.columns, store), msg
+    if not vwu.check_store_for_tickers(weight_df.columns, store):
+        print msg
+        store.close()
+        return
     beg_port = weight_df.index.min()
 
     d = {}

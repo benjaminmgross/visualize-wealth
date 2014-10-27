@@ -158,7 +158,7 @@ def check_trade_price_start(weight_df, price_df):
     for ticker in weight_df.columns:
         first_alloc = (weight_df[ticker] > 0).argmin()
         first_price = price_df[ticker].notnull().argmin()
-        ret_d[ticker] = first_alloc > first_price
+        ret_d[ticker] = first_alloc >= first_price
 
     return pandas.Series(ret_d)
 

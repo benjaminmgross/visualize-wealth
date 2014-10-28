@@ -785,6 +785,30 @@ def drawdown(series):
     else:
         return _drawdown(series)
 
+def geometric_difference(a, b):
+    """
+    Returns the geometric difference of returns where
+
+    :ARGS:
+
+        a: :class:`pandas.Series` or :class:`float`
+        b: :class:`pandas.Series` or :class:`float`
+
+    :RETURNS:
+
+        same class as inputs
+
+    .. math::
+
+        \\textrm{GD} = \\frac{(1 + a )}{(1 + b)}  - 1 \\\\
+    """
+    if isinstance(a, pandas.Series):
+        msg = "index must be equal for pandas.Series"
+        assert a.index.equals(b.index), msg
+        return (1. + a).divide(1. + b) - 1.
+    else:
+        return (1. + a) / (1. + b) - 1.
+
 def idiosyncratic_as_proportion(series, benchmark, freq = 'daily'):
     """
     Returns the idiosyncratic risk as proportion of total volatility

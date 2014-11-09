@@ -7,10 +7,12 @@
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 """
 
+import os
 import argparse
 import pandas
 import numpy
 import datetime
+
 
 def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     """

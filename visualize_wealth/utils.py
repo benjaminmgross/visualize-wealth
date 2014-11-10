@@ -320,7 +320,8 @@ def perturbate_asset(weight_df, key, eps):
     """
     assert key in weight_df.columns, "key not in weight_df"
     ret_df = weight_df.copy()
-    comp_sum = ret_df[ret_df != ret_df[key]].sum(axis = 1)
+    not_key = ret_df.columns[ret_df.columns != key]
+    comp_sum = ret_df[not_key].sum(axis = 1)
     ret_df = ret_df*(1. - eps/comp_sum)
     ret_df[key] = weight_df[key] + eps
     if any(ret_df < 0.):

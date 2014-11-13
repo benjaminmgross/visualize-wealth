@@ -198,10 +198,10 @@ def create_data_store(ticker_list, store_path):
     print 
     return None
 
-def first_price_date(ticker_list):
+def first_price_date_get_prices(ticker_list):
     """
-    Return the first date that a price exists for a single ticker or list of 
-    tickers
+    Given a list of tickers, pull down prices and return the first valid price 
+    date for each ticker in the list
 
     :ARGS:
 
@@ -213,8 +213,27 @@ def first_price_date(ticker_list):
     """
     fvi = pandas.Series.first_valid_index
 
+    #pull down the data into a DataFrame
     df = tickers_to_frame(ticker_list)
+    return first_price_date_from_df(df)
+
+def first_price_date_from_prices(df):
+    """
+    Given a :class:`pandas.DataFrame` of prices, return the first date that a 
+    price exists for each of the tickers
+
+    :ARGS:
+
+        ticker_list: :class:`string` or :class:`list` of tickers
+
+    :RETURNS:
+
+        :class:`string` of 'dd-mm-yyyy' or :class:`list` of said strings
+    """
+
+    fvi = pandas.Series.first_valid_index
     if isinstance(df, pandas.Series):
+        return df.fvi()
     else:
         return df.apply(fvi, axis = 0)
 

@@ -198,6 +198,52 @@ def create_data_store(ticker_list, store_path):
     print 
     return None
 
+def first_price_date(ticker_list):
+    """
+    Return the first date that a price exists for a single ticker or list of 
+    tickers
+
+    :ARGS:
+
+        ticker_list: :class:`string` or :class:`list` of tickers
+
+    :RETURNS:
+
+        :class:`string` of 'dd-mm-yyyy' or :class:`list` of said strings
+    """
+    fvi = pandas.Series.first_valid_index
+
+    df = tickers_to_frame(ticker_list)
+    if isinstance(df, pandas.Series):
+    else:
+        return df.apply(fvi, axis = 0)
+
+def first_valid_date(prices):
+    """
+    Helper function to determine the first valid date from a set of 
+    different prices Can take either a :class:`dict` of 
+    :class:`pandas.DataFrame`s where each key is a ticker's 'Open', 
+    'High', 'Low', 'Close', 'Adj Close' or a single 
+    :class:`pandas.DataFrame` where each column is a different ticker
+
+    :ARGS:
+
+        prices: either :class:`dictionary` or :class:`pandas.DataFrame`
+
+    :RETURNS:
+
+        :class:`pandas.Timestamp` 
+   """
+    iter_dict = { pandas.DataFrame: lambda x: x.columns,
+                  dict: lambda x: x.keys() } 
+    try:
+        each_first = map(lambda x: prices[x].first_valid_index(),
+                         iter_dict[ type(prices) ](prices) )
+        return max(each_first)
+    except KeyError:
+        print "prices must be a DataFrame or dictionary"
+        return
+
 def index_intersect(arr_a, arr_b):
     """
     Return the intersection of two :class:`pandas` objects, either a
@@ -245,32 +291,6 @@ def index_multi_intersect(frame_list):
     return reduce(lambda x, y: x & y, 
            map(lambda x: x.dropna().index, frame_list) )
 
-def first_valid_date(prices):
-    """
-    Helper function to determine the first valid date from a set of 
-    different prices Can take either a :class:`dict` of 
-    :class:`pandas.DataFrame`s where each key is a ticker's 'Open', 
-    'High', 'Low', 'Close', 'Adj Close' or a single 
-    :class:`pandas.DataFrame` where each column is a different ticker
-
-    :ARGS:
-
-        prices: either :class:`dictionary` or :class:`pandas.DataFrame`
-
-    :RETURNS:
-
-        :class:`pandas.Timestamp` 
-   """
-    iter_dict = { pandas.DataFrame: lambda x: x.columns,
-                  dict: lambda x: x.keys() } 
-
-    try:
-        each_first = map(lambda x: prices[x].dropna().index.min(),
-                         iter_dict[ type(prices) ](prices) )
-        return max(each_first)
-    except KeyError:
-        print "prices must be a DataFrame or dictionary"
-        return
 
 def normalized_price(price_df):
     """

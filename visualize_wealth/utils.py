@@ -7,10 +7,12 @@
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 """
 
+import os
 import argparse
 import pandas
 import numpy
 import datetime
+
 
 def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     """
@@ -158,7 +160,7 @@ def check_trade_price_start(weight_df, price_df):
     for ticker in weight_df.columns:
         first_alloc = (weight_df[ticker] > 0).argmin()
         first_price = price_df[ticker].notnull().argmin()
-        ret_d[ticker] = first_alloc > first_price
+        ret_d[ticker] = first_alloc >= first_price
 
     return pandas.Series(ret_d)
 
@@ -195,6 +197,71 @@ def create_data_store(ticker_list, store_path):
         os.remove(path)
     print 
     return None
+
+def first_price_date_get_prices(ticker_list):
+    """
+    Given a list of tickers, pull down prices and return the first valid price 
+    date for each ticker in the list
+
+    :ARGS:
+
+        ticker_list: :class:`string` or :class:`list` of tickers
+
+    :RETURNS:
+
+        :class:`string` of 'dd-mm-yyyy' or :class:`list` of said strings
+    """
+    fvi = pandas.Series.first_valid_index
+
+    #pull down the data into a DataFrame
+    df = tickers_to_frame(ticker_list)
+    return first_price_date_from_df(df)
+
+def first_price_date_from_prices(df):
+    """
+    Given a :class:`pandas.DataFrame` of prices, return the first date that a 
+    price exists for each of the tickers
+
+    :ARGS:
+
+        ticker_list: :class:`string` or :class:`list` of tickers
+
+    :RETURNS:
+
+        :class:`string` of 'dd-mm-yyyy' or :class:`list` of said strings
+    """
+
+    fvi = pandas.Series.first_valid_index
+    if isinstance(df, pandas.Series):
+        return df.fvi()
+    else:
+        return df.apply(fvi, axis = 0)
+
+def first_valid_date(prices):
+    """
+    Helper function to determine the first valid date from a set of 
+    different prices Can take either a :class:`dict` of 
+    :class:`pandas.DataFrame`s where each key is a ticker's 'Open', 
+    'High', 'Low', 'Close', 'Adj Close' or a single 
+    :class:`pandas.DataFrame` where each column is a different ticker
+
+    :ARGS:
+
+        prices: either :class:`dictionary` or :class:`pandas.DataFrame`
+
+    :RETURNS:
+
+        :class:`pandas.Timestamp` 
+   """
+    iter_dict = { pandas.DataFrame: lambda x: x.columns,
+                  dict: lambda x: x.keys() } 
+    try:
+        each_first = map(lambda x: prices[x].first_valid_index(),
+                         iter_dict[ type(prices) ](prices) )
+        return max(each_first)
+    except KeyError:
+        print "prices must be a DataFrame or dictionary"
+        return
 
 def index_intersect(arr_a, arr_b):
     """
@@ -243,32 +310,6 @@ def index_multi_intersect(frame_list):
     return reduce(lambda x, y: x & y, 
            map(lambda x: x.dropna().index, frame_list) )
 
-def first_valid_date(prices):
-    """
-    Helper function to determine the first valid date from a set of 
-    different prices Can take either a :class:`dict` of 
-    :class:`pandas.DataFrame`s where each key is a ticker's 'Open', 
-    'High', 'Low', 'Close', 'Adj Close' or a single 
-    :class:`pandas.DataFrame` where each column is a different ticker
-
-    :ARGS:
-
-        prices: either :class:`dictionary` or :class:`pandas.DataFrame`
-
-    :RETURNS:
-
-        :class:`pandas.Timestamp` 
-   """
-    iter_dict = { pandas.DataFrame: lambda x: x.columns,
-                  dict: lambda x: x.keys() } 
-
-    try:
-        each_first = map(lambda x: prices[x].dropna().index.min(),
-                         iter_dict[ type(prices) ](prices) )
-        return max(each_first)
-    except KeyError:
-        print "prices must be a DataFrame or dictionary"
-        return
 
 def normalized_price(price_df):
     """
@@ -320,8 +361,14 @@ def perturbate_asset(weight_df, key, eps):
     ipdb.set_trace()
     assert key in weight_df.columns, "key not in weight_df"
     ret_df = weight_df.copy()
+<<<<<<< HEAD
     comp_sum = ret_df[ret_df != ret_df[key]].sum(axis = 1)
     ret_df = ret_df.mul(1. - eps/comp_sum, axis = 0)
+=======
+    not_key = ret_df.columns[ret_df.columns != key]
+    comp_sum = ret_df[not_key].sum(axis = 1)
+    ret_df = ret_df*(1. - eps/comp_sum)
+>>>>>>> 8bc78fe11a38933492d0c0ae9da8696ce286a7c2
     ret_df[key] = weight_df[key] + eps
     if (ret_df < 0.).any().any():
         print "Warning, some values fell below zero in the reweighting"

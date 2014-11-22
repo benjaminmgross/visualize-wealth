@@ -357,24 +357,15 @@ def perturbate_asset(weight_df, key, eps):
 
         :class:`pandas.DataFrame` of the perturbed weight_df
     """
-    import ipdb
-    ipdb.set_trace()
     assert key in weight_df.columns, "key not in weight_df"
     ret_df = weight_df.copy()
-<<<<<<< HEAD
-    comp_sum = ret_df[ret_df != ret_df[key]].sum(axis = 1)
-    ret_df = ret_df.mul(1. - eps/comp_sum, axis = 0)
-=======
     not_key = ret_df.columns[ret_df.columns != key]
     comp_sum = ret_df[not_key].sum(axis = 1)
     ret_df = ret_df*(1. - eps/comp_sum)
->>>>>>> 8bc78fe11a38933492d0c0ae9da8696ce286a7c2
     ret_df[key] = weight_df[key] + eps
-    if (ret_df < 0.).any().any():
+    if any(ret_df < 0.):
         print "Warning, some values fell below zero in the reweighting"
     return ret_df
-
-
 
 def setup_trained_hdfstore(trained_data, store_path):
     """

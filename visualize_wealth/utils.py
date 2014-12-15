@@ -367,8 +367,6 @@ def perturbate_asset(weight_df, key, eps):
         print "Warning, some values fell below zero in the reweighting"
     return ret_df
 
-
-
 def setup_trained_hdfstore(trained_data, store_path):
     """
     The ``HDFStore`` doesn't work properly when it's compiled by different
@@ -452,6 +450,51 @@ def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990',
             d[ticker] = __get_data(ticker, api = api,
                                    start = start)[join_col]
     return pandas.DataFrame(d)
+
+def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
+    """
+    Utility function to return ticker data where the input is either a 
+    ticker, or a list of tickers.
+
+    :ARGS:
+
+        ticker_list: :class:`list` in the case of multiple tickers or 
+        :class:`str` in the case of one ticker
+
+        store_path: :class:`str` of the path to the store
+
+        join_col: :class:`string` to aggregate the :class:`pandas.DataFrame`
+                
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of (ticker, price_df) mappings or a
+        :class:`pandas.DataFrame` when the ``ticker_list`` is 
+        :class:`str`
+    """
+    if not isinstance(join_col, str):
+        print "join_col must be a string"
+        return
+
+    try:
+        store = pandas.HDFStore(path = store_path, mode = 'r')
+    except IOError:
+        print  store_path + " is not a valid path to an HDFStore Object"
+        return
+
+    if isinstance(ticker_list, (str, unicode)):
+        ret_series = store[ticker_list][join_col]
+        store.close()
+        return ret_series
+    else:
+        d = {}
+        for ticker in ticker_list:
+            d[ticker] = store[ticker][join_col]
+        store.close()
+        price_df = pandas.DataFrame(d)
+        d_o = first_valid_date(price_df)
+        price_df = price_df.loc[d_o:, :]
+
+    return price_df
 
 def update_store_prices(store_path):
     """

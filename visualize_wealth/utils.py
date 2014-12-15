@@ -215,7 +215,7 @@ def first_price_date_get_prices(ticker_list):
 
     #pull down the data into a DataFrame
     df = tickers_to_frame(ticker_list)
-    return first_price_date_from_df(df)
+    return first_price_date_from_prices(df)
 
 def first_price_date_from_prices(df):
     """

@@ -110,13 +110,20 @@ def test_risk_contribution_as_proportion(test_file):
         mctr_manual.loc['risk_contribution_as_proportion']
     )
 
-@pytest.mark.newtest
 def test_alpha(prices, stat_calcs):
     man_alpha = stat_calcs.loc['alpha', 'VGTSX']
 
     testing.assert_almost_equal(man_alpha, analyze.alpha(series = prices['VGTSX'],
                                                          benchmark = prices['S&P 500'])
     )
+
+def test_annualized_return(prices, stat_calcs):
+    man_ar = stat_calcs.loc['annualized_return', 'VGTSX']
+    
+    testing.assert_almost_equal(man_ar, 
+                                analyze.annualized_return(series = prices['VGTSX'])
+    )
+
 
 def test_funs():
     """

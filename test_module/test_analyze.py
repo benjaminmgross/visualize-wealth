@@ -110,6 +110,14 @@ def test_risk_contribution_as_proportion(test_file):
         mctr_manual.loc['risk_contribution_as_proportion']
     )
 
+@pytest.mark.newtest
+def test_alpha(prices, stat_calcs):
+    man_alpha = stat_calcs.loc['alpha', 'VGTSX']
+
+    testing.assert_almost_equal(man_alpha, analyze.alpha(series = prices['VGTSX'],
+                                                         benchmark = prices['S&P 500'])
+    )
+
 def test_funs():
     """
     The testing function for ``analyze.py``
@@ -122,9 +130,6 @@ def test_funs():
     >>> prices = man_calcs[['S&P 500', 'VGTSX']]
     >>> log_rets = prices.apply(numpy.log).diff().dropna()
     >>> stats = f.parse('results', index_col = 0)
-
-    marginal contributions to risk and risk contribution calcs
-
 
     These functions are already calculated or aren't calculated in the spreadsheet
 

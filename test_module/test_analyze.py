@@ -138,6 +138,13 @@ def test_beta(prices, stat_calcs):
                                                        benchmark = prices['S&P 500'])
     )
 
+def test_cvar_cf(prices, stat_calcs):
+    man_cvar_cf = stat_calcs.loc['cvar_cf', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_cvar_cf, analyze.cvar_cf(series = prices['VGTSX'])
+    )
+
 
 
 def test_funs():

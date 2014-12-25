@@ -80,6 +80,36 @@ def test_cumulative_turnover(test_file, stat_calcs):
                                 stat_calcs.loc['cumulative_turnover', 'S&P 500']
     )
 
+def test_marginal_contribution_to_risk(test_file):
+    mctr_prices = test_file.parse('mctr', index_col = 0)
+    mctr_manual = test_file.parse('mctr_results', index_col = 0)
+    cols = ['BSV','VBK','VBR','VOE','VOT']
+    mctr = analyze.mctr(mctr_prices[cols], mctr_prices['Portfolio'])
+    testing.assert_series_equal(mctr, mctr_manual.loc['mctr', cols])
+
+def test_risk_contribution(test_file):
+    mctr_prices = test_file.parse('mctr', index_col = 0)
+    mctr_manual = test_file.parse('mctr_results', index_col = 0)
+    cols = ['BSV','VBK','VBR','VOE','VOT']
+    mctr = analyze.mctr(mctr_prices[cols], mctr_prices['Portfolio'])
+    weights = pandas.Series( [.2, .2, .2, .2, .2], index = cols, name = 'risk_contribution')
+    
+    testing.assert_series_equal(analyze.risk_contribution(mctr, weights), 
+                             mctr_manual.loc['risk_contribution', :]
+    )
+
+def test_risk_contribution_as_proportion(test_file):
+    mctr_prices = test_file.parse('mctr', index_col = 0)
+    mctr_manual = test_file.parse('mctr_results', index_col = 0)
+    cols = ['BSV','VBK','VBR','VOE','VOT']
+    mctr = analyze.mctr(mctr_prices[cols], mctr_prices['Portfolio'])
+    weights = pandas.Series( [.2, .2, .2, .2, .2], index = cols, name = 'risk_contribution')
+    
+    testing.assert_series_equal(
+        analyze.risk_contribution_as_proportion(mctr, weights),
+        mctr_manual.loc['risk_contribution_as_proportion']
+    )
+
 def test_funs():
     """
     The testing function for ``analyze.py``
@@ -95,17 +125,6 @@ def test_funs():
 
     marginal contributions to risk and risk contribution calcs
 
-    >>> mctr_prices = f.parse('mctr', index_col = 0)
-    >>> mctr_manual = f.parse('mctr_results', index_col = 0)
-    >>> cols = ['BSV','VBK','VBR','VOE','VOT']
-    >>> mctr = mctr(mctr_prices[cols], mctr_prices['Portfolio'])
-    >>> put.assert_series_equal(mctr, mctr_manual.loc['mctr', cols])
-    >>> weights = pandas.Series( [.2, .2, .2, .2, .2], index = cols, 
-    ... name = 'risk_contribution')
-    >>> put.assert_series_equal(risk_contribution(mctr, weights), 
-    ... mctr_manual.loc['risk_contribution', :])
-    >>> put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),
-    ... mctr_manual.loc['risk_contribution_as_proportion'])
 
     These functions are already calculated or aren't calculated in the spreadsheet
 

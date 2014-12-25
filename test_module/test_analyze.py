@@ -2,28 +2,36 @@
 # encoding: utf-8
 
 import pytest
-import from pandas.util import testing
-import visualize_wealth.analze as analyze
+import pandas
+from pandas.util import testing
+import visualize_wealth.analyze as analyze
 
 @pytest.fixture
-def man_calcs():
-	f = pandas.ExcelFile('../test_data/test_analyze.xlsx')
-    return f.parse('calcs', index_col = 0)
+def test_file():
+    return pandas.ExcelFile('../test_data/test_analyze.xlsx')
 
 @pytest.fixture
-def prices():
-	f = pandas.ExcelFile('../test_data/test_analyze.xlsx')
-    tmp = f.parse('calcs', index_col = 0)
+def man_calcs(test_file):
+    return test_file.parse('calcs', index_col = 0)
+
+@pytest.fixture
+def prices(test_file):
+    tmp = test_file.parse('calcs', index_col = 0)
     return tmp[['S&P 500', 'VGTSX']]
 
 def test_active_returns(man_calcs):
-	return None
+    return None
 
-def test_log_returns(man_cals, prices):
+def test_log_returns(man_calcs, prices):
+    testing.assert_series_equal(man_calcs['S&P 500 Log Ret'],
+                                analyze.log_returns(prices['S&P 500'])
+    )
 
-	testing.assert_series_equal(man_calcs['S&P 500 Log Ret'],
-								analyze.log_returns(prices['S&P 500'])
-	)
+def test_linear_returns(man_calcs, prices):
+    testing.assert_series_equal(man_calcs['S&P 500 Lin Ret'],
+                                analyze.linear_returns(prices['S&P 500'])
+    )
+
 
 def test_funs():
     """

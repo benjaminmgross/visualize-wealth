@@ -160,13 +160,19 @@ def test_downcapture(prices, stat_calcs):
                                     benchmark = prices['S&P 500'])
     )
 
-@pytest.mark.newtest
 def test_downside_deviation(prices, stat_calcs):
     man_dd = stat_calcs.loc['downside_deviation', 'VGTSX']
 
     testing.assert_almost_equal(
         man_dd, analyze.downside_deviation(series = prices['VGTSX'])
     )
+
+def test_geometric_difference():
+    a, b = 1. , 1.
+    assert analyze.geometric_difference(a, b) == 0.
+    a, b = pandas.Series({'a': 1.}), pandas.Series({'a': 1.})
+    assert analyze.geometric_difference(a, b).values == 0.
+
 
 def test_funs():
     """

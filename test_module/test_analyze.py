@@ -142,9 +142,15 @@ def test_cvar_cf(prices, stat_calcs):
     man_cvar_cf = stat_calcs.loc['cvar_cf', 'VGTSX']
 
     testing.assert_almost_equal(
-        man_cvar_cf, analyze.cvar_cf(series = prices['VGTSX'])
+        man_cvar_cf, analyze.cvar_cf(series = prices['VGTSX'], p = 0.01)
     )
 
+def test_cvar_norm(prices, stat_calcs):
+    man_cvar_norm = stat_calcs.loc['cvar_norm', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_cvar_norm, analyze.cvar_norm(series = prices['VGTSX'], p = 0.01)
+    )
 
 
 def test_funs():

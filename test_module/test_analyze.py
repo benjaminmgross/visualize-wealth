@@ -152,6 +152,21 @@ def test_cvar_norm(prices, stat_calcs):
         man_cvar_norm, analyze.cvar_norm(series = prices['VGTSX'], p = 0.01)
     )
 
+def test_downcapture(prices, stat_calcs):
+    man_dc = stat_calcs.loc['downcapture', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_dc, analyze.downcapture(series = prices['VGTSX'], 
+                                    benchmark = prices['S&P 500'])
+    )
+
+@pytest.mark.newtest
+def test_downside_deviation(prices, stat_calcs):
+    man_dd = stat_calcs.loc['downside_deviation', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_dd, analyze.downside_deviation(series = prices['VGTSX'])
+    )
 
 def test_funs():
     """

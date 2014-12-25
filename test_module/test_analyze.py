@@ -24,29 +24,35 @@ def prices(test_file):
     return tmp[['S&P 500', 'VGTSX']]
 
 def test_active_returns(man_calcs, prices):
-    print "test active_returns"
     active_returns = analyze.active_returns(series = prices['VGTSX'], 
                                             benchmark = prices['S&P 500'])
 
     testing.assert_series_equal(man_calcs['Active Return'], active_returns)
 
 def test_log_returns(man_calcs, prices):
-    print "test log_returns"
     testing.assert_series_equal(man_calcs['S&P 500 Log Ret'],
                                 analyze.log_returns(prices['S&P 500'])
     )
 
 def test_linear_returns(man_calcs, prices):
-    print "test linear_returns"
     testing.assert_series_equal(man_calcs['S&P 500 Lin Ret'],
                                 analyze.linear_returns(prices['S&P 500'])
     )
 
 def test_drawdown(man_calcs, prices):
-    print "test drawdown"
     testing.assert_series_equal(man_calcs['VGTSX Drawdown'],
                                 analyze.drawdown(prices['VGTSX'])
     )
+
+def test_r_squared(man_calcs, prices):
+    log_rets = analyze.log_returns(prices).dropna()
+    pandas_rsq = pandas.ols(x = log_rets['S&P 500'], 
+                            y = log_rets['VGTSX']).r2
+
+    analyze_rsq = analyze.r2(benchmark = log_rets['S&P 500'], 
+                             series = log_rets['VGTSX'])
+
+    testing.assert_almost_equal(pandas_rsq, analyze_rsq)
 
 def test_funs():
     """
@@ -61,8 +67,7 @@ def test_funs():
     >>> log_rets = prices.apply(numpy.log).diff().dropna()
     >>> stats = f.parse('results', index_col = 0)
 
-    >>> put.assert_series_equal(man_calcs['VGTSX Drawdown'],
-    ...    drawdown(prices['VGTSX']))
+
     >>> numpy.testing.assert_almost_equal(pandas.ols(x = log_rets['S&P 500'],
     ...    y = log_rets['VGTSX']).r2, r2(benchmark = log_rets['S&P 500'],
     ...    series = log_rets['VGTSX']))

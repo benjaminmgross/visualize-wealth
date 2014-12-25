@@ -15,23 +15,38 @@ def man_calcs(test_file):
     return test_file.parse('calcs', index_col = 0)
 
 @pytest.fixture
+def stats(test_file):
+    return test_file.parse('results', index_col = 0)
+
+@pytest.fixture
 def prices(test_file):
     tmp = test_file.parse('calcs', index_col = 0)
     return tmp[['S&P 500', 'VGTSX']]
 
-def test_active_returns(man_calcs):
-    return None
+def test_active_returns(man_calcs, prices):
+    print "test active_returns"
+    active_returns = analyze.active_returns(series = prices['VGTSX'], 
+                                            benchmark = prices['S&P 500'])
+
+    testing.assert_series_equal(man_calcs['Active Return'], active_returns)
 
 def test_log_returns(man_calcs, prices):
+    print "test log_returns"
     testing.assert_series_equal(man_calcs['S&P 500 Log Ret'],
                                 analyze.log_returns(prices['S&P 500'])
     )
 
 def test_linear_returns(man_calcs, prices):
+    print "test linear_returns"
     testing.assert_series_equal(man_calcs['S&P 500 Lin Ret'],
                                 analyze.linear_returns(prices['S&P 500'])
     )
 
+def test_drawdown(man_calcs, prices):
+    print "test drawdown"
+    testing.assert_series_equal(man_calcs['VGTSX Drawdown'],
+                                analyze.drawdown(prices['VGTSX'])
+    )
 
 def test_funs():
     """
@@ -45,13 +60,7 @@ def test_funs():
     >>> prices = man_calcs[['S&P 500', 'VGTSX']]
     >>> log_rets = prices.apply(numpy.log).diff().dropna()
     >>> stats = f.parse('results', index_col = 0)
-    >>> put.assert_series_equal(man_calcs['S&P 500 Log Ret'], 
-    ...    log_returns(prices['S&P 500']))
-    >>> put.assert_series_equal(man_calcs['VGTSX Lin Ret'], 
-    ...    linear_returns(prices['VGTSX']))
-    >>> put.assert_series_equal(man_calcs['Active Return'],
-    ...    active_returns(series = prices['VGTSX'], 
-    ...    benchmark = prices['S&P 500']))
+
     >>> put.assert_series_equal(man_calcs['VGTSX Drawdown'],
     ...    drawdown(prices['VGTSX']))
     >>> numpy.testing.assert_almost_equal(pandas.ols(x = log_rets['S&P 500'],

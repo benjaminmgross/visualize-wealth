@@ -44,12 +44,22 @@ def test_drawdown(man_calcs, prices):
                                 analyze.drawdown(prices['VGTSX'])
     )
 
-def test_r_squared(man_calcs, prices):
+def test_rsq(man_calcs, prices):
     log_rets = analyze.log_returns(prices).dropna()
     pandas_rsq = pandas.ols(x = log_rets['S&P 500'], 
                             y = log_rets['VGTSX']).r2
 
     analyze_rsq = analyze.r2(benchmark = log_rets['S&P 500'], 
+                             series = log_rets['VGTSX'])
+
+    testing.assert_almost_equal(pandas_rsq, analyze_rsq)
+
+def test_rsq_adj(man_calcs, prices):
+    log_rets = analyze.log_returns(prices).dropna()
+    pandas_rsq = pandas.ols(x = log_rets['S&P 500'], 
+                            y = log_rets['VGTSX']).r2_adj
+
+    analyze_rsq = analyze.r2_adj(benchmark = log_rets['S&P 500'], 
                              series = log_rets['VGTSX'])
 
     testing.assert_almost_equal(pandas_rsq, analyze_rsq)
@@ -67,10 +77,6 @@ def test_funs():
     >>> log_rets = prices.apply(numpy.log).diff().dropna()
     >>> stats = f.parse('results', index_col = 0)
 
-
-    >>> numpy.testing.assert_almost_equal(pandas.ols(x = log_rets['S&P 500'],
-    ...    y = log_rets['VGTSX']).r2, r2(benchmark = log_rets['S&P 500'],
-    ...    series = log_rets['VGTSX']))
     >>> numpy.testing.assert_almost_equal(pandas.ols(x = log_rets['S&P 500'],
     ...    y = log_rets['VGTSX']).r2_adj, r2_adj(benchmark = log_rets['S&P 500'],
     ...    series = log_rets['VGTSX']))

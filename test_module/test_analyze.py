@@ -120,9 +120,24 @@ def test_alpha(prices, stat_calcs):
 def test_annualized_return(prices, stat_calcs):
     man_ar = stat_calcs.loc['annualized_return', 'VGTSX']
     
-    testing.assert_almost_equal(man_ar, 
-                                analyze.annualized_return(series = prices['VGTSX'])
+    testing.assert_almost_equal(
+        man_ar, analyze.annualized_return(series = prices['VGTSX'], freq = 'daily')
     )
+
+def test_annualized_vol(prices, stat_calcs):
+    man_ar = stat_calcs.loc['annualized_vol', 'VGTSX']
+    
+    testing.assert_almost_equal(
+        man_ar, analyze.annualized_vol(series = prices['VGTSX'], freq = 'daily')
+    )
+
+def test_beta(prices, stat_calcs):
+    man_beta = stat_calcs.loc['beta', 'VGTSX']
+
+    testing.assert_almost_equal(man_beta, analyze.beta(series = prices['VGTSX'],
+                                                       benchmark = prices['S&P 500'])
+    )
+
 
 
 def test_funs():

@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+"""
+.. module:: visualize_wealth.test_module.test_analyze.py
+
+.. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
+
+"""
+
 import pytest
 import pandas
 from pandas.util import testing
@@ -15,7 +22,7 @@ def man_calcs(test_file):
     return test_file.parse('calcs', index_col = 0)
 
 @pytest.fixture
-def stats(test_file):
+def stat_calcs(test_file):
     return test_file.parse('results', index_col = 0)
 
 @pytest.fixture
@@ -64,6 +71,15 @@ def test_rsq_adj(man_calcs, prices):
 
     testing.assert_almost_equal(pandas_rsq, analyze_rsq)
 
+def test_cumulative_turnover(test_file, stat_calcs):
+    alloc_df = test_file.parse('alloc_df', index_col = 0)
+    cols = alloc_df.columns[alloc_df.columns!='Daily TO']
+    alloc_df = alloc_df[cols].dropna()
+    asset_wt_df = test_file.parse('asset_wt_df', index_col = 0)
+    testing.assert_almost_equal(analyze.cumulative_turnover(alloc_df, asset_wt_df), 
+                                stat_calcs.loc['cumulative_turnover', 'S&P 500']
+    )
+
 def test_funs():
     """
     The testing function for ``analyze.py``
@@ -76,19 +92,6 @@ def test_funs():
     >>> prices = man_calcs[['S&P 500', 'VGTSX']]
     >>> log_rets = prices.apply(numpy.log).diff().dropna()
     >>> stats = f.parse('results', index_col = 0)
-
-    >>> numpy.testing.assert_almost_equal(pandas.ols(x = log_rets['S&P 500'],
-    ...    y = log_rets['VGTSX']).r2_adj, r2_adj(benchmark = log_rets['S&P 500'],
-    ...    series = log_rets['VGTSX']))
-
-    Cumulative Turnover Calculation
-
-    >>> alloc_df = f.parse('alloc_df', index_col = 0)
-    >>> alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!='Daily TO']].dropna()
-    >>> asset_wt_df = f.parse('asset_wt_df', index_col = 0)
-    >>> numpy.testing.assert_almost_equal(
-    ...    cumulative_turnover(alloc_df, asset_wt_df), 
-    ...    stats.loc['cumulative_turnover', 'S&P 500'])
 
     marginal contributions to risk and risk contribution calcs
 

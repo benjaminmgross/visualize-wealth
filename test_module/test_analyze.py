@@ -290,6 +290,13 @@ def test_ulcer_index(prices, stat_calcs):
         man_ui, analyze.ulcer_index(series = prices['VGTSX'])
     )
 
+def test_median_upcapture(prices, stat_calcs):
+    man_uc = stat_calcs.loc['upcapture', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_uc, analyze.upcapture(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
 
 def test_funs():
     """

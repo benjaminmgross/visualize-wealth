@@ -295,7 +295,7 @@ and values of quantity</p>
 occurs</p>
 <p>start_date: a <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a></p>
 <p>end_date: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a></p>
-<p>tol: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>  the tolerance to find the split dates 
+<p>tol: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a>  the tolerance to find the split dates 
 (.1 recommended)</p>
 </td>
 </tr>
@@ -566,7 +566,7 @@ in <tt class="xref py py-meth docutils literal"><span class="pre">construct_rand
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the ticker to generate the path</p>
 <p>start_date: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of format &#8216;mm/dd/yyyy&#8217; or 
 <tt class="xref py py-class docutils literal"><span class="pre">datetime</span></tt></p>
-<p>num_trades: <tt class="xref py py-class docutils literal"><span class="pre">int</span></tt> of the number of trades to generate</p>
+<p>num_trades: <a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">int</span></tt></a> of the number of trades to generate</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with the additional columns 
@@ -594,7 +594,7 @@ DataFrame that is collected</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">tickers: a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> with the tickers to be used</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">tickers: a <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> with the tickers to be used</p>
 <p>num_trades: <tt class="xref py py-class docutils literal"><span class="pre">integer</span></tt>, the number of trades to randomly 
 generate for each ticker</p>
 </td>
@@ -660,7 +660,7 @@ interval)</p>
 with an index of tickers, and a name of the initial allocation</p>
 <p>price_panel of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions 
 [tickers, index, price data]</p>
-<p>start_value: of type <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the value to start the 
+<p>start_value: of type <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the value to start the 
 index</p>
 <p>rebal_frequency: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of &#8216;weekly&#8217;, &#8216;monthly&#8217;, 
 &#8216;quarterly&#8217;, &#8216;yearly&#8217;</p>
@@ -724,7 +724,7 @@ process when a blotter is given and generates a portfolio path of
 <div><p>panel_from_blotter: a <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> that was generated 
 using ref:<cite>panel_from_weight_file</cite></p>
 </div></blockquote>
-<p>start_value: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the starting value, default=1000</p>
+<p>start_value: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the starting value, default=1000</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">portfolio prices in a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> with columns 
@@ -840,7 +840,7 @@ over / under weightings relative to other portfolios</p>
 with an index of tickers, and a name of the initial allocation</p>
 <p>price_panel of type <tt class="xref py py-class docutils literal"><span class="pre">pandas.Panel</span></tt> with dimensions 
 [tickers, index, price data]</p>
-<p>start_value: of type <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the value to start the 
+<p>start_value: of type <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the value to start the 
 index</p>
 <p>rebal_frequency: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of &#8216;weekly&#8217;, &#8216;monthly&#8217;, 
 &#8216;quarterly&#8217;, &#8216;yearly&#8217;</p>
@@ -1026,6 +1026,38 @@ compound difference is taken such that</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.adj_sharpe_ratio">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">adj_sharpe_ratio</tt><big>(</big><em>series</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#adj_sharpe_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.adj_sharpe_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Sharpe_ratio">Ajusted Sharpe Ratio</a> 
+of an asset, taking into account the kurtosis and skew of the returns.    time series</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p>rfr: <tt class="docutils literal"><span class="pre">float</span></tt> of the risk free rate</p>
+<p>freq: <tt class="docutils literal"><span class="pre">str</span></tt> of frequency, either <tt class="docutils literal"><span class="pre">daily,</span> <span class="pre">monthly,</span> <span class="pre">quarterly,</span> <span class="pre">or</span> 
+<span class="pre">yearly</span></tt></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURN:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">float</span></tt> of the Adjusted Sharpe Ratio</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Calculating Sharpe</p>
+<div class="last math">
+\[\textrm{SR_{adj}} = \textrm{SR} \cdot (1 + \frac{S}{6}\cdot 
+\textrm{SR} - \frac{K - 3}{24} \cdot \textrm{SR}^2)
+\textrm{where},\]\[\begin{split}R_p &amp;= \textrm{series annualized return} \\
+r_f &amp;= \textrm{Risk free rate} \\
+\sigma &amp;= \textrm{Portfolio annualized volatility}\end{split}\]</div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.alpha">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">alpha</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alpha is defined as simply the geometric difference between 
@@ -1121,6 +1153,42 @@ factor weights (summing to one) which best explain the
 series.  If an optimal solution is not found, None type is
 returned (with accompanying message)</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.attribution_weights_by_interval">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">attribution_weights_by_interval</tt><big>(</big><em>series</em>, <em>factor_df</em>, <em>interval</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#attribution_weights_by_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.attribution_weights_by_interval" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Given a price series and explanatory factors factor_df, determine</div></blockquote>
+<p>the weights of attribution to each factor or asset over differently 
+spaced time intervals</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices to explain given
+the factors or sub_classes in factor_df</p>
+<p>factor_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the prices of the
+factors or sub_classes to to which the asset prices can be
+attributed</p>
+<p>interval: interval of the amount of time</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body">given an optimal solution, a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset
+factor weights (summing to one) for each interval.  If an optimal 
+solution is not found, None type is returned (with accompanying 
+message)</td>
 </tr>
 </tbody>
 </table>
@@ -1350,11 +1418,11 @@ portfolio weight is represented by <span class="math">\(\omega_i\)</span>.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
 of the asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+<p>p: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the desired percentile, defaults to .01 
 or the 1% CVaR</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
 </td>
 </tr>
 </tbody>
@@ -1371,11 +1439,11 @@ or the 1% CVaR</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of 
 the asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+<p>p: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the desired percentile, defaults to .01 
 or the 1% CVaR</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
 </td>
 </tr>
 </tbody>
@@ -1394,11 +1462,11 @@ more unbiased estimate)</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
 of the asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+<p>p: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the desired percentile, defaults to .01 
 or the 1% CVaR</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
 </td>
 </tr>
 </tbody>
@@ -1416,11 +1484,11 @@ mean of historical values</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of 
 the asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 or 
+<p>p: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the desired percentile, defaults to .01 or 
 the 1% CVaR</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
 </td>
 </tr>
 </tbody>
@@ -1438,11 +1506,11 @@ to the historical time series using</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of 
 the asset prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the desired percentile, defaults to .01 
+<p>p: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the desired percentile, defaults to .01 
 or the 1% CVaR</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the CVaR</p>
 </td>
 </tr>
 </tbody>
@@ -1516,6 +1584,25 @@ prices</td>
 <div class="code highlight-python"><div class="highlight"><pre><span class="n">drawdown</span> <span class="o">=</span> <span class="n">vwp</span><span class="o">.</span><span class="n">drawdown</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.analyze.geometric_difference">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">geometric_difference</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#geometric_difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.geometric_difference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the geometric difference of returns where</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">a: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a>
+b: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body">same class as inputs</td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[\begin{split}\textrm{GD} = \frac{(1 + a )}{(1 + b)}  - 1 \\\end{split}\]</div>
 </dd></dl>
 
 <dl class="function">
@@ -2347,10 +2434,10 @@ against</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
 of prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the <span class="math">\(\alpha\)</span> percentile</p>
+<p>p: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the <span class="math">\(\alpha\)</span> percentile</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the VaR, where skew 
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of the VaR, where skew 
 and kurtosis are used to adjust the tail density estimation 
 (using the Cornish Fisher Approximation)</p>
 </td>
@@ -2373,11 +2460,11 @@ the series, and then estimates the <span class="math">\(\textrm{VaR}_\alpha\)</s
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> 
 of prices</p>
-<p>p: <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> of the <span class="math">\(\alpha\)</span> quantile for which to 
+<p>p: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the <span class="math">\(\alpha\)</span> quantile for which to 
 estimate VaR</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of VaR</p>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of VaR</p>
 </td>
 </tr>
 </tbody>
@@ -2462,7 +2549,7 @@ set, and then insert the tickers into the store.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> of tickers to add to the
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> of tickers to add to the
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.HDStore</span></tt></p>
 <p>store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the path to the     
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.HDStore</span></tt></p>
@@ -2482,8 +2569,32 @@ set, and then insert the tickers into the store.</p>
 
 <dl class="function">
 <dt id="visualize_wealth.utils.check_store_for_tickers">
-<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">check_store_for_tickers</tt><big>(</big><em>ticker_list</em>, <em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#check_store_for_tickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.check_store_for_tickers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine which, if any of the <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> <cite>ticker_list</cite> are
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">check_store_for_tickers</tt><big>(</big><em>ticker_list</em>, <em>store</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#check_store_for_tickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.check_store_for_tickers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine which, if any of the <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> <cite>ticker_list</cite> are
+inside of the HDFStore.  If all tickers are located in the store
+returns 1, otherwise returns 0 (provides a &#8220;check&#8221; to see if
+other functions can be run)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: iterable of tickers to be found in the store located
+at <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> store_path</p>
+<p>store: <tt class="xref py py-class docutils literal"><span class="pre">HDFStore</span></tt> of the location to the HDFStore</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">bool</span></tt></a> True if all tickers are found in the store and
+False if not all the tickers are found in the HDFStore</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.check_store_path_for_tickers">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">check_store_path_for_tickers</tt><big>(</big><em>ticker_list</em>, <em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#check_store_path_for_tickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.check_store_path_for_tickers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine which, if any of the <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> <cite>ticker_list</cite> are
 inside of the HDFStore.  If all tickers are located in the store
 returns 1, otherwise returns 0 (provides a &#8220;check&#8221; to see if
 other functions can be run)</p>
@@ -2496,8 +2607,32 @@ at <tt class="xref py py-class docutils literal"><span class="pre">string</span>
 <p>store_path: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the location to the HDFStore</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">bool</span></tt> True if all tickers are found in the store and
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">bool</span></tt></a> True if all tickers are found in the store and
 False if not all the tickers are found in the HDFStore</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.check_trade_price_start">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">check_trade_price_start</tt><big>(</big><em>weight_df</em>, <em>price_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#check_trade_price_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.check_trade_price_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to ensure that initial weights / trade dates are after
+the first available price for the same ticker</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">weight_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the weights to 
+rebalance the portfolio</p>
+<p>price_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the prices for each
+of the tickers</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of boolean values for each ticker
+where True indicates the first allocation takes place 
+after the first price (as desired) and False the converse</p>
 </td>
 </tr>
 </tbody>
@@ -2514,8 +2649,42 @@ classificaiton tree</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: iterable of tickers</p>
-<p class="last">store_path: <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> of path to <tt class="docutils literal"><span class="pre">HDFStore</span></tt></p>
+<p class="last">store_path: <a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a> of path to <tt class="docutils literal"><span class="pre">HDFStore</span></tt></p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.first_price_date_from_prices">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">first_price_date_from_prices</tt><big>(</big><em>df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#first_price_date_from_prices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.first_price_date_from_prices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of prices, return the first date that a 
+price exists for each of the tickers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">ticker_list: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> of tickers</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of &#8216;dd-mm-yyyy&#8217; or <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> of said strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.first_price_date_get_prices">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">first_price_date_get_prices</tt><big>(</big><em>ticker_list</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#first_price_date_get_prices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.first_price_date_get_prices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of tickers, pull down prices and return the first valid price 
+date for each ticker in the list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">ticker_list: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> or <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> of tickers</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of &#8216;dd-mm-yyyy&#8217; or <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> of said strings</td>
 </tr>
 </tbody>
 </table>
@@ -2569,7 +2738,7 @@ arr_b: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Da
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">frame_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> containing either <tt class="docutils literal"><span class="pre">DataFrame</span></tt>&#8216;s or
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body">frame_list: <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> containing either <tt class="docutils literal"><span class="pre">DataFrame</span></tt>&#8216;s or
 <tt class="docutils literal"><span class="pre">Series</span></tt></td>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DatetimeIndex</span></tt> of the objects&#8217; intersection</td>
@@ -2595,6 +2764,26 @@ arr_b: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Da
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.utils.perturbate_asset">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">perturbate_asset</tt><big>(</big><em>weight_df</em>, <em>key</em>, <em>eps</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#perturbate_asset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.perturbate_asset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perturbate an asset within a weight allocation frame in the amount eps</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">weight_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of a weight_allocation frame</p>
+<p>key: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the asset to perturbate_asset</p>
+<p>eps: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the amount to perturbate in relative terms</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the perturbed weight_df</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.utils.setup_trained_hdfstore">
 <tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">setup_trained_hdfstore</tt><big>(</big><em>trained_data</em>, <em>store_path</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#setup_trained_hdfstore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.setup_trained_hdfstore" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <tt class="docutils literal"><span class="pre">HDFStore</span></tt> doesn&#8217;t work properly when it&#8217;s compiled by different
@@ -2606,7 +2795,7 @@ locally (and not store the <tt class="docutils literal"><span class="pre">.h5</s
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">trained_data: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> with tickers in the index and
 asset  classes for values</p>
-<p class="last">store_path: <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> of where to create the <tt class="docutils literal"><span class="pre">HDFStore</span></tt></p>
+<p class="last">store_path: <a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a> of where to create the <tt class="docutils literal"><span class="pre">HDFStore</span></tt></p>
 </td>
 </tr>
 </tbody>
@@ -2622,8 +2811,8 @@ ticker, or a list of tickers.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> in the case of multiple tickers or 
-<tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> in the case of one ticker</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> in the case of multiple tickers or 
+<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a> in the case of one ticker</p>
 <p>api: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> identifying which api to call the data 
 from.  Either &#8216;yahoo&#8217; or &#8216;google&#8217;</p>
 <p>start: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the desired start date</p>
@@ -2631,7 +2820,7 @@ from.  Either &#8216;yahoo&#8217; or &#8216;google&#8217;</p>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">dictionary</span></tt> of (ticker, price_df) mappings or a
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> when the <tt class="docutils literal"><span class="pre">ticker_list</span></tt> is 
-<tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></p>
+<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -2647,8 +2836,8 @@ ticker, or a list of tickers.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt> in the case of multiple tickers or 
-<tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> in the case of one ticker</p>
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> in the case of multiple tickers or 
+<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a> in the case of one ticker</p>
 <p>api: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> identifying which api to call the data 
 from.  Either &#8216;yahoo&#8217; or &#8216;google&#8217;</p>
 <p>start: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> of the desired start date</p>
@@ -2658,7 +2847,31 @@ from.  Either &#8216;yahoo&#8217; or &#8216;google&#8217;</p>
 </tr>
 <tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of (ticker, price_df) mappings or a
 <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> when the <tt class="docutils literal"><span class="pre">ticker_list</span></tt> is 
-<tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></p>
+<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualize_wealth.utils.ticks_to_frame_from_store">
+<tt class="descclassname">visualize_wealth.utils.</tt><tt class="descname">ticks_to_frame_from_store</tt><big>(</big><em>ticker_list</em>, <em>store_path</em>, <em>join_col='Adj Close'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/utils.html#ticks_to_frame_from_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.utils.ticks_to_frame_from_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to return ticker data where the input is either a 
+ticker, or a list of tickers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">ticker_list: <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> in the case of multiple tickers or 
+<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a> in the case of one ticker</p>
+<p>store_path: <a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a> of the path to the store</p>
+<p>join_col: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> to aggregate the <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of (ticker, price_df) mappings or a
+<tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> when the <tt class="docutils literal"><span class="pre">ticker_list</span></tt> is 
+<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></a></p>
 </td>
 </tr>
 </tbody>

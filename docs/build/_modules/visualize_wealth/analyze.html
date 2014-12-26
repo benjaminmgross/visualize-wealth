@@ -140,6 +140,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
 
 
 <div class="viewcode-block" id="active_returns"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.active_returns">[docs]</a><span class="k">def</span> <span class="nf">active_returns</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
@@ -328,7 +329,38 @@
     <span class="n">opt_wts</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">opt_fun</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">guess</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
     <span class="n">opt_wts</span> <span class="o">=</span> <span class="n">opt_wts</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">opt_wts</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">opt_wts</span>
-    
+</div>
+<div class="viewcode-block" id="attribution_weights_by_interval"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.attribution_weights_by_interval">[docs]</a><span class="k">def</span> <span class="nf">attribution_weights_by_interval</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">factor_df</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Given a price series and explanatory factors factor_df, determine</span>
+<span class="sd">    the weights of attribution to each factor or asset over differently </span>
+<span class="sd">    spaced time intervals</span>
+
+<span class="sd">	:ARGS:</span>
+
+<span class="sd">        series: :class:`pandas.Series` of asset prices to explain given</span>
+<span class="sd">        the factors or sub_classes in factor_df</span>
+
+<span class="sd">        factor_df: :class:`pandas.DataFrame` of the prices of the</span>
+<span class="sd">        factors or sub_classes to to which the asset prices can be</span>
+<span class="sd">        attributed</span>
+
+<span class="sd">        interval: interval of the amount of time </span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        given an optimal solution, a :class:`pandas.DataFrame` of asset</span>
+<span class="sd">        factor weights (summing to one) for each interval.  If an optimal </span>
+<span class="sd">        solution is not found, None type is returned (with accompanying </span>
+<span class="sd">        message)</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">chunks</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">zipped_time_chunks</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
+	<span class="n">wt_dict</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">for</span> <span class="n">beg</span><span class="p">,</span> <span class="n">fin</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">:</span>
+		<span class="n">wt_dict</span><span class="p">[</span><span class="n">beg</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribution_weights</span><span class="p">(</span><span class="n">series</span><span class="p">[</span><span class="n">beg</span><span class="p">:</span> <span class="n">fin</span><span class="p">],</span> 
+			                           <span class="n">factor_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">beg</span><span class="p">:</span> <span class="n">fin</span><span class="p">,</span> <span class="p">:])</span>
+	<span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">wt_dict</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
     </div>
 <div class="viewcode-block" id="beta"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.beta">[docs]</a><span class="k">def</span> <span class="nf">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -882,6 +914,30 @@
         <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_drawdown</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_drawdown</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="geometric_difference"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.geometric_difference">[docs]</a><span class="k">def</span> <span class="nf">geometric_difference</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the geometric difference of returns where</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        a: :class:`pandas.Series` or :class:`float`</span>
+<span class="sd">        b: :class:`pandas.Series` or :class:`float`</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        same class as inputs</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \\textrm{GD} = \\frac{(1 + a )}{(1 + b)}  - 1 \\\\</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;index must be equal for pandas.Series&quot;</span>
+        <span class="k">assert</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="n">msg</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span>
 </div>
 <div class="viewcode-block" id="idiosyncratic_as_proportion"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.idiosyncratic_as_proportion">[docs]</a><span class="k">def</span> <span class="nf">idiosyncratic_as_proportion</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1517,6 +1573,48 @@
         <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_rolling_ui</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="n">window</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_rolling_ui</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="adj_sharpe_ratio"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.adj_sharpe_ratio">[docs]</a><span class="k">def</span> <span class="nf">adj_sharpe_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the `Ajusted Sharpe Ratio &lt;http://en.wikipedia.org/wiki/Sharpe_ratio&gt;`_ </span>
+<span class="sd">    of an asset, taking into account the kurtosis and skew of the returns.    time series</span>
+<span class="sd">    </span>
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        series: ``pandas.Series`` of prices</span>
+
+<span class="sd">        rfr: ``float`` of the risk free rate</span>
+
+<span class="sd">        freq: ``str`` of frequency, either ``daily, monthly, quarterly, or </span>
+<span class="sd">        yearly``</span>
+
+<span class="sd">    :RETURN:</span>
+
+<span class="sd">        ``float`` of the Adjusted Sharpe Ratio</span>
+
+<span class="sd">    .. note:: Calculating Sharpe </span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \\textrm{SR_{adj}} = \\textrm{SR} \\cdot (1 + \\frac{S}{6}\\cdot </span>
+<span class="sd">            \\textrm{SR} - \\frac{K - 3}{24} \\cdot \\textrm{SR}^2)</span>
+<span class="sd">            \\textrm{where},</span>
+
+<span class="sd">            R_p &amp;= \\textrm{series annualized return} \\\\</span>
+<span class="sd">            r_f &amp;= \\textrm{Risk free rate} \\\\</span>
+<span class="sd">            \\sigma &amp;= \\textrm{Portfolio annualized volatility}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_adj_sharpe_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">sharpe_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="n">skew</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="o">.</span><span class="n">skew</span><span class="p">()</span>
+        <span class="n">kurt</span> <span class="o">=</span> <span class="n">log_returns</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="o">.</span><span class="n">kurt</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">sr</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">skew</span><span class="o">/</span><span class="mf">6.</span> <span class="o">*</span> <span class="n">sr</span> <span class="o">-</span> <span class="p">(</span><span class="n">kurt</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">24</span> <span class="o">*</span> <span class="n">sr</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_adj_sharpe_ratio</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_adj_sharpe_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="sharpe_ratio"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.sharpe_ratio">[docs]</a><span class="k">def</span> <span class="nf">sharpe_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

@@ -137,9 +137,12 @@
 <span class="sd">.. moduleauthor:: Benjamin M. Gross &lt;benjaminMgross@gmail.com&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
 
 <div class="viewcode-block" id="append_store_prices"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.append_store_prices">[docs]</a><span class="k">def</span> <span class="nf">append_store_prices</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="s">&#39;01/01/1990&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -181,7 +184,44 @@
     <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="bp">None</span>
 </div>
-<div class="viewcode-block" id="check_store_for_tickers"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.check_store_for_tickers">[docs]</a><span class="k">def</span> <span class="nf">check_store_for_tickers</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
+<div class="viewcode-block" id="check_store_for_tickers"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.check_store_for_tickers">[docs]</a><span class="k">def</span> <span class="nf">check_store_for_tickers</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine which, if any of the :class:`list` `ticker_list` are</span>
+<span class="sd">    inside of the HDFStore.  If all tickers are located in the store</span>
+<span class="sd">    returns 1, otherwise returns 0 (provides a &quot;check&quot; to see if</span>
+<span class="sd">    other functions can be run)</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        ticker_list: iterable of tickers to be found in the store located</span>
+<span class="sd">        at :class:`string` store_path</span>
+
+<span class="sd">        store: :class:`HDFStore` of the location to the HDFStore</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`bool` True if all tickers are found in the store and</span>
+<span class="sd">        False if not all the tickers are found in the HDFStore</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
+        <span class="c">#pandas.Index is not sortable, so much tolist() it</span>
+        <span class="n">ticker_list</span> <span class="o">=</span> <span class="n">ticker_list</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="n">store_keys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="n">store</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">not_in_store</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_keys</span><span class="p">)</span>
+
+    <span class="c">#if len(not_in_store) == 0, all tickers are present</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_in_store</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;All tickers in store&quot;</span>
+        <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">not_in_store</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;store does not contain &quot;</span> <span class="o">+</span> <span class="n">ticker</span>
+        <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">ret_val</span>
+</div>
+<div class="viewcode-block" id="check_store_path_for_tickers"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.check_store_path_for_tickers">[docs]</a><span class="k">def</span> <span class="nf">check_store_path_for_tickers</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine which, if any of the :class:`list` `ticker_list` are</span>
 <span class="sd">    inside of the HDFStore.  If all tickers are located in the store</span>
@@ -224,6 +264,36 @@
         <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="k">return</span> <span class="n">ret_val</span>
 </div>
+<div class="viewcode-block" id="check_trade_price_start"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.check_trade_price_start">[docs]</a><span class="k">def</span> <span class="nf">check_trade_price_start</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check to ensure that initial weights / trade dates are after</span>
+<span class="sd">    the first available price for the same ticker</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        weight_df: :class:`pandas.DataFrame` of the weights to </span>
+<span class="sd">        rebalance the portfolio</span>
+
+<span class="sd">        price_df: :class:`pandas.DataFrame` of the prices for each</span>
+<span class="sd">        of the tickers</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.Series` of boolean values for each ticker</span>
+<span class="sd">        where True indicates the first allocation takes place </span>
+<span class="sd">        after the first price (as desired) and False the converse</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;tickers in the weight_df and price_df must be the same&quot;</span>
+    <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">price_df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">msg</span>
+
+    <span class="n">ret_d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">first_alloc</span> <span class="o">=</span> <span class="p">(</span><span class="n">weight_df</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+        <span class="n">first_price</span> <span class="o">=</span> <span class="n">price_df</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+        <span class="n">ret_d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_alloc</span> <span class="o">&gt;=</span> <span class="n">first_price</span>
+
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">ret_d</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="create_data_store"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.create_data_store">[docs]</a><span class="k">def</span> <span class="nf">create_data_store</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates the ETF store to run the training of the logistic </span>
@@ -257,6 +327,71 @@
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">print</span> 
     <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="first_price_date_get_prices"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.first_price_date_get_prices">[docs]</a><span class="k">def</span> <span class="nf">first_price_date_get_prices</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a list of tickers, pull down prices and return the first valid price </span>
+<span class="sd">    date for each ticker in the list</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        ticker_list: :class:`string` or :class:`list` of tickers</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`string` of &#39;dd-mm-yyyy&#39; or :class:`list` of said strings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fvi</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">first_valid_index</span>
+
+    <span class="c">#pull down the data into a DataFrame</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">tickers_to_frame</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">first_price_date_from_prices</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="first_price_date_from_prices"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.first_price_date_from_prices">[docs]</a><span class="k">def</span> <span class="nf">first_price_date_from_prices</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a :class:`pandas.DataFrame` of prices, return the first date that a </span>
+<span class="sd">    price exists for each of the tickers</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        ticker_list: :class:`string` or :class:`list` of tickers</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`string` of &#39;dd-mm-yyyy&#39; or :class:`list` of said strings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fvi</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">first_valid_index</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">fvi</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">fvi</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="first_valid_date"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.first_valid_date">[docs]</a><span class="k">def</span> <span class="nf">first_valid_date</span><span class="p">(</span><span class="n">prices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function to determine the first valid date from a set of </span>
+<span class="sd">    different prices Can take either a :class:`dict` of </span>
+<span class="sd">    :class:`pandas.DataFrame`s where each key is a ticker&#39;s &#39;Open&#39;, </span>
+<span class="sd">    &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;, &#39;Adj Close&#39; or a single </span>
+<span class="sd">    :class:`pandas.DataFrame` where each column is a different ticker</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        prices: either :class:`dictionary` or :class:`pandas.DataFrame`</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.Timestamp` </span>
+<span class="sd">   &quot;&quot;&quot;</span>
+    <span class="n">iter_dict</span> <span class="o">=</span> <span class="p">{</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                  <span class="nb">dict</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">}</span> 
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">each_first</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">first_valid_index</span><span class="p">(),</span>
+                         <span class="n">iter_dict</span><span class="p">[</span> <span class="nb">type</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span> <span class="p">](</span><span class="n">prices</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">each_first</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;prices must be a DataFrame or dictionary&quot;</span>
+        <span class="k">return</span>
 </div>
 <div class="viewcode-block" id="index_intersect"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.index_intersect">[docs]</a><span class="k">def</span> <span class="nf">index_intersect</span><span class="p">(</span><span class="n">arr_a</span><span class="p">,</span> <span class="n">arr_b</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -304,33 +439,7 @@
         
     <span class="k">return</span> <span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">,</span> 
            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">frame_list</span><span class="p">)</span> <span class="p">)</span>
-</div>
-<div class="viewcode-block" id="first_valid_date"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.first_valid_date">[docs]</a><span class="k">def</span> <span class="nf">first_valid_date</span><span class="p">(</span><span class="n">prices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper function to determine the first valid date from a set of </span>
-<span class="sd">    different prices Can take either a :class:`dict` of </span>
-<span class="sd">    :class:`pandas.DataFrame`s where each key is a ticker&#39;s &#39;Open&#39;, </span>
-<span class="sd">    &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;, &#39;Adj Close&#39; or a single </span>
-<span class="sd">    :class:`pandas.DataFrame` where each column is a different ticker</span>
 
-<span class="sd">    :ARGS:</span>
-
-<span class="sd">        prices: either :class:`dictionary` or :class:`pandas.DataFrame`</span>
-
-<span class="sd">    :RETURNS:</span>
-
-<span class="sd">        :class:`pandas.Timestamp` </span>
-<span class="sd">   &quot;&quot;&quot;</span>
-    <span class="n">iter_dict</span> <span class="o">=</span> <span class="p">{</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="nb">dict</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">}</span> 
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">each_first</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
-                         <span class="n">iter_dict</span><span class="p">[</span> <span class="nb">type</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span> <span class="p">](</span><span class="n">prices</span><span class="p">)</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">each_first</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;prices must be a DataFrame or dictionary&quot;</span>
-        <span class="k">return</span>
 </div>
 <div class="viewcode-block" id="normalized_price"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.normalized_price">[docs]</a><span class="k">def</span> <span class="nf">normalized_price</span><span class="p">(</span><span class="n">price_df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -361,6 +470,32 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">print</span> <span class="s">&quot;Input must be pandas.Series or pandas.DataFrame&quot;</span>
         <span class="k">return</span>
+</div>
+<div class="viewcode-block" id="perturbate_asset"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.perturbate_asset">[docs]</a><span class="k">def</span> <span class="nf">perturbate_asset</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perturbate an asset within a weight allocation frame in the amount eps</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        weight_df: :class:`pandas.DataFrame` of a weight_allocation frame</span>
+
+<span class="sd">        key: :class:`string` of the asset to perturbate_asset</span>
+
+<span class="sd">        eps: :class:`float` of the amount to perturbate in relative terms</span>
+
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.DataFrame` of the perturbed weight_df</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="s">&quot;key not in weight_df&quot;</span>
+    <span class="n">ret_df</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">not_key</span> <span class="o">=</span> <span class="n">ret_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">ret_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="n">key</span><span class="p">]</span>
+    <span class="n">comp_sum</span> <span class="o">=</span> <span class="n">ret_df</span><span class="p">[</span><span class="n">not_key</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ret_df</span> <span class="o">=</span> <span class="n">ret_df</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">eps</span><span class="o">/</span><span class="n">comp_sum</span><span class="p">)</span>
+    <span class="n">ret_df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight_df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">eps</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">ret_df</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Warning, some values fell below zero in the reweighting&quot;</span>
+    <span class="k">return</span> <span class="n">ret_df</span>
 </div>
 <div class="viewcode-block" id="setup_trained_hdfstore"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.setup_trained_hdfstore">[docs]</a><span class="k">def</span> <span class="nf">setup_trained_hdfstore</span><span class="p">(</span><span class="n">trained_data</span><span class="p">,</span> <span class="n">store_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -445,6 +580,51 @@
             <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">__get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">api</span> <span class="o">=</span> <span class="n">api</span><span class="p">,</span>
                                    <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="p">)[</span><span class="n">join_col</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ticks_to_frame_from_store"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.ticks_to_frame_from_store">[docs]</a><span class="k">def</span> <span class="nf">ticks_to_frame_from_store</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="n">store_path</span><span class="p">,</span>  <span class="n">join_col</span> <span class="o">=</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility function to return ticker data where the input is either a </span>
+<span class="sd">    ticker, or a list of tickers.</span>
+
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        ticker_list: :class:`list` in the case of multiple tickers or </span>
+<span class="sd">        :class:`str` in the case of one ticker</span>
+
+<span class="sd">        store_path: :class:`str` of the path to the store</span>
+
+<span class="sd">        join_col: :class:`string` to aggregate the :class:`pandas.DataFrame`</span>
+<span class="sd">                </span>
+<span class="sd">    :RETURNS:</span>
+
+<span class="sd">        :class:`pandas.DataFrame` of (ticker, price_df) mappings or a</span>
+<span class="sd">        :class:`pandas.DataFrame` when the ``ticker_list`` is </span>
+<span class="sd">        :class:`str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">join_col</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;join_col must be a string&quot;</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="n">store_path</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">print</span>  <span class="n">store_path</span> <span class="o">+</span> <span class="s">&quot; is not a valid path to an HDFStore Object&quot;</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ticker_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">)):</span>
+        <span class="n">ret_series</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">ticker_list</span><span class="p">][</span><span class="n">join_col</span><span class="p">]</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ret_series</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">ticker_list</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">ticker</span><span class="p">][</span><span class="n">join_col</span><span class="p">]</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">price_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">d_o</span> <span class="o">=</span> <span class="n">first_valid_date</span><span class="p">(</span><span class="n">price_df</span><span class="p">)</span>
+        <span class="n">price_df</span> <span class="o">=</span> <span class="n">price_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">d_o</span><span class="p">:,</span> <span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">price_df</span>
 </div>
 <div class="viewcode-block" id="update_store_prices"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.utils.update_store_prices">[docs]</a><span class="k">def</span> <span class="nf">update_store_prices</span><span class="p">(</span><span class="n">store_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

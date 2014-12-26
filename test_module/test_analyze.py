@@ -220,6 +220,14 @@ def test_median_downcapture(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
+def test_median_upcapture(prices, stat_calcs):
+    man_uc = stat_calcs.loc['median_upcapture', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_uc, analyze.median_upcapture(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
 
 def test_funs():
     """

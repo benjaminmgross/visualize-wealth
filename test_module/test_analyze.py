@@ -259,6 +259,23 @@ def test_sortino_ratio(prices, stat_calcs):
             series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
     )
 
+def test_systematic_as_proportion(prices, stat_calcs):
+    man_sap = stat_calcs.loc['systematic_as_proportion', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_sap, analyze.systematic_as_proportion(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
+def test_systematic_risk(prices, stat_calcs):
+    man_sr = stat_calcs.loc['systematic_risk', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_sr, analyze.systematic_risk(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
+
 
 def test_funs():
     """

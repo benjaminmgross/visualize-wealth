@@ -212,6 +212,14 @@ def test_mean_absolute_tracking_error(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
+def test_median_downcapture(prices, stat_calcs):
+    man_md = stat_calcs.loc['median_downcapture', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_md, analyze.median_downcapture(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
 
 def test_funs():
     """

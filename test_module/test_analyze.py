@@ -252,6 +252,14 @@ def test_sharpe_ratio(prices, stat_calcs):
             series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
     )
 
+def test_sortino_ratio(prices, stat_calcs):
+    man_sr = stat_calcs.loc['sortino_ratio', 'VGTSX']
+
+    testing.assert_almost_equal(man_sr, analyze.sortino_ratio(
+            series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
+    )
+
+
 def test_funs():
     """
     The testing function for ``analyze.py``

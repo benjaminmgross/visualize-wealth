@@ -197,6 +197,13 @@ def test_jensens_alpha(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
+def test_max_drawdown(prices, stat_calcs):    
+    man_md = stat_calcs.loc['max_drawdown', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_md, analyze.max_drawdown(series = prices['VGTSX'])
+    )
+
 
 def test_funs():
     """

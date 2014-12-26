@@ -242,21 +242,27 @@ def test_adj_sharpe_ratio(prices, stat_calcs):
 
     testing.assert_almost_equal(
         man_asr, analyze.adj_sharpe_ratio(
-            series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
+            series = prices['VGTSX'], 
+            rfr = 0.0, 
+            freq = 'daily')
     )
 
 def test_sharpe_ratio(prices, stat_calcs):
     man_sr = stat_calcs.loc['sharpe_ratio', 'VGTSX']
 
     testing.assert_almost_equal(man_sr, analyze.sharpe_ratio(
-            series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
+            series = prices['VGTSX'], 
+            rfr = 0.0, 
+            freq = 'daily')
     )
 
 def test_sortino_ratio(prices, stat_calcs):
     man_sr = stat_calcs.loc['sortino_ratio', 'VGTSX']
 
     testing.assert_almost_equal(man_sr, analyze.sortino_ratio(
-            series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
+            series = prices['VGTSX'], 
+            rfr = 0.0, 
+            freq = 'daily')
     )
 
 def test_systematic_as_proportion(prices, stat_calcs):
@@ -297,6 +303,16 @@ def test_upcapture(prices, stat_calcs):
         man_uc, analyze.upcapture(
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
+
+def test_upside_deviation(prices, stat_calcs):
+    man_ud = stat_calcs.loc['upside_deviation', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_ud, analyze.upside_deviation(
+            series = prices['VGTSX'], 
+            freq = 'daily')
+    )
+
 
 def test_funs():
     """

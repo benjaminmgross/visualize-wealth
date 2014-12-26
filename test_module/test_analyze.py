@@ -189,6 +189,14 @@ def test_idiosyncratic_risk(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
+def test_jensens_alpha(prices, stat_calcs):
+    man_ja = stat_calcs.loc['jensens_alpha', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_ja, analyze.jensens_alpha(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
 
 def test_funs():
     """

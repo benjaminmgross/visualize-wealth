@@ -181,6 +181,15 @@ def test_idiosyncratic_as_proportion(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
+def test_idiosyncratic_risk(prices, stat_calcs):
+    man_ir = stat_calcs.loc['idiosyncratic_risk', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_ir, analyze.idiosyncratic_risk(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
+
 def test_funs():
     """
     The testing function for ``analyze.py``

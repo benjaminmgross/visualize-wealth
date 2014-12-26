@@ -283,6 +283,13 @@ def test_tracking_error(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
+def test_ulcer_index(prices, stat_calcs):
+    man_ui = stat_calcs.loc['ulcer_index', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_ui, analyze.ulcer_index(series = prices['VGTSX'])
+    )
+
 
 def test_funs():
     """

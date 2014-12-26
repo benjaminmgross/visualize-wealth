@@ -237,7 +237,6 @@ def test_risk_adjusted_excess_return(prices, stat_calcs):
             rfr = 0.0, freq = 'daily')
     )
 
-@pytest.mark.newtest
 def test_adj_sharpe_ratio(prices, stat_calcs):
     man_asr = stat_calcs.loc['adj_sharpe_ratio', 'VGTSX']
 
@@ -246,6 +245,12 @@ def test_adj_sharpe_ratio(prices, stat_calcs):
             series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
     )
 
+def test_sharpe_ratio(prices, stat_calcs):
+    man_sr = stat_calcs.loc['sharpe_ratio', 'VGTSX']
+
+    testing.assert_almost_equal(man_sr, analyze.sharpe_ratio(
+            series = prices['VGTSX'], rfr = 0.0, freq = 'daily')
+    )
 
 def test_funs():
     """

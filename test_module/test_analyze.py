@@ -80,7 +80,7 @@ def test_cumulative_turnover(test_file, stat_calcs):
                                 stat_calcs.loc['cumulative_turnover', 'S&P 500']
     )
 
-def test_marginal_contribution_to_risk(test_file):
+def test_mctr(test_file):
     mctr_prices = test_file.parse('mctr', index_col = 0)
     mctr_manual = test_file.parse('mctr_results', index_col = 0)
     cols = ['BSV','VBK','VBR','VOE','VOT']
@@ -202,6 +202,14 @@ def test_max_drawdown(prices, stat_calcs):
 
     testing.assert_almost_equal(
         man_md, analyze.max_drawdown(series = prices['VGTSX'])
+    )
+
+def test_mean_absolute_tracking_error(prices, stat_calcs):    
+    man_mate = stat_calcs.loc['mean_absolute_tracking_error', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_mate, analyze.mean_absolute_tracking_error(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
 

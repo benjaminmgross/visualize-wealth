@@ -275,6 +275,13 @@ def test_systematic_risk(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
+def test_tracking_error(prices, stat_calcs):
+    man_te = stat_calcs.loc['tracking_error', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_te, analyze.tracking_error(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
 
 
 def test_funs():

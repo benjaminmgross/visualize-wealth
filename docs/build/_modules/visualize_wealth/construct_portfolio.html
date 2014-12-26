@@ -622,9 +622,12 @@
 <span class="sd">               [&#39;Open&#39;, &#39;Close&#39;, &#39;Adj Close&#39;]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Not all tickers in HDFStore&quot;</span>
-    <span class="k">assert</span> <span class="n">vwu</span><span class="o">.</span><span class="n">all_tickers_in_store</span><span class="p">(</span><span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">store_path</span><span class="p">),</span> <span class="n">msg</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Not all tickers in HDFStore&quot;</span>    
     <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">store_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">vwu</span><span class="o">.</span><span class="n">check_store_for_tickers</span><span class="p">(</span><span class="n">weight_df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">store</span><span class="p">):</span>
+        <span class="k">print</span> <span class="n">msg</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span>
     <span class="n">beg_port</span> <span class="o">=</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 
     <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
@@ -632,7 +635,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="n">ticker</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot;didn&#39;t work for &quot;</span><span class="o">+</span><span class="n">ticker</span><span class="o">+</span><span class="s">&quot;!&quot;</span>
+            <span class="k">print</span> <span class="s">&quot;didn&#39;t work for &quot;</span> <span class="o">+</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot;!&quot;</span>
 
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
@@ -645,6 +648,7 @@
         <span class="k">print</span> <span class="n">ticker</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vwa</span><span class="o">.</span><span class="n">consecutive</span><span class="p">(</span><span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ticker</span><span class="p">,</span>
             <span class="n">first_price</span><span class="p">:,</span> <span class="s">&#39;Adj Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 
+    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">panel</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
         </div>
 <div class="viewcode-block" id="fetch_data_for_weight_allocation_method"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.construct_portfolio.fetch_data_for_weight_allocation_method">[docs]</a><span class="k">def</span> <span class="nf">fetch_data_for_weight_allocation_method</span><span class="p">(</span><span class="n">weight_df</span><span class="p">):</span>
@@ -688,7 +692,6 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="k">print</span> <span class="s">&quot;didn&#39;t work for &quot;</span><span class="o">+</span><span class="n">ticker</span><span class="o">+</span><span class="s">&quot;!&quot;</span>
 
-    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="c">#pull the data from Yahoo!</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
@@ -730,8 +733,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Not all tickers in HDFStore&quot;</span>
-    <span class="k">assert</span> <span class="n">vwu</span><span class="o">.</span><span class="n">all_tickers_in_store</span><span class="p">(</span><span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">store_path</span><span class="p">),</span> <span class="n">msg</span>
     <span class="n">store</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">store_path</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">vwu</span><span class="o">.</span><span class="n">check_store_for_tickers</span><span class="p">(</span><span class="n">initial_weights</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">store</span><span class="p">),</span> <span class="n">msg</span>
+
     <span class="c">#beg_port = datetime.sdat</span>
 
     <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
@@ -839,11 +843,11 @@
     <span class="c">#these columns correspond to the columns in sheet &#39;value_calcs!&#39; in </span>
     <span class="c">#&quot;panel from weight file test.xlsx&quot;</span>
  
-    <span class="c">#determine the first valid date and make it the start_date</span>
-    <span class="n">first_valid</span> <span class="o">=</span> <span class="n">vwu</span><span class="o">.</span><span class="n">first_valid_date</span><span class="p">(</span><span class="n">price_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">])</span>
-
-    <span class="k">assert</span> <span class="n">weight_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">first_valid</span><span class="p">,</span> <span class="p">(</span>
-            <span class="s">&quot;first_valid index doesn&#39;t occur until after start_date&quot;</span><span class="p">)</span>
+    <span class="c">#ensure that the first allocation for each ticker is after first price</span>
+    <span class="n">price_df</span> <span class="o">=</span> <span class="n">price_panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="s">&#39;Close&#39;</span><span class="p">]</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">vwu</span><span class="o">.</span><span class="n">check_trade_price_start</span><span class="p">(</span><span class="n">weight_df</span><span class="p">,</span> <span class="n">price_df</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;first allocation precedes first price&quot;</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">is_valid</span><span class="p">),</span> <span class="n">msg</span>
 
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;ac_c&#39;</span><span class="p">,</span> <span class="s">&#39;c0_ac0&#39;</span><span class="p">,</span> <span class="s">&#39;n0&#39;</span><span class="p">,</span> <span class="s">&#39;Adj_Q&#39;</span><span class="p">,</span> <span class="s">&#39;Value at Open&#39;</span><span class="p">,</span> 
                <span class="s">&#39;Value at Close&#39;</span><span class="p">,</span> <span class="s">&#39;Open&#39;</span><span class="p">,</span> <span class="s">&#39;High&#39;</span><span class="p">,</span> <span class="s">&#39;Low&#39;</span><span class="p">,</span> <span class="s">&#39;Close&#39;</span><span class="p">,</span> 

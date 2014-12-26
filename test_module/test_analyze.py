@@ -51,7 +51,7 @@ def test_drawdown(man_calcs, prices):
                                 analyze.drawdown(prices['VGTSX'])
     )
 
-def test_rsq(man_calcs, prices):
+def test_r2(man_calcs, prices):
     log_rets = analyze.log_returns(prices).dropna()
     pandas_rsq = pandas.ols(x = log_rets['S&P 500'], 
                             y = log_rets['VGTSX']).r2
@@ -61,7 +61,7 @@ def test_rsq(man_calcs, prices):
 
     testing.assert_almost_equal(pandas_rsq, analyze_rsq)
 
-def test_rsq_adj(man_calcs, prices):
+def test_r2_adj(man_calcs, prices):
     log_rets = analyze.log_returns(prices).dropna()
     pandas_rsq = pandas.ols(x = log_rets['S&P 500'], 
                             y = log_rets['VGTSX']).r2_adj
@@ -226,6 +226,15 @@ def test_median_upcapture(prices, stat_calcs):
     testing.assert_almost_equal(
         man_uc, analyze.median_upcapture(
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
+def test_risk_adjusted_excess_return(prices, stat_calcs):
+    man_raer = stat_calcs.loc['risk_adjusted_excess_return', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_raer, analyze.risk_adjusted_excess_return(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'],
+            rfr = 0.0, freq = 'daily')
     )
 
 

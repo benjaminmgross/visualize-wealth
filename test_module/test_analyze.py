@@ -173,6 +173,13 @@ def test_geometric_difference():
     a, b = pandas.Series({'a': 1.}), pandas.Series({'a': 1.})
     assert analyze.geometric_difference(a, b).values == 0.
 
+def test_idiosyncratic_as_proportion(prices, stat_calcs):
+    man_iap = stat_calcs.loc['idiosyncratic_as_proportion', 'VGTSX']
+
+    testing.assert_almost_equal(
+        man_iap, analyze.idiosyncratic_as_proportion(
+            series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
 
 def test_funs():
     """

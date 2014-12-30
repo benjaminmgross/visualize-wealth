@@ -15,7 +15,7 @@ import visualize_wealth.analyze as analyze
 
 @pytest.fixture
 def test_file():
-    return pandas.ExcelFile('../test_data/test_analyze.xlsx')
+    return pandas.ExcelFile('./test_data/test_analyze.xlsx')
 
 @pytest.fixture
 def man_calcs(test_file):

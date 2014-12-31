@@ -110,6 +110,7 @@ def test_risk_contribution_as_proportion(test_file):
         mctr_manual.loc['risk_contribution_as_proportion']
     )
 
+@pytest.mark.newtest
 def test_alpha(prices, stat_calcs):
     man_alpha = stat_calcs.loc['alpha', 'VGTSX']
 

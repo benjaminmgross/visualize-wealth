@@ -48,24 +48,35 @@ def active_returns(series, benchmark):
 
 def alpha(series, benchmark, freq = 'daily', rfr = 0.0):
     """
-    Alpha is defined as simply the geometric difference between 
-    the return of a portfolio and a benchmark, less the risk free 
-    rate or:
+    Alpha is defined as excess return, over and above its 
+    expected return, derived from an asset's sensitivity to an given benchmark, 
+    and the return of that benchmrk.
+
+    series: :class:`pandas.Series` or `pandas.DataFrame` of asset prices
+
+    benchamrk: :class:`pandas.Series` of prices
+
+    freq: :class:`string` either ['daily' , 'monthly', 'quarterly', or yearly']
+        indicating the frequency of the data. Default, 'daily'
+
+    rfr: :class:`float` of the risk free rate
 
     .. math::
 
-        \\alpha = \\frac{(1 + R_p - r_f)}{(1 + R_b - r_f)}  - 1 \\\\
+        \\alpha \\triangleq (R_p - r_f) - \\beta_i \\cdot ( R_b - rf ) 
         
         \\textrm{where},
 
             R_p &= \\textrm{Portfolio Annualized Return} \\\\
             R_b &= \\textrm{Benchmark Annualized Return} \\\\
             r_f &= \\textrm{Risk Free Rate}
+            \\beta &= \\textrm{Portfolio Sensitivity to the Benchmark}
     """
     def _alpha(series, benchmark, freq = 'daily', rfr = 0.0):
-        return numpy.divide(1 + annualized_return(
-            series, freq = freq) - rfr,
-            1 + annualized_return(benchmark, freq = freq) - rfr) - 1
+        R_p = annualized_return(series, freq = freq)
+        R_b = annualized_return(benchmark, freq = freq)
+        b = beta(series, benchmark)
+        return  R_p - rfr - b * (R_b - rfr)
 
     if isinstance(benchmark, pandas.DataFrame):
         return benchmark.apply(lambda x: _alpha(
@@ -153,6 +164,11 @@ def annualized_vol(series, freq = 'daily'):
         return series.apply(lambda x: _annualized_vol(x, freq = freq))
     else:
         return _annualized_vol(series, freq = freq)
+
+def appraisal_ratio(series, benchmark):
+    """
+    
+    """
 
 def attribution_weights(series, factor_df):
     """

@@ -215,7 +215,29 @@ def appraisal_ratio(series, benchmark, freq = 'daily', rfr = 0.):
 
     rfr: :class:`float` of the risk free rate
 
+    .. math:: 
+
+        \\textrm{AR} \\triangleq \\frac{\\alpha}{\\epsilon} \\\\
+        \\textrm{where,} \\\\
+        \\alpha &= \\alpha \\textrm{, the risk adjused excess return}
+        \\epsilon &= \\textrm{standard error, or idiosyncratic risk} \\\\
+
     """
+
+    def _appraisal_ratio(series, benchmark, freq = freq, rfr = rfr):
+        a = alpha(series, benchmark, freq = freq,  rfr = rfr)
+        e = idiosyncratic_risk(series, benchmark ,freq = freq)
+        return a / e
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _appraisal_ratio(series, x, 
+                                                          freq = freq,
+                                                          rfr = rfr)
+    )
+
+    else:
+        return _appraisal_ratio(series, benchmark, freq = freq, rfr = rfr)
+
 
 def attribution_weights(series, factor_df):
     """
@@ -264,12 +286,12 @@ def attribution_weights(series, factor_df):
     return opt_wts
 
 def attribution_weights_by_interval(series, factor_df, interval):
-	"""
-	Given a price series and explanatory factors factor_df, determine
+    """
+    Given a price series and explanatory factors factor_df, determine
     the weights of attribution to each factor or asset over differently 
     spaced time intervals
 
-	:ARGS:
+    :ARGS:
 
         series: :class:`pandas.Series` of asset prices to explain given
         the factors or sub_classes in factor_df
@@ -287,13 +309,13 @@ def attribution_weights_by_interval(series, factor_df, interval):
         solution is not found, None type is returned (with accompanying 
         message)
 
-	"""
-	chunks = utils.zipped_time_chunks(series.index, interval)
-	wt_dict = {}
-	for beg, fin in chunks:
-		wt_dict[beg] = attribution_weights(series[beg: fin], 
-			                           factor_df.loc[beg: fin, :])
-	return pandas.DataFrame(wt_dict).transpose()
+    """
+    chunks = utils.zipped_time_chunks(series.index, interval)
+    wt_dict = {}
+    for beg, fin in chunks:
+        wt_dict[beg] = attribution_weights(series[beg: fin], 
+                                       factor_df.loc[beg: fin, :])
+    return pandas.DataFrame(wt_dict).transpose()
     
 def beta(series, benchmark):
     """
@@ -966,7 +988,7 @@ def idiosyncratic_risk(series, benchmark, freq = 'daily'):
     else:
         return _idiosyncratic_risk(series, benchmark, freq)
 
-def information_ratio(series, benchmark, freq = 'daily', rfr = 0.):
+def information_ratio(series, benchmark, freq = 'daily'):
     """
     A measure of the risk-adjusted return of a financial security or portfolio
     that is equal to the active return divided by the tracking error between the 
@@ -990,9 +1012,9 @@ def information_ratio(series, benchmark, freq = 'daily', rfr = 0.):
         \\omega &= \\textrm{tracking error} \\\\
 
     """
-    def _information_ratio(series, benchmark, freq = freq, rfr = rfr):
+    def _information_ratio(series, benchmark, freq = freq):
         ar = active_return(series, benchmark, freq = freq)
-        mate = mean_absolute_tracking_error(series, benchmark ,freq = freq)
+        mate = mean_absolute_tracking_error(series, benchmark, freq = freq)
         return ar / mate
 
     if isinstance(benchmark, pandas.DataFrame):

@@ -140,6 +140,16 @@ def test_annualized_vol(prices, stat_calcs):
         man_ar, analyze.annualized_vol(series = prices['VGTSX'], freq = 'daily')
     )
 
+def test_appraisal_ratio(prices, stat_calcs):
+    man_ar = stat_calcs.loc['appraisal_ratio', 'VGTSX']
+
+    testing.assert_almost_equal(man_ar, analyze.appraisal_ratio(
+                                series = prices['VGTSX'],
+                                benchmark = prices['S&P 500'],
+                                freq = 'daily',
+                                rfr = 0.0)
+    )
+
 def test_beta(prices, stat_calcs):
     man_beta = stat_calcs.loc['beta', 'VGTSX']
 
@@ -198,7 +208,6 @@ def test_idiosyncratic_risk(prices, stat_calcs):
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
     )
 
-@pytest.mark.newtest
 def test_information_ratio(prices, stat_calcs):
     man_ir = stat_calcs.loc['information_ratio', 'VGTSX']
 

@@ -30,6 +30,16 @@ def prices(test_file):
     tmp = test_file.parse('calcs', index_col = 0)
     return tmp[['S&P 500', 'VGTSX']]
 
+@pytest.mark.newtest
+def test_active_return(stat_calcs, prices):
+    man_ar = stat_calcs.loc['active_return', 'VGTSX']
+
+    testing.assert_almost_equal(man_ar, analyze.active_return(
+                                series = prices['VGTSX'],
+                                benchmark = prices['S&P 500'],
+                                freq = 'daily')
+    )
+
 def test_active_returns(man_calcs, prices):
     active_returns = analyze.active_returns(series = prices['VGTSX'], 
                                             benchmark = prices['S&P 500'])
@@ -110,7 +120,6 @@ def test_risk_contribution_as_proportion(test_file):
         mctr_manual.loc['risk_contribution_as_proportion']
     )
 
-@pytest.mark.newtest
 def test_alpha(prices, stat_calcs):
     man_alpha = stat_calcs.loc['alpha', 'VGTSX']
 

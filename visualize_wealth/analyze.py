@@ -12,6 +12,40 @@ import pandas
 import scipy.stats
 from . import utils
 
+def active_return(series, benchmark, freq = 'daily'):
+    """
+    Active returns is the geometric difference between annualized  
+    returns
+
+    :ARGS:
+
+        series: ``pandas.Series`` of prices of the portfolio
+
+        benchmark: ``pandas.Series`` of prices of the benchmark
+
+    :RETURNS: 
+
+        ``pandas.Series`` of active returns
+
+    .. note:: Compound Linear Returns
+
+        Linear returns are not simply subtracted, but rather the 
+        compound difference is taken such that
+
+        .. math::
+
+            r_a = \\frac{1 + r_p}{1 + r_b} - 1
+    """
+    def _active_return(series, benchmark, freq = freq):
+        port_ret = annualized_return(series, freq = freq)
+        bench_ret = annualized_return(benchmark, freq = freq)
+
+        return geometric_difference(port_ret, bench_ret)
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _active_return(series, x, freq = freq))
+    else:
+        return _active_return(series, benchmark, freq = freq)
 
 def active_returns(series, benchmark):
     """
@@ -46,6 +80,7 @@ def active_returns(series, benchmark):
     else:
         return _active_returns(series, benchmark)
 
+
 def alpha(series, benchmark, freq = 'daily', rfr = 0.0):
     """
     Alpha is defined as excess return, over and above its 
@@ -72,7 +107,7 @@ def alpha(series, benchmark, freq = 'daily', rfr = 0.0):
             r_f &= \\textrm{Risk Free Rate}
             \\beta &= \\textrm{Portfolio Sensitivity to the Benchmark}
     """
-    def _alpha(series, benchmark, freq = 'daily', rfr = 0.0):
+    def _alpha(series, benchmark, freq = 'daily', rfr = rfr):
         R_p = annualized_return(series, freq = freq)
         R_b = annualized_return(benchmark, freq = freq)
         b = beta(series, benchmark)
@@ -165,9 +200,21 @@ def annualized_vol(series, freq = 'daily'):
     else:
         return _annualized_vol(series, freq = freq)
 
-def appraisal_ratio(series, benchmark):
+def appraisal_ratio(series, benchmark, freq = 'daily', rfr = 0.):
     """
-    
+     A measure of the risk-adjusted return of a financial security or portfolio
+     that is equal to the alpha, divided by the standard error between the 
+     portfolio and the benchmark
+
+    series: :class:`pandas.Series` or `pandas.DataFrame` of asset prices
+
+    benchamrk: :class:`pandas.Series` of prices
+
+    freq: :class:`string` either ['daily' , 'monthly', 'quarterly', or yearly']
+        indicating the frequency of the data. Default, 'daily'
+
+    rfr: :class:`float` of the risk free rate
+
     """
 
 def attribution_weights(series, factor_df):
@@ -919,6 +966,23 @@ def idiosyncratic_risk(series, benchmark, freq = 'daily'):
     else:
         return _idiosyncratic_risk(series, benchmark, freq)
 
+def information_ratio(series, benchmark, freq = 'daily', rfr = 0.):
+    """
+    A measure of the risk-adjusted return of a financial security or portfolio
+    that is equal to the active return divided by the tracking error between the 
+    portfolio and the benchmark
+
+    series: :class:`pandas.Series` or `pandas.DataFrame` of asset prices
+
+    benchamrk: :class:`pandas.Series` of prices
+
+    freq: :class:`string` either ['daily' , 'monthly', 'quarterly', or yearly']
+        indicating the frequency of the data. Default, 'daily'
+
+    rfr: :class:`float` of the risk free rate
+
+    """
+    return None 
 def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
     """
     Returns the `Jensen's Alpha 

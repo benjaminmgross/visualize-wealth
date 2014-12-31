@@ -998,6 +998,34 @@ based on the n closest neighbors</p>
 <span id="analyze-documentation"></span><h2><tt class="docutils literal"><span class="pre">analyze.py</span></tt> documentation<a class="headerlink" href="#analyze-py-documentation" title="Permalink to this headline">¶</a></h2>
 <p>Full documentation for each of the functions of <a class="reference internal" href="visualize_wealth.html#module-visualize_wealth.analyze" title="visualize_wealth.analyze"><tt class="xref py py-mod docutils literal"><span class="pre">visualize_wealth.analyze</span></tt></a></p>
 <span class="target" id="module-visualize_wealth.analyze"></span><span class="target" id="module-visualize_wealth.analyze.py"></span><dl class="function">
+<dt id="visualize_wealth.analyze.active_return">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">active_return</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#active_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.active_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>Active returns is the geometric difference between annualized  
+returns</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices of the portfolio</p>
+<p>benchmark: <tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of prices of the benchmark</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">pandas.Series</span></tt> of active returns</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Compound Linear Returns</p>
+<p>Linear returns are not simply subtracted, but rather the 
+compound difference is taken such that</p>
+<div class="last math">
+\[r_a = \frac{1 + r_p}{1 + r_b} - 1\]</div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.active_returns">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">active_returns</tt><big>(</big><em>series</em>, <em>benchmark</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#active_returns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.active_returns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Active returns is defined as the compound difference between linear 
@@ -1060,13 +1088,19 @@ r_f &amp;= \textrm{Risk free rate} \\
 <dl class="function">
 <dt id="visualize_wealth.analyze.alpha">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">alpha</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.alpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alpha is defined as simply the geometric difference between 
-the return of a portfolio and a benchmark, less the risk free 
-rate or:</p>
+<dd><p>Alpha is defined as excess return, over and above its 
+expected return, derived from an asset&#8217;s sensitivity to an given benchmark, 
+and the return of that benchmrk.</p>
+<p>series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <cite>pandas.DataFrame</cite> of asset prices</p>
+<p>benchamrk: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p>freq: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> either [&#8216;daily&#8217; , &#8216;monthly&#8217;, &#8216;quarterly&#8217;, or yearly&#8217;]
+indicating the frequency of the data. Default, &#8216;daily&#8217;</p>
+<p>rfr: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the risk free rate</p>
 <div class="math">
-\[\begin{split}\alpha = \frac{(1 + R_p - r_f)}{(1 + R_b - r_f)}  - 1 \\\end{split}\]\[\textrm{where},\]\[\begin{split}    R_p &amp;= \textrm{Portfolio Annualized Return} \\
+\[\alpha \triangleq (R_p - r_f) - \beta_i \cdot ( R_b - rf ) \]\[\textrm{where},\]\[\begin{split}    R_p &amp;= \textrm{Portfolio Annualized Return} \\
     R_b &amp;= \textrm{Benchmark Annualized Return} \\
-    r_f &amp;= \textrm{Risk Free Rate}\end{split}\]</div>
+    r_f &amp;= \textrm{Risk Free Rate} \\
+    \beta &amp;= \textrm{Portfolio Sensitivity to the Benchmark}\end{split}\]</div>
 </dd></dl>
 
 <dl class="function">
@@ -1133,6 +1167,25 @@ indicating the frequency of the data <tt class="docutils literal"><span class="p
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.appraisal_ratio">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">appraisal_ratio</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em>, <em>rfr=0.0</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#appraisal_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.appraisal_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>A measure of the risk-adjusted return of a financial security or portfolio
+that is equal to the alpha, divided by the standard error between the 
+portfolio and the benchmark</div></blockquote>
+<p>series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <cite>pandas.DataFrame</cite> of asset prices</p>
+<p>benchamrk: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p>freq: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> either [&#8216;daily&#8217; , &#8216;monthly&#8217;, &#8216;quarterly&#8217;, or yearly&#8217;]
+indicating the frequency of the data. Default, &#8216;daily&#8217;</p>
+<p>rfr: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the risk free rate</p>
+<div class="math">
+\[\begin{split}\textrm{AR} \triangleq \frac{\alpha}{\epsilon} \\
+\textrm{where,} \\
+\alpha &amp;= \alpha \textrm{, the risk adjused excess return} \\
+\epsilon &amp;= \textrm{standard error, or idiosyncratic risk} \\\end{split}\]</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.attribution_weights">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">attribution_weights</tt><big>(</big><em>series</em>, <em>factor_df</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#attribution_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.attribution_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a price series and explanatory factors factor_df, determine
@@ -1161,34 +1214,26 @@ returned (with accompanying message)</p>
 <dl class="function">
 <dt id="visualize_wealth.analyze.attribution_weights_by_interval">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">attribution_weights_by_interval</tt><big>(</big><em>series</em>, <em>factor_df</em>, <em>interval</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#attribution_weights_by_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.attribution_weights_by_interval" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div>Given a price series and explanatory factors factor_df, determine</div></blockquote>
-<p>the weights of attribution to each factor or asset over differently 
+<dd><p>Given a price series and explanatory factors factor_df, determine
+the weights of attribution to each factor or asset over differently 
 spaced time intervals</p>
-<blockquote>
-<div><table class="docutils field-list" frame="void" rules="none">
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<p>series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices to explain given
+<tr class="field-odd field"><th class="field-name">ARGS:</th><td class="field-body"><p class="first">series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of asset prices to explain given
 the factors or sub_classes in factor_df</p>
 <p>factor_df: <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of the prices of the
 factors or sub_classes to to which the asset prices can be
 attributed</p>
 <p>interval: interval of the amount of time</p>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">RETURNS:</th><td class="field-body">given an optimal solution, a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RETURNS:</th><td class="field-body"><p class="first last">given an optimal solution, a <tt class="xref py py-class docutils literal"><span class="pre">pandas.DataFrame</span></tt> of asset
 factor weights (summing to one) for each interval.  If an optimal 
 solution is not found, None type is returned (with accompanying 
-message)</td>
+message)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1674,6 +1719,26 @@ and systematic risk, which by definition} = 0 \\\end{split}\]\[\Rightarrow \sigm
 </dd></dl>
 
 <dl class="function">
+<dt id="visualize_wealth.analyze.information_ratio">
+<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">information_ratio</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#information_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.information_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>A measure of the risk-adjusted return of a financial security or portfolio
+that is equal to the active return divided by the tracking error between the 
+portfolio and the benchmark (MATE is used here, see the benefits of</p>
+<blockquote>
+<div>MATE over TE)</div></blockquote>
+<p>series: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> or <cite>pandas.DataFrame</cite> of asset prices</p>
+<p>benchamrk: <tt class="xref py py-class docutils literal"><span class="pre">pandas.Series</span></tt> of prices</p>
+<p>freq: <tt class="xref py py-class docutils literal"><span class="pre">string</span></tt> either [&#8216;daily&#8217; , &#8216;monthly&#8217;, &#8216;quarterly&#8217;, or yearly&#8217;]
+indicating the frequency of the data. Default, &#8216;daily&#8217;</p>
+<p>rfr: <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></a> of the risk free rate</p>
+<div class="math">
+\[\begin{split}\textrm{IR} \triangleq \frac{\alpha}{\omega} \\
+\textrm{where,} \\
+\alpha &amp;= \textrm{active return} \\
+\omega &amp;= \textrm{tracking error} \\\end{split}\]</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="visualize_wealth.analyze.jensens_alpha">
 <tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">jensens_alpha</tt><big>(</big><em>series</em>, <em>benchmark</em>, <em>rfr=0.0</em>, <em>freq='daily'</em><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#jensens_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.jensens_alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <a class="reference external" href="http://en.wikipedia.org/wiki/Jensen's_alpha">Jensen&#8217;s Alpha</a> or the excess 
@@ -1871,8 +1936,8 @@ against</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p>About Downcapture</p>
-<p class="last">Upcapture can be a difficult statistic to ensure validity.  As 
-upcapture is <span class="math">\(\frac{\sum{r_{\textrm{series}}}}
+<p class="last">Downcapture can be a difficult statistic to ensure validity.  As 
+downcapture is <span class="math">\(\frac{\sum{r_{\textrm{series}}}}
 {\sum{r_{b|r_i \geq 0}}}\)</span> or the median values (in this case), 
 dividing by small numbers can have asymptotic effects to the 
 overall value of this statistic.  Therefore, it&#8217;s good to do a 
@@ -2221,94 +2286,6 @@ attributable to the benchmark</p>
 \beta &amp;= \frac{\sigma^2_{s, b}}{\sigma^2_{b}} \: 
 \textrm{then,}\end{split}\]\[\begin{split}\sigma^2_{\beta} &amp;= \beta^2 \cdot \sigma^2_{b}
 \Rightarrow \sigma_{\beta} &amp;= \beta \cdot \sigma_{b}\end{split}\]</div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="visualize_wealth.analyze.test_funs">
-<tt class="descclassname">visualize_wealth.analyze.</tt><tt class="descname">test_funs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/visualize_wealth/analyze.html#test_funs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualize_wealth.analyze.test_funs" title="Permalink to this definition">¶</a></dt>
-<dd><p>The testing function for <tt class="docutils literal"><span class="pre">analyze.py</span></tt></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas.util.testing</span> <span class="kn">as</span> <span class="nn">put</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">analyze</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="s">&#39;../tests/test_analyze.xlsx&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">man_calcs</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;calcs&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">prices</span> <span class="o">=</span> <span class="n">man_calcs</span><span class="p">[[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">,</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">log_rets</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">stats</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;results&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;S&amp;P 500 Log Ret&#39;</span><span class="p">],</span> 
-<span class="gp">... </span>   <span class="n">log_returns</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;VGTSX Lin Ret&#39;</span><span class="p">],</span> 
-<span class="gp">... </span>   <span class="n">linear_returns</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;Active Return&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">active_returns</span><span class="p">(</span><span class="n">series</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> 
-<span class="gp">... </span>   <span class="n">benchmark</span> <span class="o">=</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">man_calcs</span><span class="p">[</span><span class="s">&#39;VGTSX Drawdown&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">drawdown</span><span class="p">(</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">y</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span> <span class="n">r2</span><span class="p">(</span><span class="n">benchmark</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">series</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">y</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">r2_adj</span><span class="p">,</span> <span class="n">r2_adj</span><span class="p">(</span><span class="n">benchmark</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span>
-<span class="gp">... </span>   <span class="n">series</span> <span class="o">=</span> <span class="n">log_rets</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">]))</span>
-</pre></div>
-</div>
-<p>Cumulative Turnover Calculation</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alloc_df</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;alloc_df&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">alloc_df</span> <span class="o">=</span> <span class="n">alloc_df</span><span class="p">[</span><span class="n">alloc_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">alloc_df</span><span class="o">.</span><span class="n">columns</span><span class="o">!=</span><span class="s">&#39;Daily TO&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">asset_wt_df</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;asset_wt_df&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span>
-<span class="gp">... </span>   <span class="n">cumulative_turnover</span><span class="p">(</span><span class="n">alloc_df</span><span class="p">,</span> <span class="n">asset_wt_df</span><span class="p">),</span> 
-<span class="gp">... </span>   <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;cumulative_turnover&#39;</span><span class="p">,</span> <span class="s">&#39;S&amp;P 500&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>marginal contributions to risk and risk contribution calcs</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mctr_prices</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mctr_manual</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&#39;mctr_results&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;BSV&#39;</span><span class="p">,</span><span class="s">&#39;VBK&#39;</span><span class="p">,</span><span class="s">&#39;VBR&#39;</span><span class="p">,</span><span class="s">&#39;VOE&#39;</span><span class="p">,</span><span class="s">&#39;VOT&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mctr</span> <span class="o">=</span> <span class="n">mctr</span><span class="p">(</span><span class="n">mctr_prices</span><span class="p">[</span><span class="n">cols</span><span class="p">],</span> <span class="n">mctr_prices</span><span class="p">[</span><span class="s">&#39;Portfolio&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">mctr</span><span class="p">,</span> <span class="n">mctr_manual</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="n">cols</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span> <span class="p">[</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">],</span> <span class="n">index</span> <span class="o">=</span> <span class="n">cols</span><span class="p">,</span> 
-<span class="gp">... </span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;risk_contribution&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">risk_contribution</span><span class="p">(</span><span class="n">mctr</span><span class="p">,</span> <span class="n">weights</span><span class="p">),</span> 
-<span class="gp">... </span><span class="n">mctr_manual</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;risk_contribution&#39;</span><span class="p">,</span> <span class="p">:])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">put</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">(</span><span class="n">risk_contribution_as_proportion</span><span class="p">(</span><span class="n">mctr</span><span class="p">,</span> <span class="n">weights</span><span class="p">),</span>
-<span class="gp">... </span><span class="n">mctr_manual</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s">&#39;risk_contribution_as_proportion&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>These functions are already calculated or aren&#8217;t calculated in the spreadsheet</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">no_calc_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;rolling_ui&#39;</span><span class="p">,</span> <span class="s">&#39;active_returns&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;test_funs&#39;</span><span class="p">,</span> <span class="s">&#39;linear_returns&#39;</span><span class="p">,</span> <span class="s">&#39;log_returns&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;cumulative_turnover&#39;</span><span class="p">,</span> <span class="s">&#39;mctr&#39;</span><span class="p">,</span> <span class="s">&#39;risk_contribution&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;risk_contribution_as_proportion&#39;</span><span class="p">,</span> <span class="s">&#39;cvar_cf_ew&#39;</span><span class="p">,</span> <span class="s">&#39;cvar_median_np&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;cvar_mu_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_np&#39;</span><span class="p">,</span> <span class="s">&#39;var_cf&#39;</span><span class="p">,</span> <span class="s">&#39;var_norm&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;consecutive_downticks&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive_upticks&#39;</span><span class="p">,</span> 
-<span class="gp">... </span><span class="s">&#39;consecutive_downtick_performance&#39;</span><span class="p">,</span> <span class="s">&#39;consecutive_uptick_performance&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;consecutive_downtick_relative_performance&#39;</span><span class="p">,</span> 
-<span class="gp">... </span><span class="s">&#39;consecutive_uptick_relative_performance&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;r_squared&#39;</span><span class="p">,</span> <span class="s">&#39;r_squared_adjusted&#39;</span><span class="p">,</span> <span class="s">&#39;drawdown&#39;</span><span class="p">,</span> <span class="s">&#39;r2&#39;</span><span class="p">,</span> <span class="s">&#39;r2_adj&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="s">&#39;r2_mv&#39;</span><span class="p">,</span> <span class="s">&#39;r2_mv_adj&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;series&#39;</span><span class="p">:</span> <span class="n">prices</span><span class="p">[</span><span class="s">&#39;VGTSX&#39;</span><span class="p">],</span> <span class="s">&#39;benchmark&#39;</span><span class="p">:</span><span class="n">prices</span><span class="p">[</span><span class="s">&#39;S&amp;P 500&#39;</span><span class="p">],</span> 
-<span class="gp">... </span>   <span class="s">&#39;freq&#39;</span><span class="p">:</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="s">&#39;rfr&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s">&#39;p&#39;</span><span class="p">:</span> <span class="o">.</span><span class="mo">01</span> <span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">funs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">analyze</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Instead of writing out each function, I use the <tt class="docutils literal"><span class="pre">inspect</span> <span class="pre">module</span></tt> to determine
-Function names, and number of args.  Because the names of the functions are
-the same as the statistic in the <tt class="docutils literal"><span class="pre">results</span></tt> tab of
-<tt class="docutils literal"><span class="pre">../tests/test_analyze.xlsx</span></tt> I can use those key values to both call the
-function and reference the manually calculated value in the <tt class="docutils literal"><span class="pre">stats</span></tt> frame.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">trus</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">fun</span> <span class="ow">in</span> <span class="n">funs</span><span class="p">:</span>
-<span class="gp">... </span>   <span class="k">if</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">no_calc_list</span><span class="p">):</span>
-<span class="gp">... </span>       <span class="n">arg_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">args</span>
-<span class="gp">... </span>       <span class="n">in_vals</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arg_list</span><span class="p">])</span>
-<span class="gp">... </span>       <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">fun</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="o">*</span><span class="n">in_vals</span><span class="p">),</span>
-<span class="gp">... </span>                                 <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fun</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;VGTSX&#39;</span><span class="p">])</span>
-</pre></div>
 </div>
 </dd></dl>
 

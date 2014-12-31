@@ -142,7 +142,41 @@
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
 
+<div class="viewcode-block" id="active_return"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.active_return">[docs]</a><span class="k">def</span> <span class="nf">active_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Active returns is the geometric difference between annualized  </span>
+<span class="sd">    returns</span>
 
+<span class="sd">    :ARGS:</span>
+
+<span class="sd">        series: ``pandas.Series`` of prices of the portfolio</span>
+
+<span class="sd">        benchmark: ``pandas.Series`` of prices of the benchmark</span>
+
+<span class="sd">    :RETURNS: </span>
+
+<span class="sd">        ``pandas.Series`` of active returns</span>
+
+<span class="sd">    .. note:: Compound Linear Returns</span>
+
+<span class="sd">        Linear returns are not simply subtracted, but rather the </span>
+<span class="sd">        compound difference is taken such that</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            r_a = \\frac{1 + r_p}{1 + r_b} - 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_active_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">):</span>
+        <span class="n">port_ret</span> <span class="o">=</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="n">bench_ret</span> <span class="o">=</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">geometric_difference</span><span class="p">(</span><span class="n">port_ret</span><span class="p">,</span> <span class="n">bench_ret</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_active_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_active_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="active_returns"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.active_returns">[docs]</a><span class="k">def</span> <span class="nf">active_returns</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Active returns is defined as the compound difference between linear </span>
@@ -175,27 +209,39 @@
         <span class="k">return</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_active_returns</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_active_returns</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="alpha"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.alpha">[docs]</a><span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Alpha is defined as simply the geometric difference between </span>
-<span class="sd">    the return of a portfolio and a benchmark, less the risk free </span>
-<span class="sd">    rate or:</span>
+<span class="sd">    Alpha is defined as excess return, over and above its </span>
+<span class="sd">    expected return, derived from an asset&#39;s sensitivity to an given benchmark, </span>
+<span class="sd">    and the return of that benchmrk.</span>
+
+<span class="sd">    series: :class:`pandas.Series` or `pandas.DataFrame` of asset prices</span>
+
+<span class="sd">    benchamrk: :class:`pandas.Series` of prices</span>
+
+<span class="sd">    freq: :class:`string` either [&#39;daily&#39; , &#39;monthly&#39;, &#39;quarterly&#39;, or yearly&#39;]</span>
+<span class="sd">    indicating the frequency of the data. Default, &#39;daily&#39;</span>
+
+<span class="sd">    rfr: :class:`float` of the risk free rate</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        \\alpha = \\frac{(1 + R_p - r_f)}{(1 + R_b - r_f)}  - 1 \\\\</span>
+<span class="sd">        \\alpha \\triangleq (R_p - r_f) - \\beta_i \\cdot ( R_b - rf ) </span>
 <span class="sd">        </span>
 <span class="sd">        \\textrm{where},</span>
 
 <span class="sd">            R_p &amp;= \\textrm{Portfolio Annualized Return} \\\\</span>
 <span class="sd">            R_b &amp;= \\textrm{Benchmark Annualized Return} \\\\</span>
-<span class="sd">            r_f &amp;= \\textrm{Risk Free Rate}</span>
+<span class="sd">            r_f &amp;= \\textrm{Risk Free Rate} \\\\</span>
+<span class="sd">            \\beta &amp;= \\textrm{Portfolio Sensitivity to the Benchmark}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">_alpha</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">annualized_return</span><span class="p">(</span>
-            <span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span> <span class="o">-</span> <span class="n">rfr</span><span class="p">,</span>
-            <span class="mi">1</span> <span class="o">+</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span> <span class="o">-</span> <span class="n">rfr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">def</span> <span class="nf">_alpha</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">):</span>
+        <span class="n">R_p</span> <span class="o">=</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="n">R_b</span> <span class="o">=</span> <span class="n">annualized_return</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="n">R_p</span> <span class="o">-</span> <span class="n">rfr</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">R_b</span> <span class="o">-</span> <span class="n">rfr</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_alpha</span><span class="p">(</span>
@@ -284,6 +330,45 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_annualized_vol</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="appraisal_ratio"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.appraisal_ratio">[docs]</a><span class="k">def</span> <span class="nf">appraisal_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     A measure of the risk-adjusted return of a financial security or portfolio</span>
+<span class="sd">     that is equal to the alpha, divided by the standard error between the </span>
+<span class="sd">     portfolio and the benchmark</span>
+
+<span class="sd">    series: :class:`pandas.Series` or `pandas.DataFrame` of asset prices</span>
+
+<span class="sd">    benchamrk: :class:`pandas.Series` of prices</span>
+
+<span class="sd">    freq: :class:`string` either [&#39;daily&#39; , &#39;monthly&#39;, &#39;quarterly&#39;, or yearly&#39;]</span>
+<span class="sd">    indicating the frequency of the data. Default, &#39;daily&#39;</span>
+
+<span class="sd">    rfr: :class:`float` of the risk free rate</span>
+
+<span class="sd">    .. math:: </span>
+
+<span class="sd">        \\textrm{AR} \\triangleq \\frac{\\alpha}{\\epsilon} \\\\</span>
+<span class="sd">        \\textrm{where,} \\\\</span>
+<span class="sd">        \\alpha &amp;= \\alpha \\textrm{, the risk adjused excess return} \\\\</span>
+<span class="sd">        \\epsilon &amp;= \\textrm{standard error, or idiosyncratic risk} \\\\</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_appraisal_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">,</span>  <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">idiosyncratic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span> <span class="p">,</span><span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">e</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_appraisal_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> 
+                                                          <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">,</span>
+                                                          <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_appraisal_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="n">rfr</span><span class="p">)</span>
+
+</div>
 <div class="viewcode-block" id="attribution_weights"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.attribution_weights">[docs]</a><span class="k">def</span> <span class="nf">attribution_weights</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">factor_df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a price series and explanatory factors factor_df, determine</span>
@@ -331,12 +416,12 @@
     <span class="k">return</span> <span class="n">opt_wts</span>
 </div>
 <div class="viewcode-block" id="attribution_weights_by_interval"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.attribution_weights_by_interval">[docs]</a><span class="k">def</span> <span class="nf">attribution_weights_by_interval</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">factor_df</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	Given a price series and explanatory factors factor_df, determine</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a price series and explanatory factors factor_df, determine</span>
 <span class="sd">    the weights of attribution to each factor or asset over differently </span>
 <span class="sd">    spaced time intervals</span>
 
-<span class="sd">	:ARGS:</span>
+<span class="sd">    :ARGS:</span>
 
 <span class="sd">        series: :class:`pandas.Series` of asset prices to explain given</span>
 <span class="sd">        the factors or sub_classes in factor_df</span>
@@ -354,13 +439,13 @@
 <span class="sd">        solution is not found, None type is returned (with accompanying </span>
 <span class="sd">        message)</span>
 
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">chunks</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">zipped_time_chunks</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
-	<span class="n">wt_dict</span> <span class="o">=</span> <span class="p">{}</span>
-	<span class="k">for</span> <span class="n">beg</span><span class="p">,</span> <span class="n">fin</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">:</span>
-		<span class="n">wt_dict</span><span class="p">[</span><span class="n">beg</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribution_weights</span><span class="p">(</span><span class="n">series</span><span class="p">[</span><span class="n">beg</span><span class="p">:</span> <span class="n">fin</span><span class="p">],</span> 
-			                           <span class="n">factor_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">beg</span><span class="p">:</span> <span class="n">fin</span><span class="p">,</span> <span class="p">:])</span>
-	<span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">wt_dict</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chunks</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">zipped_time_chunks</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
+    <span class="n">wt_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">beg</span><span class="p">,</span> <span class="n">fin</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">:</span>
+        <span class="n">wt_dict</span><span class="p">[</span><span class="n">beg</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribution_weights</span><span class="p">(</span><span class="n">series</span><span class="p">[</span><span class="n">beg</span><span class="p">:</span> <span class="n">fin</span><span class="p">],</span> 
+                                       <span class="n">factor_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">beg</span><span class="p">:</span> <span class="n">fin</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">wt_dict</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
     </div>
 <div class="viewcode-block" id="beta"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.beta">[docs]</a><span class="k">def</span> <span class="nf">beta</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1033,6 +1118,44 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_idiosyncratic_risk</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="information_ratio"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.information_ratio">[docs]</a><span class="k">def</span> <span class="nf">information_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A measure of the risk-adjusted return of a financial security or portfolio</span>
+<span class="sd">    that is equal to the active return divided by the tracking error between the </span>
+<span class="sd">    portfolio and the benchmark (MATE is used here, see the benefits of </span>
+<span class="sd">        MATE over TE)</span>
+
+<span class="sd">    series: :class:`pandas.Series` or `pandas.DataFrame` of asset prices</span>
+
+<span class="sd">    benchamrk: :class:`pandas.Series` of prices</span>
+
+<span class="sd">    freq: :class:`string` either [&#39;daily&#39; , &#39;monthly&#39;, &#39;quarterly&#39;, or yearly&#39;]</span>
+<span class="sd">    indicating the frequency of the data. Default, &#39;daily&#39;</span>
+
+<span class="sd">    rfr: :class:`float` of the risk free rate</span>
+
+<span class="sd">    .. math:: </span>
+
+<span class="sd">        \\textrm{IR} \\triangleq \\frac{\\alpha}{\\omega} \\\\</span>
+<span class="sd">        \\textrm{where,} \\\\</span>
+<span class="sd">        \\alpha &amp;= \\textrm{active return} \\\\</span>
+<span class="sd">        \\omega &amp;= \\textrm{tracking error} \\\\</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_information_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">):</span>
+        <span class="n">ar</span> <span class="o">=</span> <span class="n">active_return</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="n">mate</span> <span class="o">=</span> <span class="n">mean_absolute_tracking_error</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ar</span> <span class="o">/</span> <span class="n">mate</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">benchmark</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_information_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_information_ratio</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">)</span>
+
+
+
+
+    <span class="k">return</span> <span class="bp">None</span> </div>
 <div class="viewcode-block" id="jensens_alpha"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.jensens_alpha">[docs]</a><span class="k">def</span> <span class="nf">jensens_alpha</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">rfr</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="s">&#39;daily&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the `Jensen&#39;s Alpha </span>
@@ -1272,8 +1395,8 @@
 
 <span class="sd">    .. warning:: About Downcapture</span>
 <span class="sd">        </span>
-<span class="sd">        Upcapture can be a difficult statistic to ensure validity.  As </span>
-<span class="sd">        upcapture is :math:`\\frac{\\sum{r_{\\textrm{series}}}}</span>
+<span class="sd">        Downcapture can be a difficult statistic to ensure validity.  As </span>
+<span class="sd">        downcapture is :math:`\\frac{\\sum{r_{\\textrm{series}}}}</span>
 <span class="sd">        {\\sum{r_{b|r_i \\geq 0}}}` or the median values (in this case), </span>
 <span class="sd">        dividing by small numbers can have asymptotic effects to the </span>
 <span class="sd">        overall value of this statistic.  Therefore, it&#39;s good to do a </span>
@@ -2065,92 +2188,6 @@
                  <span class="s">&#39;yearly&#39;</span><span class="p">:</span> <span class="n">yearly</span><span class="p">,</span> <span class="s">&#39;ldom&#39;</span><span class="p">:</span><span class="n">ldom</span><span class="p">,</span> <span class="s">&#39;fdom&#39;</span><span class="p">:</span><span class="n">fdom</span><span class="p">}</span>
 
     <span class="k">return</span> <span class="n">time_dict</span><span class="p">[</span><span class="n">interval</span><span class="p">](</span><span class="n">pandas_index</span><span class="p">)</span>
-
-<div class="viewcode-block" id="test_funs"><a class="viewcode-back" href="../../visualize_wealth.html#visualize_wealth.analyze.test_funs">[docs]</a><span class="k">def</span> <span class="nf">test_funs</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The testing function for ``analyze.py``</span>
-
-<span class="sd">    &gt;&gt;&gt; import pandas.util.testing as put</span>
-<span class="sd">    &gt;&gt;&gt; import inspect, analyze</span>
-
-<span class="sd">    &gt;&gt;&gt; f = pandas.ExcelFile(&#39;../tests/test_analyze.xlsx&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; man_calcs = f.parse(&#39;calcs&#39;, index_col = 0)</span>
-<span class="sd">    &gt;&gt;&gt; prices = man_calcs[[&#39;S&amp;P 500&#39;, &#39;VGTSX&#39;]]</span>
-<span class="sd">    &gt;&gt;&gt; log_rets = prices.apply(numpy.log).diff().dropna()</span>
-<span class="sd">    &gt;&gt;&gt; stats = f.parse(&#39;results&#39;, index_col = 0)</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(man_calcs[&#39;S&amp;P 500 Log Ret&#39;], </span>
-<span class="sd">    ...    log_returns(prices[&#39;S&amp;P 500&#39;]))</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(man_calcs[&#39;VGTSX Lin Ret&#39;], </span>
-<span class="sd">    ...    linear_returns(prices[&#39;VGTSX&#39;]))</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(man_calcs[&#39;Active Return&#39;],</span>
-<span class="sd">    ...    active_returns(series = prices[&#39;VGTSX&#39;], </span>
-<span class="sd">    ...    benchmark = prices[&#39;S&amp;P 500&#39;]))</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(man_calcs[&#39;VGTSX Drawdown&#39;],</span>
-<span class="sd">    ...    drawdown(prices[&#39;VGTSX&#39;]))</span>
-<span class="sd">    &gt;&gt;&gt; numpy.testing.assert_almost_equal(pandas.ols(x = log_rets[&#39;S&amp;P 500&#39;],</span>
-<span class="sd">    ...    y = log_rets[&#39;VGTSX&#39;]).r2, r2(benchmark = log_rets[&#39;S&amp;P 500&#39;],</span>
-<span class="sd">    ...    series = log_rets[&#39;VGTSX&#39;]))</span>
-<span class="sd">    &gt;&gt;&gt; numpy.testing.assert_almost_equal(pandas.ols(x = log_rets[&#39;S&amp;P 500&#39;],</span>
-<span class="sd">    ...    y = log_rets[&#39;VGTSX&#39;]).r2_adj, r2_adj(benchmark = log_rets[&#39;S&amp;P 500&#39;],</span>
-<span class="sd">    ...    series = log_rets[&#39;VGTSX&#39;]))</span>
-
-<span class="sd">    Cumulative Turnover Calculation</span>
-
-<span class="sd">    &gt;&gt;&gt; alloc_df = f.parse(&#39;alloc_df&#39;, index_col = 0)</span>
-<span class="sd">    &gt;&gt;&gt; alloc_df = alloc_df[alloc_df.columns[alloc_df.columns!=&#39;Daily TO&#39;]].dropna()</span>
-<span class="sd">    &gt;&gt;&gt; asset_wt_df = f.parse(&#39;asset_wt_df&#39;, index_col = 0)</span>
-<span class="sd">    &gt;&gt;&gt; numpy.testing.assert_almost_equal(</span>
-<span class="sd">    ...    cumulative_turnover(alloc_df, asset_wt_df), </span>
-<span class="sd">    ...    stats.loc[&#39;cumulative_turnover&#39;, &#39;S&amp;P 500&#39;])</span>
-
-<span class="sd">    marginal contributions to risk and risk contribution calcs</span>
-
-<span class="sd">    &gt;&gt;&gt; mctr_prices = f.parse(&#39;mctr&#39;, index_col = 0)</span>
-<span class="sd">    &gt;&gt;&gt; mctr_manual = f.parse(&#39;mctr_results&#39;, index_col = 0)</span>
-<span class="sd">    &gt;&gt;&gt; cols = [&#39;BSV&#39;,&#39;VBK&#39;,&#39;VBR&#39;,&#39;VOE&#39;,&#39;VOT&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; mctr = mctr(mctr_prices[cols], mctr_prices[&#39;Portfolio&#39;])</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(mctr, mctr_manual.loc[&#39;mctr&#39;, cols])</span>
-<span class="sd">    &gt;&gt;&gt; weights = pandas.Series( [.2, .2, .2, .2, .2], index = cols, </span>
-<span class="sd">    ... name = &#39;risk_contribution&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(risk_contribution(mctr, weights), </span>
-<span class="sd">    ... mctr_manual.loc[&#39;risk_contribution&#39;, :])</span>
-<span class="sd">    &gt;&gt;&gt; put.assert_series_equal(risk_contribution_as_proportion(mctr, weights),</span>
-<span class="sd">    ... mctr_manual.loc[&#39;risk_contribution_as_proportion&#39;])</span>
-
-<span class="sd">    These functions are already calculated or aren&#39;t calculated in the spreadsheet</span>
-
-<span class="sd">    &gt;&gt;&gt; no_calc_list = [&#39;rolling_ui&#39;, &#39;active_returns&#39;,</span>
-<span class="sd">    ... &#39;test_funs&#39;, &#39;linear_returns&#39;, &#39;log_returns&#39;,</span>
-<span class="sd">    ... &#39;cumulative_turnover&#39;, &#39;mctr&#39;, &#39;risk_contribution&#39;,</span>
-<span class="sd">    ... &#39;risk_contribution_as_proportion&#39;, &#39;cvar_cf_ew&#39;, &#39;cvar_median_np&#39;,</span>
-<span class="sd">    ... &#39;cvar_mu_np&#39;, &#39;var_np&#39;, &#39;var_cf&#39;, &#39;var_norm&#39;, &#39;consecutive&#39;,</span>
-<span class="sd">    ... &#39;consecutive_downticks&#39;, &#39;consecutive_upticks&#39;, </span>
-<span class="sd">    ... &#39;consecutive_downtick_performance&#39;, &#39;consecutive_uptick_performance&#39;,</span>
-<span class="sd">    ... &#39;consecutive_downtick_relative_performance&#39;, </span>
-<span class="sd">    ... &#39;consecutive_uptick_relative_performance&#39;,</span>
-<span class="sd">    ... &#39;r_squared&#39;, &#39;r_squared_adjusted&#39;, &#39;drawdown&#39;, &#39;r2&#39;, &#39;r2_adj&#39;,</span>
-<span class="sd">    ... &#39;r2_mv&#39;, &#39;r2_mv_adj&#39;]</span>
-
-<span class="sd">    &gt;&gt;&gt; d = {&#39;series&#39;: prices[&#39;VGTSX&#39;], &#39;benchmark&#39;:prices[&#39;S&amp;P 500&#39;], </span>
-<span class="sd">    ...    &#39;freq&#39;: &#39;daily&#39;, &#39;rfr&#39;: 0.0, &#39;p&#39;: .01 }</span>
-<span class="sd">    &gt;&gt;&gt; funs = inspect.getmembers(analyze, inspect.isfunction)</span>
-
-<span class="sd">    Instead of writing out each function, I use the ``inspect module`` to determine</span>
-<span class="sd">    Function names, and number of args.  Because the names of the functions are</span>
-<span class="sd">    the same as the statistic in the ``results`` tab of</span>
-<span class="sd">    ``../tests/test_analyze.xlsx`` I can use those key values to both call the</span>
-<span class="sd">    function and reference the manually calculated value in the ``stats`` frame.</span>
-
-<span class="sd">    &gt;&gt;&gt; trus = []</span>
-<span class="sd">    &gt;&gt;&gt; for fun in funs:</span>
-<span class="sd">    ...    if (fun[0][0] != &#39;_&#39;) and (fun[0] not in no_calc_list):</span>
-<span class="sd">    ...        arg_list = inspect.getargspec(fun[1]).args</span>
-<span class="sd">    ...        in_vals = tuple([d[arg] for arg in arg_list])</span>
-<span class="sd">    ...        numpy.testing.assert_almost_equal(fun[1](*in_vals),</span>
-<span class="sd">    ...                                  stats.loc[fun[0], &#39;VGTSX&#39;])</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">None</span></div>
 </pre></div>
 
           </div>

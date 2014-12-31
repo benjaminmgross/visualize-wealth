@@ -92,7 +92,7 @@ def alpha(series, benchmark, freq = 'daily', rfr = 0.0):
     benchamrk: :class:`pandas.Series` of prices
 
     freq: :class:`string` either ['daily' , 'monthly', 'quarterly', or yearly']
-        indicating the frequency of the data. Default, 'daily'
+    indicating the frequency of the data. Default, 'daily'
 
     rfr: :class:`float` of the risk free rate
 
@@ -104,7 +104,7 @@ def alpha(series, benchmark, freq = 'daily', rfr = 0.0):
 
             R_p &= \\textrm{Portfolio Annualized Return} \\\\
             R_b &= \\textrm{Benchmark Annualized Return} \\\\
-            r_f &= \\textrm{Risk Free Rate}
+            r_f &= \\textrm{Risk Free Rate} \\\\
             \\beta &= \\textrm{Portfolio Sensitivity to the Benchmark}
     """
     def _alpha(series, benchmark, freq = 'daily', rfr = rfr):
@@ -211,7 +211,7 @@ def appraisal_ratio(series, benchmark, freq = 'daily', rfr = 0.):
     benchamrk: :class:`pandas.Series` of prices
 
     freq: :class:`string` either ['daily' , 'monthly', 'quarterly', or yearly']
-        indicating the frequency of the data. Default, 'daily'
+    indicating the frequency of the data. Default, 'daily'
 
     rfr: :class:`float` of the risk free rate
 
@@ -219,7 +219,7 @@ def appraisal_ratio(series, benchmark, freq = 'daily', rfr = 0.):
 
         \\textrm{AR} \\triangleq \\frac{\\alpha}{\\epsilon} \\\\
         \\textrm{where,} \\\\
-        \\alpha &= \\alpha \\textrm{, the risk adjused excess return}
+        \\alpha &= \\alpha \\textrm{, the risk adjused excess return} \\\\
         \\epsilon &= \\textrm{standard error, or idiosyncratic risk} \\\\
 
     """
@@ -1000,7 +1000,7 @@ def information_ratio(series, benchmark, freq = 'daily'):
     benchamrk: :class:`pandas.Series` of prices
 
     freq: :class:`string` either ['daily' , 'monthly', 'quarterly', or yearly']
-        indicating the frequency of the data. Default, 'daily'
+    indicating the frequency of the data. Default, 'daily'
 
     rfr: :class:`float` of the risk free rate
 
@@ -1008,7 +1008,7 @@ def information_ratio(series, benchmark, freq = 'daily'):
 
         \\textrm{IR} \\triangleq \\frac{\\alpha}{\\omega} \\\\
         \\textrm{where,} \\\\
-        \\alpha &= \\textrm{active return}
+        \\alpha &= \\textrm{active return} \\\\
         \\omega &= \\textrm{tracking error} \\\\
 
     """
@@ -1265,8 +1265,8 @@ def median_downcapture(series, benchmark):
 
     .. warning:: About Downcapture
         
-        Upcapture can be a difficult statistic to ensure validity.  As 
-        upcapture is :math:`\\frac{\\sum{r_{\\textrm{series}}}}
+        Downcapture can be a difficult statistic to ensure validity.  As 
+        downcapture is :math:`\\frac{\\sum{r_{\\textrm{series}}}}
         {\\sum{r_{b|r_i \\geq 0}}}` or the median values (in this case), 
         dividing by small numbers can have asymptotic effects to the 
         overall value of this statistic.  Therefore, it's good to do a 

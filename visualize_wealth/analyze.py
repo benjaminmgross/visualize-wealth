@@ -970,7 +970,8 @@ def information_ratio(series, benchmark, freq = 'daily', rfr = 0.):
     """
     A measure of the risk-adjusted return of a financial security or portfolio
     that is equal to the active return divided by the tracking error between the 
-    portfolio and the benchmark
+    portfolio and the benchmark (MATE is used here, see the benefits of 
+        MATE over TE)
 
     series: :class:`pandas.Series` or `pandas.DataFrame` of asset prices
 
@@ -981,7 +982,27 @@ def information_ratio(series, benchmark, freq = 'daily', rfr = 0.):
 
     rfr: :class:`float` of the risk free rate
 
+    .. math:: 
+
+        \\textrm{IR} \\triangleq \\frac{\\alpha}{\\omega} \\\\
+        \\textrm{where,} \\\\
+        \\alpha &= \\textrm{active return}
+        \\omega &= \\textrm{tracking error} \\\\
+
     """
+    def _information_ratio(series, benchmark, freq = freq, rfr = rfr):
+        ar = active_return(series, benchmark, freq = freq)
+        mate = mean_absolute_tracking_error(series, benchmark ,freq = freq)
+        return ar / mate
+
+    if isinstance(benchmark, pandas.DataFrame):
+        return benchmark.apply(lambda x: _information_ratio(series, x, freq = freq))
+    else:
+        return _information_ratio(series, benchmark, freq = freq)
+
+
+
+
     return None 
 def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
     """

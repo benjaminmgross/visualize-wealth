@@ -30,8 +30,7 @@ def prices(test_file):
     tmp = test_file.parse('calcs', index_col = 0)
     return tmp[['S&P 500', 'VGTSX']]
 
-@pytest.mark.newtest
-def test_active_return(stat_calcs, prices):
+def test_active_return(prices, stat_calcs):
     man_ar = stat_calcs.loc['active_return', 'VGTSX']
 
     testing.assert_almost_equal(man_ar, analyze.active_return(
@@ -197,6 +196,16 @@ def test_idiosyncratic_risk(prices, stat_calcs):
     testing.assert_almost_equal(
         man_ir, analyze.idiosyncratic_risk(
             series = prices['VGTSX'], benchmark = prices['S&P 500'])
+    )
+
+@pytest.mark.newtest
+def test_information_ratio(prices, stat_calcs):
+    man_ir = stat_calcs.loc['information_ratio', 'VGTSX']
+
+    testing.assert_almost_equal(man_ir, analyze.information_ratio(
+                                series = prices['VGTSX'],
+                                benchmark = prices['S&P 500'],
+                                freq = 'daily')
     )
 
 def test_jensens_alpha(prices, stat_calcs):

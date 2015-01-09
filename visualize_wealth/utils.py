@@ -13,6 +13,35 @@ import pandas
 import numpy
 import datetime
 
+def ticker_and_weight_into_weight_df(weight_df, ticker, weight, date):
+    """
+    A helper function to insert a ticker, and its respective weight into a 
+    :class:`DataFrame` ``weight_df`` given a dynamic allocation strategy or
+    a :class:`Series` given a static allocation strategy
+
+    :ARGS:
+
+        weight_df: :class:`pandas.DataFrame` to be used as a weight allocation
+        to construct a portfolio
+
+        ticker: :class:`string` to insert into the weight_df
+
+        weight: :class:`float` of the weight to assign the ticker
+
+        date: :class:`string`, :class:`datetime` or :class:`Timestamp` to first
+        allocate ``weight`` to ``ticekr``, going forward.
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` where the weight_df weights have been 
+        proportionally re-distributed on or after ``date``
+
+    """
+    ret_df = weight_df.copy()
+    ret_df[date:] = ret_df*(1. - weight)
+    ret_df[ticker] = 0.
+    ret_df.loc[date: , ticker] = weight
+    return ret_df
 
 def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     """

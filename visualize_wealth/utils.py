@@ -13,6 +13,57 @@ import pandas
 import numpy
 import datetime
 
+def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
+    """
+    It's common to wonder, what would happen if I took all tickers within a 
+    given asset class, zeroed them out, and used some other ticker beginning 
+    at some date.  
+
+    :ARGS:
+
+        weight_df: class:`DataFrame` of the weight allocation frame
+
+        ticker_class_dict: :class:`dictionary` of the tickers and the asset 
+        classes of each ticker
+
+        date: :class:`string` of the date to zero out the existing tickers
+        within an asset class and add ``ticker``
+
+        asset_class: :class:`string` of the 'asset_class' to exchange all 
+        tickers for 'ticker'
+
+        ticker: :class:`string` the ticker to add to the weight_df
+
+        weight: :class:`float` of the weight to assign to ``ticker``
+
+    :RETURNS:
+
+        :class:`DataFrame` of the :class:PortfolioObject's rebal_weights, with
+        ticker representing weight, beginning on date (or the first trade before)
+
+    """
+    
+    d = ticker_class_dict
+    ind = weight_df.index
+
+    #if the date is exact, use it, otherwise pick the previous one
+
+    if ind[ind.searchsorted(date)] is not pandas.Timestamp(date):
+        dt = ind[ind.searchsorted(date) - 1]
+    else:
+        dt = pandas.Datetime(date)
+
+    #get the tickers with the given asset class
+    l = []
+    for key, value in d.iteritems():
+        if value == asset_class: l.append(key)
+
+    weight_df.loc[dt: , l] = 0.
+    s = weight_df.sum(axis = 1)
+    weight_df = weight_df.apply(lambda x: x.div(s))
+
+    return ticker_and_weight_into_weight_df(weight_df, ticker, weight, dt)
+
 def ticker_and_weight_into_weight_df(weight_df, ticker, weight, date):
     """
     A helper function to insert a ticker, and its respective weight into a 
@@ -339,6 +390,22 @@ def index_multi_intersect(frame_list):
     return reduce(lambda x, y: x & y, 
            map(lambda x: x.dropna().index, frame_list) )
 
+def join_on_index(df_list, index):
+    """
+    pandas doesn't current have the ability to :meth:`concat` on a provided 
+    :class:`pandas.Index`.  This is a quick function to provide that 
+    functionality
+
+    :ARGS:
+
+        df_list: :class:`list` of :class:`DataFrame`'s
+
+        index: :class:`Index` on which to join all of the DataFrames
+    """
+    return pandas.concat( 
+                          map( lambda x: x.reindex(index), df_list), 
+                          axis = 1
+    )
 
 def normalized_price(price_df):
     """

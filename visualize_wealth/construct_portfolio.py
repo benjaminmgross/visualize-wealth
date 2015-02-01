@@ -7,6 +7,7 @@
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 """
 import argparse
+import logging
 import pandas
 import numpy
 import pandas.io.data
@@ -494,18 +495,18 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
     """
     msg = "Not all tickers in HDFStore"    
     store = pandas.HDFStore(store_path)
-    if not vwu.check_store_for_tickers(weight_df.columns, store):
-        print msg
-        store.close()
-        return
+    #if not vwu.check_store_for_tickers(weight_df.columns, store):
+    #    print msg
+    #    store.close()
+    #    return
     beg_port = weight_df.index.min()
 
     d = {}
     for ticker in weight_df.columns:
         try:
             d[ticker] = store.get(ticker)
-        except:
-            print "didn't work for " + ticker + "!"
+        except KeyError as key:
+            logging.exception("store.get({0}) ticker failed".format(ticker))
 
     panel = pandas.Panel(d)
 
@@ -514,9 +515,9 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
         'Adj Close'].dropna().index.min(), panel.items))
 
     #print the number of consectutive nans
-    for ticker in weight_df.columns:
-        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
-            first_price:, 'Adj Close'].isnull().astype(int)).max())
+    #for ticker in weight_df.columns:
+    #    print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+    #        first_price:, 'Adj Close'].isnull().astype(int)).max())
 
     store.close()
     return panel.ffill()
@@ -604,16 +605,15 @@ def fetch_data_from_store_initial_alloc_method(
     """
     msg = "Not all tickers in HDFStore"
     store = pandas.HDFStore(store_path)
-    assert vwu.check_store_for_tickers(initial_weights.index, store), msg
-
+    #assert vwu.check_store_for_tickers(initial_weights.index, store), msg
     #beg_port = datetime.sdat
 
     d = {}
     for ticker in initial_weights.index:
         try:
             d[ticker] = store.get(ticker)
-        except:
-            print "didn't work for "+ ticker + "!"
+        except KeyError as key:
+            logging.exception("store.get({0}) ticker failed".format(ticker))
 
     store.close()
     panel = pandas.Panel(d)
@@ -715,9 +715,9 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
  
     #ensure that the first allocation for each ticker is after first price
     price_df = price_panel.loc[:, :, 'Close']
-    is_valid = vwu.check_trade_price_start(weight_df, price_df)
-    msg = "first allocation precedes first price"
-    assert all(is_valid), msg
+    #is_valid = vwu.check_trade_price_start(weight_df, price_df)
+    #msg = "first allocation precedes first price"
+    #assert all(is_valid), msg
 
     columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Value at Open', 
                'Value at Close', 'Open', 'High', 'Low', 'Close', 

@@ -163,7 +163,7 @@ def check_store_for_tickers(ticker_list, store):
 
     #if len(not_in_store) == 0, all tickers are present
     if not len(not_in_store):
-        print "All tickers in store"
+        #print "All tickers in store"
         ret_val = True
     else:
         for ticker in not_in_store:

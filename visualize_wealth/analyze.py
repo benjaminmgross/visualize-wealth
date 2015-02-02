@@ -870,6 +870,24 @@ def drawdown(series):
     else:
         return _drawdown(series)
 
+def ew_vol(series, theta = 0.94, freq = 'daily'):
+    """
+    Returns the exponentially weight standard deviation
+    """
+    span = (1. + theta)/(1 - theta)
+
+    log_rets = log_returns(series)
+
+    fac = _interval_to_factor(freq)
+
+    ew_vol = pandas.ewmstd(log_rets,
+                           span = span,
+                           min_periods = span
+    )
+
+    return ew_vol*numpy.sqrt(fac)
+        
+
 def geometric_difference(a, b):
     """
     Returns the geometric difference of returns where

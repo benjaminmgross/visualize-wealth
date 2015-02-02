@@ -872,7 +872,17 @@ def drawdown(series):
 
 def ew_vol(series, theta = 0.94, freq = 'daily'):
     """
-    Returns the exponentially weight standard deviation
+    Returns the exponentially weighted, annualized standard deviation
+
+    :ARGS:
+
+        series: :class:`Series` or :class:`DataFrame` of prices
+
+        theta: coefficient of decay, default BARRA's value of .94 
+        which roughly equates to a span of 33 days
+
+        freq: :class:`string` of either ['daily', 'monthly', 'quarterly', 
+        'yearly']
     """
     span = (1. + theta)/(1 - theta)
 
@@ -895,6 +905,7 @@ def geometric_difference(a, b):
     :ARGS:
 
         a: :class:`pandas.Series` or :class:`float`
+
         b: :class:`pandas.Series` or :class:`float`
 
     :RETURNS:
@@ -1144,7 +1155,48 @@ def log_returns(series):
         return series.apply(_log_returns)
     else:
         return _log_returns(series)
-    
+
+def log_returns_vol_adj(series, theta = 0.94, freq = 'daily'):
+    """
+    Returns the volatility scaled log returns
+
+    :ARGS:
+
+        series: :class:`Series` or :class:`DataFrame` of prices
+
+        theta: :class:`float` of the decay parameter to use for the
+        exponential smoothing for volatility
+
+        freq: :class:`string` from ['daily', 'monthly', 
+        'quarterly', 'yearly']
+
+    :RETURNS:
+
+        volatility scaled log returns of the same dtype provided
+
+    .. note:: Calculating Vol Adjustment Factor
+
+       .. math::
+
+           \\tilde{r}_{t,T} = \\frac{\\sigma_T}{\\sigma_t}\\cdot r_{t}
+
+        This methodology is most common in using scaled historical 
+        returns to calculate VaR and CVaR
+
+    """
+    def _log_ret_vol_adj(series, theta, freq):
+        log_rets = log_returns(series)
+        vol = ew_vol(series, theta = theta, freq = freq)
+        scale = vol[-1] / vol
+        return log_rets.mul(scale)
+
+    if isinstance(series, pandas.DataFrame):
+        return series.apply(
+            lambda x: _log_ret_vol_adj(x, theta = theta, freq = freq)
+        )
+    else:
+        return _log_ret_vol_adj(series, theta = theta, freq = freq)
+
 def max_drawdown(series):
     """
     Returns the maximum drawdown, or the maximum peak to trough linear 

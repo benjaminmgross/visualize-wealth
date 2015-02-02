@@ -325,8 +325,8 @@ def beta(series, benchmark):
 
         series: ``pandas.Series`` of prices
 
-        benchmark: ``pandas.Series`` of a benchmark to calculate the 
-        sensitivity
+        benchmark: :class:`Series` or :class:`DataFrame` of prices 
+        of a benchmark to calculate the sensitivity against
 
     :RETURNS:
 
@@ -354,6 +354,44 @@ def beta(series, benchmark):
         return benchmark.apply(lambda x: _beta(series, x))
     else:
         return _beta(series, benchmark)
+
+def beta_ew(series, benchmark, theta = 0.94):
+    """
+    Returns the exponentially weighted sensitivity of one return 
+    series to a chosen benchmark
+
+    :ARGS:
+
+        series: :class:`Series` of prices
+
+        benchmark: :class:`Series` of a benchmark to calculate the 
+        sensitivity
+
+        theta: :class:`float` of the exponential smoothing constant
+        default to 0.94 MSCI Barra's ew constant
+
+    :RETURNS:
+
+        float: the sensitivity of the series to the benchmark
+
+    """
+    span = (1. + theta) / (1. - theta)
+    series_rets = log_returns(series)
+    bench_rets = log_returns(benchmark)
+    
+    cov = pandas.ewmcov(series_rets, 
+                        bench_rets,
+                        span = span,
+                        min_periods = span
+    )
+    
+    var = pandas.ewmvar(bench_rets, 
+                        span = span, 
+                        min_periods = span
+    )
+    
+    return cov.div(var)
+
 
 def consecutive(int_series):
     """
@@ -698,7 +736,7 @@ def cvar_cf_ew(series, p = .01):
 def cvar_norm(series, p = .01):
     """
     CVaR (Conditional Value at Risk), fitting the normal distribution 
-    to the historical time series using
+    to pthe historical time series using
 
     :ARGS:
 

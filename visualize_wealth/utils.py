@@ -466,8 +466,8 @@ def perturbate_asset(frame, key, eps):
         ret_frame[key] = pert_series
         return ret_frame
 
-    except:
-        logging.exception("perturbation did not execute")
+    except KeyError:
+        logging.exception("perturbation of {0} failed".format(key))
         return
 
 def setup_trained_hdfstore(trained_data, store_path):
@@ -581,7 +581,9 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
     try:
         store = pandas.HDFStore(path = store_path, mode = 'r')
     except IOError:
-        print  store_path + " is not a valid path to an HDFStore Object"
+        logging.exception(
+            "{0} is not a valid path to an HDFStore Object".format(store_path)
+        )
         return
 
     if isinstance(ticker_list, (str, unicode)):
@@ -640,7 +642,7 @@ def update_store_prices(store_path):
                 tmp = tmp[tmp.columns[tmp.columns != "index"]]
                 store.put(key, tmp)
             except IOError:
-                print "could not update " + key
+                logging.exception("could not update {0}".format(key))
 
     store.close()
     return None
@@ -705,17 +707,3 @@ def __get_data(ticker, api, start):
     except:
         print "failed for " + ticker
         return
-
-
-
-if __name__ == '__main__':
-    usage = sys.argv[0] + "usage instructions"
-    description = "describe the function"
-    parser = argparse.ArgumentParser(description = description, 
-                                     usage = usage)
-    parser.add_argument('name_1', nargs = 1, type = str, 
-                        help = 'describe input 1')
-    parser.add_argument('name_2', nargs = '+', type = int, 
-                        help = "describe input 2")
-    args = parser.parse_args()
-    script_function(input_1 = args.name_1[0], input_2 = args.name_2)

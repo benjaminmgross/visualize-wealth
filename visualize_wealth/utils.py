@@ -13,7 +13,6 @@ import argparse
 import pandas
 import numpy
 import datetime
-import visualize_wealth.analyze as vwa
 
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
@@ -435,9 +434,9 @@ def normalized_price(price_df):
 
         except:
             logging.exception("Contains null values")
-
+"""
 def perturbate_asset(frame, key, eps):
-    """
+
     Perturbate asset 'key' within 'frame' of prices, an amount of eps
 
     :ARGS:
@@ -451,7 +450,7 @@ def perturbate_asset(frame, key, eps):
     :RETURNS:
 
         :class:`pandas.DataFrame` of the perturbed weight_df
-    """
+
     try:
         pert_series = pandas.Series(numpy.zeros_like(frame[key]), 
                               index = frame.index
@@ -469,6 +468,7 @@ def perturbate_asset(frame, key, eps):
     except KeyError:
         logging.exception("perturbation of {0} failed".format(key))
         return
+"""
 
 def setup_trained_hdfstore(trained_data, store_path):
     """

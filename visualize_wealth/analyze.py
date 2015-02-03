@@ -1089,10 +1089,6 @@ def information_ratio(series, benchmark, freq = 'daily'):
     else:
         return _information_ratio(series, benchmark, freq = freq)
 
-
-
-
-    return None 
 def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
     """
     Returns the `Jensen's Alpha 
@@ -1193,6 +1189,76 @@ def log_returns(series):
         return series.apply(_log_returns)
     else:
         return _log_returns(series)
+
+def log_returns_chol_adj(frame, theta = 0.94):
+    """
+    Create volatility adjusted historical returns that preserve the
+    covariance structure while providing scaled-appropriate returns
+    to calculate tail-risk measures
+
+    :ARGS:
+
+        frame: :class:`DataFrame` of prices
+
+        theta: :class:`float` of the decay parameter to use for the
+        exponential smoothing
+
+    :RETURNS:
+
+        :class:`DataFrame` of vol adjusted log returns preserving the
+        covariance structure
+
+    .. note:: Calculation explanation
+
+        The calculation comes from the Duffie & Pan 1997, where the 
+        Cholesky matrix of covariance matrix is used in place of the
+        square root of the variance, in the volatility adjustment, and
+        can be seen in `Value at Risk Models <http://goo.gl/BZHsjR>`_, 
+        by Carol Alexander  
+
+        Where,
+
+        .. math:: 
+
+            \\tilde{\\mathbb{x}_t} = \\mathbb{Q}_T\\mathbb{Q}^{-1}_t
+            \\mathbb{x}_t, \\; t = 1, 2, ..., T \\\\ \\\\
+        
+        Where
+
+        .. math:: 
+
+            \\tilde{\\mathbb{x}_t} &= \\textrm{ the stock returns } 
+            \\textrm{adjusted to have constant covariance } \\\\
+            \\mathbb{Q}_t &=
+            \\textrm{ the Cholesky matrix of the covariance matrix } \\\\ 
+            \\mathbb{x}_t &= \\textrm{ the unadjusted stock returns}
+    """
+    #define the truncated functions
+    dot = numpy.dot
+    inv = numpy.linalg.inv
+    chol = numpy.linalg.cholesky
+
+    span = (1. + theta)/(1 - theta)
+
+    log_rets = log_returns(frame)
+
+    ew_cov = pandas.ewmcov(log_rets, 
+                           span = span,
+                           min_periods = span
+    )
+    q_T = chol(ew_cov.iloc[-1, :, :])
+    d = {}
+    for row in ew_cov.dropna().items:
+        q_t = chol(ew_cov.loc[row, :, :])
+        d[row] = pandas.Series(dot(log_rets.xs(row),
+                               dot(q_T, inv(q_t))),
+                               index = log_rets.columns
+        )
+
+    new_logs = pandas.DataFrame(d).transpose()
+    return new_logs.reindex(log_rets.index)
+
+
 
 def log_returns_vol_adj(series, theta = 0.94, freq = 'daily'):
     """

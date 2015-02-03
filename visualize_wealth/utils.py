@@ -8,10 +8,12 @@
 """
 
 import os
+import logging
 import argparse
 import pandas
 import numpy
 import datetime
+from . import analyze
 
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
@@ -297,7 +299,7 @@ def first_price_date_get_prices(ticker_list):
     df = tickers_to_frame(ticker_list)
     return first_price_date_from_prices(df)
 
-def first_price_date_from_prices(df):
+def first_price_date_from_prices(frame):
     """
     Given a :class:`pandas.DataFrame` of prices, return the first date that a 
     price exists for each of the tickers
@@ -312,10 +314,10 @@ def first_price_date_from_prices(df):
     """
 
     fvi = pandas.Series.first_valid_index
-    if isinstance(df, pandas.Series):
-        return df.fvi()
+    if isinstance(frame, pandas.Series):
+        return frame.fvi()
     else:
-        return df.apply(fvi, axis = 0)
+        return frame.apply(fvi, axis = 0)
 
 def first_valid_date(prices):
     """
@@ -421,29 +423,26 @@ def normalized_price(price_df):
     """
     if isinstance(price_df, pandas.Series):
 
-        if pandas.isnull(price_df).any():
-            print "This series contains null values"
-            return
-        else:
+        try:
             return price_df.div(price_df[0])
-    
-    elif isinstance(price_df, pandas.DataFrame):
-        if pandas.isnull(price_df).any().any():
-            print "This DataFrame contains null values"
-            return
-        else:
-            return price_df.div(price_df.iloc[0, :] )
-    else:
-        print "Input must be pandas.Series or pandas.DataFrame"
-        return
 
-def perturbate_asset(weight_df, key, eps):
+        except:
+            logging.exception("Contains null values")
+
+    else:
+        try:
+            return price_df.div(price_df.iloc[0, :] )
+
+        except:
+            logging.exception("Contains null values")
+
+def perturbate_asset(frame, key, eps):
     """
-    Perturbate an asset within a weight allocation frame in the amount eps
+    Perturbate asset 'key' within 'frame' of prices, an amount of eps
 
     :ARGS:
 
-        weight_df: :class:`pandas.DataFrame` of a weight_allocation frame
+        frame :class:`pandas.DataFrame` of a weight_allocation frame
 
         key: :class:`string` of the asset to perturbate_asset
 
@@ -453,15 +452,23 @@ def perturbate_asset(weight_df, key, eps):
 
         :class:`pandas.DataFrame` of the perturbed weight_df
     """
-    assert key in weight_df.columns, "key not in weight_df"
-    ret_df = weight_df.copy()
-    not_key = ret_df.columns[ret_df.columns != key]
-    comp_sum = ret_df[not_key].sum(axis = 1)
-    ret_df = ret_df*(1. - eps/comp_sum)
-    ret_df[key] = weight_df[key] + eps
-    if any(ret_df < 0.):
-        print "Warning, some values fell below zero in the reweighting"
-    return ret_df
+    try:
+        pert_series = pandas.Series(numpy.zeros_like(frame[key]), 
+                              index = frame.index
+        )
+        
+        lin_ret = analyze.linear_returns(frame[key])
+        lin_ret = lin_ret.mul(1. + eps)
+        pert_series[0] = p_o = frame[key][0]
+
+        pert_series[1:] = p_o * (1. + lin_ret[1:])
+        ret_frame = frame.copy()
+        ret_frame[key] = pert_series
+        return ret_frame
+
+    except:
+        logging.exception("perturbation did not execute")
+        return
 
 def setup_trained_hdfstore(trained_data, store_path):
     """

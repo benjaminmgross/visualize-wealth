@@ -13,7 +13,7 @@ import argparse
 import pandas
 import numpy
 import datetime
-from . import analyze
+import visualize_wealth.analyze as vwa
 
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
@@ -457,7 +457,7 @@ def perturbate_asset(frame, key, eps):
                               index = frame.index
         )
         
-        lin_ret = analyze.linear_returns(frame[key])
+        lin_ret = vwa.linear_returns(frame[key])
         lin_ret = lin_ret.mul(1. + eps)
         pert_series[0] = p_o = frame[key][0]
 

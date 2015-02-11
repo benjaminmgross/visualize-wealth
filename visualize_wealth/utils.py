@@ -592,19 +592,27 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
 
     return price_df
 
-def update_store_prices(store_path):
+def update_store_prices(store_path, store_keys = None):
     """
     Update to the most recent prices for all keys of an existing store, 
-    located at path ``path``.
+    located at ``store_path``.
 
     :ARGS:
 
         store_path: :class:`string` the location of the ``HDFStore`` file
 
+        store_keys: :class:`list` of keys to update
+
     :RETURNS:
 
         :class:`NoneType` but updates the ``HDF5`` file, and prints to 
         screen which values would not update
+
+    .. note::
+
+        If special keys exist (like, CASH, or INDEX), then keys can be 
+        passed to update to ensure that the store does not try to update
+        those keys
 
     """
     reader = pandas.io.data.DataReader
@@ -613,10 +621,13 @@ def update_store_prices(store_path):
     try:
         store = pandas.HDFStore(path = store_path, mode = 'r+')
     except IOError:
-        print  store_path + " is not a valid path to an HDFStore Object"
+        print  "{0} is not a valid path to an HDFStore Object".format(store_path)
         return
 
-    for key in store.keys():
+    if not store_keys:
+        store_keys = store.keys()
+
+    for key in store_keys:
         stored_data = store.get(key)
         last_stored_date = stored_data.dropna().index.max()
         today = datetime.datetime.date(datetime.datetime.today())
@@ -625,15 +636,14 @@ def update_store_prices(store_path):
                 tmp = reader(key.strip('/'), 'yahoo', start = strftime(
                     last_stored_date, format = '%m/%d/%Y'))
 
-                #need to drop duplicates because there's 1 row of 
-                #overlap
+                #need to drop duplicates because there's 1 row of overlap
                 tmp = stored_data.append(tmp)
                 tmp["index"] = tmp.index
                 tmp.drop_duplicates(cols = "index", inplace = True)
                 tmp = tmp[tmp.columns[tmp.columns != "index"]]
                 store.put(key, tmp)
             except IOError:
-                print "could not update " + key
+                logging.exception("could not update {0}".format(key))
 
     store.close()
     return None

@@ -592,6 +592,46 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
 
     return price_df
 
+def create_store_master_index(store_path):
+    """
+    Create a key value pair INDEX in an HDFStore located at store_path
+
+    :ARGS:
+
+        store_path: :class:`string` the location of the ``HDFStore`` file
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file, and prints to 
+        screen which values would not update
+
+    """
+    return None
+
+def update_store_master_index(store_path):
+    """
+    Intelligently update the store INDEX
+    """
+    return None
+
+def update_store_cash(store_path):
+    """
+    Intelligently update the values of CASH based on existing keys in the 
+    store, and existing columns of the CASH values
+
+    :ARGS:
+
+        store_path: :class:`string` the location of the ``HDFStore`` file
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file, and prints to 
+        screen which values would not update
+
+    """
+
+    return None
+
 def update_store_prices(store_path, store_keys = None):
     """
     Update to the most recent prices for all keys of an existing store, 

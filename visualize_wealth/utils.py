@@ -230,9 +230,8 @@ def check_trade_price_start(weight_df, price_df):
 
     if set(weight_df.columns) != intrsct:
 
-        except KeyError:
-            print "Not all tickers in weight_df are in price_df"
-            raise
+        raise KeyError, "Not all tickers in weight_df are in price_df"
+            
 
     ret_d = {}
     for ticker in weight_df.columns:
@@ -381,17 +380,11 @@ def index_multi_union(frame_list):
     #check to make sure all objects are Series or DataFrames
 
 
-    try:
-        return reduce(lambda x, y: x | y, 
-                      map(lambda x: x.dropna().index, 
-                          frame_list)
-        )
 
-    except AttributeError:
-        logging.exception(
-            "frame_list didn't contain all frames and series"
-        )
-        raise
+    return reduce(lambda x, y: x | y, 
+                  map(lambda x: x.dropna().index, 
+                      frame_list)
+    )
 
 def index_multi_intersect(frame_list):
     """
@@ -407,20 +400,11 @@ def index_multi_intersect(frame_list):
 
         :class:`pandas.DatetimeIndex` of the objects' intersection
     """
-    #check to make sure all objects are Series or DataFrames
-        
-    try:
-        return reduce(lambda x, y: x & y, 
-                      map(lambda x: x.dropna().index, 
-                          frame_list) 
+
+    return reduce(lambda x, y: x & y, 
+                  map(lambda x: x.dropna().index, 
+                      frame_list) 
     )
-
-    except AttributeError:
-        logging.exception(
-            "frame_list didn't contain all frames and series"
-        )
-        raise
-
 
 def join_on_index(df_list, index):
     """
@@ -441,7 +425,8 @@ def join_on_index(df_list, index):
 
 def normalized_price(price_df):
     """
-    Return the normalized price of a series
+    Return the normalized price of a :class:`pandas.Series` or 
+    :class:`pandas.DataFrame`
 
     :ARGS:
 
@@ -451,23 +436,20 @@ def normalized_price(price_df):
         
         same as the input
     """
-    if isinstance(price_df, pandas.Series):
 
-        if pandas.isnull(price_df).any():
-            logging.exception("This series contains null values")
-            raise
-        else:
-            return price_df.div(price_df[0])
-    
-    elif isinstance(price_df, pandas.DataFrame):
-        if pandas.isnull(price_df).any().any():
-            logging.exception("This DataFrame contains null values")
-            raise
-        else:
-            return price_df.div(price_df.iloc[0, :] )
-    else:
-        logging.exception("price_df must be Series or DataFrame")
-        raise
+    null_d = {pandas.DataFrame: lambda x: pandas.isnull(x).any().any(),
+              pandas.Series: lambda x: pandas.isnull(x).any()
+              }
+
+    calc_d = {pandas.DataFrame: lambda x: x.div(x.iloc[0, :]),
+              pandas.Series: lambda x: x.div(x[0])
+              }
+
+    typ = type(price_df)
+    if null_d[typ](price_df):
+        raise ValueError, "cannot contain null values"
+
+    return calc_d[typ](price_df)
 
 def perturbate_asset(frame, key, eps):
     """
@@ -487,22 +469,17 @@ def perturbate_asset(frame, key, eps):
     """
     from .analyze import linear_returns
 
-    try:
-        pert_series = pandas.Series(numpy.zeros_like(frame[key]), 
-                              index = frame.index
-        )
-        
-        lin_ret = linear_returns(frame[key])
-        lin_ret = lin_ret.mul(1. + eps)
-        pert_series[0] = p_o = frame[key][0]
-        pert_series[1:] = p_o * (1. + lin_ret[1:])
-        ret_frame = frame.copy()
-        ret_frame[key] = pert_series
-        return ret_frame
-    except KeyError:
-        logging.exception("perturbation of {0} failed".format(key))
-        raise
-
+    pert_series = pandas.Series(numpy.zeros_like(frame[key]), 
+                          index = frame.index
+    )
+    
+    lin_ret = linear_returns(frame[key])
+    lin_ret = lin_ret.mul(1. + eps)
+    pert_series[0] = p_o = frame[key][0]
+    pert_series[1:] = p_o * (1. + lin_ret[1:])
+    ret_frame = frame.copy()
+    ret_frame[key] = pert_series
+    return ret_frame
 
 def setup_trained_hdfstore(trained_data, store_path):
     """
@@ -611,15 +588,13 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
         :class:`pandas.DataFrame` when the ``ticker_list`` is 
         :class:`str`
     """
-    if not isinstance(join_col, str):
-        print "join_col must be a string"
-        return
+    store = _open_store(store_path)
 
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r')
-    except IOError:
-        print  store_path + " is not a valid path to an HDFStore Object"
-        return
+    cols = ['Open', 'High', 'Low', 'Volume', 'Close', 'Adj Close']
+
+    if join_col not in cols:
+        raise KeyError, "{0} not in ['Close', 'Adj Close', ...]".format(
+            join_col)
 
     if isinstance(ticker_list, (str, unicode)):
         ret_series = store[ticker_list][join_col]
@@ -654,21 +629,14 @@ def create_store_master_index(store_path):
     keys = store.keys()
 
     if '/IND3X' in keys:
-        logging.log(
-            1, "u'IND3X' already exists in HDFStore at {0}".format(store_path)
-        )
+        print "u'IND3X' already exists in HDFStore at {0}".format(store_path)
+
         store.close()
         return
     else:
-        try:
-            union = union_store_indexes(store)
-            store.put('IND3X', pandas.Series(union, index = union))
-            store.close()
-        except:
-            logging.exception("'IND3X create at {0} failed".format(
-                store_path)
-            )
-            raise
+        union = union_store_indexes(store)
+        store.put('IND3X', pandas.Series(union, index = union))
+        store.close()
 
 def union_store_indexes(store):
     """
@@ -684,19 +652,13 @@ def union_store_indexes(store):
         screen which values would not update
 
     """
-    try:
-        key_iter = (key for key in store.keys())
-        ind = store.get(key_iter.next()).index
-        union = ind.copy()
+    key_iter = (key for key in store.keys())
+    ind = store.get(key_iter.next()).index
+    union = ind.copy()
 
-        for key in key_iter:
-            try:
-                union = union | store.get(key).index
-            except:
-                logging.exception("union failed for {0}".format(key))
-        return union
-    except:
-        logging.exception("index union failed")
+    for key in key_iter:
+        union = union | store.get(key).index
+    return union
 
 def create_store_cash(store_path):
     """
@@ -737,7 +699,8 @@ def create_store_cash(store_path):
 
 def update_store_master_index(store_path):
     """
-    Intelligently update the store 'IND3X'
+    Intelligently update the store 'IND3X', this can only be done
+    after the prices at the store path have been updated
     """
     store = _open_store(store_path)
 
@@ -751,16 +714,14 @@ def update_store_master_index(store_path):
     last_stored_date = stored_data.dropna().index.max()
     today = datetime.datetime.date(datetime.datetime.today())
     if last_stored_date < pandas.Timestamp(today):
-        try:
-            union_ind = union_store_indexes(store)
-            tmp = pandas.Series(union_ind, index = union_ind)
 
-            #need to drop duplicates because there's 1 row of overlap
-            tmp = stored_data.append(tmp)
-            tmp.drop_duplicates(inplace = True)
-            store.put('IND3X', tmp)
-        except:
-            logging.exception("update failed")
+        union_ind = union_store_indexes(store)
+        tmp = pandas.Series(union_ind, index = union_ind)
+
+        #need to drop duplicates because there's 1 row of overlap
+        tmp = stored_data.append(tmp)
+        tmp.drop_duplicates(inplace = True)
+        store.put('IND3X', tmp)
 
     return None
 
@@ -913,17 +874,3 @@ def __get_data(ticker, api, start):
     except:
         logging.exception("failed for {0}".format(ticker))
         raise
-
-
-
-if __name__ == '__main__':
-    usage = sys.argv[0] + "usage instructions"
-    description = "describe the function"
-    parser = argparse.ArgumentParser(description = description, 
-                                     usage = usage)
-    parser.add_argument('name_1', nargs = 1, type = str, 
-                        help = 'describe input 1')
-    parser.add_argument('name_2', nargs = '+', type = int, 
-                        help = "describe input 2")
-    args = parser.parse_args()
-    script_function(input_1 = args.name_1[0], input_2 = args.name_2)

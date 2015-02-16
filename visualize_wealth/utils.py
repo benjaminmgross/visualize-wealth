@@ -10,6 +10,7 @@ import datetime
 import logging
 import pandas
 import numpy
+import os
 
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
@@ -122,9 +123,9 @@ def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     for val in new_prices.keys():
         try:
             store.put(val, new_prices[val])
-            logging.log(1, "{0} has been stored".format( val))
+            logging.log(20, "{0} has been stored".format( val))
         except:
-            logging.exception("{0} didn't store".format(val))
+            logging.warning("{0} didn't store".format(val))
 
     store.close()
     return None
@@ -224,11 +225,14 @@ def check_trade_price_start(weight_df, price_df):
         where True indicates the first allocation takes place 
         after the first price (as desired) and False the converse
     """
-    if set(weight_df.columns) != set(price_df.columns):
-        logging.exception(
-            "tickers in the weight_df and price_df must be the same"
-        )
-        raise 
+    #make sure all of the weight_df tickers are in price_df
+    intrsct = set(weight_df.columns).intersection(set(price_df.columns))
+
+    if set(weight_df.columns) != intrsct:
+
+        except KeyError:
+            print "Not all tickers in weight_df are in price_df"
+            raise
 
     ret_d = {}
     for ticker in weight_df.columns:

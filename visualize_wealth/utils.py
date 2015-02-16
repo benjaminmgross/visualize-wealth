@@ -12,6 +12,7 @@ import argparse
 import pandas
 import numpy
 import datetime
+import logging
 
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
@@ -629,7 +630,73 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
 
 def create_store_master_index(store_path):
     """
-    Create a key value pair INDEX in an HDFStore located at store_path
+    Add a master index, key = 'IND3X', to HDFStore located at store_path
+
+    :ARGS:
+
+        store_path: :class:`string` the location of the ``HDFStore`` file
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file
+
+    """
+    try:
+        store = pandas.HDFStore(path = store_path, mode = 'r+')
+    except IOError:
+        logging.exception(
+            "{0} is not a valid path to an HDFStore Object".format(store_path)
+        )
+        raise
+     keys = store.keys()
+
+    if '/IND3X' in keys:
+        logging.log(
+            1, "u'IND3X' already exists in HDFStore at {0}".format(store_path)
+        )
+        return
+    else:
+        try:
+            union = union_store_indexes(store)
+            store.put('IND3X', pandas.Series(union, index = union))
+            store.close()
+        except:
+            logging.exception("'IND3X create at {0} failed".format(
+                store_path)
+            )
+            raise
+
+def union_store_indexes(store):
+    """
+    Return the union of all Indexes within a store located inside store
+
+    :ARGS:
+
+        store: :class:`HDFStore`
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file, and prints to 
+        screen which values would not update
+
+    """
+    try:
+        key_iter = (key for key in store.keys())
+        ind = store.get(key_iter.next()).index
+        union = ind.copy()
+
+        for key in key_iter:
+            try:
+                union = union | store.get(key).index
+            except:
+                logging.exception("union failed for {0}".format(key))
+        return union
+    except:
+        logging.exception("index union failed")
+
+def create_store_cash(store_path):
+    """
+    Create a cash price, key = u'CA$H' in an HDFStore located at store_path
 
     :ARGS:
 
@@ -647,17 +714,27 @@ def create_store_master_index(store_path):
         logging.exception(
             "{0} is not a valid path to an HDFStore Object".format(store_path)
         )
-
         raise
-    try:
-        key_iter = (key for key in store_keys())
-        ind = store.get(key_iter.next).index
-        union = ind.copy()
+    
+    keys = store.keys()
+    if '/CA$H' in keys:
+        logging.log(1, "CA$H prices already exists")
+        return
+    if '/IND3X' not in keys:
+        m_index = union_store_indexes(store)
+    else:
+        m_index = store.get('IND3X')
 
-        for key in key_iter:
+    cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+    n_dates, n_cols = len(m_index), len(cols)
 
-            #get 
-    return None
+    df = pandas.DataFrame(numpy.ones([n_dates, n_cols]), 
+                          index = m_index,
+                          columns = cols
+    )
+    store.put('CA$H', df)
+    store.close()
+    return
 
 def update_store_master_index(store_path):
     """
@@ -759,14 +836,12 @@ def zipped_time_chunks(index, interval):
         per_interval: :class:`string` either 'monthly', 'quarterly',
         or 'yearly'
     """
-    #create the time chunks
-    #calculate raer for each of the time chunks
+
     time_d = {'monthly': lambda x: x.month, 
               'quarterly':lambda x:x.quarter,
               'yearly':lambda x: x.year}
 
     ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
-    
     
     if ind[0]: #The series started on the last day of period
         index = index.copy()[1:] #So we can't get a Period
@@ -797,11 +872,10 @@ def __get_data(ticker, api, start):
     reader = pandas.io.data.DataReader
     try:
         data = reader(ticker, api, start = start)
-        print "worked for " + ticker
         return data
     except:
-        print "failed for " + ticker
-        return
+        logging.exception("failed for {0}".format(ticker))
+        raise
 
 
 

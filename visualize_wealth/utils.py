@@ -367,6 +367,35 @@ def index_intersect(arr_a, arr_b):
     else:
         return arr_a.index
 
+def index_multi_union(frame_list):
+    """
+    Returns the index union of multiple 
+    :class:`pandas.DataFrame`'s or :class:`pandas.Series`
+
+    :ARGS:
+
+        frame_list: :class:`list` containing either ``DataFrame``'s or
+        ``Series``
+    
+    :RETURNS:
+
+        :class:`pandas.DatetimeIndex` of the objects' intersection
+    """
+    #check to make sure all objects are Series or DataFrames
+
+
+    try:
+        return reduce(lambda x, y: x | y, 
+                      map(lambda x: x.dropna().index, 
+                          frame_list)
+        )
+
+    except AttributeError:
+        logging.exception(
+            "frame_list didn't contain all frames and series"
+        )
+        raise
+
 def index_multi_intersect(frame_list):
     """
     Returns the index intersection of multiple 
@@ -382,13 +411,19 @@ def index_multi_intersect(frame_list):
         :class:`pandas.DatetimeIndex` of the objects' intersection
     """
     #check to make sure all objects are Series or DataFrames
-    if not all(map(lambda x: isinstance(x, (
-            pandas.Series, pandas.DataFrame) ), frame_list)):
-        print "All objects must be Series or DataFrame's"
-        return
         
-    return reduce(lambda x, y: x & y, 
-           map(lambda x: x.dropna().index, frame_list) )
+    try:
+        return reduce(lambda x, y: x & y, 
+                      map(lambda x: x.dropna().index, 
+                          frame_list) 
+    )
+
+    except AttributeError:
+        logging.exception(
+            "frame_list didn't contain all frames and series"
+        )
+        raise
+
 
 def join_on_index(df_list, index):
     """
@@ -606,6 +641,22 @@ def create_store_master_index(store_path):
         screen which values would not update
 
     """
+    try:
+        store = pandas.HDFStore(path = store_path, mode = 'r+')
+    except IOError:
+        logging.exception(
+            "{0} is not a valid path to an HDFStore Object".format(store_path)
+        )
+
+        raise
+    try:
+        key_iter = (key for key in store_keys())
+        ind = store.get(key_iter.next).index
+        union = ind.copy()
+
+        for key in key_iter:
+
+            #get 
     return None
 
 def update_store_master_index(store_path):
@@ -661,8 +712,11 @@ def update_store_prices(store_path, store_keys = None):
     try:
         store = pandas.HDFStore(path = store_path, mode = 'r+')
     except IOError:
-        print  "{0} is not a valid path to an HDFStore Object".format(store_path)
-        return
+        logging.exception(
+            "{0} is not a valid path to an HDFStore Object".format(store_path)
+        )
+
+        raise
 
     if not store_keys:
         store_keys = store.keys()

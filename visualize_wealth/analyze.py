@@ -10,7 +10,6 @@ import collections
 import numpy
 import pandas
 import scipy.stats
-from . import utils
 
 def active_return(series, benchmark, freq = 'daily'):
     """
@@ -310,7 +309,9 @@ def attribution_weights_by_interval(series, factor_df, interval):
         message)
 
     """
-    chunks = utils.zipped_time_chunks(series.index, interval)
+    from .utils import zipped_time_chunks
+
+    chunks = zipped_time_chunks(series.index, interval)
     wt_dict = {}
     for beg, fin in chunks:
         wt_dict[beg] = attribution_weights(series[beg: fin], 

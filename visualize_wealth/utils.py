@@ -2,17 +2,15 @@
 # encoding: utf-8
 """
 .. module:: visualize_wealth.utils.py
-   :synopsis: Helper fuctions and knick knacks for portfolio analysis
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
+
 """
 
-import os
-import argparse
-import pandas
-import numpy
 import datetime
 import logging
+import pandas
+import numpy
 
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
@@ -473,7 +471,7 @@ def normalized_price(price_df):
         print "Input must be pandas.Series or pandas.DataFrame"
         return
 
-def perturbate_asset(weight_df, key, eps):
+def perturbate_asset(frame, key, eps):
     """
     Perturbate an asset within a weight allocation frame in the amount eps
 
@@ -489,15 +487,24 @@ def perturbate_asset(weight_df, key, eps):
 
         :class:`pandas.DataFrame` of the perturbed weight_df
     """
-    assert key in weight_df.columns, "key not in weight_df"
-    ret_df = weight_df.copy()
-    not_key = ret_df.columns[ret_df.columns != key]
-    comp_sum = ret_df[not_key].sum(axis = 1)
-    ret_df = ret_df*(1. - eps/comp_sum)
-    ret_df[key] = weight_df[key] + eps
-    if any(ret_df < 0.):
-        print "Warning, some values fell below zero in the reweighting"
-    return ret_df
+    from .analyze import linear_returns
+
+    try:
+        pert_series = pandas.Series(numpy.zeros_like(frame[key]), 
+                              index = frame.index
+        )
+        
+        lin_ret = linear_returns(frame[key])
+        lin_ret = lin_ret.mul(1. + eps)
+        pert_series[0] = p_o = frame[key][0]
+        pert_series[1:] = p_o * (1. + lin_ret[1:])
+        ret_frame = frame.copy()
+        ret_frame[key] = pert_series
+        return ret_frame
+    except KeyError:
+        logging.exception("perturbation of {0} failed".format(key))
+        raise
+
 
 def setup_trained_hdfstore(trained_data, store_path):
     """
@@ -570,10 +577,7 @@ def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990',
         :class:`pandas.DataFrame` when the ``ticker_list`` is 
         :class:`str`
     """
-    if not isinstance(join_col, str):
-        print "join_col must be a string"
-        return
-
+    
     if isinstance(ticker_list, (str, unicode)):
         return __get_data(ticker_list, api = api, start = start)[join_col]
     else:
@@ -641,14 +645,9 @@ def create_store_master_index(store_path):
         :class:`NoneType` but updates the ``HDF5`` file
 
     """
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r+')
-    except IOError:
-        logging.exception(
-            "{0} is not a valid path to an HDFStore Object".format(store_path)
-        )
-        raise
-     keys = store.keys()
+    store = _open_store(store_path)
+
+    keys = store.keys()
 
     if '/IND3X' in keys:
         logging.log(
@@ -708,18 +707,12 @@ def create_store_cash(store_path):
         screen which values would not update
 
     """
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r+')
-    except IOError:
-        logging.exception(
-            "{0} is not a valid path to an HDFStore Object".format(store_path)
-        )
-        raise
-    
+    store = _open_store(store_path)
     keys = store.keys()
     if '/CA$H' in keys:
         logging.log(1, "CA$H prices already exists")
         return
+
     if '/IND3X' not in keys:
         m_index = union_store_indexes(store)
     else:
@@ -740,6 +733,24 @@ def update_store_master_index(store_path):
     """
     Intelligently update the store INDEX
     """
+    store = _open_store(store_path)
+    stored_data = store.get(key)
+    last_stored_date = stored_data.dropna().index.max()
+    today = datetime.datetime.date(datetime.datetime.today())
+    if last_stored_date < pandas.Timestamp(today):
+        try:
+            tmp = reader(key.strip('/'), 'yahoo', start = strftime(
+                last_stored_date, format = '%m/%d/%Y'))
+
+            #need to drop duplicates because there's 1 row of overlap
+            tmp = stored_data.append(tmp)
+            tmp["index"] = tmp.index
+            tmp.drop_duplicates(cols = "index", inplace = True)
+            tmp = tmp[tmp.columns[tmp.columns != "index"]]
+            store.put(key, tmp)
+        except:
+            logging.exception("update failed")
+
     return None
 
 def update_store_cash(store_path):
@@ -786,14 +797,8 @@ def update_store_prices(store_path, store_keys = None):
     reader = pandas.io.data.DataReader
     strftime = datetime.datetime.strftime
     today_str = strftime(datetime.datetime.today(), format = '%m/%d/%Y')
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r+')
-    except IOError:
-        logging.exception(
-            "{0} is not a valid path to an HDFStore Object".format(store_path)
-        )
-
-        raise
+    
+    store = _open_store(store_path)
 
     if not store_keys:
         store_keys = store.keys()
@@ -851,7 +856,28 @@ def zipped_time_chunks(index, interval):
     fdop = index[numpy.append(True, ind[:-1])]
     return zip(fdop, ldop)
 
-        
+def _open_store(store_path):
+    """
+    open an HDFStore located at store_path with the appropriate error handling
+
+    :ARGS:
+
+        store_path: :class:`string` where the store is located
+
+    :RETURNS:
+
+        :class:`HDFStore` instance
+    """
+    try:
+        store = pandas.HDFStore(path = store_path, mode = 'r+')
+        return store
+    except IOError:
+        logging.exception(
+            "{0} is not a valid path to an HDFStore Object".format(store_path)
+        )
+        raise
+    
+
 def __get_data(ticker, api, start):
     """
     Helper function to get Yahoo! Data with exceptions built in and 

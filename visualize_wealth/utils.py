@@ -6,7 +6,6 @@
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 
 """
-
 import datetime
 import logging
 import pandas
@@ -114,11 +113,7 @@ def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
         :class:`NoneType` but appends the store and comments the
          successes ands failures
     """
-    try:
-        store = pandas.HDFStore(path = store_path,  mode = 'a')
-    except IOError:
-        print  path + " is not a valid path to an HDFStore Object"
-        return
+    store = _open_store(store_path)
     store_keys = map(lambda x: x.strip('/'), store.keys())
     not_in_store = numpy.setdiff1d(ticker_list, store_keys )
     new_prices = tickers_to_dict(not_in_store, start = start)
@@ -127,9 +122,10 @@ def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     for val in new_prices.keys():
         try:
             store.put(val, new_prices[val])
-            print val + " has been stored"
+            logging.log(1, "{0} has been stored".format( val))
         except:
-            print val + " couldn't store"
+            logging.exception("{0} didn't store".format(val))
+
     store.close()
     return None
 
@@ -189,11 +185,7 @@ def check_store_path_for_tickers(ticker_list, store_path):
         :class:`bool` True if all tickers are found in the store and
         False if not all the tickers are found in the HDFStore
     """
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r+')
-    except IOError:
-        print  store_path + " is not a valid path to an HDFStore Object"
-        return
+    store = _open_store(store_path)
 
     if isinstance(ticker_list, pandas.Index):
         #pandas.Index is not sortable, so much tolist() it
@@ -232,8 +224,11 @@ def check_trade_price_start(weight_df, price_df):
         where True indicates the first allocation takes place 
         after the first price (as desired) and False the converse
     """
-    msg = "tickers in the weight_df and price_df must be the same"
-    assert set(weight_df.columns) == set(price_df.columns), msg
+    if set(weight_df.columns) != set(price_df.columns):
+        logging.exception(
+            "tickers in the weight_df and price_df must be the same"
+        )
+        raise 
 
     ret_d = {}
     for ticker in weight_df.columns:
@@ -290,7 +285,6 @@ def first_price_date_get_prices(ticker_list):
 
         :class:`string` of 'dd-mm-yyyy' or :class:`list` of said strings
     """
-    fvi = pandas.Series.first_valid_index
 
     #pull down the data into a DataFrame
     df = tickers_to_frame(ticker_list)
@@ -456,20 +450,20 @@ def normalized_price(price_df):
     if isinstance(price_df, pandas.Series):
 
         if pandas.isnull(price_df).any():
-            print "This series contains null values"
-            return
+            logging.exception("This series contains null values")
+            raise
         else:
             return price_df.div(price_df[0])
     
     elif isinstance(price_df, pandas.DataFrame):
         if pandas.isnull(price_df).any().any():
-            print "This DataFrame contains null values"
-            return
+            logging.exception("This DataFrame contains null values")
+            raise
         else:
             return price_df.div(price_df.iloc[0, :] )
     else:
-        print "Input must be pandas.Series or pandas.DataFrame"
-        return
+        logging.exception("price_df must be Series or DataFrame")
+        raise
 
 def perturbate_asset(frame, key, eps):
     """
@@ -583,8 +577,14 @@ def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990',
     else:
         d = {}
         for ticker in ticker_list:
-            d[ticker] = __get_data(ticker, api = api,
-                                   start = start)[join_col]
+
+            tmp = __get_data(ticker, 
+                             api = api,
+                             start = start
+            )
+
+            d[ticker] = tmp[join_col]
+
     return pandas.DataFrame(d)
 
 def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
@@ -653,6 +653,7 @@ def create_store_master_index(store_path):
         logging.log(
             1, "u'IND3X' already exists in HDFStore at {0}".format(store_path)
         )
+        store.close()
         return
     else:
         try:
@@ -711,6 +712,7 @@ def create_store_cash(store_path):
     keys = store.keys()
     if '/CA$H' in keys:
         logging.log(1, "CA$H prices already exists")
+        store.close()
         return
 
     if '/IND3X' not in keys:
@@ -731,23 +733,28 @@ def create_store_cash(store_path):
 
 def update_store_master_index(store_path):
     """
-    Intelligently update the store INDEX
+    Intelligently update the store 'IND3X'
     """
     store = _open_store(store_path)
-    stored_data = store.get(key)
+
+    try:
+        stored_data = store.get('IND3X')
+    except KeyError:
+        logging.exception("store doesn't contain IND3X")
+        store.close()
+        raise
+
     last_stored_date = stored_data.dropna().index.max()
     today = datetime.datetime.date(datetime.datetime.today())
     if last_stored_date < pandas.Timestamp(today):
         try:
-            tmp = reader(key.strip('/'), 'yahoo', start = strftime(
-                last_stored_date, format = '%m/%d/%Y'))
+            union_ind = union_store_indexes(store)
+            tmp = pandas.Series(union_ind, index = union_ind)
 
             #need to drop duplicates because there's 1 row of overlap
             tmp = stored_data.append(tmp)
-            tmp["index"] = tmp.index
-            tmp.drop_duplicates(cols = "index", inplace = True)
-            tmp = tmp[tmp.columns[tmp.columns != "index"]]
-            store.put(key, tmp)
+            tmp.drop_duplicates(inplace = True)
+            store.put('IND3X', tmp)
         except:
             logging.exception("update failed")
 

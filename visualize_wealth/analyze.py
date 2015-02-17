@@ -617,7 +617,7 @@ def cumulative_turnover(alloc_df, asset_wt_df):
     #the dates when the portfolio are the cause of turnover
     ind = alloc_df.index[1:]
     try:
-        return asset_wt_df.loc[ind, :].sub(
+        return 0.5*asset_wt_df.loc[ind, :].sub(
             asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
 
     #the rebalance might have dates past the earliest price
@@ -625,7 +625,7 @@ def cumulative_turnover(alloc_df, asset_wt_df):
         loc = alloc_df.index.searchsorted(asset_wt_df.index[0])
         tmp = alloc_df.iloc[loc:, :]
         ind = tmp.index[1:]
-        return asset_wt_df.loc[ind, :].sub(
+        return 0.5*asset_wt_df.loc[ind, :].sub(
             asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
 
 def cvar_cf(series, p = .01):

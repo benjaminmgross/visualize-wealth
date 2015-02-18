@@ -727,8 +727,8 @@ def update_store_master_index(store_path):
 
 def update_store_cash(store_path):
     """
-    Intelligently update the values of CASH based on existing keys in the 
-    store, and existing columns of the CASH values
+    Intelligently update the values of CA$H based on existing keys in the 
+    store, and existing columns of the CA$H values
 
     :ARGS:
 
@@ -740,7 +740,32 @@ def update_store_cash(store_path):
         screen which values would not update
 
     """
+    store = _open_store(store_path)
 
+    try:
+        master_ind = store.get('IND3X')
+        cash = store.get('CA$H')
+    except KeyError:
+        logging.exception("store doesn't contain {0} and / or {1}".format(
+            'CA$H', 'IND3X'))
+        store.close()
+        raise
+
+    last_cash_dt = cash.dropna().index.max()
+    today = datetime.datetime.date(datetime.datetime.today())
+    if last_cash_dt < pandas.Timestamp(today):
+        try:
+            n = len(master_ind)
+            cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+            cash = pandas.DataFrame(numpy.ones([n, len(cols)),
+                                    index = master_ind,
+                                    columns = cols
+            )
+            store.put('CA$H', cash)
+            store.close()
+        except:
+            print "Error updating cash"
+            store.close()
     return None
 
 def update_store_prices(store_path, store_keys = None):

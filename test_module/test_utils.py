@@ -42,6 +42,44 @@ def populate_store():
     store.close()
     return {'name': name, 'index': index}
 
+def populate_updated():
+    name = './test_data/tmp.h5'
+    store = pandas.HDFStore(name, mode = 'w')
+
+    #two weeks of data before today, delete one week, then update
+    delta = datetime.timedelta(14)
+    today = datetime.datetime.date(datetime.datetime.today())
+    index = pandas.DatetimeIndex(start = today - delta,
+                                 freq = 'b',
+                                 periods = 10
+    )
+
+    store.put('TICK', pandas.Series(numpy.ones(len(index), ),
+                                    index = index,
+                                    name = 'Close')
+    )
+
+    store.put('TOCK', pandas.Series(numpy.ones(len(index), ),
+                                    index = index,
+                                    name = 'Close')
+    )
+
+    #truncate the index for updating
+    ind = index[:5]
+    n = len(ind)
+    store.put('IND3X', pandas.Series(ind, 
+                                     index = ind)
+    )
+    cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+    cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
+                            index = ind,
+                            columns = cols
+    )
+    store.put('CA5H', cash)
+    store.close()
+    return {'name': name, 'index': index}
+
+
 def test_create_store_master_index(populate_store):
     index = populate_store['index']
     index = pandas.Series(index, index = index)
@@ -66,6 +104,33 @@ def test_create_store_cash(populate_store):
 
     utils.create_store_cash(populate_store['name'])
     store = pandas.HDFStore(populate_store['name'], mode = 'r+')
+    cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+    n = len(index)
+    cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
+                            index = index,
+                            columns = cols
+    )
+
+    testing.assert_frame_equal(store.get('CA5H'), cash)
+    store.close()
+    os.remove(populate_store['name'])
+
+def test_update_store_master_index(populate_updated):
+    index = populate_updated['index']
+    index = pandas.Series(index, index = index)
+
+    utils.update_store_master_index(populate_updated['name'])
+    store = pandas.HDFStore(populate_updated['name'], mode = 'r+')
+    testing.assert_series_equal(store.get('IND3X'), index)
+    store.close()
+    os.remove(populate_updated['name'])
+
+def test_update_store_cash(populate_updated):
+    index = populate_updated['index']
+    index = pandas.Series(index, index = index)
+
+    utils.update_store_cash(populate_updated['name'])
+    store = pandas.HDFStore(populate_updated['name'], mode = 'r+')
     cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
     n = len(index)
     cash = pandas.DataFrame(numpy.ones([n, len(cols)]),

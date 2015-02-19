@@ -51,12 +51,14 @@ def test_create_store_master_index(store_dir, populate_store):
     index = pandas.Series(index, index = index)
 
     master_index = utils.create_store_master_index(store_dir[1])
-    testing.assert_index_equal(master_index, index)
+    testing.assert_series_equal(master_index, index)
 
-def test_create_union_store_indexes(store_dir, populate_store):
+def test_union_store_indexes(store_dir, populate_store):
     store = pandas.HDFStore(store_dir[1], mode = 'r+')
     index = populate_store
-    union
+    union = utils.union_store_index(store)
+    pandas.assert_index_equal(index, union)
+    store.close()
 
 
 

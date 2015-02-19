@@ -42,6 +42,7 @@ def populate_store():
     store.close()
     return {'name': name, 'index': index}
 
+@pytest.fixture
 def populate_updated():
     name = './test_data/tmp.h5'
     store = pandas.HDFStore(name, mode = 'w')
@@ -67,14 +68,19 @@ def populate_updated():
     #truncate the index for updating
     ind = index[:5]
     n = len(ind)
+
+    #store the Master IND3X
     store.put('IND3X', pandas.Series(ind, 
                                      index = ind)
     )
+
     cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
     cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
                             index = ind,
                             columns = cols
     )
+
+    #store the CA5H
     store.put('CA5H', cash)
     store.close()
     return {'name': name, 'index': index}
@@ -100,12 +106,11 @@ def test_union_store_indexes(populate_store):
 
 def test_create_store_cash(populate_store):
     index = populate_store['index']
-    index = pandas.Series(index, index = index)
-
     utils.create_store_cash(populate_store['name'])
     store = pandas.HDFStore(populate_store['name'], mode = 'r+')
     cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
     n = len(index)
+
     cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
                             index = index,
                             columns = cols
@@ -120,14 +125,24 @@ def test_update_store_master_index(populate_updated):
     index = pandas.Series(index, index = index)
 
     utils.update_store_master_index(populate_updated['name'])
+    utils.update_store_cash(populate_updated['name'])
+
     store = pandas.HDFStore(populate_updated['name'], mode = 'r+')
     testing.assert_series_equal(store.get('IND3X'), index)
+
+    cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+    n = len(index)
+    cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
+                            index = index,
+                            columns = cols
+    )
+
+    testing.assert_frame_equal(store.get('CA5H'), cash)
     store.close()
     os.remove(populate_updated['name'])
-
+"""
 def test_update_store_cash(populate_updated):
     index = populate_updated['index']
-    index = pandas.Series(index, index = index)
 
     utils.update_store_cash(populate_updated['name'])
     store = pandas.HDFStore(populate_updated['name'], mode = 'r+')
@@ -140,6 +155,5 @@ def test_update_store_cash(populate_updated):
 
     testing.assert_frame_equal(store.get('CA5H'), cash)
     store.close()
-    os.remove(populate_store['name'])
-
-#def test_create_store_cash(store_dir
+    os.remove(populate_updated['name'])
+"""

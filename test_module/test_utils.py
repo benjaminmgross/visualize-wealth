@@ -60,4 +60,21 @@ def test_union_store_indexes(populate_store):
     store.close()
     os.remove(populate_store['name'])
 
+def test_create_store_cash(populate_store):
+    index = populate_store['index']
+    index = pandas.Series(index, index = index)
+
+    utils.create_store_cash(populate_store['name'])
+    store = pandas.HDFStore(populate_store['name'], mode = 'r+')
+    cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+    n = len(index)
+    cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
+                            index = index,
+                            columns = cols
+    )
+
+    testing.assert_frame_equal(store.get('CA5H'), cash)
+    store.close()
+    os.remove(populate_store['name'])
+
 #def test_create_store_cash(store_dir

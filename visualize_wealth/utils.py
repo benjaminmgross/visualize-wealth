@@ -648,8 +648,8 @@ def union_store_indexes(store):
 
     :RETURNS:
 
-        :class:`NoneType` but updates the ``HDF5`` file, and prints to 
-        screen which values would not update
+        :class:`pandas.DatetimeIndex` of the union of all indexes within
+        the store
 
     """
     key_iter = (key for key in store.keys())
@@ -662,7 +662,7 @@ def union_store_indexes(store):
 
 def create_store_cash(store_path):
     """
-    Create a cash price, key = u'CA$H' in an HDFStore located at store_path
+    Create a cash price, key = u'CA5H' in an HDFStore located at store_path
 
     :ARGS:
 
@@ -676,8 +676,8 @@ def create_store_cash(store_path):
     """
     store = _open_store(store_path)
     keys = store.keys()
-    if '/CA$H' in keys:
-        logging.log(1, "CA$H prices already exists")
+    if '/CA5H' in keys:
+        logging.log(1, "CA5H prices already exists")
         store.close()
         return
 
@@ -693,7 +693,7 @@ def create_store_cash(store_path):
                           index = m_index,
                           columns = cols
     )
-    store.put('CA$H', df)
+    store.put('CA5H', df)
     store.close()
     return
 
@@ -727,8 +727,8 @@ def update_store_master_index(store_path):
 
 def update_store_cash(store_path):
     """
-    Intelligently update the values of CA$H based on existing keys in the 
-    store, and existing columns of the CA$H values
+    Intelligently update the values of CA5H based on existing keys in the 
+    store, and existing columns of the CA5H values
 
     :ARGS:
 
@@ -744,10 +744,10 @@ def update_store_cash(store_path):
 
     try:
         master_ind = store.get('IND3X')
-        cash = store.get('CA$H')
+        cash = store.get('CA5H')
     except KeyError:
-        logging.exception("store doesn't contain {0} and / or {1}".format(
-            'CA$H', 'IND3X'))
+        print "store doesn't contain {0} and / or {1}".format(
+            'CA5H', 'IND3X')
         store.close()
         raise
 
@@ -757,15 +757,15 @@ def update_store_cash(store_path):
         try:
             n = len(master_ind)
             cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
-            cash = pandas.DataFrame(numpy.ones([n, len(cols)),
+            cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
                                     index = master_ind,
                                     columns = cols
             )
-            store.put('CA$H', cash)
-            store.close()
+            store.put('CA5H', cash)
         except:
             print "Error updating cash"
-            store.close()
+
+    store.close()
     return None
 
 def update_store_prices(store_path, store_keys = None):

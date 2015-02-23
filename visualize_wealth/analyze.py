@@ -1362,16 +1362,49 @@ def period_returns(series, freq = 'daily', interval = 'quarterly'):
             }
 
     chunks = zipped_time_chunks(series.index, interval)
-
+    dt_l = []
     d = {}
     for beg, fin in chunks:
         key = fmat[interval](beg)
         d[key] = annualized_return(series[beg:fin], freq = freq)
+        dt_l.append(key)
 
-    return pandas.Series(d)
+    return pandas.Series(d, index = dt_l)
 
+def period_volatility(series, freq = 'daily', interval = 'quarterly'):
+    """
+    Return the disjoint periodic volatility of series at interval, given the 
+    time frequency of the data in series is freq.
 
+    :ARGS:
 
+        series: :class:`pandas.Series` of prices
+
+        freq: :class:`string` in ['daily', 'monthly', 'quarterly', 'yearly'] of 
+        the frequency of the data
+
+        interval: :class:`string` of the periodicity of the interval you wish to
+        return, in ['monthly', 'quarterly', 'yearly']
+
+    :RETURNS:
+
+        :class:`pandas.Series`
+    """
+    fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
+            'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
+            'yearly': lambda x: x.year
+            }
+
+    chunks = zipped_time_chunks(series.index, interval)
+
+    dt_l = []
+    d = {}
+    for beg, fin in chunks:
+        key = fmat[interval](beg)
+        d[key] = annualized_vol(series[beg:fin], freq = freq)
+        dt_l.append(key)
+
+    return pandas.Series(d, index = dt_l)
 
 def r2(series, benchmark):
     """

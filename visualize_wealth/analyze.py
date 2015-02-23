@@ -10,6 +10,7 @@ import collections
 import numpy
 import pandas
 import scipy.stats
+from .utils import zipped_time_chunks
 
 def active_return(series, benchmark, freq = 'daily'):
     """
@@ -146,9 +147,14 @@ def annualized_return(series, freq = 'daily'):
     
     """
     def _annualized_return(series, freq = 'daily'):
+
         fac = _interval_to_factor(freq)
-        series_rets = log_returns(series)
-        return numpy.exp(series_rets.mean()*fac) - 1
+        T = len(series) - 1.
+        yr_frac = (series.index[-1] - series.index[0]).days / 365.
+        if yr_frac > 1.:
+            return numpy.exp(numpy.log(series[-1]/series[0]) * fac / T) - 1.
+        else:
+            return numpy.exp(numpy.log(series[-1]/series[0]) ) - 1.
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _annualized_return(x, freq = freq))
@@ -309,8 +315,6 @@ def attribution_weights_by_interval(series, factor_df, interval):
         message)
 
     """
-    from .utils import zipped_time_chunks
-
     chunks = zipped_time_chunks(series.index, interval)
     wt_dict = {}
     for beg, fin in chunks:
@@ -1332,6 +1336,42 @@ def median_upcapture(series, benchmark):
         return benchmark.apply(lambda x: _median_upcapture(series, x))
     else:
         return _median_upcapture(series, benchmark)
+
+def period_returns(series, freq = 'daily', interval = 'quarterly'):
+    """
+    Return the disjoint periodic returns of series at interval, given the 
+    time frequency of the data in series is freq.
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of prices
+
+        freq: :class:`string` in ['daily', 'monthly', 'quarterly', 'yearly'] of 
+        the frequency of the data
+
+        interval: :class:`string` of the periodicity of the interval you wish to
+        return, in ['monthly', 'quarterly', 'yearly']
+
+    :RETURNS:
+
+        :class:`pandas.Series`
+    """
+    fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
+            'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
+            'yearly': lambda x: x.year
+            }
+
+    chunks = zipped_time_chunks(series.index, interval)
+
+    d = {}
+    for beg, fin in chunks:
+        key = fmat[interval](beg)
+        d[key] = annualized_return(series[beg:fin], freq = freq)
+
+    return pandas.Series(d)
+
+
+
 
 def r2(series, benchmark):
     """

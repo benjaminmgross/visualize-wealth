@@ -620,12 +620,6 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
     """
     store = _open_store(store_path)
 
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r')
-    except IOError:
-        print "{0} is not a valid path to an HDFStore Object".format(store_path)
-        return
-
     if isinstance(ticker_list, (str, unicode)):
         ret_series = store[ticker_list][join_col]
         store.close()

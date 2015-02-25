@@ -339,6 +339,36 @@ def first_valid_date(prices):
         print "prices must be a DataFrame or dictionary"
         return
 
+def gen_gbm_price_series(num_years, N, price_0, vol, drift):
+    """
+    Return a price series generated using GBM
+    
+    :ARGS:
+
+        num_years: number of years (if 20 trading days, then 20/252)
+
+        N: number of total periods
+    
+        price_0: starting price for the security
+
+        vol: the volatility of the security
+    
+        return: the expected return of the security
+    
+    :RETURNS:
+
+        Pandas.Series of length n of the simulated price series
+    
+    """
+    dt = num_years/float(N)
+    e1 = (drift - 0.5*vol**2)*dt
+    e2 = (vol*numpy.sqrt(dt))
+    cum_shocks = numpy.cumsum(numpy.random.randn(N,))
+    cum_drift = numpy.arange(1, N + 1)
+    
+    return pandas.Series(numpy.append(
+        price_0, price_0*numpy.exp(cum_drift*e1 + cum_shocks*e2)[:-1]))
+
 def index_intersect(arr_a, arr_b):
     """
     Return the intersection of two :class:`pandas` objects, either a

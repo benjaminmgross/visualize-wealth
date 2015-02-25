@@ -1356,20 +1356,29 @@ def period_returns(series, freq = 'daily', interval = 'quarterly'):
 
         :class:`pandas.Series`
     """
-    fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
-            'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
-            'yearly': lambda x: x.year
-            }
+    def _period_returns(series, freq, interval):
+        fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
+                'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
+                'yearly': lambda x: x.year
+                }
 
-    chunks = zipped_time_chunks(series.index, interval)
-    dt_l = []
-    d = {}
-    for beg, fin in chunks:
-        key = fmat[interval](beg)
-        d[key] = annualized_return(series[beg:fin], freq = freq)
-        dt_l.append(key)
+        chunks = zipped_time_chunks(series.index, interval)
+        dt_l = []
+        d = {}
+        for beg, fin in chunks:
+            key = fmat[interval](beg)
+            d[key] = annualized_return(series[beg:fin], freq = freq)
+            dt_l.append(key)
 
-    return pandas.Series(d, index = dt_l)
+        return pandas.Series(d, index = dt_l)
+
+    if isinstance(series, pandas.Series):
+        return _period_returns(series = series, freq = freq, interval = interval)
+    else:
+        return series.apply(lambda x: _period_returns(series = x,
+                                                      freq = freq,
+                                                      interval = interval)
+        )
 
 def period_volatility(series, freq = 'daily', interval = 'quarterly'):
     """
@@ -1390,21 +1399,30 @@ def period_volatility(series, freq = 'daily', interval = 'quarterly'):
 
         :class:`pandas.Series`
     """
-    fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
-            'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
-            'yearly': lambda x: x.year
-            }
+    def _period_volatility(series, freq, interval):
+        fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
+                'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
+                'yearly': lambda x: x.year
+                }
 
-    chunks = zipped_time_chunks(series.index, interval)
+        chunks = zipped_time_chunks(series.index, interval)
 
-    dt_l = []
-    d = {}
-    for beg, fin in chunks:
-        key = fmat[interval](beg)
-        d[key] = annualized_vol(series[beg:fin], freq = freq)
-        dt_l.append(key)
+        dt_l = []
+        d = {}
+        for beg, fin in chunks:
+            key = fmat[interval](beg)
+            d[key] = annualized_vol(series[beg:fin], freq = freq)
+            dt_l.append(key)
 
-    return pandas.Series(d, index = dt_l)
+        return pandas.Series(d, index = dt_l)
+
+    if isinstance(series, pandas.Series):
+        return _period_volatility(series = series, freq = freq, interval = interval)
+    else:
+        return series.apply(lambda x: _period_volatility(series = x,
+                                                         freq = freq,
+                                                         interval = interval)
+        )
 
 def r2(series, benchmark):
     """

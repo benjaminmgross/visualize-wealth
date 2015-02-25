@@ -753,6 +753,7 @@ def update_store_master_index(store_path):
         tmp.drop_duplicates(inplace = True)
         store.put('IND3X', tmp)
 
+    store.close()
     return None
 
 def update_store_cash(store_path):

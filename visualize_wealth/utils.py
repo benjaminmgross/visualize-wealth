@@ -623,8 +623,7 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
     cols = ['Open', 'High', 'Low', 'Volume', 'Close', 'Adj Close']
 
     if join_col not in cols:
-        raise KeyError, "{0} not in ['Close', 'Adj Close', ...]".format(
-            join_col)
+        raise KeyError, "{0} not in ['Close', 'Adj Close', ...]".format(join_col)
 
     if isinstance(ticker_list, (str, unicode)):
         ret_series = store[ticker_list][join_col]

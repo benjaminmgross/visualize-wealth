@@ -12,8 +12,6 @@ import datetime
 import numpy
 import pandas
 import os
-from . import utils
-from . import analyze
 
 def classify_series_with_store(series, trained_series, store_path,
                                calc_meth = 'x-inv-x', n = None):
@@ -43,6 +41,8 @@ def classify_series_with_store(series, trained_series, store_path,
         :class:`string` of the tickers that have been estimated
         based on the method provided
     """
+    from .utils import index_intersect
+    from .analyze import log_returns, r2_adj
 
     if series.name in trained_series.index:
         return trained_series[series.name]
@@ -53,14 +53,14 @@ def classify_series_with_store(series, trained_series, store_path,
             print store_path + " is not a valid path to HDFStore"
             return
         rsq_d = {}
-        ys = analyze.log_returns(series)
+        ys = log_returns(series)
 
         for key in store.keys():
             key = key.strip('/')
             p = store.get(key)
-            xs = analyze.log_returns(p['Adj Close'])
-            ind = utils.index_intersect(xs, ys)
-            rsq_d[key] = analyze.r2_adj(benchmark = ys[ind], series = xs[ind])
+            xs = log_returns(p['Adj Close'])
+            ind = index_intersect(xs, ys)
+            rsq_d[key] = r2_adj(benchmark = ys[ind], series = xs[ind])
         rsq_df = pandas.Series(rsq_d)
         store.close()
         if not n:
@@ -95,18 +95,21 @@ def classify_series_with_online(series, trained_series,
         :class:`string` of the tickers that have been estimated
         based on the method provided
     """
+    from .utils import tickers_to_dict, index_intersect
+    from .analyze import log_returns, r2_adj
+
     if series.name in trained_series.index:
         return trained_series[series.name]
     else:
-        price_dict = utils.tickers_to_dict(trained_series.index)
+        price_dict = tickers_to_dict(trained_series.index)
         rsq_d = {}
-        ys = analyze.log_returns(series)
+        ys = log_returns(series)
         
         for key in price_dict.keys():
             p = price_dict[key]
-            xs = anaylze.log_returns(p['Adj Close'])
-            ind = utils.index_intersect(xs, ys)
-            rsq_d[key] = analyze.r2_adj(benchmark = xs[ind], series = ys[ind])
+            xs = log_returns(p['Adj Close'])
+            ind = index_intersect(xs, ys)
+            rsq_d[key] = r2_adj(benchmark = xs[ind], series = ys[ind])
         rsq_df = pandas.Series(rsq_d)
 
         if not n:

@@ -13,8 +13,6 @@ import numpy
 import pandas.io.data
 import datetime
 import urllib2
-import visualize_wealth.analyze as vwa
-import visualize_wealth.utils as vwu
 
 def format_blotter(blotter_file):
     """
@@ -511,8 +509,8 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
     panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is  b/f first trade
-    first_price = max(map(lambda x: panel.loc[x, :,
-        'Adj Close'].dropna().index.min(), panel.items))
+    #first_price = max(map(lambda x: panel.loc[x, :,
+    #    'Adj Close'].dropna().index.min(), panel.items))
 
     #print the number of consectutive nans
     #for ticker in weight_df.columns:
@@ -567,13 +565,13 @@ def fetch_data_for_weight_allocation_method(weight_df):
     panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is  b/f first trade
-    first_price = max(map(lambda x: panel.loc[x, :,
-        'Adj Close'].dropna().index.min(), panel.items))
+    #first_price = max(map(lambda x: panel.loc[x, :,
+    #    'Adj Close'].dropna().index.min(), panel.items))
 
     #print the number of consectutive nans
-    for ticker in weight_df.columns:
-        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
-            first_price:, 'Adj Close'].isnull().astype(int)).max())
+    #for ticker in weight_df.columns:
+    #    print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+    #        first_price:, 'Adj Close'].isnull().astype(int)).max())
 
     return panel.ffill()
 
@@ -619,13 +617,13 @@ def fetch_data_from_store_initial_alloc_method(
     panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is  b/f first trade
-    first_price = max(map(lambda x: panel.loc[x, :,
-        'Adj Close'].dropna().index.min(), panel.items))
+    #first_price = max(map(lambda x: panel.loc[x, :,
+    #    'Adj Close'].dropna().index.min(), panel.items))
 
     #print the number of consectutive nans
-    for ticker in initial_weights.index:
-        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
-            first_price:, 'Adj Close'].isnull().astype(int)).max())
+    #for ticker in initial_weights.index:
+    #    print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+    #        first_price:, 'Adj Close'].isnull().astype(int)).max())
 
     return panel.ffill()
 
@@ -669,13 +667,13 @@ def fetch_data_for_initial_allocation_method(initial_weights,
     panel = pandas.Panel(d)
 
     #Check to make sure the earliest "full data date" is bf first trade
-    first_price = max(map(lambda x: panel.loc[x, :,
-        'Adj Close'].dropna().index.min(), panel.items))
+    #first_price = max(map(lambda x: panel.loc[x, :,
+    #    'Adj Close'].dropna().index.min(), panel.items))
 
     #print the number of consectutive nans
-    for ticker in initial_weights.index:
-        print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
-            first_price: , 'Adj Close'].isnull().astype(int)).max())
+    #for ticker in initial_weights.index:
+    #    print ticker + " " + str(vwa.consecutive(panel.loc[ticker,
+    #        first_price: , 'Adj Close'].isnull().astype(int)).max())
 
     return panel.ffill()
 

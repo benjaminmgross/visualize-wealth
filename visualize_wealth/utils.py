@@ -2,17 +2,15 @@
 # encoding: utf-8
 """
 .. module:: visualize_wealth.utils.py
-   :synopsis: Helper fuctions and knick knacks for portfolio analysis
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
-"""
 
-import os
+"""
+import datetime
 import logging
-import argparse
 import pandas
 import numpy
-import datetime
+import os
 
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
@@ -116,11 +114,7 @@ def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
         :class:`NoneType` but appends the store and comments the
          successes ands failures
     """
-    try:
-        store = pandas.HDFStore(path = store_path,  mode = 'a')
-    except IOError:
-        print  path + " is not a valid path to an HDFStore Object"
-        return
+    store = _open_store(store_path)
     store_keys = map(lambda x: x.strip('/'), store.keys())
     not_in_store = numpy.setdiff1d(ticker_list, store_keys )
     new_prices = tickers_to_dict(not_in_store, start = start)
@@ -129,9 +123,10 @@ def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     for val in new_prices.keys():
         try:
             store.put(val, new_prices[val])
-            print val + " has been stored"
+            logging.log(20, "{0} has been stored".format( val))
         except:
-            print val + " couldn't store"
+            logging.warning("{0} didn't store".format(val))
+
     store.close()
     return None
 
@@ -191,11 +186,7 @@ def check_store_path_for_tickers(ticker_list, store_path):
         :class:`bool` True if all tickers are found in the store and
         False if not all the tickers are found in the HDFStore
     """
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r+')
-    except IOError:
-        print  store_path + " is not a valid path to an HDFStore Object"
-        return
+    store = _open_store(store_path)
 
     if isinstance(ticker_list, pandas.Index):
         #pandas.Index is not sortable, so much tolist() it
@@ -234,8 +225,13 @@ def check_trade_price_start(weight_df, price_df):
         where True indicates the first allocation takes place 
         after the first price (as desired) and False the converse
     """
-    msg = "tickers in the weight_df and price_df must be the same"
-    assert set(weight_df.columns) == set(price_df.columns), msg
+    #make sure all of the weight_df tickers are in price_df
+    intrsct = set(weight_df.columns).intersection(set(price_df.columns))
+
+    if set(weight_df.columns) != intrsct:
+
+        raise KeyError, "Not all tickers in weight_df are in price_df"
+            
 
     ret_d = {}
     for ticker in weight_df.columns:
@@ -292,7 +288,6 @@ def first_price_date_get_prices(ticker_list):
 
         :class:`string` of 'dd-mm-yyyy' or :class:`list` of said strings
     """
-    fvi = pandas.Series.first_valid_index
 
     #pull down the data into a DataFrame
     df = tickers_to_frame(ticker_list)
@@ -344,6 +339,36 @@ def first_valid_date(prices):
         print "prices must be a DataFrame or dictionary"
         return
 
+def gen_gbm_price_series(num_years, N, price_0, vol, drift):
+    """
+    Return a price series generated using GBM
+    
+    :ARGS:
+
+        num_years: number of years (if 20 trading days, then 20/252)
+
+        N: number of total periods
+    
+        price_0: starting price for the security
+
+        vol: the volatility of the security
+    
+        return: the expected return of the security
+    
+    :RETURNS:
+
+        Pandas.Series of length n of the simulated price series
+    
+    """
+    dt = num_years/float(N)
+    e1 = (drift - 0.5*vol**2)*dt
+    e2 = (vol*numpy.sqrt(dt))
+    cum_shocks = numpy.cumsum(numpy.random.randn(N,))
+    cum_drift = numpy.arange(1, N + 1)
+    
+    return pandas.Series(numpy.append(
+        price_0, price_0*numpy.exp(cum_drift*e1 + cum_shocks*e2)[:-1]))
+
 def index_intersect(arr_a, arr_b):
     """
     Return the intersection of two :class:`pandas` objects, either a
@@ -368,6 +393,29 @@ def index_intersect(arr_a, arr_b):
     else:
         return arr_a.index
 
+def index_multi_union(frame_list):
+    """
+    Returns the index union of multiple 
+    :class:`pandas.DataFrame`'s or :class:`pandas.Series`
+
+    :ARGS:
+
+        frame_list: :class:`list` containing either ``DataFrame``'s or
+        ``Series``
+    
+    :RETURNS:
+
+        :class:`pandas.DatetimeIndex` of the objects' intersection
+    """
+    #check to make sure all objects are Series or DataFrames
+
+
+
+    return reduce(lambda x, y: x | y, 
+                  map(lambda x: x.dropna().index, 
+                      frame_list)
+    )
+
 def index_multi_intersect(frame_list):
     """
     Returns the index intersection of multiple 
@@ -382,14 +430,11 @@ def index_multi_intersect(frame_list):
 
         :class:`pandas.DatetimeIndex` of the objects' intersection
     """
-    #check to make sure all objects are Series or DataFrames
-    if not all(map(lambda x: isinstance(x, (
-            pandas.Series, pandas.DataFrame) ), frame_list)):
-        print "All objects must be Series or DataFrame's"
-        return
-        
+
     return reduce(lambda x, y: x & y, 
-           map(lambda x: x.dropna().index, frame_list) )
+                  map(lambda x: x.dropna().index, 
+                      frame_list) 
+    )
 
 def join_on_index(df_list, index):
     """
@@ -410,7 +455,8 @@ def join_on_index(df_list, index):
 
 def normalized_price(price_df):
     """
-    Return the normalized price of a series
+    Return the normalized price of a :class:`pandas.Series` or 
+    :class:`pandas.DataFrame`
 
     :ARGS:
 
@@ -420,24 +466,23 @@ def normalized_price(price_df):
         
         same as the input
     """
-    if isinstance(price_df, pandas.Series):
+    null_d = {pandas.DataFrame: lambda x: pandas.isnull(x).any().any(),
+              pandas.Series: lambda x: pandas.isnull(x).any()
+              }
 
-        try:
-            return price_df.div(price_df[0])
+    calc_d = {pandas.DataFrame: lambda x: x.div(x.iloc[0, :]),
+              pandas.Series: lambda x: x.div(x[0])
+              }
 
-        except:
-            logging.exception("Contains null values")
+    typ = type(price_df)
+    if null_d[typ](price_df):
+        raise ValueError, "cannot contain null values"
 
-    else:
-        try:
-            return price_df.div(price_df.iloc[0, :] )
+    return calc_d[typ](price_df)
 
-        except:
-            logging.exception("Contains null values")
-"""
 def perturbate_asset(frame, key, eps):
-
-    Perturbate asset 'key' within 'frame' of prices, an amount of eps
+    """
+    Perturbate an asset within a weight allocation frame in the amount eps
 
     :ARGS:
 
@@ -450,25 +495,21 @@ def perturbate_asset(frame, key, eps):
     :RETURNS:
 
         :class:`pandas.DataFrame` of the perturbed weight_df
+    """
+    from .analyze import linear_returns
 
-    try:
-        pert_series = pandas.Series(numpy.zeros_like(frame[key]), 
-                              index = frame.index
-        )
-        
-        lin_ret = vwa.linear_returns(frame[key])
-        lin_ret = lin_ret.mul(1. + eps)
-        pert_series[0] = p_o = frame[key][0]
+    pert_series = pandas.Series(numpy.zeros_like(frame[key]), 
+                          index = frame.index
+    )
+    
+    lin_ret = linear_returns(frame[key])
+    lin_ret = lin_ret.mul(1. + eps)
+    pert_series[0] = p_o = frame[key][0]
+    pert_series[1:] = p_o * (1. + lin_ret[1:])
+    ret_frame = frame.copy()
+    ret_frame[key] = pert_series
+    return ret_frame
 
-        pert_series[1:] = p_o * (1. + lin_ret[1:])
-        ret_frame = frame.copy()
-        ret_frame[key] = pert_series
-        return ret_frame
-
-    except KeyError:
-        logging.exception("perturbation of {0} failed".format(key))
-        return
-"""
 
 def setup_trained_hdfstore(trained_data, store_path):
     """
@@ -541,17 +582,20 @@ def tickers_to_frame(ticker_list, api = 'yahoo', start = '01/01/1990',
         :class:`pandas.DataFrame` when the ``ticker_list`` is 
         :class:`str`
     """
-    if not isinstance(join_col, str):
-        print "join_col must be a string"
-        return
-
+    
     if isinstance(ticker_list, (str, unicode)):
         return __get_data(ticker_list, api = api, start = start)[join_col]
     else:
         d = {}
         for ticker in ticker_list:
-            d[ticker] = __get_data(ticker, api = api,
-                                   start = start)[join_col]
+
+            tmp = __get_data(ticker, 
+                             api = api,
+                             start = start
+            )
+
+            d[ticker] = tmp[join_col]
+
     return pandas.DataFrame(d)
 
 def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
@@ -574,15 +618,12 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
         :class:`pandas.DataFrame` when the ``ticker_list`` is 
         :class:`str`
     """
-    if not isinstance(join_col, str):
-        print "join_col must be a string"
-        return
+    store = _open_store(store_path)
 
     try:
         store = pandas.HDFStore(path = store_path, mode = 'r')
     except IOError:
-        logging.exception(
-            "{0} is not a valid path to an HDFStore Object".format(store_path)
+        print "{0} is not a valid path to an HDFStore Object".format(store_path)
         )
         return
 
@@ -600,6 +641,163 @@ def ticks_to_frame_from_store(ticker_list, store_path,  join_col = 'Adj Close'):
         price_df = price_df.loc[d_o:, :]
 
     return price_df
+
+def create_store_master_index(store_path):
+    """
+    Add a master index, key = 'IND3X', to HDFStore located at store_path
+
+    :ARGS:
+
+        store_path: :class:`string` the location of the ``HDFStore`` file
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file
+
+    """
+    store = _open_store(store_path)
+
+    keys = store.keys()
+
+    if '/IND3X' in keys:
+        print "u'IND3X' already exists in HDFStore at {0}".format(store_path)
+
+        store.close()
+        return
+    else:
+        union = union_store_indexes(store)
+        store.put('IND3X', pandas.Series(union, index = union))
+        store.close()
+
+def union_store_indexes(store):
+    """
+    Return the union of all Indexes within a store located inside store
+
+    :ARGS:
+
+        store: :class:`HDFStore`
+
+    :RETURNS:
+
+        :class:`pandas.DatetimeIndex` of the union of all indexes within
+        the store
+
+    """
+    key_iter = (key for key in store.keys())
+    ind = store.get(key_iter.next()).index
+    union = ind.copy()
+
+    for key in key_iter:
+        union = union | store.get(key).index
+    return union
+
+def create_store_cash(store_path):
+    """
+    Create a cash price, key = u'CA5H' in an HDFStore located at store_path
+
+    :ARGS:
+
+        store_path: :class:`string` the location of the ``HDFStore`` file
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file, and prints to 
+        screen which values would not update
+
+    """
+    store = _open_store(store_path)
+    keys = store.keys()
+    if '/CA5H' in keys:
+        logging.log(1, "CA5H prices already exists")
+        store.close()
+        return
+
+    if '/IND3X' not in keys:
+        m_index = union_store_indexes(store)
+    else:
+        m_index = store.get('IND3X')
+
+    cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+    n_dates, n_cols = len(m_index), len(cols)
+
+    df = pandas.DataFrame(numpy.ones([n_dates, n_cols]), 
+                          index = m_index,
+                          columns = cols
+    )
+    store.put('CA5H', df)
+    store.close()
+    return
+
+def update_store_master_index(store_path):
+    """
+    Intelligently update the store 'IND3X', this can only be done
+    after the prices at the store path have been updated
+    """
+    store = _open_store(store_path)
+
+    try:
+        stored_data = store.get('IND3X')
+    except KeyError:
+        logging.exception("store doesn't contain IND3X")
+        store.close()
+        raise
+
+    last_stored_date = stored_data.dropna().index.max()
+    today = datetime.datetime.date(datetime.datetime.today())
+    if last_stored_date < pandas.Timestamp(today):
+
+        union_ind = union_store_indexes(store)
+        tmp = pandas.Series(union_ind, index = union_ind)
+
+        #need to drop duplicates because there's 1 row of overlap
+        tmp = stored_data.append(tmp)
+        tmp.drop_duplicates(inplace = True)
+        store.put('IND3X', tmp)
+
+    return None
+
+def update_store_cash(store_path):
+    """
+    Intelligently update the values of CA5H based on existing keys in the 
+    store, and existing columns of the CA5H values
+
+    :ARGS:
+
+        store_path: :class:`string` the location of the ``HDFStore`` file
+
+    :RETURNS:
+
+        :class:`NoneType` but updates the ``HDF5`` file, and prints to 
+        screen which values would not update
+
+    """
+    store = _open_store(store_path)
+
+    try:
+        master_ind = store.get('IND3X')
+        cash = store.get('CA5H')
+    except KeyError:
+        print "store doesn't contain {0} and / or {1}".format(
+            'CA5H', 'IND3X')
+        store.close()
+        raise
+
+    last_cash_dt = cash.dropna().index.max()
+    today = datetime.datetime.date(datetime.datetime.today())
+    if last_cash_dt < pandas.Timestamp(today):
+        try:
+            n = len(master_ind)
+            cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
+            cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
+                                    index = master_ind,
+                                    columns = cols
+            )
+            store.put('CA5H', cash)
+        except:
+            print "Error updating cash"
+
+    store.close()
+    return None
 
 def update_store_prices(store_path, store_keys = None):
     """
@@ -627,11 +825,8 @@ def update_store_prices(store_path, store_keys = None):
     reader = pandas.io.data.DataReader
     strftime = datetime.datetime.strftime
     today_str = strftime(datetime.datetime.today(), format = '%m/%d/%Y')
-    try:
-        store = pandas.HDFStore(path = store_path, mode = 'r+')
-    except IOError:
-        print  "{0} is not a valid path to an HDFStore Object".format(store_path)
-        return
+    
+    store = _open_store(store_path)
 
     if not store_keys:
         store_keys = store.keys()
@@ -674,14 +869,12 @@ def zipped_time_chunks(index, interval):
         per_interval: :class:`string` either 'monthly', 'quarterly',
         or 'yearly'
     """
-    #create the time chunks
-    #calculate raer for each of the time chunks
+
     time_d = {'monthly': lambda x: x.month, 
               'quarterly':lambda x:x.quarter,
               'yearly':lambda x: x.year}
 
     ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
-    
     
     if ind[0]: #The series started on the last day of period
         index = index.copy()[1:] #So we can't get a Period
@@ -691,7 +884,28 @@ def zipped_time_chunks(index, interval):
     fdop = index[numpy.append(True, ind[:-1])]
     return zip(fdop, ldop)
 
-        
+def _open_store(store_path):
+    """
+    open an HDFStore located at store_path with the appropriate error handling
+
+    :ARGS:
+
+        store_path: :class:`string` where the store is located
+
+    :RETURNS:
+
+        :class:`HDFStore` instance
+    """
+    try:
+        store = pandas.HDFStore(path = store_path, mode = 'r+')
+        return store
+    except IOError:
+        logging.exception(
+            "{0} is not a valid path to an HDFStore Object".format(store_path)
+        )
+        raise
+    
+
 def __get_data(ticker, api, start):
     """
     Helper function to get Yahoo! Data with exceptions built in and 
@@ -712,8 +926,8 @@ def __get_data(ticker, api, start):
     reader = pandas.io.data.DataReader
     try:
         data = reader(ticker, api, start = start)
-        print "worked for " + ticker
         return data
     except:
         print "failed for " + ticker
         return
+

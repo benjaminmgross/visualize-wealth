@@ -10,7 +10,7 @@ import collections
 import numpy
 import pandas
 import scipy.stats
-from . import utils
+from .utils import zipped_time_chunks
 
 def active_return(series, benchmark, freq = 'daily'):
     """
@@ -147,9 +147,14 @@ def annualized_return(series, freq = 'daily'):
     
     """
     def _annualized_return(series, freq = 'daily'):
+
         fac = _interval_to_factor(freq)
-        series_rets = log_returns(series)
-        return numpy.exp(series_rets.mean()*fac) - 1
+        T = len(series) - 1.
+        yr_frac = (series.index[-1] - series.index[0]).days / 365.
+        if yr_frac > 1.:
+            return numpy.exp(numpy.log(series[-1]/series[0]) * fac / T) - 1.
+        else:
+            return numpy.exp(numpy.log(series[-1]/series[0]) ) - 1.
 
     if isinstance(series, pandas.DataFrame):
         return series.apply(lambda x: _annualized_return(x, freq = freq))
@@ -310,7 +315,7 @@ def attribution_weights_by_interval(series, factor_df, interval):
         message)
 
     """
-    chunks = utils.zipped_time_chunks(series.index, interval)
+    chunks = zipped_time_chunks(series.index, interval)
     wt_dict = {}
     for beg, fin in chunks:
         wt_dict[beg] = attribution_weights(series[beg: fin], 
@@ -651,9 +656,19 @@ def cumulative_turnover(alloc_df, asset_wt_df):
         \\tau_j = \\frac{\\sum_{i=1}^n|\omega_i - \\omega_{i+1}|  }{2}
         
     """
+    #the dates when the portfolio are the cause of turnover
     ind = alloc_df.index[1:]
-    return asset_wt_df.loc[ind, :].sub(
-        asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
+    try:
+        return 0.5*asset_wt_df.loc[ind, :].sub(
+            asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
+
+    #the rebalance might have dates past the earliest price
+    except KeyError:
+        loc = alloc_df.index.searchsorted(asset_wt_df.index[0])
+        tmp = alloc_df.iloc[loc:, :]
+        ind = tmp.index[1:]
+        return 0.5*asset_wt_df.loc[ind, :].sub(
+            asset_wt_df.shift(-1).loc[ind, :]).abs().sum(axis = 1).sum()
 
 def cvar_cf(series, p = .01):
     """
@@ -1495,6 +1510,93 @@ def median_upcapture(series, benchmark):
         return benchmark.apply(lambda x: _median_upcapture(series, x))
     else:
         return _median_upcapture(series, benchmark)
+
+def period_returns(series, freq = 'daily', interval = 'quarterly'):
+    """
+    Return the disjoint periodic returns of series at interval, given the 
+    time frequency of the data in series is freq.
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of prices
+
+        freq: :class:`string` in ['daily', 'monthly', 'quarterly', 'yearly'] of 
+        the frequency of the data
+
+        interval: :class:`string` of the periodicity of the interval you wish to
+        return, in ['monthly', 'quarterly', 'yearly']
+
+    :RETURNS:
+
+        :class:`pandas.Series`
+    """
+    def _period_returns(series, freq, interval):
+        fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
+                'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
+                'yearly': lambda x: x.year
+                }
+
+        chunks = zipped_time_chunks(series.index, interval)
+        dt_l = []
+        d = {}
+        for beg, fin in chunks:
+            key = fmat[interval](beg)
+            d[key] = annualized_return(series[beg:fin], freq = freq)
+            dt_l.append(key)
+
+        return pandas.Series(d, index = dt_l)
+
+    if isinstance(series, pandas.Series):
+        return _period_returns(series = series, freq = freq, interval = interval)
+    else:
+        return series.apply(lambda x: _period_returns(series = x,
+                                                      freq = freq,
+                                                      interval = interval)
+        )
+
+def period_volatility(series, freq = 'daily', interval = 'quarterly'):
+    """
+    Return the disjoint periodic volatility of series at interval, given the 
+    time frequency of the data in series is freq.
+
+    :ARGS:
+
+        series: :class:`pandas.Series` of prices
+
+        freq: :class:`string` in ['daily', 'monthly', 'quarterly', 'yearly'] of 
+        the frequency of the data
+
+        interval: :class:`string` of the periodicity of the interval you wish to
+        return, in ['monthly', 'quarterly', 'yearly']
+
+    :RETURNS:
+
+        :class:`pandas.Series`
+    """
+    def _period_volatility(series, freq, interval):
+        fmat = {'monthly': lambda x: '{0}-{1}'.format(x.month, x.year), 
+                'quarterly': lambda x: 'q{0}-{1}'.format(x.quarter, x.year),
+                'yearly': lambda x: x.year
+                }
+
+        chunks = zipped_time_chunks(series.index, interval)
+
+        dt_l = []
+        d = {}
+        for beg, fin in chunks:
+            key = fmat[interval](beg)
+            d[key] = annualized_vol(series[beg:fin], freq = freq)
+            dt_l.append(key)
+
+        return pandas.Series(d, index = dt_l)
+
+    if isinstance(series, pandas.Series):
+        return _period_volatility(series = series, freq = freq, interval = interval)
+    else:
+        return series.apply(lambda x: _period_volatility(series = x,
+                                                         freq = freq,
+                                                         interval = interval)
+        )
 
 def r2(series, benchmark):
     """

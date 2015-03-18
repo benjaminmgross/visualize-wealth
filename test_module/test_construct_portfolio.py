@@ -18,9 +18,29 @@ from pandas.util import testing
 from visualize_wealth import construct_portfolio
 
 @pytest.fixture
-def load_panel_sheet():
+def panel_sheet():
     f = './test_data/panel from weight file test.xlsx'
     return pandas.ExcelFile(f)
+
+@pytest.fixture
+def rebal_weights(panel_sheet):
+    return panel_sheet.parse('rebal_weights', index_col = 0)
+
+@pytest.fixture
+def panel(panel_sheet):
+    weight_df = rebal_weights
+    tickers = ['EEM', 'EFA', 'IYR', 'IWV', 'IEF', 'IYR', 'SHY']
+    d = {}
+    for ticker in tickers:
+        d[ticker] = panel_sheet.parse(ticker, index_col = 0)
+
+    return panel_from_weight_file(weight_df, 
+                                  pandas.Panel(d), 
+                                  1000.
+    )
+
+
+
     """
 
     >>> weight_df = xl_file.parse('rebal_weights', index_col = 0)

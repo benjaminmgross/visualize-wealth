@@ -677,6 +677,94 @@ def fetch_data_for_initial_allocation_method(initial_weights,
 
     return panel.ffill()
 
+def _ac_c(weight_df, price_panel):
+    """
+    Helper function for the pfwf (panel_from_weight_file)
+    """
+
+    return ac_c
+def pfwf_rework(weight_df, price_panel, start_value):
+    """
+    Returns a :class:`pandas.Panel` with columns ['Close', 'Open'] 
+    when provided a pandas.DataFrame of weight allocations and a 
+    starting  value of the index
+
+    :ARGS:
+    
+        weight_df of :class:`pandas.DataFrame` of a weight allocation 
+        with tickers for columns, index of dates and weight allocations 
+        to each of the tickers
+ 
+        price_panel of :class:`pandas.Panel` with dimensions [tickers, 
+        index, price data]
+
+    :RETURNS:
+    
+        :class:`pandas.Panel` with dimensions (tickers, dates, 
+        price data)
+
+    .. note:: What to Do with your Panel
+
+        The :class:`pandas.Panel` returned by this function has all of 
+        the necessary information to do some fairly exhaustive 
+        analysis.  Cumulative investment, portfolio value (simply the 
+        ``cum_shares``*``close`` for all assets), closes, opens, etc.  
+    """
+
+    #cols correspond'value_calcs!' in "panel from weight file test.xlsx"
+    cols = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q']
+
+    #create the intervals spanning the trade dates
+    index = price_panel.major_axis
+    int_beg = weight_df.index.copy()
+    locs = [index.get_loc(key) - 1 for key in int_beg[1:]]
+    int_fin = index[locs]
+    dT = pandas.DatetimeIndex([index[-1]])
+    int_fin = int_fin.append(dT)
+
+    p_val = start_value
+    l = []
+    for beg, fin in zip(int_beg, int_fin):
+    
+        close = price_panel.loc[:, beg:fin, 'Close']
+        adj = price_panel.loc[:, beg:fin, 'Adj Close']
+
+        n = len(close)
+
+        c0_ac0 = close.xs(beg).div(adj.xs(beg))
+        n0 = p_val*weight_df.xs(beg).div(close.xs(beg))
+        ac_c = adj.div(close)
+
+        c0_ac0 = pandas.DataFrame(numpy.tile(c0_ac0.values, [n, 1]),
+                                  index = close.index,
+                                  columns = c0_ac0.index
+        )
+
+        n0 = pandas.DataFrame(numpy.tile(n0.values, [n, 1]),
+                              index = close.index,
+                              columns = n0.index
+        )
+
+        adj_q = c0_ac0.mul(ac_c).mul(n0)
+        p_val = adj_q.xs(fin).mul(close.xs(fin)).sum()
+       
+        panel = pandas.Panel.from_dict({'ac_c': ac_c, 
+                                        'c0_ac0': c0_ac0,
+                                        'n0': n0, 
+                                        'Adj_Q': adj_q}
+        )
+
+        #set items and minor appropriately for pfp constructors
+        panel = panel.transpose(2, 1, 0)
+
+        l.append(panel)
+    
+    agg = pandas.concat(l, axis = 1)
+    return pandas.concat([agg, price_panel], 
+                         join = 'inner', 
+                         axis = 2
+    )
+
 def panel_from_weight_file(weight_df, price_panel, start_value):
     """
     Returns a :class:`pandas.Panel` with columns ['Close', 'Open'] 
@@ -716,20 +804,14 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
     #is_valid = vwu.check_trade_price_start(weight_df, price_df)
     #msg = "first allocation precedes first price"
     #assert all(is_valid), msg
-
+    index = price_panel.major_axis.copy()
     columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Value at Open', 
                'Value at Close', 'Open', 'High', 'Low', 'Close', 
                'Volume', 'Adj Close']
     panel = price_panel.reindex(minor_axis = columns)
-    port_cols = ['Close', 'Open']
-    index = panel.major_axis
-    port_df = pandas.DataFrame(numpy.zeros([ len(index), len(port_cols)]), 
-                               index = index, columns = port_cols)
-
     a = weight_df.index
     #Make the last of the zip, the last date of the prices
     b = a[1:].append(pandas.DatetimeIndex([index[-1]]))
-    
     dt_chunks = zip(a, b)
     
     #fill in the Adj Qty values and the aggregate position values

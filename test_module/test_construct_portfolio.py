@@ -15,7 +15,26 @@ import pandas
 import tempfile
 import datetime
 from pandas.util import testing
-import visualize_wealth.utils as utils
+from visualize_wealth import construct_portfolio
+
+@pytest.fixture
+def load_panel_sheet():
+    f = './test_data/panel from weight file test.xlsx'
+    return pandas.ExcelFile(f)
+    """
+
+    >>> weight_df = xl_file.parse('rebal_weights', index_col = 0)
+    >>> tickers = ['EEM', 'EFA', 'IYR', 'IWV', 'IEF', 'IYR', 'SHY']
+    >>> d = {}
+    >>> for ticker in tickers:
+    ...     d[ticker] = xl_file.parse(ticker, index_col = 0)
+    >>> panel = panel_from_weight_file(weight_df, pandas.Panel(d), 
+    ...     1000.)
+    >>> portfolio = pfp_from_weight_file(panel)
+    >>> manual_calcs = xl_file.parse('index_result', index_col = 0)
+    >>> put.assert_series_equal(manual_calcs['Close'], 
+    ...     portfolio['Close'])
+    """
 
 def test_funs():
     """

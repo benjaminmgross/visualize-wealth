@@ -716,16 +716,17 @@ def pfwf_rework(weight_df, price_panel, start_value):
 
     #create the intervals spanning the trade dates
     index = price_panel.major_axis
-    int_beg = weight_df.index.copy()
-    locs = [index.get_loc(key) - 1 for key in int_beg[1:]]
-    int_fin = index[locs]
+    w_ind = weight_df.index
+    locs = [index.get_loc(key) + 1 for key in w_ind]
+    int_beg = index[locs]
+    int_fin = w_ind[1:]
     dT = pandas.DatetimeIndex([index[-1]])
     int_fin = int_fin.append(dT)
 
     p_val = start_value
     l = []
     f_dt = index.get_loc(int_beg[0]) - 1
-    f_dt = index[f_dt]
+    f_dt = w_ind[0]
 
     for beg, fin in zip(int_beg, int_fin):
     
@@ -735,9 +736,9 @@ def pfwf_rework(weight_df, price_panel, start_value):
         n = len(close)
         cl_f = price_panel.loc[:, f_dt, 'Close']
         ac_f = price_panel.loc[:, f_dt, 'Adj Close']
-        
+
         c0_ac0 = cl_f.div(ac_f)
-        n0 = p_val*weight_df.xs(beg).div(cl_f)
+        n0 = p_val*weight_df.xs(f_dt).div(cl_f)
 
         ac_c = adj.div(close)
 

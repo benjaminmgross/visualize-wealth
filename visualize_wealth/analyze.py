@@ -279,13 +279,20 @@ def attribution_weights(series, factor_df):
 
     #linear returns
     series = linear_returns(series).dropna()
-    factor_df = linear_returns(factor_df).dropna()
 
+    #if isinstance(series, pandas.DataFrame) & len(series.columns == 1):
+        #it's an n x 1 dataframe with a valid result
+        #series = series[series.columns[0]]
+
+    factor_df = linear_returns(factor_df).dropna()
     guess = numpy.random.rand(factor_df.shape[1])
     guess = pandas.Series(guess/guess.sum(), index = factor_df.columns)
     bounds = [(0., 1.) for i in numpy.arange(len(guess))]
-    opt_fun = scipy.optimize.minimize(fun = obj_fun, x0 = guess,
-                                      bounds = bounds)
+
+    opt_fun = scipy.optimize.minimize(fun = obj_fun, 
+                                      x0 = guess,
+                                      bounds = bounds
+    )
     opt_wts = pandas.Series(opt_fun.x, index = guess.index)
     opt_wts = opt_wts.div(opt_wts.sum())
     return opt_wts
@@ -319,7 +326,9 @@ def attribution_weights_by_interval(series, factor_df, interval):
     wt_dict = {}
     for beg, fin in chunks:
         wt_dict[beg] = attribution_weights(series[beg: fin], 
-                                       factor_df.loc[beg: fin, :])
+                                           factor_df.loc[beg: fin, :]
+        )
+
     return pandas.DataFrame(wt_dict).transpose()
     
 def beta(series, benchmark):

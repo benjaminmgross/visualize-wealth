@@ -5,4 +5,5 @@ build/
 *.dropbox
 *.egg-info/
 dist/
+docs/
 .coverage

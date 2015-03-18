@@ -280,9 +280,9 @@ def attribution_weights(series, factor_df):
     #linear returns
     series = linear_returns(series).dropna()
 
-    if isinstance(series, pandas.DataFrame) & len(series.columns == 1):
+    #if isinstance(series, pandas.DataFrame) & len(series.columns == 1):
         #it's an n x 1 dataframe with a valid result
-        series = series[series.columns[0]]
+        #series = series[series.columns[0]]
 
     factor_df = linear_returns(factor_df).dropna()
     guess = numpy.random.rand(factor_df.shape[1])

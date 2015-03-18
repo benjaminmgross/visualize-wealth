@@ -724,15 +724,21 @@ def pfwf_rework(weight_df, price_panel, start_value):
 
     p_val = start_value
     l = []
+    f_dt = index.get_loc(int_beg[0]) - 1
+    f_dt = index[f_dt]
+
     for beg, fin in zip(int_beg, int_fin):
     
         close = price_panel.loc[:, beg:fin, 'Close']
         adj = price_panel.loc[:, beg:fin, 'Adj Close']
 
         n = len(close)
+        cl_f = price_panel.loc[:, f_dt, 'Close']
+        ac_f = price_panel.loc[:, f_dt, 'Adj Close']
+        
+        c0_ac0 = cl_f.div(ac_f)
+        n0 = p_val*weight_df.xs(beg).div(cl_f)
 
-        c0_ac0 = close.xs(beg).div(adj.xs(beg))
-        n0 = p_val*weight_df.xs(beg).div(close.xs(beg))
         ac_c = adj.div(close)
 
         c0_ac0 = pandas.DataFrame(numpy.tile(c0_ac0.values, [n, 1]),
@@ -756,8 +762,8 @@ def pfwf_rework(weight_df, price_panel, start_value):
 
         #set items and minor appropriately for pfp constructors
         panel = panel.transpose(2, 1, 0)
-
         l.append(panel)
+        f_dt = fin
     
     agg = pandas.concat(l, axis = 1)
     return pandas.concat([agg, price_panel], 

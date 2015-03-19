@@ -1,18 +1,22 @@
 language: python
 python:
-  - "2.7"
+  - 2.7
 # command to install dependencies
 before_install:
-  - sudo apt-get install libatlas-base-dev
-  - sudo apt-get install gfortran
-  - sudo apt-get update
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
 
 install:
-  - pip install -r preamble.txt
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy pytest matplotlib nose dateutil pandas statsmodels h5py tables
+#  - python setup.py install
+#  - pip install -r preamble.txt
 #  - pip install -r requirements.txt
 #  - pip install -r denouement.txt
 # command to run tests
 script: 
-#  - py.test ./test_module/test_analyze.py -v
-#  - py.test ./test_module/test_utils.py -v
-#  - py.test ./test_module/test_construct_portfolio.py -v
+  - py.test ./test_module/test_analyze.py -v
+  - py.test ./test_module/test_utils.py -v
+  - py.test ./test_module/test_construct_portfolio.py -v

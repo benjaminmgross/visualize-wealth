@@ -2,6 +2,11 @@ language: python
 python:
   - "2.7"
 # command to install dependencies
+before_install:
+  - sudo apt-get install libatlas-base-dev
+  - sudo apt-get install gfortran
+  - sudo apt-get update
+
 install:
   - pip install -r preamble.txt
 #  - pip install -r requirements.txt

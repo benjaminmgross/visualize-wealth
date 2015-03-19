@@ -15,46 +15,40 @@ import pandas
 import tempfile
 import datetime
 from pandas.util import testing
-from visualize_wealth import construct_portfolio
+from visualize_wealth import construct_portfolio as cp
 
 @pytest.fixture
-def panel_sheet():
+def test_file():
     f = './test_data/panel from weight file test.xlsx'
     return pandas.ExcelFile(f)
 
 @pytest.fixture
-def rebal_weights(panel_sheet):
-    return panel_sheet.parse('rebal_weights', index_col = 0)
+def rebal_weights(test_file):
+    return test_file.parse('rebal_weights', index_col = 0)
 
 @pytest.fixture
-def panel(panel_sheet):
+def panel(test_file):
     weight_df = rebal_weights
     tickers = ['EEM', 'EFA', 'IYR', 'IWV', 'IEF', 'IYR', 'SHY']
     d = {}
     for ticker in tickers:
-        d[ticker] = panel_sheet.parse(ticker, index_col = 0)
+        d[ticker] = test_file.parse(ticker, index_col = 0)
 
     return panel_from_weight_file(weight_df, 
                                   pandas.Panel(d), 
                                   1000.
     )
 
+@pytest.fixture
+def manual_index(panel, test_file):
+    man_calc = test_file.parse('index_results',
+                            index_col = 0
+    )
+    return man_calc
 
-
-    """
-
-    >>> weight_df = xl_file.parse('rebal_weights', index_col = 0)
-    >>> tickers = ['EEM', 'EFA', 'IYR', 'IWV', 'IEF', 'IYR', 'SHY']
-    >>> d = {}
-    >>> for ticker in tickers:
-    ...     d[ticker] = xl_file.parse(ticker, index_col = 0)
-    >>> panel = panel_from_weight_file(weight_df, pandas.Panel(d), 
-    ...     1000.)
-    >>> portfolio = pfp_from_weight_file(panel)
-    >>> manual_calcs = xl_file.parse('index_result', index_col = 0)
-    >>> put.assert_series_equal(manual_calcs['Close'], 
-    ...     portfolio['Close'])
-    """
+def test_index(panel, manual_index)
+    lib_calc = cp.pfp_from_weight_file(panel)
+    testing.assert_series_equal(manual_index['Close'], lib_calc['Close'])
 
 def test_funs():
     """

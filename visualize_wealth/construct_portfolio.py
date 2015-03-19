@@ -14,6 +14,7 @@ import pandas.io.data
 import datetime
 import urllib2
 
+
 def format_blotter(blotter_file):
     """
     Pass in either a location of a blotter file (in ``.csv`` format) or 
@@ -491,12 +492,8 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
                ['Open', 'Close', 'Adj Close']
 
     """
-    msg = "Not all tickers in HDFStore"    
-    store = pandas.HDFStore(store_path)
-    #if not vwu.check_store_for_tickers(weight_df.columns, store):
-    #    print msg
-    #    store.close()
-    #    return
+    from .utils import _open_store
+    store = _open_store(store_path)
     beg_port = weight_df.index.min()
 
     d = {}

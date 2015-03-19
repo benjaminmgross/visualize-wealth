@@ -683,11 +683,13 @@ def _ac_c(weight_df, price_panel):
     """
 
     return ac_c
-def pfwf_rework(weight_df, price_panel, start_value):
+
+def panel_from_weight_file(weight_df, price_panel, start_value):
     """
-    Returns a :class:`pandas.Panel` with columns ['Close', 'Open'] 
-    when provided a pandas.DataFrame of weight allocations and a 
-    starting  value of the index
+    Returns a :class:`pandas.Panel` with the intermediate calculation
+    steps of n0, c0_ac, and adj_q to calculate a portfolio's adjusted
+    price path when provided a pandas.DataFrame of weight allocations and a 
+    starting value of the index
 
     :ARGS:
     
@@ -703,14 +705,7 @@ def pfwf_rework(weight_df, price_panel, start_value):
         :class:`pandas.Panel` with dimensions (tickers, dates, 
         price data)
 
-    .. note:: What to Do with your Panel
-
-        The :class:`pandas.Panel` returned by this function has all of 
-        the necessary information to do some fairly exhaustive 
-        analysis.  Cumulative investment, portfolio value (simply the 
-        ``cum_shares``*``close`` for all assets), closes, opens, etc.  
     """
-
     #cols correspond'value_calcs!' in "panel from weight file test.xlsx"
     cols = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q']
 
@@ -774,96 +769,6 @@ def pfwf_rework(weight_df, price_panel, start_value):
                          join = 'inner', 
                          axis = 2
     )
-
-def panel_from_weight_file(weight_df, price_panel, start_value):
-    """
-    Returns a :class:`pandas.Panel` with columns ['Close', 'Open'] 
-    when provided a pandas.DataFrame of weight allocations and a 
-    starting  value of the index
-
-    :ARGS:
-    
-        weight_df of :class:`pandas.DataFrame` of a weight allocation 
-        with tickers for columns, index of dates and weight allocations 
-        to each of the tickers
- 
-        price_panel of :class:`pandas.Panel` with dimensions [tickers, 
-        index, price data]
-
-    :RETURNS:
-    
-        :class:`pandas.Panel` with dimensions (tickers, dates, 
-        price data)
-
-    .. note:: What to Do with your Panel
-
-        The :class:`pandas.Panel` returned by this function has all of 
-        the necessary information to do some fairly exhaustive 
-        analysis.  Cumulative investment, portfolio value (simply the 
-        ``cum_shares``*``close`` for all assets), closes, opens, etc.  
-        You've got a world of information about "your portfolio" with
-        this object... get diggin!
-    
-    """
-
-    #these columns correspond to the columns in sheet 'value_calcs!' in 
-    #"panel from weight file test.xlsx"
- 
-    #ensure that the first allocation for each ticker is after first price
-    price_df = price_panel.loc[:, :, 'Close']
-    #is_valid = vwu.check_trade_price_start(weight_df, price_df)
-    #msg = "first allocation precedes first price"
-    #assert all(is_valid), msg
-    index = price_panel.major_axis.copy()
-    columns = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q', 'Value at Open', 
-               'Value at Close', 'Open', 'High', 'Low', 'Close', 
-               'Volume', 'Adj Close']
-    panel = price_panel.reindex(minor_axis = columns)
-    a = weight_df.index
-    #Make the last of the zip, the last date of the prices
-    b = a[1:].append(pandas.DatetimeIndex([index[-1]]))
-    dt_chunks = zip(a, b)
-    
-    #fill in the Adj Qty values and the aggregate position values
-    p_val = start_value
-    for chunk in dt_chunks:
-        n = len(panel.loc[:, chunk[0]:chunk[1], 'Close'])
-        c0_ac0 = panel.loc[:, chunk[0], 'Close'].div(
-            panel.loc[:, chunk[0], 'Adj Close'])
-        n0 = p_val*weight_df.loc[chunk[0], :].div(panel.loc[:, chunk[0], 
-                                                            'Close'])
-        panel.loc[:, chunk[0]:chunk[1], 'ac_c']  = (
-            panel.loc[:, chunk[0]:chunk[1],'Adj Close'].div(
-            panel.loc[:, chunk[0]:chunk[1], 'Close']))
-        panel.loc[:, chunk[0]:chunk[1], 'c0_ac0'] = (
-            numpy.tile(c0_ac0.values, [n, 1]).transpose())
-        panel.loc[:, chunk[0]:chunk[1], 'n0'] = numpy.tile(
-            n0.values, [n, 1]).transpose()
-        panel.loc[:, chunk[0]:chunk[1], 'Adj_Q'] = panel.loc[:,
-            chunk[0]:chunk[1], 
-            ['c0_ac0', 'ac_c', 'n0']].product(axis = 2)
-        p_val = panel.loc[:, chunk[1], 'Adj_Q'].mul(
-              panel.loc[:, chunk[1], 'Close']).sum(axis = 1)
-    tmp_panel = panel.loc[:, a[0]:, :]
-    
-    #quick fix for error in panel Adj_Q, c0_ac0, and n0
-    chg_cols = ['c0_ac0', 'n0']
-    for date in b:
-        loc = panel.major_axis.get_loc(date)
-        prev = panel.major_axis[loc - 1]
-        tmp_panel.loc[:, date, chg_cols] = (
-            tmp_panel.loc[:, prev, chg_cols])
-        tmp_panel.loc[:, :, 'Adj_Q'] = tmp_panel.loc[:, :, 'ac_c'].mul(
-            tmp_panel.loc[:, :, 'c0_ac0']).mul(
-            tmp_panel.loc[:, :, 'n0'])
-        tmp_panel.loc[:, :, 'Value at Open'] = (
-            tmp_panel.loc[:, :, 'Adj_Q'].mul(
-            tmp_panel.loc[:, :, 'Open']))
-        tmp_panel.loc[:, :, 'Value at Close'] = (
-            tmp_panel.loc[:, :, 'Adj_Q'].mul(
-            tmp_panel.loc[:, :, 'Close']))
-    
-    return tmp_panel
 
         
 def weight_df_from_initial_weights(weight_series, price_panel,

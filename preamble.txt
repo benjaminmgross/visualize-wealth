@@ -8,6 +8,6 @@ pytest==2.6.4
 pytest-cov==1.8.1
 numpy==1.9.1
 scipy==0.14.0
-pandas==0.14.1
-matplotlib==1.4.2
+# pandas==0.14.1
+# matplotlib==1.4.2
 chardet>=1.0.1

@@ -1,5 +1,7 @@
 #README.md
 
+[![Build Status](https://travis-ci.org/benjaminmgross/wealth-viz.svg?branch=ben_dev)](https://travis-ci.org/benjaminmgross/wealth-viz)
+
 A library built in Python to construct, backtest, analyze, and evaluate portfolios and their benchmarks, with comprehensive documentation and manual calculations to illustrate all underlying methodologies and statistics.
 
 ##License

@@ -5,6 +5,7 @@ python:
 install:
   - pip install -r preamble.txt
   - pip install -r requirements.txt
+  - pip install -r denouement.txt
 # command to run tests
 script: 
   - py.test ./test_module/test_analyze.py -v

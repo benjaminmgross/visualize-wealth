@@ -718,7 +718,10 @@ def pfwf_rework(weight_df, price_panel, start_value):
     index = price_panel.major_axis
     w_ind = weight_df.index
     locs = [index.get_loc(key) + 1 for key in w_ind]
-    int_beg = index[locs]
+    do = pandas.DatetimeIndex([w_ind[0]])
+    int_beg = index[locs[1:]]
+    int_beg = do.append(int_beg)
+
     int_fin = w_ind[1:]
     dT = pandas.DatetimeIndex([index[-1]])
     int_fin = int_fin.append(dT)
@@ -742,12 +745,12 @@ def pfwf_rework(weight_df, price_panel, start_value):
 
         ac_c = adj.div(close)
 
-        c0_ac0 = pandas.DataFrame(numpy.tile(c0_ac0.values, [n, 1]),
+        c0_ac0 = pandas.DataFrame(numpy.tile(c0_ac0, [n, 1]),
                                   index = close.index,
                                   columns = c0_ac0.index
         )
 
-        n0 = pandas.DataFrame(numpy.tile(n0.values, [n, 1]),
+        n0 = pandas.DataFrame(numpy.tile(n0, [n, 1]),
                               index = close.index,
                               columns = n0.index
         )
@@ -994,29 +997,18 @@ def pfp_from_weight_file(panel_from_weight_file):
         The portfolio path is what goes into all of the :mod:`analyze` 
         functions.  So once the `pfp_from_`... has been created, you've 
         got all of the necessary bits to begin calculating performance 
-        metrics on your portfolio!
-
-    .. note:: Another way to think of Portfolio Path
-
-        This "Portfolio Path" is really nothing more than a series of 
-        prices that, should you have made the trades given in the 
-        blotter, would have been the the experience of someone 
-        investing `start_value` in your strategy when your strategy 
-        first begins, up until today.
+        metrics on a portfolio
     """
-    port_cols = ['Close', 'Open']
-    index = panel_from_weight_file.major_axis
-    port_df = pandas.DataFrame(numpy.zeros([ len(index), len(port_cols)]), 
-                               index = index, columns = port_cols)
-        
 
-        #assign the portfolio values
-    port_df.loc[:, 'Close'] = (
-        panel_from_weight_file.loc[ :, : ,'Adj_Q'].mul(
-        panel_from_weight_file.loc[ :, :, 'Close']).sum(axis = 1))
-    port_df.loc[:, 'Open'] = (
-        panel_from_weight_file.loc[ :, :, 'Adj_Q'].mul(
-        panel_from_weight_file.loc[ :, :, 'Open']).sum(axis = 1))
+    adj_q = panel_from_weight_file.loc[:, :, 'Adj_Q']
+    close = panel_from_weight_file.loc[:, :, 'Close']
+    opn = panel_from_weight_file.loc[:, :, 'Open']
+
+    ind_close = adj_q.mul(close).sum(axis = 1)
+    ind_open = adj_q.mul(opn).sum(axis = 1)
+    port_df = pandas.DataFrame({'Open': ind_open, 
+                                'Close': ind_close}
+    )
 
     return port_df
 

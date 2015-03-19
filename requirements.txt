@@ -1,5 +1,1 @@
-numpy==1.9.1
-scipy==0.14.0
-pandas==0.14.1
-matplotlib==1.4.2
-chardet>=1.0.1
+h5py==2.3.1

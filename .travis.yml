@@ -6,4 +6,7 @@ install:
   - pip install -r preamble.txt
   - pip install -r requirements.txt
 # command to run tests
-script: cd visualize_wealth; python -m doctest analyze.py; python -m doctest construct_portfolio.py;
+script: 
+  - py.test ./test_module/test_analyze.py -v
+  - py.test ./test_module/test_utils.py -v
+  - py.test ./test_module/test_construct_portfolio.py -v

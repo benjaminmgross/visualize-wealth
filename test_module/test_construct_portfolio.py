@@ -27,26 +27,25 @@ def rebal_weights(test_file):
     return test_file.parse('rebal_weights', index_col = 0)
 
 @pytest.fixture
-def panel(test_file):
-    weight_df = rebal_weights
+def panel(test_file, rebal_weights):
     tickers = ['EEM', 'EFA', 'IYR', 'IWV', 'IEF', 'IYR', 'SHY']
     d = {}
     for ticker in tickers:
         d[ticker] = test_file.parse(ticker, index_col = 0)
 
-    return panel_from_weight_file(weight_df, 
+    return cp.panel_from_weight_file(rebal_weights, 
                                   pandas.Panel(d), 
                                   1000.
     )
 
 @pytest.fixture
 def manual_index(panel, test_file):
-    man_calc = test_file.parse('index_results',
+    man_calc = test_file.parse('index_result',
                             index_col = 0
     )
     return man_calc
 
-def test_index(panel, manual_index)
+def test_index(panel, manual_index):
     lib_calc = cp.pfp_from_weight_file(panel)
     testing.assert_series_equal(manual_index['Close'], lib_calc['Close'])
 

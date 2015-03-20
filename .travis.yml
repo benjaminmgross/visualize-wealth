@@ -10,10 +10,9 @@ before_install:
   - conda update --yes conda
 
 install:
-  -  >
-       conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy 
-                     pytest matplotlib nose dateutil pandas statsmodels 
-                     pytables xlrd
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy pytest 
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION matplotlib nose dateutil 
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION pandas statsmodels pytables xlrd
 
 #  - python setup.py install
 #  - pip install -r preamble.txt

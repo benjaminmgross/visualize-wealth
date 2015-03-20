@@ -14,6 +14,9 @@ import pandas.io.data
 import datetime
 import urllib2
 
+from .utils import _open_store
+from .utils import tradeplus_tchunks
+
 
 def format_blotter(blotter_file):
     """
@@ -492,7 +495,7 @@ def fetch_data_from_store_weight_alloc_method(weight_df, store_path):
                ['Open', 'Close', 'Adj Close']
 
     """
-    from .utils import _open_store
+
     store = _open_store(store_path)
     beg_port = weight_df.index.min()
 
@@ -703,7 +706,6 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
         price data)
 
     """
-    from .utils import tradeplus_tchunks
 
     #cols correspond 'value_calcs!' in "panel from weight file test.xlsx"
     cols = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q']
@@ -803,24 +805,30 @@ def transaction_costs(weight_df, share_panel, tau = .001):
         :class:`pandas.DataFrame` of the cumulative transaction
         cost for each ticker
     """
-    def asset_cost(share, share_prev, price):
+    def asset_cost(share, share_prev, price, tau):
         share_diff = abs(share - share_prev)
-        return share_diff.mul(price)
+        return share_diff.mul(price) * tau
 
     adj_q = share_panel.loc[:, :, 'Adj_Q']
     price = share_panel.loc[:, :, 'Close']
     
-    index = share_panel.major_axis
+    tchunks = tradeplus_tchunks(weight_index = weight_df.index,
+                                price_index = share_panel.major_axis
+    )
 
     d = {}
-    for date in weight_df.index:
+    for beg, fin in tchunks:
+        d[fin] = asset_cost(share = adj_q.loc[fin, :],
+                            share_prev = adj_q.loc[beg, :],
+                            tprice = price.loc[fin, :],
+                            tau = tau
+        )
 
-        pass
 
-    #take the following day's Adj_Q from the date of trade
-
-    return None
-
+    tcost = pandas.DataFrame(d)
+    cumcost = tcost.reindex(share_panel.major_axis)
+    cumcost = cumcost.fillna(0.)
+    return cumcost.cumsum()
         
 def weight_df_from_initial_weights(weight_series, price_panel,
     rebal_frequency, start_value = 1000., start_date = None):

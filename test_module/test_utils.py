@@ -120,7 +120,7 @@ def test_create_store_cash(populate_store):
     store.close()
     os.remove(populate_store['name'])
 
-def test_update_store_master_index(populate_updated):
+def test_update_store_master_and_cash(populate_updated):
     index = populate_updated['index']
     index = pandas.Series(index, index = index)
 

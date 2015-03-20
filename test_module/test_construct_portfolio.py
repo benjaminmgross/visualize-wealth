@@ -45,7 +45,7 @@ def manual_index(panel, test_file):
     )
     return man_calc
 
-def test_index(panel, manual_index):
+def test_pfp(panel, manual_index):
     lib_calc = cp.pfp_from_weight_file(panel)
     testing.assert_series_equal(manual_index['Close'], lib_calc['Close'])
 

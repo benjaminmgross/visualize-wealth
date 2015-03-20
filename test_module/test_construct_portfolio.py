@@ -49,6 +49,19 @@ def test_pfp(panel, manual_index):
     lib_calc = cp.pfp_from_weight_file(panel)
     testing.assert_series_equal(manual_index['Close'], lib_calc['Close'])
 
+def test_transaction_costs(rebal_weights, panel, test_file):
+    man_tcosts = test_file.parse('trans_costs', index_col = 0)
+
+    vw_tcosts = cp.transaction_costs(weight_df = rebal_weights, 
+                                     share_panel = panel,
+                                     tau = 10./10000.,
+    )
+
+    cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
+    man_tcosts = man_tcosts[[col + ' cum' for col in cols]]
+    man_tcosts.columns = cols
+    testing.assert_frame_equal(man_tcosts, vw_tcosts)
+
 def test_funs():
     """
     >>> import pandas.util.testing as put

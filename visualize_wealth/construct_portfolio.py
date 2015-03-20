@@ -772,6 +772,32 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
                          axis = 2
     )
 
+def transaction_costs(weight_df, share_panel, tau = .001):
+    """
+    Calculate the rolling transaction costs by ticker
+
+    :ARGS: 
+
+        weight_df: :class:`pandas.DataFrame` weight allocation
+
+        share_panel: :class:`pandas.Panel` with dimensions 
+        (tickers, dates, price/share data)
+
+        tau: :class:`float` of the transaction cost per trade, 
+        expressed as a percentage of the trade amount
+        default = 10 bps or .001
+
+    :RETURNS:
+
+        :class:`pandas.DataFrame` of the cumulative transaction
+        cost for each ticker
+    """
+    adj_q = share_panel.loc[:, :, 'Adj_Q']
+    price = share_panel.loc[:, :, 'Close']
+    
+
+    return None
+
         
 def weight_df_from_initial_weights(weight_series, price_panel,
     rebal_frequency, start_value = 1000., start_date = None):

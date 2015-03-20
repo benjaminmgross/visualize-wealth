@@ -878,6 +878,38 @@ def zipped_time_chunks(index, interval):
     fdop = index[numpy.append(True, ind[:-1])]
     return zip(fdop, ldop)
 
+def tradeplus_tchunks(weight_index, price_index):
+    """
+    Return zipped time intervals of trade signal and trade signal + 1
+
+    :ARGS:
+
+        weight_index: :class:`pandas.DatetimeIndex` of the weight allocation
+        frame of generated signals
+
+        price_index: :class:`pandas.DatetimeIndex` for all the price data
+
+    :RETURNS:
+
+        :class:`tuple` of int_beg, the t + 1 date after the weight signal
+        and int_fin, the next weight signal (or last date in the price_index)
+
+    .. note:: 
+
+        having consecutive, non-overlapping intervals is commonly used for 
+        things such as optimizing share calculation algorithms, transaction
+        cost calculation, etc.
+    """
+    locs = list(price_index.get_loc(key) + 1 for key in weight_index)
+    do = pandas.DatetimeIndex([weight_index[0]])
+    int_beg = price_index[locs[1:]]
+    int_beg = do.append(int_beg)
+
+    int_fin = weight_index[1:]
+    dT = pandas.DatetimeIndex([price_index[-1]])
+    int_fin = int_fin.append(dT)
+    return zip(int_beg, int_fin)
+
 def _open_store(store_path):
     """
     open an HDFStore located at store_path with the appropriate error handling

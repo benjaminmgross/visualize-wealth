@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 """
-.. module:: visualize_wealth.test_module.test_analyze.py
+.. module:: visualize_wealth.test_module.test_utils.py
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 

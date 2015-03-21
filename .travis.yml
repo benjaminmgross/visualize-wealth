@@ -1,8 +1,28 @@
 language: python
 python:
-  - "2.7"
+  - 2.7
 # command to install dependencies
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
+
 install:
-  - pip install -r requirements.txt
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy pytest 
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION matplotlib nose dateutil 
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION pandas statsmodels pytables xlrd
+
+#  - python setup.py install
+#  - pip install -r preamble.txt
+#  - pip install -r requirements.txt
+#  - pip install -r denouement.txt
+
 # command to run tests
-script: cd visualize_wealth; python -m doctest analyze.py; python -m doctest construct_portfolio.py;
+script: 
+  - py.test ./test_module/test_analyze.py -v
+  - py.test ./test_module/test_utils.py -v
+  - py.test ./test_module/test_construct_portfolio.py -v
+
+# the body of this script was found by @dan-blanchard at https://gist.github.com/dan-blanchard/7045057

@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 """
-.. module:: visualize_wealth.test_module.test_analyze.py
+.. module:: visualize_wealth.test_module.test_utils.py
 
 .. moduleauthor:: Benjamin M. Gross <benjaminMgross@gmail.com>
 
@@ -120,7 +120,7 @@ def test_create_store_cash(populate_store):
     store.close()
     os.remove(populate_store['name'])
 
-def test_update_store_master_index(populate_updated):
+def test_update_store_master_and_cash(populate_updated):
     index = populate_updated['index']
     index = pandas.Series(index, index = index)
 

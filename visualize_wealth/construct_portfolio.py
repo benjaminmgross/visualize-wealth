@@ -785,10 +785,10 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 
 def tc_cps(weight_df, share_panel, cps = .10):
 	"""
-	Calculate the cumulative rolling transaction costs by ticker using
-	as the basis points of the total value of the transaction. Can
+	Estimate the cumulative rolling transaction costs by ticker using
+	the cents per share method of calculation. Can
 	be used to directly subtract against tickers / asset classes to 
-	determine the impact of transaction costs.
+	determine the asset and asset class impact of transaction costs.
 
 	:ARGS: 
 
@@ -797,9 +797,7 @@ def tc_cps(weight_df, share_panel, cps = .10):
 		share_panel: :class:`pandas.Panel` with dimensions 
 		(tickers, dates, price/share data)
 
-		tau: :class:`float` of the transaction cost per trade, 
-		expressed as a percentage of the trade amount
-		default = 10 bps or .001
+		cps: :class:`float` of the transaction cost per share 
 
 	:RETURNS:
 
@@ -844,10 +842,10 @@ def tc_cps(weight_df, share_panel, cps = .10):
 
 def tc_bps(weight_df, share_panel, bps = 10.):
 	"""
-	Calculate the cumulative rolling transaction costs by ticker using
-	as the basis points of the total value of the transaction. Can
+	Estimate the cumulative rolling transaction costs by ticker as
+	basis points of the total value of the transaction. Can
 	be used to directly subtract against tickers / asset classes to 
-	determine the impact of transaction costs.
+	determine the asset and asset class impact of transaction costs.
 
 	:ARGS: 
 
@@ -857,8 +855,6 @@ def tc_bps(weight_df, share_panel, bps = 10.):
 		(tickers, dates, price/share data)
 
 		bps: :class:`float` of the transaction cost per trade, 
-		expressed as a percentage of the trade amount
-		default = 10 bps or .001
 
 	:RETURNS:
 

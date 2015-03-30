@@ -62,6 +62,19 @@ def test_tc_bps(rebal_weights, panel, test_file):
     man_tcosts.columns = cols
     testing.assert_frame_equal(man_tcosts, vw_tcosts)
 
+def test_tc_cps(rebal_weights, panel, test_file):
+    man_tcosts = test_file.parse('trans_costs', index_col = 0)
+
+    vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
+                          share_panel = panel,
+                          bps = 10.,
+    )
+
+    cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
+    man_tcosts = man_tcosts[[col + ' cum' for col in cols]]
+    man_tcosts.columns = cols
+    testing.assert_frame_equal(man_tcosts, vw_tcosts)
+
 def test_funs():
     """
     >>> import pandas.util.testing as put

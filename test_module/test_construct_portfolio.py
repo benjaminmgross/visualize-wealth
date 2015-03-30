@@ -50,7 +50,7 @@ def test_pfp(panel, manual_index):
     testing.assert_series_equal(manual_index['Close'], lib_calc['Close'])
 
 def test_tc_bps(rebal_weights, panel, test_file):
-    man_tcosts = test_file.parse('trans_costs', index_col = 0)
+    man_tcosts = test_file.parse('tc_bps', index_col = 0)
 
     vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
                           share_panel = panel,
@@ -58,20 +58,20 @@ def test_tc_bps(rebal_weights, panel, test_file):
     )
 
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
-    man_tcosts = man_tcosts[[col + ' cum' for col in cols]]
+    man_tcosts = man_tcosts[[col + ' bps cum' for col in cols]]
     man_tcosts.columns = cols
     testing.assert_frame_equal(man_tcosts, vw_tcosts)
 
 def test_tc_cps(rebal_weights, panel, test_file):
-    man_tcosts = test_file.parse('trans_costs', index_col = 0)
+    man_tcosts = test_file.parse('tc_cps', index_col = 0)
 
-    vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
+    vw_tcosts = cp.tc_cps(weight_df = rebal_weights, 
                           share_panel = panel,
-                          bps = 10.,
+                          cps = .1,
     )
 
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
-    man_tcosts = man_tcosts[[col + ' cum' for col in cols]]
+    man_tcosts = man_tcosts[[col + ' cps cum' for col in cols]]
     man_tcosts.columns = cols
     testing.assert_frame_equal(man_tcosts, vw_tcosts)
 

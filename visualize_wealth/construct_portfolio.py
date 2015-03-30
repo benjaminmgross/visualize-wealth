@@ -824,15 +824,13 @@ def tc_cps(weight_df, share_panel, cps = .10):
 
 	d = {t_o: trans_cost(shares = adj_q.loc[t_o, :],
 						 shares_prev = 0.,
-						 prices = price.loc[t_o, :],
-						 tau = tau)
+						 tau = cps)
 	}
 
 	for beg, fin in zip(fper, sper):
 		d[fin] = trans_cost(shares = adj_q.loc[fin, :],
 							shares_prev = adj_q.loc[beg, :],
-							prices = price.loc[fin, :],
-							tau = tau
+							tau = cps
 		)
 
 	tcost = pandas.DataFrame(d).transpose()

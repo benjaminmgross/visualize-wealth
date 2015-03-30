@@ -783,9 +783,10 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 						 axis = 2
 	)
 
-def transaction_costs(weight_df, share_panel, tau = .001):
+def tc_cps(weight_df, share_panel, cps = .10):
 	"""
-	Calculate the cumulative rolling transaction costs by ticker. Can
+	Calculate the cumulative rolling transaction costs by ticker using
+	as the basis points of the total value of the transaction. Can
 	be used to directly subtract against tickers / asset classes to 
 	determine the impact of transaction costs.
 
@@ -805,10 +806,71 @@ def transaction_costs(weight_df, share_panel, tau = .001):
 		:class:`pandas.DataFrame` of the cumulative transaction
 		cost for each ticker
 	"""
+	def trans_cost(shares, shares_prev, tau):
+		share_diff = abs(shares - shares_prev)
+		return share_diff * tau
+
+	adj_q = share_panel.loc[:, :, 'Adj_Q']
+	price = share_panel.loc[:, :, 'Close']
+	
+	tchunks = tradeplus_tchunks(weight_index = weight_df.index,
+								price_index = share_panel.major_axis
+	)
+
+	#slight finegle to get the tradeplus to be what we need
+	sper, fper = zip(*tchunks)
+	sper = sper[1:]
+	fper = fper[:-1]
+
+	t_o = weight_df.index[0]
+
+	d = {t_o: trans_cost(shares = adj_q.loc[t_o, :],
+						 shares_prev = 0.,
+						 prices = price.loc[t_o, :],
+						 tau = tau)
+	}
+
+	for beg, fin in zip(fper, sper):
+		d[fin] = trans_cost(shares = adj_q.loc[fin, :],
+							shares_prev = adj_q.loc[beg, :],
+							prices = price.loc[fin, :],
+							tau = tau
+		)
+
+	tcost = pandas.DataFrame(d).transpose()
+	cumcost = tcost.reindex(share_panel.major_axis)
+	cumcost = cumcost.fillna(0.)
+	return cumcost.cumsum()
+
+def tc_bps(weight_df, share_panel, bps = 10.):
+	"""
+	Calculate the cumulative rolling transaction costs by ticker using
+	as the basis points of the total value of the transaction. Can
+	be used to directly subtract against tickers / asset classes to 
+	determine the impact of transaction costs.
+
+	:ARGS: 
+
+		weight_df: :class:`pandas.DataFrame` weight allocation
+
+		share_panel: :class:`pandas.Panel` with dimensions 
+		(tickers, dates, price/share data)
+
+		bps: :class:`float` of the transaction cost per trade, 
+		expressed as a percentage of the trade amount
+		default = 10 bps or .001
+
+	:RETURNS:
+
+		:class:`pandas.DataFrame` of the cumulative transaction
+		cost for each ticker
+	"""
 	def trans_cost(shares, shares_prev, prices, tau):
 		share_diff = abs(shares - shares_prev)
 		return share_diff.mul(prices) * tau
 
+
+	tau = bps/10000.  	#1bp = 1/10000
 	adj_q = share_panel.loc[:, :, 'Adj_Q']
 	price = share_panel.loc[:, :, 'Close']
 	

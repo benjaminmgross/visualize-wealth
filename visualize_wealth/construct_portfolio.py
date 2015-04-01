@@ -793,7 +793,7 @@ def _tc_helper(weight_df, share_panel, tau, meth):
 	def cps_cost(**kwargs):
 		shares = kwargs['shares']
 		shares_prev = kwargs['shares_prev']
-		tau = kwargs['tau']
+		tau = kwargs['tau']/100.
 
 		share_diff = abs(shares - shares_prev)
 		return share_diff * tau
@@ -802,7 +802,7 @@ def _tc_helper(weight_df, share_panel, tau, meth):
 		shares = kwargs['shares']
 		shares_prev = kwargs['shares_prev']
 		prices = kwargs['prices']
-		tau = kwargs['tau']
+		tau = kwargs['tau']/10000.
 
 		share_diff = abs(shares - shares_prev)
 		return share_diff.mul(prices) * tau
@@ -875,7 +875,7 @@ def tc_cps(weight_df, share_panel, cps = .10):
 	tchunks = tradeplus_tchunks(weight_index = weight_df.index,
 								price_index = share_panel.major_axis
 	)
-
+	tau = cps/100.
 	#slight finegle to get the tradeplus to be what we need
 	sper, fper = zip(*tchunks)
 	sper = sper[1:]
@@ -885,13 +885,13 @@ def tc_cps(weight_df, share_panel, cps = .10):
 
 	d = {t_o: trans_cost(shares = adj_q.loc[t_o, :],
 						 shares_prev = 0.,
-						 tau = cps)
+						 tau = tau)
 	}
 
 	for beg, fin in zip(fper, sper):
 		d[fin] = trans_cost(shares = adj_q.loc[fin, :],
 							shares_prev = adj_q.loc[beg, :],
-							tau = cps
+							tau = tau
 		)
 
 	tcost = pandas.DataFrame(d).transpose()

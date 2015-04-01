@@ -67,7 +67,7 @@ def test_tc_cps(rebal_weights, panel, test_file):
 
     vw_tcosts = cp.tc_cps(weight_df = rebal_weights, 
                           share_panel = panel,
-                          cps = .1,
+                          cps = 10.,
     )
 
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']

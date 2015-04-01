@@ -677,13 +677,6 @@ def fetch_data_for_initial_allocation_method(initial_weights,
 
 	return panel.ffill()
 
-def _ac_c(weight_df, price_panel):
-	"""
-	Helper function for the pfwf (panel_from_weight_file)
-	"""
-
-	return ac_c
-
 def panel_from_weight_file(weight_df, price_panel, start_value):
 	"""
 	Returns a :class:`pandas.Panel` with the intermediate calculation
@@ -706,7 +699,6 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 		price data)
 
 	"""
-
 	#cols correspond 'value_calcs!' in "panel from weight file test.xlsx"
 	cols = ['ac_c', 'c0_ac0', 'n0', 'Adj_Q']
 
@@ -714,16 +706,6 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 
 	index = price_panel.major_axis
 	w_ind = weight_df.index
-	"""
-	locs = [index.get_loc(key) + 1 for key in w_ind]
-	do = pandas.DatetimeIndex([w_ind[0]])
-	int_beg = index[locs[1:]]
-	int_beg = do.append(int_beg)
-
-	int_fin = w_ind[1:]
-	dT = pandas.DatetimeIndex([index[-1]])
-	int_fin = int_fin.append(dT)
-	"""
 	time_chunks = tradeplus_tchunks(weight_index = w_ind,
 									price_index = index
 	)
@@ -782,6 +764,85 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 						 join = 'inner', 
 						 axis = 2
 	)
+
+def _tc_helper(weight_df, share_panel, tau, meth):
+	"""
+	Helpfer function for the tc_* functions
+
+	Estimate the cumulative rolling transaction costs by ticker using
+	the cents per share method of calculation. Can
+	be used to directly subtract against tickers / asset classes to 
+	determine the asset and asset class impact of transaction costs.
+
+	:ARGS: 
+
+		weight_df: :class:`pandas.DataFrame` weight allocation
+
+		share_panel: :class:`pandas.Panel` with dimensions 
+		(tickers, dates, price/share data)
+
+		tau: :class:`float` of the cost per share or basis points
+
+		method: :class:`string` in ['bps', 'cps']
+
+	:RETURNS:
+
+		:class:`pandas.DataFrame` of the cumulative transaction
+		cost for each ticker
+	"""
+	def cps_cost(**kwargs):
+		shares = kwargs['shares']
+		shares_prev = kwargs['shares_prev']
+		tau = kwargs['tau']
+
+		share_diff = abs(shares - shares_prev)
+		return share_diff * tau
+
+	def bps_cost(**kwargs):
+		shares = kwargs['shares']
+		shares_prev = kwargs['shares_prev']
+		prices = kwargs['prices']
+		tau = kwargs['tau']
+
+		share_diff = abs(shares - shares_prev)
+		return share_diff.mul(prices) * tau
+	
+	meth_d = {'cps': cps_cost, 
+	          'bps': bps_cost
+	          }
+
+	adj_q = share_panel.loc[:, :, 'Adj_Q']
+	price = share_panel.loc[:, :, 'Close']
+	
+	tchunks = tradeplus_tchunks(weight_index = weight_df.index,
+								price_index = share_panel.major_axis
+	)
+
+	#slight finegle to get the tradeplus to be what we need
+	sper, fper = zip(*tchunks)
+	sper = sper[1:]
+	fper = fper[:-1]
+
+	t_o = weight_df.index[0]
+
+	d = {t_o: meth_d[meth](**{'shares': adj_q.loc[t_o, :],
+						     'shares_prev': 0.,
+						     'prices': price.loc[t_o, :],
+						     'tau': tau}
+						     )
+	}
+
+	for beg, fin in zip(fper, sper):
+		d[fin] = meth_d[meth](**{'shares': adj_q.loc[fin, :],
+							   'shares_prev': adj_q.loc[beg, :],
+							   'tau':tau,
+							   'prices': price.loc[fin, :]}
+		)
+
+	tcost = pandas.DataFrame(d).transpose()
+	cumcost = tcost.reindex(share_panel.major_axis)
+	cumcost = cumcost.fillna(0.)
+	return cumcost.cumsum()
 
 def tc_cps(weight_df, share_panel, cps = .10):
 	"""
@@ -1030,7 +1091,6 @@ def pfp_from_weight_file(panel_from_weight_file):
 		got all of the necessary bits to begin calculating performance 
 		metrics on a portfolio
 	"""
-
 	adj_q = panel_from_weight_file.loc[:, :, 'Adj_Q']
 	close = panel_from_weight_file.loc[:, :, 'Close']
 	opn = panel_from_weight_file.loc[:, :, 'Open']

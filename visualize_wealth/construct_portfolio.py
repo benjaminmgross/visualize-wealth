@@ -826,17 +826,17 @@ def _tc_helper(weight_df, share_panel, tau, meth):
 	t_o = weight_df.index[0]
 
 	d = {t_o: meth_d[meth](**{'shares': adj_q.loc[t_o, :],
-						     'shares_prev': 0.,
-						     'prices': price.loc[t_o, :],
-						     'tau': tau}
+						      'shares_prev': 0.,
+						      'prices': price.loc[t_o, :],
+						      'tau': tau}
 						     )
 	}
 
 	for beg, fin in zip(fper, sper):
 		d[fin] = meth_d[meth](**{'shares': adj_q.loc[fin, :],
-							   'shares_prev': adj_q.loc[beg, :],
-							   'tau':tau,
-							   'prices': price.loc[fin, :]}
+							     'shares_prev': adj_q.loc[beg, :],
+							     'tau':tau,
+							     'prices': price.loc[fin, :]}
 		)
 
 	tcost = pandas.DataFrame(d).transpose()
@@ -865,39 +865,11 @@ def tc_cps(weight_df, share_panel, cps = .10):
 		:class:`pandas.DataFrame` of the cumulative transaction
 		cost for each ticker
 	"""
-	def trans_cost(shares, shares_prev, tau):
-		share_diff = abs(shares - shares_prev)
-		return share_diff * tau
-
-	adj_q = share_panel.loc[:, :, 'Adj_Q']
-	price = share_panel.loc[:, :, 'Close']
-	
-	tchunks = tradeplus_tchunks(weight_index = weight_df.index,
-								price_index = share_panel.major_axis
+	return _tc_helper(weight_df = weight_df,
+					  share_panel = share_panel,
+					  meth = 'cps',
+					  tau = cps
 	)
-	tau = cps/100.
-	#slight finegle to get the tradeplus to be what we need
-	sper, fper = zip(*tchunks)
-	sper = sper[1:]
-	fper = fper[:-1]
-
-	t_o = weight_df.index[0]
-
-	d = {t_o: trans_cost(shares = adj_q.loc[t_o, :],
-						 shares_prev = 0.,
-						 tau = tau)
-	}
-
-	for beg, fin in zip(fper, sper):
-		d[fin] = trans_cost(shares = adj_q.loc[fin, :],
-							shares_prev = adj_q.loc[beg, :],
-							tau = tau
-		)
-
-	tcost = pandas.DataFrame(d).transpose()
-	cumcost = tcost.reindex(share_panel.major_axis)
-	cumcost = cumcost.fillna(0.)
-	return cumcost.cumsum()
 
 def tc_bps(weight_df, share_panel, bps = 10.):
 	"""
@@ -920,43 +892,11 @@ def tc_bps(weight_df, share_panel, bps = 10.):
 		:class:`pandas.DataFrame` of the cumulative transaction
 		cost for each ticker
 	"""
-	def trans_cost(shares, shares_prev, prices, tau):
-		share_diff = abs(shares - shares_prev)
-		return share_diff.mul(prices) * tau
-
-
-	tau = bps/10000.  	#1bp = 1/10000
-	adj_q = share_panel.loc[:, :, 'Adj_Q']
-	price = share_panel.loc[:, :, 'Close']
-	
-	tchunks = tradeplus_tchunks(weight_index = weight_df.index,
-								price_index = share_panel.major_axis
+	return _tc_helper(weight_df = weight_df,
+					  share_panel = share_panel,
+					  meth = 'bps',
+					  tau = bps
 	)
-
-	#slight finegle to get the tradeplus to be what we need
-	sper, fper = zip(*tchunks)
-	sper = sper[1:]
-	fper = fper[:-1]
-
-	t_o = weight_df.index[0]
-
-	d = {t_o: trans_cost(shares = adj_q.loc[t_o, :],
-						 shares_prev = 0.,
-						 prices = price.loc[t_o, :],
-						 tau = tau)
-	}
-
-	for beg, fin in zip(fper, sper):
-		d[fin] = trans_cost(shares = adj_q.loc[fin, :],
-							shares_prev = adj_q.loc[beg, :],
-							prices = price.loc[fin, :],
-							tau = tau
-		)
-
-	tcost = pandas.DataFrame(d).transpose()
-	cumcost = tcost.reindex(share_panel.major_axis)
-	cumcost = cumcost.fillna(0.)
-	return cumcost.cumsum()
 		
 def weight_df_from_initial_weights(weight_series, price_panel,
 	rebal_frequency, start_value = 1000., start_date = None):

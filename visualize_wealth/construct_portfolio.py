@@ -919,8 +919,9 @@ def net_tcs(tc_df, price_index):
 	"""
 	ln = lambda x, y: x.div(y).apply(numpy.log)
 	
+	import ipdb; ipdb.set_trace()
 	tc_sum = tc_df.sum(axis = 1)
-	tc_ln = numpy.log(1. - tc_ln.div(price_index))
+	tc_ln = numpy.log(1. - tc_sum.div(price_index))
 	
 	p_ln = ln(x = price_index, 
 			  y = price_index.shift(1)
@@ -928,12 +929,8 @@ def net_tcs(tc_df, price_index):
 
 	ln_sum = tc_ln.add(p_ln)
 	ln_sum[0] = 0.
-	adj_p = price_index[0] + tc_sum[0]
-	return adj_p * ln_sum.cumsum()
-
-
-
-	return None
+	adj_p = price_index[0] - tc_sum[0]
+	return adj_p * numpy.exp(ln_sum.cumsum())
 		
 def weight_df_from_initial_weights(weight_series, price_panel,
 	rebal_frequency, start_value = 1000., start_date = None):

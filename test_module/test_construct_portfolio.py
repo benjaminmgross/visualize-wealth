@@ -23,6 +23,11 @@ def test_file():
     return pandas.ExcelFile(f)
 
 @pytest.fixture
+def tc_file():
+    f = './test_data/transaction-costs.xlsx'
+    return pandas.ExcelFile(f)
+
+@pytest.fixture
 def rebal_weights(test_file):
     return test_file.parse('rebal_weights', index_col = 0)
 
@@ -51,6 +56,7 @@ def test_pfp(panel, manual_index):
 
 def test_tc_bps(rebal_weights, panel, test_file):
     man_tcosts = test_file.parse('tc_bps', index_col = 0)
+    man_tcosts = man_tcosts.fillna(0.0)
 
     vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
                           share_panel = panel,
@@ -58,12 +64,12 @@ def test_tc_bps(rebal_weights, panel, test_file):
     )
 
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
-    man_tcosts = man_tcosts[[col + ' bps cum' for col in cols]]
-    man_tcosts.columns = cols
+    man_tcosts = man_tcosts[cols]
     testing.assert_frame_equal(man_tcosts, vw_tcosts)
 
 def test_tc_cps(rebal_weights, panel, test_file):
     man_tcosts = test_file.parse('tc_cps', index_col = 0)
+    man_tcosts = man_tcosts.fillna(0.0)
 
     vw_tcosts = cp.tc_cps(weight_df = rebal_weights, 
                           share_panel = panel,
@@ -71,7 +77,7 @@ def test_tc_cps(rebal_weights, panel, test_file):
     )
 
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
-    man_tcosts = man_tcosts[[col + ' cps cum' for col in cols]]
+    man_tcosts = man_tcosts[cols]
     man_tcosts.columns = cols
     testing.assert_frame_equal(man_tcosts, vw_tcosts)
 

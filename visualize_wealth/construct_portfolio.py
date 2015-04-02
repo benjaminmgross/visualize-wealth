@@ -900,7 +900,23 @@ def tc_bps(weight_df, share_panel, bps = 10.):
 
 def incorporate_tcs(tc_df, price_index):
 	"""
-	Incorporate transaction costs into the value of an index
+	Incorporate transaction costs calculated using tc_cps or
+	tc_bps into the value of an index (i.e. return the index
+	value had transaction costs been accounted for using the 
+	given method).
+
+	:ARGS:
+
+		tc_df: :class:`pandas.DataFrame` of transaction costs using
+		ether tc_cps or tc_bps
+
+		price_index: :class:`pandas.Series` on which the 
+		transaction costs were calculated on
+
+	:RETURNS:
+
+		:class:`pandas.Series` of the adjusted index value
+
 	"""
 	return None
 		

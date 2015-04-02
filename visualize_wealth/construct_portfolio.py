@@ -677,6 +677,7 @@ def fetch_data_for_initial_allocation_method(initial_weights,
 
 	return panel.ffill()
 
+
 def panel_from_weight_file(weight_df, price_panel, start_value):
 	"""
 	Returns a :class:`pandas.Panel` with the intermediate calculation
@@ -841,8 +842,7 @@ def _tc_helper(weight_df, share_panel, tau, meth):
 
 	tcost = pandas.DataFrame(d).transpose()
 	cumcost = tcost.reindex(share_panel.major_axis)
-	cumcost = cumcost.fillna(0.)
-	return cumcost.cumsum()
+	return cumcost.fillna(0.)
 
 def tc_cps(weight_df, share_panel, cps = .10):
 	"""
@@ -897,6 +897,12 @@ def tc_bps(weight_df, share_panel, bps = 10.):
 					  meth = 'bps',
 					  tau = bps
 	)
+
+def incorporate_tcs(tc_df, price_index):
+	"""
+	Incorporate transaction costs into the value of an index
+	"""
+	return None
 		
 def weight_df_from_initial_weights(weight_series, price_panel,
 	rebal_frequency, start_value = 1000., start_date = None):

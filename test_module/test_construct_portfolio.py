@@ -52,10 +52,12 @@ def manual_index(panel, test_file):
 
 def test_pfp(panel, manual_index):
     lib_calc = cp.pfp_from_weight_file(panel)
-    testing.assert_series_equal(manual_index['Close'], lib_calc['Close'])
+    testing.assert_series_equal(manual_index['Close'], 
+                                lib_calc['Close']
+    )
 
-def test_tc_bps(rebal_weights, panel, test_file):
-    man_tcosts = test_file.parse('tc_bps', index_col = 0)
+def test_tc_bps(rebal_weights, panel, tc_file):
+    man_tcosts = tc_file.parse('tc_bps', index_col = 0)
     man_tcosts = man_tcosts.fillna(0.0)
 
     vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
@@ -67,8 +69,11 @@ def test_tc_bps(rebal_weights, panel, test_file):
     man_tcosts = man_tcosts[cols]
     testing.assert_frame_equal(man_tcosts, vw_tcosts)
 
-def test_tc_cps(rebal_weights, panel, test_file):
-    man_tcosts = test_file.parse('tc_cps', index_col = 0)
+def test_net_tcs():
+    return None
+
+def test_tc_cps(rebal_weights, panel, tc_file):
+    man_tcosts = tc_file.parse('tc_cps', index_col = 0)
     man_tcosts = man_tcosts.fillna(0.0)
 
     vw_tcosts = cp.tc_cps(weight_df = rebal_weights, 

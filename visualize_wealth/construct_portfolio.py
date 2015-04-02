@@ -898,7 +898,7 @@ def tc_bps(weight_df, share_panel, bps = 10.):
 					  tau = bps
 	)
 
-def incorporate_tcs(tc_df, price_index):
+def net_tcs(tc_df, price_index):
 	"""
 	Incorporate transaction costs calculated using tc_cps or
 	tc_bps into the value of an index (i.e. return the index

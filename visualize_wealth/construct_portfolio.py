@@ -17,7 +17,6 @@ import urllib2
 from .utils import _open_store
 from .utils import tradeplus_tchunks
 
-
 def format_blotter(blotter_file):
 	"""
 	Pass in either a location of a blotter file (in ``.csv`` format) or 
@@ -918,6 +917,22 @@ def net_tcs(tc_df, price_index):
 		:class:`pandas.Series` of the adjusted index value
 
 	"""
+	ln = lambda x, y: x.div(y).apply(numpy.log)
+	
+	tc_sum = tc_df.sum(axis = 1)
+	tc_ln = numpy.log(1. - tc_ln.div(price_index))
+	
+	p_ln = ln(x = price_index, 
+			  y = price_index.shift(1)
+	)
+
+	ln_sum = tc_ln.add(p_ln)
+	ln_sum[0] = 0.
+	adj_p = price_index[0] + tc_sum[0]
+	return adj_p * ln_sum.cumsum()
+
+
+
 	return None
 		
 def weight_df_from_initial_weights(weight_series, price_panel,

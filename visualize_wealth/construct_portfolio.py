@@ -917,9 +917,9 @@ def net_tcs(tc_df, price_index):
 		:class:`pandas.Series` of the adjusted index value
 
 	"""
+	#log returns are so ugly
 	ln = lambda x, y: x.div(y).apply(numpy.log)
 	
-	import ipdb; ipdb.set_trace()
 	tc_sum = tc_df.sum(axis = 1)
 	tc_ln = numpy.log(1. - tc_sum.div(price_index))
 	
@@ -929,8 +929,8 @@ def net_tcs(tc_df, price_index):
 
 	ln_sum = tc_ln.add(p_ln)
 	ln_sum[0] = 0.
-	adj_p = price_index[0] - tc_sum[0]
-	return adj_p * numpy.exp(ln_sum.cumsum())
+	p_o = price_index[0] - tc_sum[0]
+	return p_o * numpy.exp(ln_sum.cumsum())
 		
 def weight_df_from_initial_weights(weight_series, price_panel,
 	rebal_frequency, start_value = 1000., start_date = None):

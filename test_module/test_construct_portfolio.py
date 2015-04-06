@@ -23,6 +23,11 @@ def test_file():
     return pandas.ExcelFile(f)
 
 @pytest.fixture
+def tc_file():
+    f = './test_data/transaction-costs.xlsx'
+    return pandas.ExcelFile(f)
+
+@pytest.fixture
 def rebal_weights(test_file):
     return test_file.parse('rebal_weights', index_col = 0)
 
@@ -45,22 +50,76 @@ def manual_index(panel, test_file):
     )
     return man_calc
 
+@pytest.fixture
+def manual_tc_bps(tc_file):
+    man_tcosts = tc_file.parse('tc_bps', index_col = 0)
+    man_tcosts = man_tcosts.fillna(0.0)
+    return man_tcosts
+
+@pytest.fixture
+def manual_tc_cps(tc_file):
+    man_tcosts = tc_file.parse('tc_cps', index_col = 0)
+    man_tcosts = man_tcosts.fillna(0.0)
+    return man_tcosts
+
 def test_pfp(panel, manual_index):
     lib_calc = cp.pfp_from_weight_file(panel)
-    testing.assert_series_equal(manual_index['Close'], lib_calc['Close'])
+    testing.assert_series_equal(manual_index['Close'], 
+                                lib_calc['Close']
+    )
+    return lib_calc
 
-def test_transaction_costs(rebal_weights, panel, test_file):
-    man_tcosts = test_file.parse('trans_costs', index_col = 0)
+def test_tc_bps(rebal_weights, panel, tc_file, manual_tc_bps):
+    vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
+                          share_panel = panel,
+                          bps = 10.,
+    )
+    cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
+    testing.assert_frame_equal(manual_tc_bps[cols], vw_tcosts)
 
-    vw_tcosts = cp.transaction_costs(weight_df = rebal_weights, 
-                                     share_panel = panel,
-                                     tau = 10./10000.,
+def test_net_bps(rebal_weights, panel, tc_file, manual_tc_bps, manual_index):
+    
+    index = test_pfp(panel, manual_index)
+    index = index['Close']
+
+    vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
+                          share_panel = panel,
+                          bps = 10.,
     )
 
+    net_tcs = cp.net_tcs(tc_df = vw_tcosts, 
+                         price_index = index
+    )
+
+    testing.assert_series_equal(manual_tc_bps['adj_index'],
+                                net_tcs
+    )
+
+def test_net_cps(rebal_weights, panel, tc_file, manual_tc_cps, manual_index):
+    index = test_pfp(panel, manual_index)
+    index = index['Close']
+
+    vw_tcosts = cp.tc_cps(weight_df = rebal_weights, 
+                          share_panel = panel,
+                          cps = 10.,
+    )
+
+    net_tcs = cp.net_tcs(tc_df = vw_tcosts, 
+                         price_index = index
+    )
+
+    testing.assert_series_equal(manual_tc_cps['adj_index'],
+                                net_tcs
+    )
+
+def test_tc_cps(rebal_weights, panel, tc_file, manual_tc_cps):
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
-    man_tcosts = man_tcosts[[col + ' cum' for col in cols]]
-    man_tcosts.columns = cols
-    testing.assert_frame_equal(man_tcosts, vw_tcosts)
+    vw_tcosts = cp.tc_cps(weight_df = rebal_weights, 
+                          share_panel = panel,
+                          cps = 10.,
+    )
+
+    testing.assert_frame_equal(manual_tc_cps[cols], vw_tcosts)
 
 def test_funs():
     """

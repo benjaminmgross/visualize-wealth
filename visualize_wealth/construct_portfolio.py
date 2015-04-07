@@ -843,7 +843,7 @@ def _tc_helper(weight_df, share_panel, tau, meth):
 	cumcost = tcost.reindex(share_panel.major_axis)
 	return cumcost.fillna(0.)
 
-def tc_cps(weight_df, share_panel, cps = .10):
+def tc_cps(weight_df, share_panel, cps = 10.):
 	"""
 	Estimate the cumulative rolling transaction costs by ticker using
 	the cents per share method of calculation. Can
@@ -857,7 +857,7 @@ def tc_cps(weight_df, share_panel, cps = .10):
 		share_panel: :class:`pandas.Panel` with dimensions 
 		(tickers, dates, price/share data)
 
-		cps: :class:`float` of the transaction cost per share 
+		cps: :class:`float` of the transaction cost in cents per share
 
 	:RETURNS:
 

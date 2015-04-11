@@ -765,6 +765,28 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 						 axis = 2
 	)
 
+def mngmt_fee(price_series, bps_cost, frequency):
+	"""
+	Extract management fees from repr(price_series) 
+	of repr(bps_cost) every repr(frequency)
+
+	:ARGS:
+
+		price_series: :class:`DataFrame` of 'Open', 'Close' 
+		or :class:`pandas.Series` of 'Close'
+
+		bps_cost: :class:`float` of the management fee
+		in bps
+
+		frequency: :class:`string` of the frequency to 
+		charge the management fee in ['yearly', 'quarterly',
+		'monthly', 'daily']
+
+	:RETURNS:
+
+		same as repr(price_series)
+	"""
+
 def _tc_helper(weight_df, share_panel, tau, meth):
 	"""
 	Helpfer function for the tc_* functions

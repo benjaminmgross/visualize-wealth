@@ -62,6 +62,10 @@ def manual_tc_cps(tc_file):
     man_tcosts = man_tcosts.fillna(0.0)
     return man_tcosts
 
+@pytest.fixture
+def manual_mngmt_fee(tc_file):
+    return tc_file.parse('mgmt_fee', index_col = 0)
+
 def test_pfp(panel, manual_index):
     lib_calc = cp.pfp_from_weight_file(panel)
     testing.assert_series_equal(manual_index['Close'], 

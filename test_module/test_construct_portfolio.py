@@ -66,6 +66,23 @@ def manual_tc_cps(tc_file):
 def manual_mngmt_fee(tc_file):
     return tc_file.parse('mgmt_fee', index_col = 0)
 
+def test_mngmt_fee(panel, tc_file, manual_mngmt_fee):
+    index = cp.pfp_from_weight_file(panel)
+    
+    vw_mfee = cp.mngmt_fee(price_series = index,
+                           bps_cost = 100.,
+                           frequency = 'daily'
+    )
+
+    vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
+                          share_panel = panel,
+                          bps = 10.,
+    )
+    
+    testing.assert_series_equal(manual_mngmt_fee['daily_index'],
+                                vw_mfee
+    )
+
 def test_pfp(panel, manual_index):
     lib_calc = cp.pfp_from_weight_file(panel)
     testing.assert_series_equal(manual_index['Close'], 
@@ -73,7 +90,7 @@ def test_pfp(panel, manual_index):
     )
     return lib_calc
 
-def test_tc_bps(rebal_weights, panel, tc_file, manual_tc_bps):
+def test_tc_bps(rebal_weights, panel, manual_tc_bps):
     vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
                           share_panel = panel,
                           bps = 10.,
@@ -81,7 +98,7 @@ def test_tc_bps(rebal_weights, panel, tc_file, manual_tc_bps):
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
     testing.assert_frame_equal(manual_tc_bps[cols], vw_tcosts)
 
-def test_net_bps(rebal_weights, panel, tc_file, manual_tc_bps, manual_index):
+def test_net_bps(rebal_weights, panel, manual_tc_bps, manual_index):
     
     index = test_pfp(panel, manual_index)
     index = index['Close']
@@ -99,7 +116,7 @@ def test_net_bps(rebal_weights, panel, tc_file, manual_tc_bps, manual_index):
                                 net_tcs
     )
 
-def test_net_cps(rebal_weights, panel, tc_file, manual_tc_cps, manual_index):
+def test_net_cps(rebal_weights, panel, manual_tc_cps, manual_index):
     index = test_pfp(panel, manual_index)
     index = index['Close']
 
@@ -116,7 +133,7 @@ def test_net_cps(rebal_weights, panel, tc_file, manual_tc_cps, manual_index):
                                 net_tcs
     )
 
-def test_tc_cps(rebal_weights, panel, tc_file, manual_tc_cps):
+def test_tc_cps(rebal_weights, panel, manual_tc_cps):
     cols = ['EEM', 'EFA', 'IEF', 'IWV', 'IYR', 'SHY']
     vw_tcosts = cp.tc_cps(weight_df = rebal_weights, 
                           share_panel = panel,

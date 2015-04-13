@@ -69,14 +69,9 @@ def manual_mngmt_fee(tc_file):
 def test_mngmt_fee(panel, tc_file, manual_mngmt_fee):
     index = cp.pfp_from_weight_file(panel)
     
-    vw_mfee = cp.mngmt_fee(price_series = index,
+    vw_mfee = cp.mngmt_fee(price_series = index['Close'],
                            bps_cost = 100.,
                            frequency = 'daily'
-    )
-
-    vw_tcosts = cp.tc_bps(weight_df = rebal_weights, 
-                          share_panel = panel,
-                          bps = 10.,
     )
     
     testing.assert_series_equal(manual_mngmt_fee['daily_index'],

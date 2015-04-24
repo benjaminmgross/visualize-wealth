@@ -1095,12 +1095,18 @@ def information_ratio(series, benchmark, freq = 'daily'):
 
     rfr: :class:`float` of the risk free rate
 
-    .. math:: 
+    .. note:: Calculating Information Ratio
 
-        \\textrm{IR} \\triangleq \\frac{\\alpha}{\\omega} \\\\
-        \\textrm{where,} \\\\
-        \\alpha &= \\textrm{active return} \\\\
-        \\omega &= \\textrm{tracking error} \\\\
+        .. math:: 
+
+            \\textrm{IR} \\triangleq \\frac{\\alpha}{\\omega} \\\\
+        
+        where,
+
+        .. math::
+
+            \\alpha &= \\textrm{active return} \\\\
+            \\omega &= \\textrm{tracking error} \\\\
 
     """
     def _information_ratio(series, benchmark, freq = freq):
@@ -1141,7 +1147,10 @@ def jensens_alpha(series, benchmark, rfr = 0., freq = 'daily'):
         .. math::
 
             \\alpha_{\\textrm{Jensen}} = r_p - \\beta \\cdot r_b 
-            \\: \\textrm{where}
+        
+        Where,
+
+        .. math::
 
             r_p &= \\textrm{annualized linear return of the portfolio} 
             \\\\
@@ -1308,8 +1317,8 @@ def log_returns_vol_adj(series, theta = 0.94, freq = 'daily'):
 
            \\tilde{r}_{t,T} = \\frac{\\sigma_T}{\\sigma_t}\\cdot r_{t}
 
-        This methodology is most common in using scaled historical 
-        returns to calculate VaR and CVaR
+       This methodology is most common in using scaled historical 
+       returns to calculate VaR and CVaR
 
     """
     def _log_ret_vol_adj(series, theta, freq):
@@ -1378,7 +1387,9 @@ def mctr(asset_df, portfolio_series):
 
             MCTR_i &= \\sigma_i \\cdot \\rho_{i, P} \\\\
 
-            \\textrm{where, } \\\\
+        Where,
+
+        .. math::
             
             \\sigma_i &= \\textrm{volatility of asset } i, \\\\
             \\rho_i &= \\textrm{correlation of asset } i
@@ -1726,18 +1737,22 @@ def risk_adjusted_excess_return(series, benchmark, rfr = 0.,
 
     .. note:: Calculating Risk Adjusted Excess Returns
 
-        .. math::
+       .. math::
     
-            raer = r_p - \\left(\\textrm{SR}_b \\cdot \\sigma_p + 
-            r_f\\right), \\: \\textrm{where},
+          raer = r_p - \\left(\\textrm{SR}_b \\cdot \\sigma_p + 
+          r_f\\right)
 
-            r_p &= \\textrm{annualized linear return} 
-            \\\\
-            \\textrm{SR}_b &= \\textrm{Sharpe Ratio of the benchmark} 
-            \\\\
-            \\sigma_p &= \\textrm{volatility of the portfolio}
-            \\\\
-            r_f &= \\textrm{Risk free rate}
+       Where,
+
+       .. math::
+
+          r_p &= \\textrm{annualized linear return} 
+          \\\\
+          \\textrm{SR}_b &= \\textrm{Sharpe Ratio of the benchmark} 
+          \\\\
+          \\sigma_p &= \\textrm{volatility of the portfolio}
+          \\\\
+          r_f &= \\textrm{Risk free rate}
     
     """
     def _risk_adjusted_excess_return(series, benchmark, rfr = 0., 
@@ -2078,11 +2093,14 @@ def tracking_error(series, benchmark, freq = 'daily'):
 
         .. math::
 
-          r_{a_i} = \\frac{(1+r_{s_i})}{(1+r_{b_i})}-1
+            r_{a_i} = \\frac{(1+r_{s_i})}{(1+r_{b_i})}-1
 
-          \\textrm{then, } \\textrm{TE} &= \\sigma_a \\cdot \\sqrt{k} 
-          \\\\
-          k &= \\textrm{Annualization factor}
+        Then,
+
+        .. math:: 
+
+            \\textrm{TE} &= \\sigma_a \\cdot \\sqrt{k} \\\\
+            k &= \\textrm{Annualization factor}
 
     """
     def _tracking_error(series, benchmark, freq = 'daily'):
@@ -2238,12 +2256,13 @@ def var_norm(series, p = .01):
 
     .. note:: Derivation of Value at Risk
 
-        .. math::
+        Let :math:`Y \\sim N(\\mu, \\sigma^2)`, we choose 
+        :math:`y_\\alpha` such that 
+        :math:`\\mathbb{P}(Y < y_\\alpha) = \\alpha`. 
 
-            Let Y \\sim N(\\mu, \\sigma^2) \\textrm{, we choose } y_\\alpha
-            \\textrm{ such that}
-            \\mathbb{P}(Y < y_\\alpha) = \\alpha,
-            \\textrm{Then,} \\\\
+        Then,
+
+        .. math::
 
             \\mathbb{P}(Y < y_\\alpha) &= \\alpha \\\\
             \\Rightarrow \\mathbb{P}(\\frac{Y - \\mu}{\\sigma} < 
@@ -2253,19 +2272,25 @@ def var_norm(series, p = .01):
             \\mu}{\sigma} &= \\alpha
             \\\\
             \\Rightarrow \\Phi(\\frac{y_\\alpha - \\mu}{\\sigma} ) 
-            &= \\alpha, \\textrm{ where}
-            \\\\
-            \\Phi(.) \\textrm{ is the standard normal cdf operator.
-            Then using the inverse of the function } \\Phi
-            \\textrm{ , we have:} \\\\
+            &= \\alpha, 
+
+        where :math:`\\Phi(.)` is the standard normal cdf operator.
+        Then using the inverse of the function :math:`\\Phi`, 
+        we have:
+
+        .. math::
 
             \\Phi^{-1}( \\Phi(\\frac{y_\\alpha - \\mu}{\\sigma} ) ) 
             &= \\Phi^{-1}(\\alpha) 
             \\\\
             \\Rightarrow \\Phi^{-1}(\\alpha)\\cdot\\sigma + \\mu 
-            = y_\\alpha \\textrm{, but } y_\\alpha \\textrm{ 
-            is negative and VaR is always positive, so,} 
-            \\\\
+            = y_\\alpha 
+
+        But :math:`y_\\alpha` is negative and VaR is always 
+        positive, so,
+
+        .. math:: 
+
             VaR_\\alpha = -y_\\alpha &= -\\Phi^{-1}
             (\\alpha)\\cdot\\sigma - \\mu
             \\\\

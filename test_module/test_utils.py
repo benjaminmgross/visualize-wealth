@@ -13,7 +13,13 @@ import numpy
 import pandas
 import tempfile
 import datetime
-from pandas.util import testing
+
+from pandas.util.testing import (assert_frame_equal,
+                                 assert_series_equal,
+                                 assert_index_equal,
+                                 assert_almost_equal
+)
+
 import visualize_wealth.utils as utils
 
 
@@ -92,7 +98,7 @@ def test_create_store_master_index(populate_store):
 
     utils.create_store_master_index(populate_store['name'])
     store = pandas.HDFStore(populate_store['name'], mode = 'r+')
-    testing.assert_series_equal(store.get('IND3X'), index)
+    assert_series_equal(store.get('IND3X'), index)
     store.close()
     os.remove(populate_store['name'])
 
@@ -100,7 +106,7 @@ def test_union_store_indexes(populate_store):
     store = pandas.HDFStore(populate_store['name'], mode = 'r+')
     index = populate_store['index']
     union = utils.union_store_indexes(store)
-    testing.assert_index_equal(index, union)
+    assert_index_equal(index, union)
     store.close()
     os.remove(populate_store['name'])
 
@@ -116,7 +122,7 @@ def test_create_store_cash(populate_store):
                             columns = cols
     )
 
-    testing.assert_frame_equal(store.get('CA5H'), cash)
+    assert_frame_equal(store.get('CA5H'), cash)
     store.close()
     os.remove(populate_store['name'])
 
@@ -128,7 +134,7 @@ def test_update_store_master_and_cash(populate_updated):
     utils.update_store_cash(populate_updated['name'])
 
     store = pandas.HDFStore(populate_updated['name'], mode = 'r+')
-    testing.assert_series_equal(store.get('IND3X'), index)
+    assert_series_equal(store.get('IND3X'), index)
 
     cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
     n = len(index)
@@ -137,9 +143,44 @@ def test_update_store_master_and_cash(populate_updated):
                             columns = cols
     )
 
-    testing.assert_frame_equal(store.get('CA5H'), cash)
+    assert_frame_equal(store.get('CA5H'), cash)
     store.close()
     os.remove(populate_updated['name'])
+
+def test_rets_to_price():
+    dts = ['1/1/2000', '1/2/2000', '1/3/2000']
+
+    index = pandas.DatetimeIndex(
+                pandas.Timestamp(dt) for dt in dts
+    )
+
+    series = pandas.Series([numpy.nan, 0., 0.], 
+                           index = index
+    )
+
+    log = utils.rets_to_price(series, ret_typ = 'log', start_value = 100.)
+    lin = utils.rets_to_price(series, ret_typ = 'linear', start_value = 100.)
+    man = pandas.Series([100., 100., 100.], index = index)
+
+    assert_series_equal(log, man)
+    assert_series_equal(lin, man)
+
+    df = pandas.DataFrame({'a': series, 'b': series})
+    log = utils.rets_to_price(df, ret_typ = 'log', start_value = 100.)
+    lin = utils.rets_to_price(df, ret_typ = 'linear', start_value = 100.)
+    man = pandas.DataFrame({'a': man, 'b': man})
+
+    assert_frame_equal(log, man)
+    assert_frame_equal(lin, man)
+    
+
+
+    # test series linear
+    # test series log
+    # test df linear
+    # test df log
+    # test wrong type
+    return None
 """
 def test_update_store_cash(populate_updated):
     index = populate_updated['index']
@@ -153,7 +194,7 @@ def test_update_store_cash(populate_updated):
                             columns = cols
     )
 
-    testing.assert_frame_equal(store.get('CA5H'), cash)
+    assert_frame_equal(store.get('CA5H'), cash)
     store.close()
     os.remove(populate_updated['name'])
 """

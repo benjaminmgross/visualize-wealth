@@ -174,19 +174,11 @@ def test_rets_to_price():
     assert_frame_equal(lin, man)
 
     with pytest.raises(TypeError):
-        utils.rets_to_price(pandas.Panel(d), 
+        utils.rets_to_price(pandas.Panel(), 
                             ret_typ = 'log', 
                             start_value = 100.
         )
-    
 
-
-    # test series linear
-    # test series log
-    # test df linear
-    # test df log
-    # test wrong type
-    return None
 """
 def test_update_store_cash(populate_updated):
     index = populate_updated['index']

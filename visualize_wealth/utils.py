@@ -510,10 +510,11 @@ def rets_to_price(rets, ret_typ = 'log', start_value = 100.):
             p = normalized_price(p) * start_value
 
         else:
-            loc = rets.index.get_loc(fv)
-            fd = rets.index[loc - 1]
-            rets[fd] = 0.
-            p = typ_d[ret_typ](rets[fd:])
+            cp = rets.copy()   # copy to prepend with 0.
+            loc = cp.index.get_loc(fv)
+            fd = cp.index[loc - 1]
+            cp[fd] = 0.
+            p = typ_d[ret_typ](cp[fd:])
         return p
 
     if isinstance(rets, pandas.Series):

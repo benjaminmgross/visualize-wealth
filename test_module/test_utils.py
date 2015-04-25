@@ -172,6 +172,12 @@ def test_rets_to_price():
 
     assert_frame_equal(log, man)
     assert_frame_equal(lin, man)
+
+    with pytest.raises(TypeError):
+        utils.rets_to_price(pandas.Panel(d), 
+                            ret_typ = 'log', 
+                            start_value = 100.
+        )
     
 
 

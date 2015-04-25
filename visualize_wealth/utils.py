@@ -438,9 +438,9 @@ def index_multi_intersect(frame_list):
 
 def join_on_index(df_list, index):
     """
-    pandas doesn't current have the ability to :meth:`concat` on a provided 
-    :class:`pandas.Index`.  This is a quick function to provide that 
-    functionality
+    pandas doesn't current have the ability to :meth:`concat` several
+    :class:`DataFrame`'s on a provided :class:`DatetimeIndex`.  
+    This is a quick function to provide that functionality
 
     :ARGS:
 
@@ -479,6 +479,25 @@ def normalized_price(price_df):
         raise ValueError, "cannot contain null values"
 
     return calc_d[typ](price_df)
+
+def rets_to_price(rets, ret_typ = 'log'):
+    """
+    Take a series of repr(rets), of type repr(ret_typ) and 
+    convert them into prices
+
+    :ARGS:
+
+        rets: :class:`Series` or :class:`DataFrame` of returns
+
+        ret_typ: :class:`string` of the return type, 
+        either ['log', 'linear']
+
+    :RETURNS:
+
+        same as provided type
+    """
+    return None
+
 
 def perturbate_asset(frame, key, eps):
     """

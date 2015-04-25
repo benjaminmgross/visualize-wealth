@@ -480,7 +480,7 @@ def normalized_price(price_df):
 
     return calc_d[typ](price_df)
 
-def rets_to_price(rets, ret_typ = 'log'):
+def rets_to_price(rets, ret_typ = 'log', start_value = 100.):
     """
     Take a series of repr(rets), of type repr(ret_typ) and 
     convert them into prices
@@ -496,7 +496,41 @@ def rets_to_price(rets, ret_typ = 'log'):
 
         same as provided type
     """
-    return None
+    def _rets_to_price(rets, ret_typ, start_value):
+
+        typ_d = {'log': lambda x: start_value * numpy.exp(x.cumsum()),
+                 'linear': lambda x: start_value * (1. + x).cumprod()
+                 }
+
+        fv = rets.first_valid_index()
+        fd = rets.index[0]
+
+        if fv == fd:    # no nulls at the beginning
+            p = typ_d[ret_typ](rets)
+            p = normalized_price(p) * start_value
+
+        else:
+            loc = rets.index.get_loc(fv)
+            fd = rets.index[loc - 1]
+            rets[fd] = 0.
+            p = typ_d[ret_typ](rets[fd:])
+        return p
+
+    if isinstance(rets, pandas.Series):
+        return _rets_to_price(rets = rets, 
+                              ret_typ = ret_typ,
+                              start_value = start_value
+        )
+    elif isinstance(rets, pandas.DataFrame):
+        return rets.apply(
+            lambda x: _rets_to_price(rets = x,
+                                     ret_typ = ret_typ,
+                                     start_value = start_value 
+            ), axis = 0
+        )
+
+    else:
+        raise TypeError, "rets must be Series or DataFrame"
 
 
 def perturbate_asset(frame, key, eps):

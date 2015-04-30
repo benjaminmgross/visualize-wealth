@@ -93,6 +93,25 @@ def ticker_and_weight_into_weight_df(weight_df, ticker, weight, date):
     ret_df.loc[date: , ticker] = weight
     return ret_df
 
+def epoch_to_datetime(pandas_obj):
+    """
+    Convert string epochs to `pandas.DatetimeIndex`
+
+    :ARGS:
+
+        either a :class:`DataFrame` or :class:`Series` where index can be 
+        converted to datetimes
+
+    :RETURNS:
+
+        same as input type, but with index converted into Timestamps
+    """
+    pandas_obj.index = pandas.to_datetime( pandas_obj.index.astype('int64'), 
+                                           unit = 'ms'
+    )
+    return pandas_obj
+
+
 def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     """
     Given an existing store located at ``path``, check to make sure

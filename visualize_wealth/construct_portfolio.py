@@ -14,8 +14,10 @@ import pandas.io.data
 import datetime
 import urllib2
 
-from .utils import _open_store
-from .utils import tradeplus_tchunks
+from .utils import (_open_store, 
+					tradeplus_tchunks, 
+					zipped_time_chunks
+)
 
 def format_blotter(blotter_file):
 	"""
@@ -764,6 +766,86 @@ def panel_from_weight_file(weight_df, price_panel, start_value):
 						 join = 'inner', 
 						 axis = 2
 	)
+
+def mngmt_fee(price_series, bps_cost, frequency):
+	"""
+	Extract management fees from repr(price_series) 
+	of repr(bps_cost) every repr(frequency)
+
+	:ARGS:
+
+		price_series: :class:`DataFrame` of 'Open', 'Close' 
+		or :class:`pandas.Series` of 'Close'
+
+		bps_cost: :class:`float` of the management fee
+		in bps
+
+		frequency: :class:`string` of the frequency to 
+		charge the management fee in ['yearly', 'quarterly',
+		'monthly', 'daily']
+
+	:RETURNS:
+
+		same as repr(price_series)
+	"""
+	def time_dist(date, interval):
+		"""
+		Return the proportion of time left to 
+		the end of the interval, from the current
+		date
+		"""
+
+		return None
+
+	ln = lambda x, y: x.div(y).apply(numpy.log)
+
+	fac = {'daily': 252.,
+		   'weekly': 52.,
+		   'monthly': 12.,
+		   'quarterly': 4.,
+		   'yearly': 1.
+		   }
+	
+	per_fee = bps_cost/10000./fac[frequency]
+
+	if frequency is 'daily':
+		p_ln = ln(x = price_series, 
+			      y = price_series.shift(1)
+		)
+
+		p_ln[0] = 0.
+		
+		fee = numpy.log(1. - per_fee)
+
+		# charge the daily fee on the first day
+		ret_p = price_series[0]
+
+		cum_ret = (p_ln + fee).cumsum()
+		return ret_p*numpy.exp(cum_ret)
+
+	else:
+		tcs = zipped_time_chunks(price_series.index,
+								 frequency
+		)
+
+		p_o, p_e = tcs[0][0], tcs[0][1]
+		rem_t = (p_e - p_o).days
+		return None
+
+
+	# determine the first fee
+	
+	# extract the first fee
+
+	# create the log changes
+
+	# create the fee costs
+
+	# sum them
+
+	# re-create the price series
+
+	# return None
 
 def _tc_helper(weight_df, share_panel, tau, meth):
 	"""

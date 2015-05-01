@@ -93,6 +93,25 @@ def ticker_and_weight_into_weight_df(weight_df, ticker, weight, date):
     ret_df.loc[date: , ticker] = weight
     return ret_df
 
+def epoch_to_datetime(pandas_obj):
+    """
+    Convert string epochs to `pandas.DatetimeIndex`
+
+    :ARGS:
+
+        either a :class:`DataFrame` or :class:`Series` where index can be 
+        converted to datetimes
+
+    :RETURNS:
+
+        same as input type, but with index converted into Timestamps
+    """
+    pandas_obj.index = pandas.to_datetime( pandas_obj.index.astype('int64'), 
+                                           unit = 'ms'
+    )
+    return pandas_obj
+
+
 def append_store_prices(ticker_list, store_path, start = '01/01/1990'):
     """
     Given an existing store located at ``path``, check to make sure
@@ -438,9 +457,9 @@ def index_multi_intersect(frame_list):
 
 def join_on_index(df_list, index):
     """
-    pandas doesn't current have the ability to :meth:`concat` on a provided 
-    :class:`pandas.Index`.  This is a quick function to provide that 
-    functionality
+    pandas doesn't current have the ability to :meth:`concat` several
+    :class:`DataFrame`'s on a provided :class:`DatetimeIndex`.  
+    This is a quick function to provide that functionality
 
     :ARGS:
 
@@ -479,6 +498,60 @@ def normalized_price(price_df):
         raise ValueError, "cannot contain null values"
 
     return calc_d[typ](price_df)
+
+def rets_to_price(rets, ret_typ = 'log', start_value = 100.):
+    """
+    Take a series of repr(rets), of type repr(ret_typ) and 
+    convert them into prices
+
+    :ARGS:
+
+        rets: :class:`Series` or :class:`DataFrame` of returns
+
+        ret_typ: :class:`string` of the return type, 
+        either ['log', 'linear']
+
+    :RETURNS:
+
+        same as provided type
+    """
+    def _rets_to_price(rets, ret_typ, start_value):
+
+        typ_d = {'log': lambda x: start_value * numpy.exp(x.cumsum()),
+                 'linear': lambda x: start_value * (1. + x).cumprod()
+                 }
+
+        fv = rets.first_valid_index()
+        fd = rets.index[0]
+
+        if fv == fd:    # no nulls at the beginning
+            p = typ_d[ret_typ](rets)
+            p = normalized_price(p) * start_value
+
+        else:
+            cp = rets.copy()   # copy to prepend with 0.
+            loc = cp.index.get_loc(fv)
+            fd = cp.index[loc - 1]
+            cp[fd] = 0.
+            p = typ_d[ret_typ](cp[fd:])
+        return p
+
+    if isinstance(rets, pandas.Series):
+        return _rets_to_price(rets = rets, 
+                              ret_typ = ret_typ,
+                              start_value = start_value
+        )
+    elif isinstance(rets, pandas.DataFrame):
+        return rets.apply(
+            lambda x: _rets_to_price(rets = x,
+                                     ret_typ = ret_typ,
+                                     start_value = start_value 
+            ), axis = 0
+        )
+
+    else:
+        raise TypeError, "rets must be Series or DataFrame"
+
 
 def perturbate_asset(frame, key, eps):
     """

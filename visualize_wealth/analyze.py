@@ -1531,6 +1531,40 @@ def median_upcapture(series, benchmark):
     else:
         return _median_upcapture(series, benchmark)
 
+def mvt_rnd(mu, covm, phi, n_sim):
+    """
+    Create an repr(n_sim) simluation of a multi-variate t 
+    distribution with repr(phi) degrees of freedom, mean repr(mu),
+    and covariance structure repr(covm)
+    
+    :ARGS:
+
+        mu: :class:`Series` of average returns
+
+        covm: :class:`DataFrame` of the assets covariance matrix
+
+        phi: :class:`float` of t-distribution degrees of freedom
+
+        n_sim: :class:`int` of the number of simulations to make
+
+    :RETURNS:
+
+        :class:`DataFrame` dim in {n_sim, mu.shape} of simulations
+
+    .. note::
+
+        Transformation taken from `Kenny Chowdary's website
+        <http://bit.ly/1Kh8gku>`_
+
+    """
+    d = len(covm)
+
+    g = numpy.tile(numpy.random.gamma(phi/2., 2./phi, n_sim), (d, 1)).T
+    Z = numpy.random.multivariate_normal(numpy.zeros(d), covm, n_sim)
+    ret = mu.values + Z/numpy.sqrt(g)
+
+    return pandas.DataFrame(ret, columns = mu.index)
+
 def period_returns(series, freq = 'daily', interval = 'quarterly'):
     """
     Return the disjoint periodic returns of series at interval, given the 

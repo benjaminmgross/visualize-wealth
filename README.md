@@ -16,12 +16,15 @@ we'll see.
 
 ##Dependencies
 
-`numpy` & `scipy`: The building blocks of everything quant
-`pandas`: extensively used (`numpy` and `scipy` obviously, but
-`pandas` depends on those)
-`tables`: for HDFStore price extraction
-`urllib2`: for Yahoo! API calls to append price `DataFrame`s with
+- `numpy` & `scipy`: The building blocks of everything quant
+- `pandas`: extensively used (`numpy` and `scipy` obviously, but
+- `pandas` depends on those)
+- `tables`: for HDFStore price extraction
+- `urllib2`: for Yahoo! API calls to append price `DataFrame`s with
 Dividends
+
+For a full list of dependencies, see the `requirements.txt` file in 
+the root folder.
 
 
 ##Installation

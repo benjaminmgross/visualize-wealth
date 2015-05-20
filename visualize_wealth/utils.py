@@ -839,6 +839,7 @@ def update_store_cash(store_path):
 
     """
     store = _open_store(store_path)
+    td = datetime.datetime.today()
 
     try:
         master_ind = store.get('IND3X')
@@ -850,14 +851,17 @@ def update_store_cash(store_path):
         raise
 
     last_cash_dt = cash.dropna().index.max()
-    today = datetime.datetime.date(datetime.datetime.today())
+    today = datetime.datetime.date(td)
     if last_cash_dt < pandas.Timestamp(today):
         try:
             n = len(master_ind)
-            cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
-            cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
-                                    index = master_ind,
-                                    columns = cols
+            cols = ['Open', 'High', 'Low', 
+                    'Close', 'Volume', 'Adj Close']
+
+            cash = pandas.DataFrame(
+                        numpy.ones([n, len(cols)]),
+                        index = master_ind,
+                        columns = cols
             )
             store.put('CA5H', cash)
         except:
@@ -865,6 +869,20 @@ def update_store_cash(store_path):
 
     store.close()
     return None
+
+def strip_vals(keys):
+    """
+    Return a stripped value for each key in keys
+
+    :ARGS:
+
+        keys: :class:`list` of string values (usually tickers)
+
+    :RETURNS:
+
+        same as input class with whitespace stripped out
+    """
+    return list((x.strip() for x in keys))
 
 def update_store_prices(store_path, store_keys = None):
     """
@@ -889,6 +907,22 @@ def update_store_prices(store_path, store_keys = None):
         those keys
 
     """
+    def _cleaned_keys(keys):
+        """
+        Remove the CA5H and IND3X keys from the list 
+        if they are present
+        """
+        blk_lst = ['IND3X', 'CA5H', '/IND3X', '/CA5H']
+
+        for key in blk_lst:
+            try:
+                keys.remove(key)
+                print "{0} removed".format(key)
+            except:
+                print "{0} not in keys".format(key)
+
+        return keys
+
     reader = pandas.io.data.DataReader
     strftime = datetime.datetime.strftime
     today_str = strftime(datetime.datetime.today(), format = '%m/%d/%Y')
@@ -898,6 +932,7 @@ def update_store_prices(store_path, store_keys = None):
     if not store_keys:
         store_keys = store.keys()
 
+    store_keys = _cleaned_keys(store_keys)
     for key in store_keys:
         stored_data = store.get(key)
         last_stored_date = stored_data.dropna().index.max()
@@ -913,14 +948,15 @@ def update_store_prices(store_path, store_keys = None):
                 tmp.drop_duplicates(cols = "index", inplace = True)
                 tmp = tmp[tmp.columns[tmp.columns != "index"]]
                 store.put(key, tmp)
-            except IOError:
+            except:
+                print "could not update {0}".format(key)
                 logging.exception("could not update {0}".format(key))
 
     store.close()
     return None
 
 
-def zipped_time_chunks(index, interval):
+def zipped_time_chunks(index, interval, incl_T = False):
     """
     Given different period intervals, return a zipped list of tuples
     of length 'period_interval', containing only full periods
@@ -933,22 +969,32 @@ def zipped_time_chunks(index, interval):
     
         index: :class:`pandas.DatetimeIndex`
 
-        per_interval: :class:`string` either 'monthly', 'quarterly',
-        or 'yearly'
+        per_interval: :class:`string` either 'weekly,
+        'monthly', 'quarterly', or 'yearly'
     """
 
-    time_d = {'monthly': lambda x: x.month, 
+    time_d = {'weekly': lambda x: x.week,
+              'monthly': lambda x: x.month, 
               'quarterly':lambda x:x.quarter,
               'yearly':lambda x: x.year}
 
-    ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
-    
-    if ind[0]: #The series started on the last day of period
-        index = index.copy()[1:] #So we can't get a Period
-        ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
+    prv = time_d[interval](index[:-1])
+    nxt = time_d[interval](index[1:])
+    ind =  prv != nxt
 
-    ldop = index[ind]
-    fdop = index[numpy.append(True, ind[:-1])]
+    if incl_T:
+        if not ind[-1]:   # doesn't already end on True
+            ind = numpy.append(ind, True)
+
+    if ind[0]:   # index started on the last day of period
+        index = index.copy()[1:]   # remove first elem
+        prv = time_d[interval](index[:-1])
+        nxt = time_d[interval](index[1:])
+        ind = prv != nxt
+
+    ldop = index[ind]   # last day of period
+    f_ind = numpy.append(True, ind[:-1])
+    fdop = index[f_ind]   # first day of period
     return zip(fdop, ldop)
 
 def tradeplus_tchunks(weight_index, price_index):

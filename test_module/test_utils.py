@@ -102,6 +102,7 @@ def test_create_store_master_index(populate_store):
     store.close()
     os.remove(populate_store['name'])
 
+
 def test_union_store_indexes(populate_store):
     store = pandas.HDFStore(populate_store['name'], mode = 'r+')
     index = populate_store['index']
@@ -109,6 +110,7 @@ def test_union_store_indexes(populate_store):
     assert_index_equal(index, union)
     store.close()
     os.remove(populate_store['name'])
+
 
 def test_create_store_cash(populate_store):
     index = populate_store['index']
@@ -125,6 +127,7 @@ def test_create_store_cash(populate_store):
     assert_frame_equal(store.get('CA5H'), cash)
     store.close()
     os.remove(populate_store['name'])
+
 
 def test_update_store_master_and_cash(populate_updated):
     index = populate_updated['index']
@@ -146,6 +149,7 @@ def test_update_store_master_and_cash(populate_updated):
     assert_frame_equal(store.get('CA5H'), cash)
     store.close()
     os.remove(populate_updated['name'])
+
 
 def test_rets_to_price():
     dts = ['1/1/2000', '1/2/2000', '1/3/2000']
@@ -178,6 +182,13 @@ def test_rets_to_price():
                             ret_typ = 'log', 
                             start_value = 100.
         )
+
+#@pytest.mark.newtest
+def test_strip_vals():
+    l = [' TLT', ' HYY ', 'IEF ']
+    strpd = utils.strip_vals(l)
+    res = ['TLT', 'HYY', 'IEF']
+    assert strpd == res
 
 """
 def test_update_store_cash(populate_updated):

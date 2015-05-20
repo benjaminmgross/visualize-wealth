@@ -716,46 +716,76 @@ def cvar_cf(series, p = .01):
     else:
         return _cvar_cf(series, p = p)
 
-def cvar_cf_ew(series, p = .01):
+def cvar_contrib(wts, prices, alpha = .10, n_sims = 100000):
     """
-    CVaR (Expected Shortfall), using the `Cornish Fisher Approximation 
-    <http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1997178>`_
+    Calculate each asset's contribution to CVaR based on it's 
+    ew volatility and correlation to other assets, and it's 
+    current portfolio weight
 
     :ARGS:
 
-        series: :class:`pandas.Series` or :class:`pandas.DataFrame` of 
-        the asset prices
+        wts: :class:`Series` of current weights
 
-        p: :class:`float` of the desired percentile, defaults to .01 
-        or the 1% CVaR
+        prices: :class:`DataFrame` of prices
+
+        alpha: :class:`float` of the cvar parameter
+
+        n_sims: :class:`int` the number of simulations
 
     :RETURNS:
 
-        :class:`float` or :class:`pandas.Series` of the CVaR
-    
+        :class:`pandas.Series` of proportional contribution
+
+    .. note:: alternative parameters
+
+        currently the span (for exponentially weighted stats)
+        and phi (for the degrees of freedom of the t-distribution)
+        are not changeable for the function
     """
-    def _cvar_cf_ew(series, p):
-        ppf = scipy.stats.norm.ppf
-        pdf = scipy.stats.norm.pdf
-        series_rets = log_returns(series)
+    
+    def _spectral_fun(alpha, n_sims):
         
-        skew, kurt = series_rets.skew(), series_rets.kurtosis() - 3.
-        m = len(series_rets.dropna())
-        mu = pandas.ewma(series_rets, span = m, min_periods = m - 1)[-1]
-        sigma = pandas.ewmstd(series_rets, span = m, min_periods = m - 1)[-1]
+        th = numpy.ceil(alpha*n_sims) # threshold
+        th = int(th) 
+        spc = pandas.Series(
+                  numpy.zeros([n_sims,])
+        )
         
-        f = lambda x, skew, kurt: x + skew/6.*(x**2 - 1) + kurt/24.* x * (
-            x**2 - 3.) - skew**2/36. * x * (2. * x**2  - 5.)
+        spc[:th] = 1
+        return spc/spc.sum()
 
-        loss = f(x = 1/p*(pdf(ppf(p))), skew = skew, 
-                kurt = kurt) * sigma - mu
-        return  numpy.exp(loss) - 1.
+    m, n = prices.shape
 
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _cvar_cf_ew(x, p = p))
-    else:
-        return _cvar_cf_ew(series, p = p)
+    rets = analyze.log_returns(prices)
+    cov = pandas.ewmcov(rets, span = 21., min_periods = 21)
+    zs = pandas.Series(numpy.zeros(n,), index = prices.columns)
 
+    sims = mvt_rnd(mu = zs, 
+                   covm = cov.iloc[-1, :, :],
+                   phi = 3,
+                   n_sim = n_sims
+    )
+
+    psi = sims.dot(wts)
+    spec = _spectral_fun(alpha = alpha, 
+                         n_sims = n_sims
+    )
+
+    srtd = psi.copy()
+    ind = psi.argsort()
+    srtd.sort()
+
+    # pandas multiplies using indexes, so remove index 
+    #cvar = srtd[ind].dot(spec.values)
+
+    d = {}
+
+    for asset in wts.index:
+        d[asset] = sims.loc[ind, asset].dot(spec.values)
+
+    acvar = pandas.Series(d)
+    tmp = acvar.mul(wts)
+    return tmp/tmp.sum()
 
 def cvar_norm(series, p = .01):
     """
@@ -786,36 +816,7 @@ def cvar_norm(series, p = .01):
     else:
         return _cvar_norm(series, p = p)
 
-def cvar_median_np(series, p):
-    """
-    Non-parametric CVaR or Expected Shortfall, solely based on the 
-    median  of historical values (because the median will provide a 
-    more unbiased estimate)
-
-    :ARGS:
-
-        series: :class:`pandas.Series` or :class:`pandas.DataFrame` 
-        of the asset prices
-
-        p: :class:`float` of the desired percentile, defaults to .01 
-        or the 1% CVaR
-
-    :RETURNS:
-
-        :class:`float` or :class:`pandas.Series` of the CVaR
-    
-    """
-    def _cvar_median_np(series, p):
-        series_rets = linear_returns(series)
-        var = numpy.percentile(series_rets, p*100.)
-        return  -series_rets[series_rets <= var].median()
-
-    if isinstance(series, pandas.DataFrame):
-        return series.apply(lambda x: _cvar_median_np(x, p = p))
-    else:
-        return _cvar_median_np(series, p = p)
-
-def cvar_mu_np(series, p):
+def cvar_np(series, p):
     """
     Non-parametric CVaR or Expected Shortfall, solely based on the 
     mean of historical values
@@ -1530,6 +1531,40 @@ def median_upcapture(series, benchmark):
         return benchmark.apply(lambda x: _median_upcapture(series, x))
     else:
         return _median_upcapture(series, benchmark)
+
+def mvt_rnd(mu, covm, phi, n_sim):
+    """
+    Create an repr(n_sim) simluation of a multi-variate t 
+    distribution with repr(phi) degrees of freedom, mean repr(mu),
+    and covariance structure repr(covm)
+    
+    :ARGS:
+
+        mu: :class:`Series` of average returns
+
+        covm: :class:`DataFrame` of the assets covariance matrix
+
+        phi: :class:`float` of t-distribution degrees of freedom
+
+        n_sim: :class:`int` of the number of simulations to make
+
+    :RETURNS:
+
+        :class:`DataFrame` dim in {n_sim, mu.shape} of simulations
+
+    .. note::
+
+        Transformation taken from `Kenny Chowdary's website
+        <http://bit.ly/1Kh8gku>`_
+
+    """
+    d = len(covm)
+
+    g = numpy.tile(numpy.random.gamma(phi/2., 2./phi, n_sim), (d, 1)).T
+    Z = numpy.random.multivariate_normal(numpy.zeros(d), covm, n_sim)
+    ret = mu.values + Z/numpy.sqrt(g)
+
+    return pandas.DataFrame(ret, columns = mu.index)
 
 def period_returns(series, freq = 'daily', interval = 'quarterly'):
     """

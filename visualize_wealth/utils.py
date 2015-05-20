@@ -839,6 +839,7 @@ def update_store_cash(store_path):
 
     """
     store = _open_store(store_path)
+    td = datetime.datetime.today()
 
     try:
         master_ind = store.get('IND3X')
@@ -850,14 +851,17 @@ def update_store_cash(store_path):
         raise
 
     last_cash_dt = cash.dropna().index.max()
-    today = datetime.datetime.date(datetime.datetime.today())
+    today = datetime.datetime.date(td)
     if last_cash_dt < pandas.Timestamp(today):
         try:
             n = len(master_ind)
-            cols = ['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close']
-            cash = pandas.DataFrame(numpy.ones([n, len(cols)]),
-                                    index = master_ind,
-                                    columns = cols
+            cols = ['Open', 'High', 'Low', 
+                    'Close', 'Volume', 'Adj Close']
+
+            cash = pandas.DataFrame(
+                        numpy.ones([n, len(cols)]),
+                        index = master_ind,
+                        columns = cols
             )
             store.put('CA5H', cash)
         except:
@@ -951,7 +955,8 @@ def update_store_prices(store_path, store_keys = None):
     store.close()
     return None
 
-def mod_zipped_time_chunks(index, interval, incl_dT = False):
+
+def zipped_time_chunks(index, interval, incl_T = False):
     """
     Given different period intervals, return a zipped list of tuples
     of length 'period_interval', containing only full periods
@@ -964,8 +969,8 @@ def mod_zipped_time_chunks(index, interval, incl_dT = False):
     
         index: :class:`pandas.DatetimeIndex`
 
-        per_interval: :class:`string` either 'monthly', 'quarterly',
-        or 'yearly'
+        per_interval: :class:`string` either 'weekly,
+        'monthly', 'quarterly', or 'yearly'
     """
 
     time_d = {'weekly': lambda x: x.week,
@@ -977,50 +982,19 @@ def mod_zipped_time_chunks(index, interval, incl_dT = False):
     nxt = time_d[interval](index[1:])
     ind =  prv != nxt
 
-    if incl_dT:
+    if incl_T:
         if not ind[-1]:   # doesn't already end on True
             ind = numpy.append(ind, True)
 
-    if ind[0]:     # series started on the last day of period
-        index = index.copy()[1:]     #So we can't get a Period
-        ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
+    if ind[0]:   # index started on the last day of period
+        index = index.copy()[1:]   # remove first elem
+        prv = time_d[interval](index[:-1])
+        nxt = time_d[interval](index[1:])
+        ind = prv != nxt
 
-    ldop = index[ind]     # last day of period
+    ldop = index[ind]   # last day of period
     f_ind = numpy.append(True, ind[:-1])
     fdop = index[f_ind]   # first day of period
-    return zip(fdop, ldop)
-
-
-def zipped_time_chunks(index, interval):
-    """
-    Given different period intervals, return a zipped list of tuples
-    of length 'period_interval', containing only full periods
-
-    .. note:: 
-
-        The function assumes indexes are of 'daily_frequency'
-    
-    :ARGS:
-    
-        index: :class:`pandas.DatetimeIndex`
-
-        per_interval: :class:`string` either 'monthly', 'quarterly',
-        or 'yearly'
-    """
-
-    time_d = {'weekly': lambda x: x.week,
-              'monthly': lambda x: x.month, 
-              'quarterly':lambda x:x.quarter,
-              'yearly':lambda x: x.year}
-
-    ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
-    
-    if ind[0]: #The series started on the last day of period
-        index = index.copy()[1:] #So we can't get a Period
-        ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
-
-    ldop = index[ind]
-    fdop = index[numpy.append(True, ind[:-1])]
     return zip(fdop, ldop)
 
 def tradeplus_tchunks(weight_index, price_index):

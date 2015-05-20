@@ -951,6 +951,38 @@ def update_store_prices(store_path, store_keys = None):
     store.close()
     return None
 
+def mod_zipped_time_chunks(index, interval):
+    """
+    Given different period intervals, return a zipped list of tuples
+    of length 'period_interval', containing only full periods
+
+    .. note:: 
+
+        The function assumes indexes are of 'daily_frequency'
+    
+    :ARGS:
+    
+        index: :class:`pandas.DatetimeIndex`
+
+        per_interval: :class:`string` either 'monthly', 'quarterly',
+        or 'yearly'
+    """
+
+    time_d = {'weekly': lambda x: x.week,
+              'monthly': lambda x: x.month, 
+              'quarterly':lambda x:x.quarter,
+              'yearly':lambda x: x.year}
+
+    ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
+    
+    if ind[0]: #The series started on the last day of period
+        index = index.copy()[1:] #So we can't get a Period
+        ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
+
+    ldop = index[ind]
+    fdop = index[numpy.append(True, ind[:-1])]
+    return zip(fdop, ldop)
+
 
 def zipped_time_chunks(index, interval):
     """
@@ -969,7 +1001,8 @@ def zipped_time_chunks(index, interval):
         or 'yearly'
     """
 
-    time_d = {'monthly': lambda x: x.month, 
+    time_d = {'weekly': lambda x: x.week,
+              'monthly': lambda x: x.month, 
               'quarterly':lambda x:x.quarter,
               'yearly':lambda x: x.year}
 

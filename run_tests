@@ -1,0 +1,13 @@
+#!/bin/bash
+
+declare -a fList=(
+test_analyze.py
+test_construct_portfolio.py
+test_utils.py
+)
+
+for nm in "${fList[@]}"
+do
+  echo testing "$nm"
+  py.test ./test_module/"$nm" -v
+done

@@ -908,11 +908,12 @@ def update_store_prices(store_path, store_keys = None):
         Remove the CA5H and IND3X keys from the list 
         if they are present
         """
-        blk_lst = ['IND3X', 'CA5H']
+        blk_lst = ['IND3X', 'CA5H', '/IND3X', '/CA5H']
 
         for key in blk_lst:
             try:
                 keys.remove(key)
+                print "{0} removed".format(key)
             except:
                 print "{0} not in keys".format(key)
 

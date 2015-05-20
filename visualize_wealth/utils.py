@@ -951,7 +951,7 @@ def update_store_prices(store_path, store_keys = None):
     store.close()
     return None
 
-def mod_zipped_time_chunks(index, interval):
+def mod_zipped_time_chunks(index, interval, incl_dT = False):
     """
     Given different period intervals, return a zipped list of tuples
     of length 'period_interval', containing only full periods
@@ -973,14 +973,21 @@ def mod_zipped_time_chunks(index, interval):
               'quarterly':lambda x:x.quarter,
               'yearly':lambda x: x.year}
 
-    ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
-    
-    if ind[0]: #The series started on the last day of period
-        index = index.copy()[1:] #So we can't get a Period
+    prv = time_d[interval](index[:-1])
+    nxt = time_d[interval](index[1:])
+    ind =  prv != nxt
+
+    if incl_dT:
+        if not ind[-1]:   # doesn't already end on True
+            ind = numpy.append(ind, True)
+
+    if ind[0]:     # series started on the last day of period
+        index = index.copy()[1:]     #So we can't get a Period
         ind = time_d[interval](index[:-1]) != time_d[interval](index[1:])
 
-    ldop = index[ind]
-    fdop = index[numpy.append(True, ind[:-1])]
+    ldop = index[ind]     # last day of period
+    f_ind = numpy.append(True, ind[:-1])
+    fdop = index[f_ind]   # first day of period
     return zip(fdop, ldop)
 
 

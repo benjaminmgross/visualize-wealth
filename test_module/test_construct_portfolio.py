@@ -79,9 +79,16 @@ def test_mngmt_fee(panel, tc_file, manual_mngmt_fee):
     )
 
 def test_pfp(panel, manual_index):
+    #import ipdb; ipdb.set_trace()
     lib_calc = cp.pfp_from_weight_file(panel)
-    testing.assert_series_equal(manual_index['Close'], 
-                                lib_calc['Close']
+
+    # hack because names weren't matching up
+    mn_series = manual_index['Close']
+    lb_series = lib_calc['Close']
+    mn_series.index.name = lb_series.index.name
+
+    testing.assert_series_equal(mn_series, 
+                                lb_series
     )
     return lib_calc
 

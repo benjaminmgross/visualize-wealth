@@ -151,6 +151,7 @@ def test_update_store_master_and_cash(populate_updated):
     os.remove(populate_updated['name'])
 
 
+
 def test_rets_to_price():
     dts = ['1/1/2000', '1/2/2000', '1/3/2000']
 
@@ -162,16 +163,38 @@ def test_rets_to_price():
                            index = index
     )
 
-    log = utils.rets_to_price(series, ret_typ = 'log', start_value = 100.)
-    lin = utils.rets_to_price(series, ret_typ = 'linear', start_value = 100.)
-    man = pandas.Series([100., 100., 100.], index = index)
+    log = utils.rets_to_price(
+            series, 
+            ret_typ = 'log', 
+            start_value = 100.
+    )
+
+    lin = utils.rets_to_price(
+            series, 
+            ret_typ = 'linear', 
+            start_value = 100.
+    )
+    
+    man = pandas.Series([100., 100., 100.], 
+                        index = index
+    )
 
     assert_series_equal(log, man)
     assert_series_equal(lin, man)
 
     df = pandas.DataFrame({'a': series, 'b': series})
-    log = utils.rets_to_price(df, ret_typ = 'log', start_value = 100.)
-    lin = utils.rets_to_price(df, ret_typ = 'linear', start_value = 100.)
+    log = utils.rets_to_price(
+            df, 
+            ret_typ = 'log', 
+            start_value = 100.
+    )
+    
+    lin = utils.rets_to_price(
+            df, 
+            ret_typ = 'linear', 
+            start_value = 100.
+    )
+    
     man = pandas.DataFrame({'a': man, 'b': man})
 
     assert_frame_equal(log, man)
@@ -189,6 +212,85 @@ def test_strip_vals():
     strpd = utils.strip_vals(l)
     res = ['TLT', 'HYY', 'IEF']
     assert strpd == res
+
+@pytest.mark.newtest
+def test_zipped_time_chunks():
+    pts = pandas.Timestamp
+
+    index = pandas.DatetimeIndex(
+                start = '06/01/2000',
+                freq = 'D',
+                periods = 100
+    )
+    res = [('06-01-2000', '06-30-2000'), 
+           ('07-01-2000', '07-31-2000'), 
+           ('08-01-2000', '08-31-2000')]
+
+    mc = list(((pts(x), pts(y)) for x, y in res))
+    lc = utils.zipped_time_chunks(
+            index = index,
+            interval = 'monthly',
+            incl_T = False
+    )
+    assert mc == lc
+
+    res = [('06-01-2000', '06-30-2000'), 
+           ('07-01-2000', '07-31-2000'), 
+           ('08-01-2000', '08-31-2000'),
+           ('09-01-2000', '09-08-2000')]
+
+    mc = list(((pts(x), pts(y)) for x, y in res))
+    lc = utils.zipped_time_chunks(
+            index = index,
+            interval = 'monthly',
+            incl_T = True
+    )
+    assert mc == lc
+
+    res = [('06-01-2000', '06-30-2000')]
+    mc = list(((pts(x), pts(y)) for x, y in res))
+    lc = utils.zipped_time_chunks(
+            index = index,
+            interval = 'quarterly',
+            incl_T = False
+    )
+    assert mc == lc
+
+    res = [('06-01-2000', '06-30-2000')]
+    mc = list(((pts(x), pts(y)) for x, y in res))
+    lc = utils.zipped_time_chunks(
+            index = index,
+            interval = 'quarterly',
+            incl_T = False
+    )
+    assert mc == lc
+
+    res = [('06-01-2000', '06-30-2000'),
+           ('07-01-2000', '09-08-2000')]
+    mc = list(((pts(x), pts(y)) for x, y in res))
+    lc = utils.zipped_time_chunks(
+            index = index,
+            interval = 'quarterly',
+            incl_T = True
+    )
+    assert mc == lc
+
+    mc = []
+    lc = utils.zipped_time_chunks(
+            index = index,
+            interval = 'yearly',
+            incl_T = False
+    )
+    assert mc == lc
+
+    res = [('06-01-2000', '09-08-2000')]
+    mc = list(((pts(x), pts(y)) for x, y in res))
+    lc = utils.zipped_time_chunks(
+            index = index,
+            interval = 'yearly',
+            incl_T = True
+    )
+    assert mc == lc
 
 """
 def test_update_store_cash(populate_updated):

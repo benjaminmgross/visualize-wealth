@@ -10,7 +10,7 @@ This program is free software and is distrubuted under the
 &copy; Benjamin M. Gross 2013
 
 **NOTE:** Because so much of the underlying technology I'm continuing to build has become the building blocks 
-for [my financial technology startup](www.stratcheck.io), I've forked this repo (as of 5.2015) and made new 
+for [my financial technology startup](http://www.visualizewealth.com), I've forked this repo (as of 5.2015) and made new 
 changes private. I might continue to push some of the bigger changes to this repo to keep it open source, but 
 we'll see.
 

@@ -992,15 +992,16 @@ def zipped_time_chunks(index, interval, incl_T = False):
     nxt = time_d[interval](index[1:])
     ind =  prv != nxt
 
-    if incl_T:
-        if not ind[-1]:   # doesn't already end on True
-            ind = numpy.append(ind, True)
 
     if ind[0]:   # index started on the last day of period
         index = index.copy()[1:]   # remove first elem
         prv = time_d[interval](index[:-1])
         nxt = time_d[interval](index[1:])
         ind = prv != nxt
+
+    if incl_T:
+        if not ind[-1]:   # doesn't already end on True
+            ind = numpy.append(ind, True)
 
     ldop = index[ind]   # last day of period
     f_ind = numpy.append(True, ind[:-1])

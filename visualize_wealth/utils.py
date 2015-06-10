@@ -12,6 +12,16 @@ import pandas
 import numpy
 import os
 
+def append_dfs(prv_df, nxt_df):
+    """
+    Return a single, sorted :class:`DataFrame` where prev_df
+    is "stacked" with nxt_df and any overlapping dates 
+    are remvoed
+    """
+    ind_a, ind_b = prv_df.index, nxt_df.index
+    apnd = nxt_df.loc[~ind_b.isin(ind_a), :]
+    return prv_df.append(apnd)
+
 def exchange_acs_for_ticker(weight_df, ticker_class_dict, date, asset_class, ticker, weight):
     """
     It's common to wonder, what would happen if I took all tickers within a 
